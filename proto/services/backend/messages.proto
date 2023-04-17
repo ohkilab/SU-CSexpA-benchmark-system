@@ -1,0 +1,44 @@
+syntax = "proto3";
+
+import "google/protobuf/timestamp.proto";
+
+option go_package = "./";
+
+message GetRankingResponse {
+    int32 rank = 1;
+    Group group = 2;
+}
+
+message GetGroupRequest {
+    string group_id = 1;
+}
+
+message GetGroupResponse {
+    Group group = 1;
+    repeated ScoreHistory score_histories = 2;
+}
+
+message Group {
+    string id = 1;
+    string name = 2;
+    int32 highest_score = 3;
+    google.protobuf.Timestamp updated_at = 4;
+}
+
+message ScoreHistory {
+    string group_id = 1;
+    int32 score = 2;
+    Language language = 3;
+    google.protobuf.Timestamp created_at = 4;
+}
+
+enum Language {
+    PHP = 0;
+    GO = 1;
+    RUST = 2;
+    JAVASCRIPT = 3;
+    CSHARP = 4;
+    CPP = 5;
+    RUBY = 6;
+    PYTHON = 7;
+}

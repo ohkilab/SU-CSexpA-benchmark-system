@@ -1,0 +1,10 @@
+syntax = "proto3";
+
+import "google/protobuf/empty.proto";
+import "backend/messages.proto";
+
+option go_package = "./backend";
+
+service BackendService {
+    rpc GetRanking (google.protobuf.Empty) returns (GetRankingResponse);
+}
