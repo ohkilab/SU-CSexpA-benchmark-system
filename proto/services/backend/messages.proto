@@ -2,7 +2,7 @@ syntax = "proto3";
 
 import "google/protobuf/timestamp.proto";
 
-option go_package = "./";
+option go_package = "./backend";
 
 message GetRankingResponse {
     int32 rank = 1;
