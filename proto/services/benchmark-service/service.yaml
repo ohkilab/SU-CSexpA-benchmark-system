@@ -1,10 +1,8 @@
-grpc-server:
-  go:
-    dist: ../proto-gen/go
+ts:
+  plugin:
+    name: protoc-gen-ts
+    path: /Users/earlgray/.volta/bin/protoc-gen-ts
+  dist: ../proto-gen/ts
 
-client:
-  ts:
-    plugin:
-      name: protoc-gen-ts
-      path: /Users/earlgray/.volta/bin/protoc-gen-ts
-    dist: ../proto-gen/ts
+go:
+  dist: ../proto-gen/go
