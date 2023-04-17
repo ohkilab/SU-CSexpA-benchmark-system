@@ -11,6 +11,11 @@ import (
 
 const servicesRoot = "services"
 
+type ServiceYaml struct {
+	GrpcServer map[string]LangYaml `yaml:"grpc_server"`
+	Client     map[string]LangYaml `yaml:"client"`
+}
+
 type LangYaml struct {
 	Dist   string   `yaml:"dist"`
 	Opts   []string `yaml:"opts"`
@@ -20,14 +25,26 @@ type LangYaml struct {
 	} `yaml:"plugin"`
 }
 
-func (l *LangYaml) Options() []protocOptFunc {
+func (l *LangYaml) GrpcServerOptions() []protocOptFunc {
 	opts := make([]protocOptFunc, 0)
-	opts = append(opts, optGrpcOut(l.Dist), optOut(l.Dist))
+	opts = append(opts, optGrpcOut(l.Dist))
 	if l.Plugin != nil {
 		opts = append(opts, optPlugin(l.Plugin.Name, l.Plugin.Path))
 	}
 	for _, opt := range l.Opts {
-		opts = append(opts, optGrpcOpt(opt), optOpt(opt))
+		opts = append(opts, optGrpcOpt(opt))
+	}
+	return opts
+}
+
+func (l *LangYaml) ClientOptions() []protocOptFunc {
+	opts := make([]protocOptFunc, 0)
+	opts = append(opts, optOut(l.Dist))
+	if l.Plugin != nil {
+		opts = append(opts, optPlugin(l.Plugin.Name, l.Plugin.Path))
+	}
+	for _, opt := range l.Opts {
+		opts = append(opts, optOpt(opt))
 	}
 	return opts
 }
@@ -44,25 +61,30 @@ func main() {
 		}
 
 		for _, protoFile := range protoFiles {
-			for langName, lang := range serviceYaml {
-				options := lang.Options()
+			for langName, lang := range serviceYaml.Client {
+				options := lang.ClientOptions()
+				if err := runProtoc(langName, protoFile, options...); err != nil {
+					log.Fatal(err)
+				}
+			}
+			for langName, lang := range serviceYaml.GrpcServer {
+				options := lang.GrpcServerOptions()
 				if err := runProtoc(langName, protoFile, options...); err != nil {
 					log.Fatal(err)
 				}
 			}
 		}
-
 	}
 }
 
-func loadService(serviceName string) (map[string]LangYaml, []string, error) {
+func loadService(serviceName string) (*ServiceYaml, []string, error) {
 	serviceDirPath := filepath.Join("services", serviceName)
 	f, err := os.Open(filepath.Join(serviceDirPath, "service.yaml"))
 	if err != nil {
 		return nil, nil, err
 	}
 	defer f.Close()
-	var serviceYaml map[string]LangYaml
+	var serviceYaml *ServiceYaml
 	if err := yaml.NewDecoder(f).Decode(&serviceYaml); err != nil {
 		return nil, nil, err
 	}

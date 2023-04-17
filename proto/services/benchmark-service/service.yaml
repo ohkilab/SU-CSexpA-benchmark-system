@@ -1,8 +1,16 @@
-ts:
-  plugin:
-    name: protoc-gen-ts
-    path: /Users/earlgray/.volta/bin/protoc-gen-ts
-  dist: ../proto-gen/ts
+grpc_server:
+  go:
+    dist: ../proto-gen/go
+    opts:
+      - paths=source_relative
 
-go:
-  dist: ../proto-gen/go
+client:
+  go:
+    dist: ../proto-gen/go
+    opts:
+      - paths=source_relative
+  ts:
+    plugin:
+      name: protoc-gen-ts
+      path: protoc-gen-ts
+    dist: ../proto-gen/ts
