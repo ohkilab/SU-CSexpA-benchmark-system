@@ -1,0 +1,23 @@
+services:
+  backend:
+    build:
+      context: backend
+      dockerfile: Dockerfile
+
+  benchmark-service:
+    build:
+      context: benchmark-service
+      dockerfile: Dockerfile
+
+  db:
+    image: mysql:8.0
+    restart: always
+    volumes:
+      - ./data:/var/lib/mysql
+
+  frontend:
+    build:
+      context: frontend
+      dockerfile: Dockerfile
+    ports:
+      - 8080:8080
