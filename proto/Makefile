@@ -6,4 +6,4 @@ tools/install:
 
 .PHONY: generate
 generate:
-	go run -mod=mod ./scripts/generate.go
+	go run -mod=mod ./cmd/generate
