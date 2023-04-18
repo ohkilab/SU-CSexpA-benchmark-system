@@ -1,0 +1,46 @@
+syntax = "proto3";
+
+import "google/protobuf/timestamp.proto";
+
+option go_package = "./backend";
+
+message Contest {
+  int32 year = 3; // primary key of contest
+
+  google.protobuf.Timestamp qualifier_start_at = 4;
+  google.protobuf.Timestamp qualifier_end_at = 5;
+  int32 qualifier_submit_limit = 6;
+
+  google.protobuf.Timestamp final_start_at = 7;
+  google.protobuf.Timestamp final_end_at = 8;
+  int32 final_submit_limit = 9;
+}
+
+message Group {
+  string id = 1;
+  int32 year = 3;
+  Role role = 4;
+}
+
+message ScoreHistory {
+  string group_id = 1;
+  int32 score = 2;
+  Language language = 3;
+  google.protobuf.Timestamp created_at = 4;
+}
+
+enum Language {
+  PHP = 0;
+  GO = 1;
+  RUST = 2;
+  JAVASCRIPT = 3;
+  CSHARP = 4;
+  CPP = 5;
+  RUBY = 6;
+  PYTHON = 7;
+}
+
+enum Role {
+  CONTESTANT = 0;
+  GUEST = 1;
+}
