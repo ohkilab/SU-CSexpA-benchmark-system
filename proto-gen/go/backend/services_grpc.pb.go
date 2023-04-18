@@ -7,7 +7,6 @@
 package backend
 
 import (
-	__ "./"
 	context "context"
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
@@ -28,7 +27,7 @@ const (
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type BackendServiceClient interface {
-	GetRanking(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*__.GetRankingResponse, error)
+	GetRanking(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*GetRankingResponse, error)
 }
 
 type backendServiceClient struct {
@@ -39,8 +38,8 @@ func NewBackendServiceClient(cc grpc.ClientConnInterface) BackendServiceClient {
 	return &backendServiceClient{cc}
 }
 
-func (c *backendServiceClient) GetRanking(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*__.GetRankingResponse, error) {
-	out := new(__.GetRankingResponse)
+func (c *backendServiceClient) GetRanking(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*GetRankingResponse, error) {
+	out := new(GetRankingResponse)
 	err := c.cc.Invoke(ctx, BackendService_GetRanking_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -52,7 +51,7 @@ func (c *backendServiceClient) GetRanking(ctx context.Context, in *emptypb.Empty
 // All implementations must embed UnimplementedBackendServiceServer
 // for forward compatibility
 type BackendServiceServer interface {
-	GetRanking(context.Context, *emptypb.Empty) (*__.GetRankingResponse, error)
+	GetRanking(context.Context, *emptypb.Empty) (*GetRankingResponse, error)
 	mustEmbedUnimplementedBackendServiceServer()
 }
 
@@ -60,7 +59,7 @@ type BackendServiceServer interface {
 type UnimplementedBackendServiceServer struct {
 }
 
-func (UnimplementedBackendServiceServer) GetRanking(context.Context, *emptypb.Empty) (*__.GetRankingResponse, error) {
+func (UnimplementedBackendServiceServer) GetRanking(context.Context, *emptypb.Empty) (*GetRankingResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetRanking not implemented")
 }
 func (UnimplementedBackendServiceServer) mustEmbedUnimplementedBackendServiceServer() {}

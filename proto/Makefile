@@ -1,9 +1,8 @@
 .PHONY: tools/install
 tools/install:
-	npm install -g protoc-gen-ts
-	go install google.golang.org/protobuf/cmd/protoc-gen-go@latest
-	go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@latest
+	@npm i
+	@GOPATH="$(shell pwd)/go" go install $(shell go list -f '{{range .Imports}}{{.}} {{end}}' tools.go)
 
 .PHONY: generate
 generate:
-	go run -mod=mod ./scripts/generate.go
+	go run -mod=mod ./cmd/generate

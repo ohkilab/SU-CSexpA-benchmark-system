@@ -1,3 +1,22 @@
+# proto
+
+## install dependencies
+
+```shell
+$ make tools/install
+```
+
+## generate
+
+```shell
+$ make generate
+```
+
+## service.yaml
+
+example is below
+
+```yaml
 grpc_server:
   go:
     dist: ../proto-gen/go
@@ -14,3 +33,4 @@ client:
       name: protoc-gen-ts
       path: ./node_modules/.bin/protoc-gen-ts
     dist: ../proto-gen/ts
+```
