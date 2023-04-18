@@ -11,7 +11,6 @@ import (
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
-	emptypb "google.golang.org/protobuf/types/known/emptypb"
 )
 
 // This is a compile-time assertion to ensure that this generated file
@@ -27,7 +26,7 @@ const (
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type BackendServiceClient interface {
-	GetRanking(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*GetRankingResponse, error)
+	GetRanking(ctx context.Context, in *GetRankingRequest, opts ...grpc.CallOption) (*GetRankingResponse, error)
 }
 
 type backendServiceClient struct {
@@ -38,7 +37,7 @@ func NewBackendServiceClient(cc grpc.ClientConnInterface) BackendServiceClient {
 	return &backendServiceClient{cc}
 }
 
-func (c *backendServiceClient) GetRanking(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*GetRankingResponse, error) {
+func (c *backendServiceClient) GetRanking(ctx context.Context, in *GetRankingRequest, opts ...grpc.CallOption) (*GetRankingResponse, error) {
 	out := new(GetRankingResponse)
 	err := c.cc.Invoke(ctx, BackendService_GetRanking_FullMethodName, in, out, opts...)
 	if err != nil {
@@ -51,7 +50,7 @@ func (c *backendServiceClient) GetRanking(ctx context.Context, in *emptypb.Empty
 // All implementations must embed UnimplementedBackendServiceServer
 // for forward compatibility
 type BackendServiceServer interface {
-	GetRanking(context.Context, *emptypb.Empty) (*GetRankingResponse, error)
+	GetRanking(context.Context, *GetRankingRequest) (*GetRankingResponse, error)
 	mustEmbedUnimplementedBackendServiceServer()
 }
 
@@ -59,7 +58,7 @@ type BackendServiceServer interface {
 type UnimplementedBackendServiceServer struct {
 }
 
-func (UnimplementedBackendServiceServer) GetRanking(context.Context, *emptypb.Empty) (*GetRankingResponse, error) {
+func (UnimplementedBackendServiceServer) GetRanking(context.Context, *GetRankingRequest) (*GetRankingResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetRanking not implemented")
 }
 func (UnimplementedBackendServiceServer) mustEmbedUnimplementedBackendServiceServer() {}
@@ -76,7 +75,7 @@ func RegisterBackendServiceServer(s grpc.ServiceRegistrar, srv BackendServiceSer
 }
 
 func _BackendService_GetRanking_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(emptypb.Empty)
+	in := new(GetRankingRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -88,7 +87,7 @@ func _BackendService_GetRanking_Handler(srv interface{}, ctx context.Context, de
 		FullMethod: BackendService_GetRanking_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(BackendServiceServer).GetRanking(ctx, req.(*emptypb.Empty))
+		return srv.(BackendServiceServer).GetRanking(ctx, req.(*GetRankingRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }

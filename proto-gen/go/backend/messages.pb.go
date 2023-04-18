@@ -9,7 +9,6 @@ package backend
 import (
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
-	timestamppb "google.golang.org/protobuf/types/known/timestamppb"
 	reflect "reflect"
 	sync "sync"
 )
@@ -21,68 +20,59 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-type Language int32
+type GetRankingRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
 
-const (
-	Language_PHP        Language = 0
-	Language_GO         Language = 1
-	Language_RUST       Language = 2
-	Language_JAVASCRIPT Language = 3
-	Language_CSHARP     Language = 4
-	Language_CPP        Language = 5
-	Language_RUBY       Language = 6
-	Language_PYTHON     Language = 7
-)
+	Year         int32 `protobuf:"varint,1,opt,name=year,proto3" json:"year,omitempty"`
+	ContainGuest bool  `protobuf:"varint,2,opt,name=contain_guest,json=containGuest,proto3" json:"contain_guest,omitempty"` // if this is true, return ranking which includes guests
+}
 
-// Enum value maps for Language.
-var (
-	Language_name = map[int32]string{
-		0: "PHP",
-		1: "GO",
-		2: "RUST",
-		3: "JAVASCRIPT",
-		4: "CSHARP",
-		5: "CPP",
-		6: "RUBY",
-		7: "PYTHON",
+func (x *GetRankingRequest) Reset() {
+	*x = GetRankingRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_backend_messages_proto_msgTypes[0]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
 	}
-	Language_value = map[string]int32{
-		"PHP":        0,
-		"GO":         1,
-		"RUST":       2,
-		"JAVASCRIPT": 3,
-		"CSHARP":     4,
-		"CPP":        5,
-		"RUBY":       6,
-		"PYTHON":     7,
+}
+
+func (x *GetRankingRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetRankingRequest) ProtoMessage() {}
+
+func (x *GetRankingRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_backend_messages_proto_msgTypes[0]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
 	}
-)
-
-func (x Language) Enum() *Language {
-	p := new(Language)
-	*p = x
-	return p
+	return mi.MessageOf(x)
 }
 
-func (x Language) String() string {
-	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
-}
-
-func (Language) Descriptor() protoreflect.EnumDescriptor {
-	return file_backend_messages_proto_enumTypes[0].Descriptor()
-}
-
-func (Language) Type() protoreflect.EnumType {
-	return &file_backend_messages_proto_enumTypes[0]
-}
-
-func (x Language) Number() protoreflect.EnumNumber {
-	return protoreflect.EnumNumber(x)
-}
-
-// Deprecated: Use Language.Descriptor instead.
-func (Language) EnumDescriptor() ([]byte, []int) {
+// Deprecated: Use GetRankingRequest.ProtoReflect.Descriptor instead.
+func (*GetRankingRequest) Descriptor() ([]byte, []int) {
 	return file_backend_messages_proto_rawDescGZIP(), []int{0}
+}
+
+func (x *GetRankingRequest) GetYear() int32 {
+	if x != nil {
+		return x.Year
+	}
+	return 0
+}
+
+func (x *GetRankingRequest) GetContainGuest() bool {
+	if x != nil {
+		return x.ContainGuest
+	}
+	return false
 }
 
 type GetRankingResponse struct {
@@ -90,14 +80,13 @@ type GetRankingResponse struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Rank  int32  `protobuf:"varint,1,opt,name=rank,proto3" json:"rank,omitempty"`
-	Group *Group `protobuf:"bytes,2,opt,name=group,proto3" json:"group,omitempty"`
+	Records []*GetRankingResponse_Record `protobuf:"bytes,1,rep,name=records,proto3" json:"records,omitempty"`
 }
 
 func (x *GetRankingResponse) Reset() {
 	*x = GetRankingResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_backend_messages_proto_msgTypes[0]
+		mi := &file_backend_messages_proto_msgTypes[1]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -110,7 +99,7 @@ func (x *GetRankingResponse) String() string {
 func (*GetRankingResponse) ProtoMessage() {}
 
 func (x *GetRankingResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_backend_messages_proto_msgTypes[0]
+	mi := &file_backend_messages_proto_msgTypes[1]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -123,19 +112,12 @@ func (x *GetRankingResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetRankingResponse.ProtoReflect.Descriptor instead.
 func (*GetRankingResponse) Descriptor() ([]byte, []int) {
-	return file_backend_messages_proto_rawDescGZIP(), []int{0}
+	return file_backend_messages_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *GetRankingResponse) GetRank() int32 {
+func (x *GetRankingResponse) GetRecords() []*GetRankingResponse_Record {
 	if x != nil {
-		return x.Rank
-	}
-	return 0
-}
-
-func (x *GetRankingResponse) GetGroup() *Group {
-	if x != nil {
-		return x.Group
+		return x.Records
 	}
 	return nil
 }
@@ -151,7 +133,7 @@ type GetGroupRequest struct {
 func (x *GetGroupRequest) Reset() {
 	*x = GetGroupRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_backend_messages_proto_msgTypes[1]
+		mi := &file_backend_messages_proto_msgTypes[2]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -164,7 +146,7 @@ func (x *GetGroupRequest) String() string {
 func (*GetGroupRequest) ProtoMessage() {}
 
 func (x *GetGroupRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_backend_messages_proto_msgTypes[1]
+	mi := &file_backend_messages_proto_msgTypes[2]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -177,7 +159,7 @@ func (x *GetGroupRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetGroupRequest.ProtoReflect.Descriptor instead.
 func (*GetGroupRequest) Descriptor() ([]byte, []int) {
-	return file_backend_messages_proto_rawDescGZIP(), []int{1}
+	return file_backend_messages_proto_rawDescGZIP(), []int{2}
 }
 
 func (x *GetGroupRequest) GetGroupId() string {
@@ -192,14 +174,13 @@ type GetGroupResponse struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Group          *Group          `protobuf:"bytes,1,opt,name=group,proto3" json:"group,omitempty"`
-	ScoreHistories []*ScoreHistory `protobuf:"bytes,2,rep,name=score_histories,json=scoreHistories,proto3" json:"score_histories,omitempty"`
+	Groups []*GetGroupResponse_GroupInfo `protobuf:"bytes,1,rep,name=groups,proto3" json:"groups,omitempty"`
 }
 
 func (x *GetGroupResponse) Reset() {
 	*x = GetGroupResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_backend_messages_proto_msgTypes[2]
+		mi := &file_backend_messages_proto_msgTypes[3]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -212,7 +193,7 @@ func (x *GetGroupResponse) String() string {
 func (*GetGroupResponse) ProtoMessage() {}
 
 func (x *GetGroupResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_backend_messages_proto_msgTypes[2]
+	mi := &file_backend_messages_proto_msgTypes[3]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -225,107 +206,28 @@ func (x *GetGroupResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetGroupResponse.ProtoReflect.Descriptor instead.
 func (*GetGroupResponse) Descriptor() ([]byte, []int) {
-	return file_backend_messages_proto_rawDescGZIP(), []int{2}
-}
-
-func (x *GetGroupResponse) GetGroup() *Group {
-	if x != nil {
-		return x.Group
-	}
-	return nil
-}
-
-func (x *GetGroupResponse) GetScoreHistories() []*ScoreHistory {
-	if x != nil {
-		return x.ScoreHistories
-	}
-	return nil
-}
-
-type Group struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-
-	Id           string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-	Name         string                 `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
-	HighestScore int32                  `protobuf:"varint,3,opt,name=highest_score,json=highestScore,proto3" json:"highest_score,omitempty"`
-	UpdatedAt    *timestamppb.Timestamp `protobuf:"bytes,4,opt,name=updated_at,json=updatedAt,proto3" json:"updated_at,omitempty"`
-}
-
-func (x *Group) Reset() {
-	*x = Group{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_backend_messages_proto_msgTypes[3]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *Group) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*Group) ProtoMessage() {}
-
-func (x *Group) ProtoReflect() protoreflect.Message {
-	mi := &file_backend_messages_proto_msgTypes[3]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use Group.ProtoReflect.Descriptor instead.
-func (*Group) Descriptor() ([]byte, []int) {
 	return file_backend_messages_proto_rawDescGZIP(), []int{3}
 }
 
-func (x *Group) GetId() string {
+func (x *GetGroupResponse) GetGroups() []*GetGroupResponse_GroupInfo {
 	if x != nil {
-		return x.Id
-	}
-	return ""
-}
-
-func (x *Group) GetName() string {
-	if x != nil {
-		return x.Name
-	}
-	return ""
-}
-
-func (x *Group) GetHighestScore() int32 {
-	if x != nil {
-		return x.HighestScore
-	}
-	return 0
-}
-
-func (x *Group) GetUpdatedAt() *timestamppb.Timestamp {
-	if x != nil {
-		return x.UpdatedAt
+		return x.Groups
 	}
 	return nil
 }
 
-type ScoreHistory struct {
+type GetRankingResponse_Record struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	GroupId   string                 `protobuf:"bytes,1,opt,name=group_id,json=groupId,proto3" json:"group_id,omitempty"`
-	Score     int32                  `protobuf:"varint,2,opt,name=score,proto3" json:"score,omitempty"`
-	Language  Language               `protobuf:"varint,3,opt,name=language,proto3,enum=Language" json:"language,omitempty"`
-	CreatedAt *timestamppb.Timestamp `protobuf:"bytes,4,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
+	Rank  int32  `protobuf:"varint,1,opt,name=rank,proto3" json:"rank,omitempty"`
+	Group *Group `protobuf:"bytes,2,opt,name=group,proto3" json:"group,omitempty"`
+	Score int32  `protobuf:"varint,3,opt,name=score,proto3" json:"score,omitempty"`
 }
 
-func (x *ScoreHistory) Reset() {
-	*x = ScoreHistory{}
+func (x *GetRankingResponse_Record) Reset() {
+	*x = GetRankingResponse_Record{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_backend_messages_proto_msgTypes[4]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -333,13 +235,13 @@ func (x *ScoreHistory) Reset() {
 	}
 }
 
-func (x *ScoreHistory) String() string {
+func (x *GetRankingResponse_Record) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*ScoreHistory) ProtoMessage() {}
+func (*GetRankingResponse_Record) ProtoMessage() {}
 
-func (x *ScoreHistory) ProtoReflect() protoreflect.Message {
+func (x *GetRankingResponse_Record) ProtoReflect() protoreflect.Message {
 	mi := &file_backend_messages_proto_msgTypes[4]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -351,35 +253,83 @@ func (x *ScoreHistory) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use ScoreHistory.ProtoReflect.Descriptor instead.
-func (*ScoreHistory) Descriptor() ([]byte, []int) {
-	return file_backend_messages_proto_rawDescGZIP(), []int{4}
+// Deprecated: Use GetRankingResponse_Record.ProtoReflect.Descriptor instead.
+func (*GetRankingResponse_Record) Descriptor() ([]byte, []int) {
+	return file_backend_messages_proto_rawDescGZIP(), []int{1, 0}
 }
 
-func (x *ScoreHistory) GetGroupId() string {
+func (x *GetRankingResponse_Record) GetRank() int32 {
 	if x != nil {
-		return x.GroupId
+		return x.Rank
 	}
-	return ""
+	return 0
 }
 
-func (x *ScoreHistory) GetScore() int32 {
+func (x *GetRankingResponse_Record) GetGroup() *Group {
+	if x != nil {
+		return x.Group
+	}
+	return nil
+}
+
+func (x *GetRankingResponse_Record) GetScore() int32 {
 	if x != nil {
 		return x.Score
 	}
 	return 0
 }
 
-func (x *ScoreHistory) GetLanguage() Language {
-	if x != nil {
-		return x.Language
-	}
-	return Language_PHP
+type GetGroupResponse_GroupInfo struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Group          *Group          `protobuf:"bytes,1,opt,name=group,proto3" json:"group,omitempty"`
+	ScoreHistories []*ScoreHistory `protobuf:"bytes,2,rep,name=score_histories,json=scoreHistories,proto3" json:"score_histories,omitempty"`
 }
 
-func (x *ScoreHistory) GetCreatedAt() *timestamppb.Timestamp {
+func (x *GetGroupResponse_GroupInfo) Reset() {
+	*x = GetGroupResponse_GroupInfo{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_backend_messages_proto_msgTypes[5]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *GetGroupResponse_GroupInfo) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetGroupResponse_GroupInfo) ProtoMessage() {}
+
+func (x *GetGroupResponse_GroupInfo) ProtoReflect() protoreflect.Message {
+	mi := &file_backend_messages_proto_msgTypes[5]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetGroupResponse_GroupInfo.ProtoReflect.Descriptor instead.
+func (*GetGroupResponse_GroupInfo) Descriptor() ([]byte, []int) {
+	return file_backend_messages_proto_rawDescGZIP(), []int{3, 0}
+}
+
+func (x *GetGroupResponse_GroupInfo) GetGroup() *Group {
 	if x != nil {
-		return x.CreatedAt
+		return x.Group
+	}
+	return nil
+}
+
+func (x *GetGroupResponse_GroupInfo) GetScoreHistories() []*ScoreHistory {
+	if x != nil {
+		return x.ScoreHistories
 	}
 	return nil
 }
@@ -388,50 +338,38 @@ var File_backend_messages_proto protoreflect.FileDescriptor
 
 var file_backend_messages_proto_rawDesc = []byte{
 	0x0a, 0x16, 0x62, 0x61, 0x63, 0x6b, 0x65, 0x6e, 0x64, 0x2f, 0x6d, 0x65, 0x73, 0x73, 0x61, 0x67,
-	0x65, 0x73, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x1a, 0x1f, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65,
-	0x2f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2f, 0x74, 0x69, 0x6d, 0x65, 0x73, 0x74,
-	0x61, 0x6d, 0x70, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22, 0x46, 0x0a, 0x12, 0x47, 0x65, 0x74,
-	0x52, 0x61, 0x6e, 0x6b, 0x69, 0x6e, 0x67, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12,
-	0x12, 0x0a, 0x04, 0x72, 0x61, 0x6e, 0x6b, 0x18, 0x01, 0x20, 0x01, 0x28, 0x05, 0x52, 0x04, 0x72,
-	0x61, 0x6e, 0x6b, 0x12, 0x1c, 0x0a, 0x05, 0x67, 0x72, 0x6f, 0x75, 0x70, 0x18, 0x02, 0x20, 0x01,
-	0x28, 0x0b, 0x32, 0x06, 0x2e, 0x47, 0x72, 0x6f, 0x75, 0x70, 0x52, 0x05, 0x67, 0x72, 0x6f, 0x75,
-	0x70, 0x22, 0x2c, 0x0a, 0x0f, 0x47, 0x65, 0x74, 0x47, 0x72, 0x6f, 0x75, 0x70, 0x52, 0x65, 0x71,
-	0x75, 0x65, 0x73, 0x74, 0x12, 0x19, 0x0a, 0x08, 0x67, 0x72, 0x6f, 0x75, 0x70, 0x5f, 0x69, 0x64,
-	0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x67, 0x72, 0x6f, 0x75, 0x70, 0x49, 0x64, 0x22,
-	0x68, 0x0a, 0x10, 0x47, 0x65, 0x74, 0x47, 0x72, 0x6f, 0x75, 0x70, 0x52, 0x65, 0x73, 0x70, 0x6f,
-	0x6e, 0x73, 0x65, 0x12, 0x1c, 0x0a, 0x05, 0x67, 0x72, 0x6f, 0x75, 0x70, 0x18, 0x01, 0x20, 0x01,
+	0x65, 0x73, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x1a, 0x17, 0x62, 0x61, 0x63, 0x6b, 0x65, 0x6e,
+	0x64, 0x2f, 0x72, 0x65, 0x73, 0x6f, 0x75, 0x72, 0x63, 0x65, 0x73, 0x2e, 0x70, 0x72, 0x6f, 0x74,
+	0x6f, 0x22, 0x4c, 0x0a, 0x11, 0x47, 0x65, 0x74, 0x52, 0x61, 0x6e, 0x6b, 0x69, 0x6e, 0x67, 0x52,
+	0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x12, 0x0a, 0x04, 0x79, 0x65, 0x61, 0x72, 0x18, 0x01,
+	0x20, 0x01, 0x28, 0x05, 0x52, 0x04, 0x79, 0x65, 0x61, 0x72, 0x12, 0x23, 0x0a, 0x0d, 0x63, 0x6f,
+	0x6e, 0x74, 0x61, 0x69, 0x6e, 0x5f, 0x67, 0x75, 0x65, 0x73, 0x74, 0x18, 0x02, 0x20, 0x01, 0x28,
+	0x08, 0x52, 0x0c, 0x63, 0x6f, 0x6e, 0x74, 0x61, 0x69, 0x6e, 0x47, 0x75, 0x65, 0x73, 0x74, 0x22,
+	0x9c, 0x01, 0x0a, 0x12, 0x47, 0x65, 0x74, 0x52, 0x61, 0x6e, 0x6b, 0x69, 0x6e, 0x67, 0x52, 0x65,
+	0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x34, 0x0a, 0x07, 0x72, 0x65, 0x63, 0x6f, 0x72, 0x64,
+	0x73, 0x18, 0x01, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x1a, 0x2e, 0x47, 0x65, 0x74, 0x52, 0x61, 0x6e,
+	0x6b, 0x69, 0x6e, 0x67, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x2e, 0x52, 0x65, 0x63,
+	0x6f, 0x72, 0x64, 0x52, 0x07, 0x72, 0x65, 0x63, 0x6f, 0x72, 0x64, 0x73, 0x1a, 0x50, 0x0a, 0x06,
+	0x52, 0x65, 0x63, 0x6f, 0x72, 0x64, 0x12, 0x12, 0x0a, 0x04, 0x72, 0x61, 0x6e, 0x6b, 0x18, 0x01,
+	0x20, 0x01, 0x28, 0x05, 0x52, 0x04, 0x72, 0x61, 0x6e, 0x6b, 0x12, 0x1c, 0x0a, 0x05, 0x67, 0x72,
+	0x6f, 0x75, 0x70, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x06, 0x2e, 0x47, 0x72, 0x6f, 0x75,
+	0x70, 0x52, 0x05, 0x67, 0x72, 0x6f, 0x75, 0x70, 0x12, 0x14, 0x0a, 0x05, 0x73, 0x63, 0x6f, 0x72,
+	0x65, 0x18, 0x03, 0x20, 0x01, 0x28, 0x05, 0x52, 0x05, 0x73, 0x63, 0x6f, 0x72, 0x65, 0x22, 0x2c,
+	0x0a, 0x0f, 0x47, 0x65, 0x74, 0x47, 0x72, 0x6f, 0x75, 0x70, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73,
+	0x74, 0x12, 0x19, 0x0a, 0x08, 0x67, 0x72, 0x6f, 0x75, 0x70, 0x5f, 0x69, 0x64, 0x18, 0x01, 0x20,
+	0x01, 0x28, 0x09, 0x52, 0x07, 0x67, 0x72, 0x6f, 0x75, 0x70, 0x49, 0x64, 0x22, 0xaa, 0x01, 0x0a,
+	0x10, 0x47, 0x65, 0x74, 0x47, 0x72, 0x6f, 0x75, 0x70, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73,
+	0x65, 0x12, 0x33, 0x0a, 0x06, 0x67, 0x72, 0x6f, 0x75, 0x70, 0x73, 0x18, 0x01, 0x20, 0x03, 0x28,
+	0x0b, 0x32, 0x1b, 0x2e, 0x47, 0x65, 0x74, 0x47, 0x72, 0x6f, 0x75, 0x70, 0x52, 0x65, 0x73, 0x70,
+	0x6f, 0x6e, 0x73, 0x65, 0x2e, 0x47, 0x72, 0x6f, 0x75, 0x70, 0x49, 0x6e, 0x66, 0x6f, 0x52, 0x06,
+	0x67, 0x72, 0x6f, 0x75, 0x70, 0x73, 0x1a, 0x61, 0x0a, 0x09, 0x47, 0x72, 0x6f, 0x75, 0x70, 0x49,
+	0x6e, 0x66, 0x6f, 0x12, 0x1c, 0x0a, 0x05, 0x67, 0x72, 0x6f, 0x75, 0x70, 0x18, 0x01, 0x20, 0x01,
 	0x28, 0x0b, 0x32, 0x06, 0x2e, 0x47, 0x72, 0x6f, 0x75, 0x70, 0x52, 0x05, 0x67, 0x72, 0x6f, 0x75,
 	0x70, 0x12, 0x36, 0x0a, 0x0f, 0x73, 0x63, 0x6f, 0x72, 0x65, 0x5f, 0x68, 0x69, 0x73, 0x74, 0x6f,
 	0x72, 0x69, 0x65, 0x73, 0x18, 0x02, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x0d, 0x2e, 0x53, 0x63, 0x6f,
 	0x72, 0x65, 0x48, 0x69, 0x73, 0x74, 0x6f, 0x72, 0x79, 0x52, 0x0e, 0x73, 0x63, 0x6f, 0x72, 0x65,
-	0x48, 0x69, 0x73, 0x74, 0x6f, 0x72, 0x69, 0x65, 0x73, 0x22, 0x8b, 0x01, 0x0a, 0x05, 0x47, 0x72,
-	0x6f, 0x75, 0x70, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52,
-	0x02, 0x69, 0x64, 0x12, 0x12, 0x0a, 0x04, 0x6e, 0x61, 0x6d, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28,
-	0x09, 0x52, 0x04, 0x6e, 0x61, 0x6d, 0x65, 0x12, 0x23, 0x0a, 0x0d, 0x68, 0x69, 0x67, 0x68, 0x65,
-	0x73, 0x74, 0x5f, 0x73, 0x63, 0x6f, 0x72, 0x65, 0x18, 0x03, 0x20, 0x01, 0x28, 0x05, 0x52, 0x0c,
-	0x68, 0x69, 0x67, 0x68, 0x65, 0x73, 0x74, 0x53, 0x63, 0x6f, 0x72, 0x65, 0x12, 0x39, 0x0a, 0x0a,
-	0x75, 0x70, 0x64, 0x61, 0x74, 0x65, 0x64, 0x5f, 0x61, 0x74, 0x18, 0x04, 0x20, 0x01, 0x28, 0x0b,
-	0x32, 0x1a, 0x2e, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62,
-	0x75, 0x66, 0x2e, 0x54, 0x69, 0x6d, 0x65, 0x73, 0x74, 0x61, 0x6d, 0x70, 0x52, 0x09, 0x75, 0x70,
-	0x64, 0x61, 0x74, 0x65, 0x64, 0x41, 0x74, 0x22, 0xa1, 0x01, 0x0a, 0x0c, 0x53, 0x63, 0x6f, 0x72,
-	0x65, 0x48, 0x69, 0x73, 0x74, 0x6f, 0x72, 0x79, 0x12, 0x19, 0x0a, 0x08, 0x67, 0x72, 0x6f, 0x75,
-	0x70, 0x5f, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x67, 0x72, 0x6f, 0x75,
-	0x70, 0x49, 0x64, 0x12, 0x14, 0x0a, 0x05, 0x73, 0x63, 0x6f, 0x72, 0x65, 0x18, 0x02, 0x20, 0x01,
-	0x28, 0x05, 0x52, 0x05, 0x73, 0x63, 0x6f, 0x72, 0x65, 0x12, 0x25, 0x0a, 0x08, 0x6c, 0x61, 0x6e,
-	0x67, 0x75, 0x61, 0x67, 0x65, 0x18, 0x03, 0x20, 0x01, 0x28, 0x0e, 0x32, 0x09, 0x2e, 0x4c, 0x61,
-	0x6e, 0x67, 0x75, 0x61, 0x67, 0x65, 0x52, 0x08, 0x6c, 0x61, 0x6e, 0x67, 0x75, 0x61, 0x67, 0x65,
-	0x12, 0x39, 0x0a, 0x0a, 0x63, 0x72, 0x65, 0x61, 0x74, 0x65, 0x64, 0x5f, 0x61, 0x74, 0x18, 0x04,
-	0x20, 0x01, 0x28, 0x0b, 0x32, 0x1a, 0x2e, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72,
-	0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x54, 0x69, 0x6d, 0x65, 0x73, 0x74, 0x61, 0x6d, 0x70,
-	0x52, 0x09, 0x63, 0x72, 0x65, 0x61, 0x74, 0x65, 0x64, 0x41, 0x74, 0x2a, 0x60, 0x0a, 0x08, 0x4c,
-	0x61, 0x6e, 0x67, 0x75, 0x61, 0x67, 0x65, 0x12, 0x07, 0x0a, 0x03, 0x50, 0x48, 0x50, 0x10, 0x00,
-	0x12, 0x06, 0x0a, 0x02, 0x47, 0x4f, 0x10, 0x01, 0x12, 0x08, 0x0a, 0x04, 0x52, 0x55, 0x53, 0x54,
-	0x10, 0x02, 0x12, 0x0e, 0x0a, 0x0a, 0x4a, 0x41, 0x56, 0x41, 0x53, 0x43, 0x52, 0x49, 0x50, 0x54,
-	0x10, 0x03, 0x12, 0x0a, 0x0a, 0x06, 0x43, 0x53, 0x48, 0x41, 0x52, 0x50, 0x10, 0x04, 0x12, 0x07,
-	0x0a, 0x03, 0x43, 0x50, 0x50, 0x10, 0x05, 0x12, 0x08, 0x0a, 0x04, 0x52, 0x55, 0x42, 0x59, 0x10,
-	0x06, 0x12, 0x0a, 0x0a, 0x06, 0x50, 0x59, 0x54, 0x48, 0x4f, 0x4e, 0x10, 0x07, 0x42, 0x0b, 0x5a,
-	0x09, 0x2e, 0x2f, 0x62, 0x61, 0x63, 0x6b, 0x65, 0x6e, 0x64, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74,
-	0x6f, 0x33,
+	0x48, 0x69, 0x73, 0x74, 0x6f, 0x72, 0x69, 0x65, 0x73, 0x42, 0x0b, 0x5a, 0x09, 0x2e, 0x2f, 0x62,
+	0x61, 0x63, 0x6b, 0x65, 0x6e, 0x64, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -446,29 +384,28 @@ func file_backend_messages_proto_rawDescGZIP() []byte {
 	return file_backend_messages_proto_rawDescData
 }
 
-var file_backend_messages_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
-var file_backend_messages_proto_msgTypes = make([]protoimpl.MessageInfo, 5)
+var file_backend_messages_proto_msgTypes = make([]protoimpl.MessageInfo, 6)
 var file_backend_messages_proto_goTypes = []interface{}{
-	(Language)(0),                 // 0: Language
-	(*GetRankingResponse)(nil),    // 1: GetRankingResponse
-	(*GetGroupRequest)(nil),       // 2: GetGroupRequest
-	(*GetGroupResponse)(nil),      // 3: GetGroupResponse
-	(*Group)(nil),                 // 4: Group
-	(*ScoreHistory)(nil),          // 5: ScoreHistory
-	(*timestamppb.Timestamp)(nil), // 6: google.protobuf.Timestamp
+	(*GetRankingRequest)(nil),          // 0: GetRankingRequest
+	(*GetRankingResponse)(nil),         // 1: GetRankingResponse
+	(*GetGroupRequest)(nil),            // 2: GetGroupRequest
+	(*GetGroupResponse)(nil),           // 3: GetGroupResponse
+	(*GetRankingResponse_Record)(nil),  // 4: GetRankingResponse.Record
+	(*GetGroupResponse_GroupInfo)(nil), // 5: GetGroupResponse.GroupInfo
+	(*Group)(nil),                      // 6: Group
+	(*ScoreHistory)(nil),               // 7: ScoreHistory
 }
 var file_backend_messages_proto_depIdxs = []int32{
-	4, // 0: GetRankingResponse.group:type_name -> Group
-	4, // 1: GetGroupResponse.group:type_name -> Group
-	5, // 2: GetGroupResponse.score_histories:type_name -> ScoreHistory
-	6, // 3: Group.updated_at:type_name -> google.protobuf.Timestamp
-	0, // 4: ScoreHistory.language:type_name -> Language
-	6, // 5: ScoreHistory.created_at:type_name -> google.protobuf.Timestamp
-	6, // [6:6] is the sub-list for method output_type
-	6, // [6:6] is the sub-list for method input_type
-	6, // [6:6] is the sub-list for extension type_name
-	6, // [6:6] is the sub-list for extension extendee
-	0, // [0:6] is the sub-list for field type_name
+	4, // 0: GetRankingResponse.records:type_name -> GetRankingResponse.Record
+	5, // 1: GetGroupResponse.groups:type_name -> GetGroupResponse.GroupInfo
+	6, // 2: GetRankingResponse.Record.group:type_name -> Group
+	6, // 3: GetGroupResponse.GroupInfo.group:type_name -> Group
+	7, // 4: GetGroupResponse.GroupInfo.score_histories:type_name -> ScoreHistory
+	5, // [5:5] is the sub-list for method output_type
+	5, // [5:5] is the sub-list for method input_type
+	5, // [5:5] is the sub-list for extension type_name
+	5, // [5:5] is the sub-list for extension extendee
+	0, // [0:5] is the sub-list for field type_name
 }
 
 func init() { file_backend_messages_proto_init() }
@@ -476,9 +413,10 @@ func file_backend_messages_proto_init() {
 	if File_backend_messages_proto != nil {
 		return
 	}
+	file_backend_resources_proto_init()
 	if !protoimpl.UnsafeEnabled {
 		file_backend_messages_proto_msgTypes[0].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*GetRankingResponse); i {
+			switch v := v.(*GetRankingRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -490,7 +428,7 @@ func file_backend_messages_proto_init() {
 			}
 		}
 		file_backend_messages_proto_msgTypes[1].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*GetGroupRequest); i {
+			switch v := v.(*GetRankingResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -502,7 +440,7 @@ func file_backend_messages_proto_init() {
 			}
 		}
 		file_backend_messages_proto_msgTypes[2].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*GetGroupResponse); i {
+			switch v := v.(*GetGroupRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -514,7 +452,7 @@ func file_backend_messages_proto_init() {
 			}
 		}
 		file_backend_messages_proto_msgTypes[3].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*Group); i {
+			switch v := v.(*GetGroupResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -526,7 +464,19 @@ func file_backend_messages_proto_init() {
 			}
 		}
 		file_backend_messages_proto_msgTypes[4].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*ScoreHistory); i {
+			switch v := v.(*GetRankingResponse_Record); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_backend_messages_proto_msgTypes[5].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*GetGroupResponse_GroupInfo); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -543,14 +493,13 @@ func file_backend_messages_proto_init() {
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_backend_messages_proto_rawDesc,
-			NumEnums:      1,
-			NumMessages:   5,
+			NumEnums:      0,
+			NumMessages:   6,
 			NumExtensions: 0,
 			NumServices:   0,
 		},
 		GoTypes:           file_backend_messages_proto_goTypes,
 		DependencyIndexes: file_backend_messages_proto_depIdxs,
-		EnumInfos:         file_backend_messages_proto_enumTypes,
 		MessageInfos:      file_backend_messages_proto_msgTypes,
 	}.Build()
 	File_backend_messages_proto = out.File
