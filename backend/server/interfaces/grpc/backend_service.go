@@ -9,7 +9,7 @@ import (
 type backendServiceServer struct {
 }
 
-func newBackendService() pb.BackendServiceServer {
+func NewBackendService() pb.BackendServiceServer {
 	return &backendServiceServer{}
 }
 

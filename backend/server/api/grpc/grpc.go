@@ -1,22 +1,10 @@
 package grpc
 
 import (
+	interfaces "github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/interfaces/grpc"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/proto-gen/go/backend"
 	"google.golang.org/grpc"
-	"gorm.io/gorm"
 )
-
-type option struct {
-	db *gorm.DB
-}
-
-type optionFunc func(*option)
-
-func WithDB(db *gorm.DB) optionFunc {
-	return func(o *option) {
-		o.db = db
-	}
-}
 
 func NewServer(optionFuncs ...optionFunc) *grpc.Server {
 	grpcServer := grpc.NewServer()
@@ -25,7 +13,7 @@ func NewServer(optionFuncs ...optionFunc) *grpc.Server {
 		optionFunc(opt)
 	}
 
-	backendService := newBackendService()
+	backendService := interfaces.NewBackendService()
 	backend.RegisterBackendServiceServer(grpcServer, backendService)
 
 	return grpcServer
