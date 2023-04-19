@@ -3,6 +3,7 @@ grpc_server:
     dist: ../proto-gen/go
     opts:
       - paths=source_relative
+      - require_unimplemented_servers=false
 
 client:
   go:

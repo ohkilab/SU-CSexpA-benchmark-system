@@ -103,17 +103,16 @@ func (c *backendServiceClient) PostLogin(ctx context.Context, in *PostLoginReque
 }
 
 // BackendServiceServer is the server API for BackendService service.
-// All implementations must embed UnimplementedBackendServiceServer
+// All implementations should embed UnimplementedBackendServiceServer
 // for forward compatibility
 type BackendServiceServer interface {
 	GetRanking(context.Context, *GetRankingRequest) (*GetRankingResponse, error)
 	PostSubmit(context.Context, *PostSubmitRequest) (*PostSubmitResponse, error)
 	GetSubmit(*GetSubmitRequest, BackendService_GetSubmitServer) error
 	PostLogin(context.Context, *PostLoginRequest) (*PostLoginResponse, error)
-	mustEmbedUnimplementedBackendServiceServer()
 }
 
-// UnimplementedBackendServiceServer must be embedded to have forward compatible implementations.
+// UnimplementedBackendServiceServer should be embedded to have forward compatible implementations.
 type UnimplementedBackendServiceServer struct {
 }
 
@@ -129,7 +128,6 @@ func (UnimplementedBackendServiceServer) GetSubmit(*GetSubmitRequest, BackendSer
 func (UnimplementedBackendServiceServer) PostLogin(context.Context, *PostLoginRequest) (*PostLoginResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method PostLogin not implemented")
 }
-func (UnimplementedBackendServiceServer) mustEmbedUnimplementedBackendServiceServer() {}
 
 // UnsafeBackendServiceServer may be embedded to opt out of forward compatibility for this service.
 // Use of this interface is not recommended, as added methods to BackendServiceServer will
