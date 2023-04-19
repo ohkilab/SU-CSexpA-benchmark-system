@@ -5,6 +5,7 @@ import (
 	"log"
 	"net"
 
+	_ "github.com/go-sql-driver/mysql"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/ent"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/api/grpc"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/core/config"

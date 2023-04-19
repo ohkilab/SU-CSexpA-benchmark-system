@@ -6,6 +6,7 @@ replace github.com/ohkilab/SU-CSexpA-benchmark-system/proto-gen/go => ../proto-g
 
 require (
 	entgo.io/ent v0.12.1
+	github.com/go-sql-driver/mysql v1.7.0
 	github.com/golang-jwt/jwt/v5 v5.0.0
 	github.com/grpc-ecosystem/go-grpc-middleware/v2 v2.0.0-rc.5
 	github.com/kelseyhightower/envconfig v1.4.0
