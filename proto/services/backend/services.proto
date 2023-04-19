@@ -6,4 +6,7 @@ option go_package = "./backend";
 
 service BackendService {
     rpc GetRanking (GetRankingRequest) returns (GetRankingResponse);
+    rpc PostSubmit (PostSubmitRequest) returns (PostSubmitResponse);
+    rpc GetSubmit (GetSubmitRequest) returns (stream GetSubmitResponse);
+    rpc PostLogin (PostLoginRequest) returns (PostLoginResponse);
 }
