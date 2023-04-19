@@ -5,6 +5,7 @@ go 1.20
 replace github.com/ohkilab/SU-CSexpA-benchmark-system/proto-gen/go => ../proto-gen/go
 
 require (
+	entgo.io/ent v0.12.1
 	github.com/kelseyhightower/envconfig v1.4.0
 	github.com/ohkilab/SU-CSexpA-benchmark-system/proto-gen/go v0.0.0-00010101000000-000000000000
 	google.golang.org/grpc v1.54.0
