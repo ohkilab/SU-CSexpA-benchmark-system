@@ -5,3 +5,4 @@ export DB_PORT=3306
 export DB_NAME=exp-a
 
 export GRPC_PORT=50051
+export JWT_SECRET=super_ultimate_hyper_secret
