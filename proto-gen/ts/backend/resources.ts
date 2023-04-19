@@ -349,19 +349,28 @@ export class Group extends pb_1.Message {
         return Group.deserialize(bytes);
     }
 }
-export class ScoreHistory extends pb_1.Message {
+export class Submit extends pb_1.Message {
     #one_of_decls: number[][] = [];
     constructor(data?: any[] | {
+        id?: string;
         group_id?: string;
+        year?: number;
         score?: number;
         language?: Language;
-        created_at?: dependency_1.google.protobuf.Timestamp;
+        submited_at?: dependency_1.google.protobuf.Timestamp;
+        tag_results?: TagResult[];
     }) {
         super();
-        pb_1.Message.initialize(this, Array.isArray(data) ? data : [], 0, -1, [], this.#one_of_decls);
+        pb_1.Message.initialize(this, Array.isArray(data) ? data : [], 0, -1, [7], this.#one_of_decls);
         if (!Array.isArray(data) && typeof data == "object") {
+            if ("id" in data && data.id != undefined) {
+                this.id = data.id;
+            }
             if ("group_id" in data && data.group_id != undefined) {
                 this.group_id = data.group_id;
+            }
+            if ("year" in data && data.year != undefined) {
+                this.year = data.year;
             }
             if ("score" in data && data.score != undefined) {
                 this.score = data.score;
@@ -369,47 +378,77 @@ export class ScoreHistory extends pb_1.Message {
             if ("language" in data && data.language != undefined) {
                 this.language = data.language;
             }
-            if ("created_at" in data && data.created_at != undefined) {
-                this.created_at = data.created_at;
+            if ("submited_at" in data && data.submited_at != undefined) {
+                this.submited_at = data.submited_at;
+            }
+            if ("tag_results" in data && data.tag_results != undefined) {
+                this.tag_results = data.tag_results;
             }
         }
     }
-    get group_id() {
+    get id() {
         return pb_1.Message.getFieldWithDefault(this, 1, "") as string;
     }
-    set group_id(value: string) {
+    set id(value: string) {
         pb_1.Message.setField(this, 1, value);
     }
-    get score() {
-        return pb_1.Message.getFieldWithDefault(this, 2, 0) as number;
+    get group_id() {
+        return pb_1.Message.getFieldWithDefault(this, 2, "") as string;
     }
-    set score(value: number) {
+    set group_id(value: string) {
         pb_1.Message.setField(this, 2, value);
     }
-    get language() {
-        return pb_1.Message.getFieldWithDefault(this, 3, Language.PHP) as Language;
+    get year() {
+        return pb_1.Message.getFieldWithDefault(this, 3, 0) as number;
     }
-    set language(value: Language) {
+    set year(value: number) {
         pb_1.Message.setField(this, 3, value);
     }
-    get created_at() {
-        return pb_1.Message.getWrapperField(this, dependency_1.google.protobuf.Timestamp, 4) as dependency_1.google.protobuf.Timestamp;
+    get score() {
+        return pb_1.Message.getFieldWithDefault(this, 4, 0) as number;
     }
-    set created_at(value: dependency_1.google.protobuf.Timestamp) {
-        pb_1.Message.setWrapperField(this, 4, value);
+    set score(value: number) {
+        pb_1.Message.setField(this, 4, value);
     }
-    get has_created_at() {
-        return pb_1.Message.getField(this, 4) != null;
+    get language() {
+        return pb_1.Message.getFieldWithDefault(this, 5, Language.PHP) as Language;
+    }
+    set language(value: Language) {
+        pb_1.Message.setField(this, 5, value);
+    }
+    get submited_at() {
+        return pb_1.Message.getWrapperField(this, dependency_1.google.protobuf.Timestamp, 6) as dependency_1.google.protobuf.Timestamp;
+    }
+    set submited_at(value: dependency_1.google.protobuf.Timestamp) {
+        pb_1.Message.setWrapperField(this, 6, value);
+    }
+    get has_submited_at() {
+        return pb_1.Message.getField(this, 6) != null;
+    }
+    get tag_results() {
+        return pb_1.Message.getRepeatedWrapperField(this, TagResult, 7) as TagResult[];
+    }
+    set tag_results(value: TagResult[]) {
+        pb_1.Message.setRepeatedWrapperField(this, 7, value);
     }
     static fromObject(data: {
+        id?: string;
         group_id?: string;
+        year?: number;
         score?: number;
         language?: Language;
-        created_at?: ReturnType<typeof dependency_1.google.protobuf.Timestamp.prototype.toObject>;
-    }): ScoreHistory {
-        const message = new ScoreHistory({});
+        submited_at?: ReturnType<typeof dependency_1.google.protobuf.Timestamp.prototype.toObject>;
+        tag_results?: ReturnType<typeof TagResult.prototype.toObject>[];
+    }): Submit {
+        const message = new Submit({});
+        if (data.id != null) {
+            message.id = data.id;
+        }
         if (data.group_id != null) {
             message.group_id = data.group_id;
+        }
+        if (data.year != null) {
+            message.year = data.year;
         }
         if (data.score != null) {
             message.score = data.score;
@@ -417,20 +456,32 @@ export class ScoreHistory extends pb_1.Message {
         if (data.language != null) {
             message.language = data.language;
         }
-        if (data.created_at != null) {
-            message.created_at = dependency_1.google.protobuf.Timestamp.fromObject(data.created_at);
+        if (data.submited_at != null) {
+            message.submited_at = dependency_1.google.protobuf.Timestamp.fromObject(data.submited_at);
+        }
+        if (data.tag_results != null) {
+            message.tag_results = data.tag_results.map(item => TagResult.fromObject(item));
         }
         return message;
     }
     toObject() {
         const data: {
+            id?: string;
             group_id?: string;
+            year?: number;
             score?: number;
             language?: Language;
-            created_at?: ReturnType<typeof dependency_1.google.protobuf.Timestamp.prototype.toObject>;
+            submited_at?: ReturnType<typeof dependency_1.google.protobuf.Timestamp.prototype.toObject>;
+            tag_results?: ReturnType<typeof TagResult.prototype.toObject>[];
         } = {};
+        if (this.id != null) {
+            data.id = this.id;
+        }
         if (this.group_id != null) {
             data.group_id = this.group_id;
+        }
+        if (this.year != null) {
+            data.year = this.year;
         }
         if (this.score != null) {
             data.score = this.score;
@@ -438,8 +489,11 @@ export class ScoreHistory extends pb_1.Message {
         if (this.language != null) {
             data.language = this.language;
         }
-        if (this.created_at != null) {
-            data.created_at = this.created_at.toObject();
+        if (this.submited_at != null) {
+            data.submited_at = this.submited_at.toObject();
+        }
+        if (this.tag_results != null) {
+            data.tag_results = this.tag_results.map((item: TagResult) => item.toObject());
         }
         return data;
     }
@@ -447,34 +501,49 @@ export class ScoreHistory extends pb_1.Message {
     serialize(w: pb_1.BinaryWriter): void;
     serialize(w?: pb_1.BinaryWriter): Uint8Array | void {
         const writer = w || new pb_1.BinaryWriter();
+        if (this.id.length)
+            writer.writeString(1, this.id);
         if (this.group_id.length)
-            writer.writeString(1, this.group_id);
+            writer.writeString(2, this.group_id);
+        if (this.year != 0)
+            writer.writeInt32(3, this.year);
         if (this.score != 0)
-            writer.writeInt32(2, this.score);
+            writer.writeInt32(4, this.score);
         if (this.language != Language.PHP)
-            writer.writeEnum(3, this.language);
-        if (this.has_created_at)
-            writer.writeMessage(4, this.created_at, () => this.created_at.serialize(writer));
+            writer.writeEnum(5, this.language);
+        if (this.has_submited_at)
+            writer.writeMessage(6, this.submited_at, () => this.submited_at.serialize(writer));
+        if (this.tag_results.length)
+            writer.writeRepeatedMessage(7, this.tag_results, (item: TagResult) => item.serialize(writer));
         if (!w)
             return writer.getResultBuffer();
     }
-    static deserialize(bytes: Uint8Array | pb_1.BinaryReader): ScoreHistory {
-        const reader = bytes instanceof pb_1.BinaryReader ? bytes : new pb_1.BinaryReader(bytes), message = new ScoreHistory();
+    static deserialize(bytes: Uint8Array | pb_1.BinaryReader): Submit {
+        const reader = bytes instanceof pb_1.BinaryReader ? bytes : new pb_1.BinaryReader(bytes), message = new Submit();
         while (reader.nextField()) {
             if (reader.isEndGroup())
                 break;
             switch (reader.getFieldNumber()) {
                 case 1:
-                    message.group_id = reader.readString();
+                    message.id = reader.readString();
                     break;
                 case 2:
-                    message.score = reader.readInt32();
+                    message.group_id = reader.readString();
                     break;
                 case 3:
-                    message.language = reader.readEnum();
+                    message.year = reader.readInt32();
                     break;
                 case 4:
-                    reader.readMessage(message.created_at, () => message.created_at = dependency_1.google.protobuf.Timestamp.deserialize(reader));
+                    message.score = reader.readInt32();
+                    break;
+                case 5:
+                    message.language = reader.readEnum();
+                    break;
+                case 6:
+                    reader.readMessage(message.submited_at, () => message.submited_at = dependency_1.google.protobuf.Timestamp.deserialize(reader));
+                    break;
+                case 7:
+                    reader.readMessage(message.tag_results, () => pb_1.Message.addToRepeatedWrapperField(message, 7, TagResult.deserialize(reader), TagResult));
                     break;
                 default: reader.skipField();
             }
@@ -484,7 +553,120 @@ export class ScoreHistory extends pb_1.Message {
     serializeBinary(): Uint8Array {
         return this.serialize();
     }
-    static deserializeBinary(bytes: Uint8Array): ScoreHistory {
-        return ScoreHistory.deserialize(bytes);
+    static deserializeBinary(bytes: Uint8Array): Submit {
+        return Submit.deserialize(bytes);
+    }
+}
+export class TagResult extends pb_1.Message {
+    #one_of_decls: number[][] = [];
+    constructor(data?: any[] | {
+        submit_id?: string;
+        name?: string;
+        score?: number;
+    }) {
+        super();
+        pb_1.Message.initialize(this, Array.isArray(data) ? data : [], 0, -1, [], this.#one_of_decls);
+        if (!Array.isArray(data) && typeof data == "object") {
+            if ("submit_id" in data && data.submit_id != undefined) {
+                this.submit_id = data.submit_id;
+            }
+            if ("name" in data && data.name != undefined) {
+                this.name = data.name;
+            }
+            if ("score" in data && data.score != undefined) {
+                this.score = data.score;
+            }
+        }
+    }
+    get submit_id() {
+        return pb_1.Message.getFieldWithDefault(this, 1, "") as string;
+    }
+    set submit_id(value: string) {
+        pb_1.Message.setField(this, 1, value);
+    }
+    get name() {
+        return pb_1.Message.getFieldWithDefault(this, 2, "") as string;
+    }
+    set name(value: string) {
+        pb_1.Message.setField(this, 2, value);
+    }
+    get score() {
+        return pb_1.Message.getFieldWithDefault(this, 3, 0) as number;
+    }
+    set score(value: number) {
+        pb_1.Message.setField(this, 3, value);
+    }
+    static fromObject(data: {
+        submit_id?: string;
+        name?: string;
+        score?: number;
+    }): TagResult {
+        const message = new TagResult({});
+        if (data.submit_id != null) {
+            message.submit_id = data.submit_id;
+        }
+        if (data.name != null) {
+            message.name = data.name;
+        }
+        if (data.score != null) {
+            message.score = data.score;
+        }
+        return message;
+    }
+    toObject() {
+        const data: {
+            submit_id?: string;
+            name?: string;
+            score?: number;
+        } = {};
+        if (this.submit_id != null) {
+            data.submit_id = this.submit_id;
+        }
+        if (this.name != null) {
+            data.name = this.name;
+        }
+        if (this.score != null) {
+            data.score = this.score;
+        }
+        return data;
+    }
+    serialize(): Uint8Array;
+    serialize(w: pb_1.BinaryWriter): void;
+    serialize(w?: pb_1.BinaryWriter): Uint8Array | void {
+        const writer = w || new pb_1.BinaryWriter();
+        if (this.submit_id.length)
+            writer.writeString(1, this.submit_id);
+        if (this.name.length)
+            writer.writeString(2, this.name);
+        if (this.score != 0)
+            writer.writeInt32(3, this.score);
+        if (!w)
+            return writer.getResultBuffer();
+    }
+    static deserialize(bytes: Uint8Array | pb_1.BinaryReader): TagResult {
+        const reader = bytes instanceof pb_1.BinaryReader ? bytes : new pb_1.BinaryReader(bytes), message = new TagResult();
+        while (reader.nextField()) {
+            if (reader.isEndGroup())
+                break;
+            switch (reader.getFieldNumber()) {
+                case 1:
+                    message.submit_id = reader.readString();
+                    break;
+                case 2:
+                    message.name = reader.readString();
+                    break;
+                case 3:
+                    message.score = reader.readInt32();
+                    break;
+                default: reader.skipField();
+            }
+        }
+        return message;
+    }
+    serializeBinary(): Uint8Array {
+        return this.serialize();
+    }
+    static deserializeBinary(bytes: Uint8Array): TagResult {
+        return TagResult.deserialize(bytes);
     }
 }

@@ -4,7 +4,642 @@
  * source: backend/messages.proto
  * git: https://github.com/thesayyn/protoc-gen-ts */
 import * as dependency_1 from "./resources";
+import * as dependency_2 from "./../google/protobuf/timestamp";
 import * as pb_1 from "google-protobuf";
+export class PostLoginRequest extends pb_1.Message {
+    #one_of_decls: number[][] = [];
+    constructor(data?: any[] | {
+        id?: string;
+        password?: string;
+    }) {
+        super();
+        pb_1.Message.initialize(this, Array.isArray(data) ? data : [], 0, -1, [], this.#one_of_decls);
+        if (!Array.isArray(data) && typeof data == "object") {
+            if ("id" in data && data.id != undefined) {
+                this.id = data.id;
+            }
+            if ("password" in data && data.password != undefined) {
+                this.password = data.password;
+            }
+        }
+    }
+    get id() {
+        return pb_1.Message.getFieldWithDefault(this, 1, "") as string;
+    }
+    set id(value: string) {
+        pb_1.Message.setField(this, 1, value);
+    }
+    get password() {
+        return pb_1.Message.getFieldWithDefault(this, 2, "") as string;
+    }
+    set password(value: string) {
+        pb_1.Message.setField(this, 2, value);
+    }
+    static fromObject(data: {
+        id?: string;
+        password?: string;
+    }): PostLoginRequest {
+        const message = new PostLoginRequest({});
+        if (data.id != null) {
+            message.id = data.id;
+        }
+        if (data.password != null) {
+            message.password = data.password;
+        }
+        return message;
+    }
+    toObject() {
+        const data: {
+            id?: string;
+            password?: string;
+        } = {};
+        if (this.id != null) {
+            data.id = this.id;
+        }
+        if (this.password != null) {
+            data.password = this.password;
+        }
+        return data;
+    }
+    serialize(): Uint8Array;
+    serialize(w: pb_1.BinaryWriter): void;
+    serialize(w?: pb_1.BinaryWriter): Uint8Array | void {
+        const writer = w || new pb_1.BinaryWriter();
+        if (this.id.length)
+            writer.writeString(1, this.id);
+        if (this.password.length)
+            writer.writeString(2, this.password);
+        if (!w)
+            return writer.getResultBuffer();
+    }
+    static deserialize(bytes: Uint8Array | pb_1.BinaryReader): PostLoginRequest {
+        const reader = bytes instanceof pb_1.BinaryReader ? bytes : new pb_1.BinaryReader(bytes), message = new PostLoginRequest();
+        while (reader.nextField()) {
+            if (reader.isEndGroup())
+                break;
+            switch (reader.getFieldNumber()) {
+                case 1:
+                    message.id = reader.readString();
+                    break;
+                case 2:
+                    message.password = reader.readString();
+                    break;
+                default: reader.skipField();
+            }
+        }
+        return message;
+    }
+    serializeBinary(): Uint8Array {
+        return this.serialize();
+    }
+    static deserializeBinary(bytes: Uint8Array): PostLoginRequest {
+        return PostLoginRequest.deserialize(bytes);
+    }
+}
+export class PostLoginResponse extends pb_1.Message {
+    #one_of_decls: number[][] = [];
+    constructor(data?: any[] | {
+        group?: dependency_1.Group;
+    }) {
+        super();
+        pb_1.Message.initialize(this, Array.isArray(data) ? data : [], 0, -1, [], this.#one_of_decls);
+        if (!Array.isArray(data) && typeof data == "object") {
+            if ("group" in data && data.group != undefined) {
+                this.group = data.group;
+            }
+        }
+    }
+    get group() {
+        return pb_1.Message.getWrapperField(this, dependency_1.Group, 1) as dependency_1.Group;
+    }
+    set group(value: dependency_1.Group) {
+        pb_1.Message.setWrapperField(this, 1, value);
+    }
+    get has_group() {
+        return pb_1.Message.getField(this, 1) != null;
+    }
+    static fromObject(data: {
+        group?: ReturnType<typeof dependency_1.Group.prototype.toObject>;
+    }): PostLoginResponse {
+        const message = new PostLoginResponse({});
+        if (data.group != null) {
+            message.group = dependency_1.Group.fromObject(data.group);
+        }
+        return message;
+    }
+    toObject() {
+        const data: {
+            group?: ReturnType<typeof dependency_1.Group.prototype.toObject>;
+        } = {};
+        if (this.group != null) {
+            data.group = this.group.toObject();
+        }
+        return data;
+    }
+    serialize(): Uint8Array;
+    serialize(w: pb_1.BinaryWriter): void;
+    serialize(w?: pb_1.BinaryWriter): Uint8Array | void {
+        const writer = w || new pb_1.BinaryWriter();
+        if (this.has_group)
+            writer.writeMessage(1, this.group, () => this.group.serialize(writer));
+        if (!w)
+            return writer.getResultBuffer();
+    }
+    static deserialize(bytes: Uint8Array | pb_1.BinaryReader): PostLoginResponse {
+        const reader = bytes instanceof pb_1.BinaryReader ? bytes : new pb_1.BinaryReader(bytes), message = new PostLoginResponse();
+        while (reader.nextField()) {
+            if (reader.isEndGroup())
+                break;
+            switch (reader.getFieldNumber()) {
+                case 1:
+                    reader.readMessage(message.group, () => message.group = dependency_1.Group.deserialize(reader));
+                    break;
+                default: reader.skipField();
+            }
+        }
+        return message;
+    }
+    serializeBinary(): Uint8Array {
+        return this.serialize();
+    }
+    static deserializeBinary(bytes: Uint8Array): PostLoginResponse {
+        return PostLoginResponse.deserialize(bytes);
+    }
+}
+export class PostSubmitRequest extends pb_1.Message {
+    #one_of_decls: number[][] = [];
+    constructor(data?: any[] | {
+        ip_addr?: string;
+    }) {
+        super();
+        pb_1.Message.initialize(this, Array.isArray(data) ? data : [], 0, -1, [], this.#one_of_decls);
+        if (!Array.isArray(data) && typeof data == "object") {
+            if ("ip_addr" in data && data.ip_addr != undefined) {
+                this.ip_addr = data.ip_addr;
+            }
+        }
+    }
+    get ip_addr() {
+        return pb_1.Message.getFieldWithDefault(this, 1, "") as string;
+    }
+    set ip_addr(value: string) {
+        pb_1.Message.setField(this, 1, value);
+    }
+    static fromObject(data: {
+        ip_addr?: string;
+    }): PostSubmitRequest {
+        const message = new PostSubmitRequest({});
+        if (data.ip_addr != null) {
+            message.ip_addr = data.ip_addr;
+        }
+        return message;
+    }
+    toObject() {
+        const data: {
+            ip_addr?: string;
+        } = {};
+        if (this.ip_addr != null) {
+            data.ip_addr = this.ip_addr;
+        }
+        return data;
+    }
+    serialize(): Uint8Array;
+    serialize(w: pb_1.BinaryWriter): void;
+    serialize(w?: pb_1.BinaryWriter): Uint8Array | void {
+        const writer = w || new pb_1.BinaryWriter();
+        if (this.ip_addr.length)
+            writer.writeString(1, this.ip_addr);
+        if (!w)
+            return writer.getResultBuffer();
+    }
+    static deserialize(bytes: Uint8Array | pb_1.BinaryReader): PostSubmitRequest {
+        const reader = bytes instanceof pb_1.BinaryReader ? bytes : new pb_1.BinaryReader(bytes), message = new PostSubmitRequest();
+        while (reader.nextField()) {
+            if (reader.isEndGroup())
+                break;
+            switch (reader.getFieldNumber()) {
+                case 1:
+                    message.ip_addr = reader.readString();
+                    break;
+                default: reader.skipField();
+            }
+        }
+        return message;
+    }
+    serializeBinary(): Uint8Array {
+        return this.serialize();
+    }
+    static deserializeBinary(bytes: Uint8Array): PostSubmitRequest {
+        return PostSubmitRequest.deserialize(bytes);
+    }
+}
+export class PostSubmitResponse extends pb_1.Message {
+    #one_of_decls: number[][] = [];
+    constructor(data?: any[] | {
+        id?: string;
+        ip_addr?: string;
+        submited_at?: dependency_2.google.protobuf.Timestamp;
+    }) {
+        super();
+        pb_1.Message.initialize(this, Array.isArray(data) ? data : [], 0, -1, [], this.#one_of_decls);
+        if (!Array.isArray(data) && typeof data == "object") {
+            if ("id" in data && data.id != undefined) {
+                this.id = data.id;
+            }
+            if ("ip_addr" in data && data.ip_addr != undefined) {
+                this.ip_addr = data.ip_addr;
+            }
+            if ("submited_at" in data && data.submited_at != undefined) {
+                this.submited_at = data.submited_at;
+            }
+        }
+    }
+    get id() {
+        return pb_1.Message.getFieldWithDefault(this, 1, "") as string;
+    }
+    set id(value: string) {
+        pb_1.Message.setField(this, 1, value);
+    }
+    get ip_addr() {
+        return pb_1.Message.getFieldWithDefault(this, 2, "") as string;
+    }
+    set ip_addr(value: string) {
+        pb_1.Message.setField(this, 2, value);
+    }
+    get submited_at() {
+        return pb_1.Message.getWrapperField(this, dependency_2.google.protobuf.Timestamp, 3) as dependency_2.google.protobuf.Timestamp;
+    }
+    set submited_at(value: dependency_2.google.protobuf.Timestamp) {
+        pb_1.Message.setWrapperField(this, 3, value);
+    }
+    get has_submited_at() {
+        return pb_1.Message.getField(this, 3) != null;
+    }
+    static fromObject(data: {
+        id?: string;
+        ip_addr?: string;
+        submited_at?: ReturnType<typeof dependency_2.google.protobuf.Timestamp.prototype.toObject>;
+    }): PostSubmitResponse {
+        const message = new PostSubmitResponse({});
+        if (data.id != null) {
+            message.id = data.id;
+        }
+        if (data.ip_addr != null) {
+            message.ip_addr = data.ip_addr;
+        }
+        if (data.submited_at != null) {
+            message.submited_at = dependency_2.google.protobuf.Timestamp.fromObject(data.submited_at);
+        }
+        return message;
+    }
+    toObject() {
+        const data: {
+            id?: string;
+            ip_addr?: string;
+            submited_at?: ReturnType<typeof dependency_2.google.protobuf.Timestamp.prototype.toObject>;
+        } = {};
+        if (this.id != null) {
+            data.id = this.id;
+        }
+        if (this.ip_addr != null) {
+            data.ip_addr = this.ip_addr;
+        }
+        if (this.submited_at != null) {
+            data.submited_at = this.submited_at.toObject();
+        }
+        return data;
+    }
+    serialize(): Uint8Array;
+    serialize(w: pb_1.BinaryWriter): void;
+    serialize(w?: pb_1.BinaryWriter): Uint8Array | void {
+        const writer = w || new pb_1.BinaryWriter();
+        if (this.id.length)
+            writer.writeString(1, this.id);
+        if (this.ip_addr.length)
+            writer.writeString(2, this.ip_addr);
+        if (this.has_submited_at)
+            writer.writeMessage(3, this.submited_at, () => this.submited_at.serialize(writer));
+        if (!w)
+            return writer.getResultBuffer();
+    }
+    static deserialize(bytes: Uint8Array | pb_1.BinaryReader): PostSubmitResponse {
+        const reader = bytes instanceof pb_1.BinaryReader ? bytes : new pb_1.BinaryReader(bytes), message = new PostSubmitResponse();
+        while (reader.nextField()) {
+            if (reader.isEndGroup())
+                break;
+            switch (reader.getFieldNumber()) {
+                case 1:
+                    message.id = reader.readString();
+                    break;
+                case 2:
+                    message.ip_addr = reader.readString();
+                    break;
+                case 3:
+                    reader.readMessage(message.submited_at, () => message.submited_at = dependency_2.google.protobuf.Timestamp.deserialize(reader));
+                    break;
+                default: reader.skipField();
+            }
+        }
+        return message;
+    }
+    serializeBinary(): Uint8Array {
+        return this.serialize();
+    }
+    static deserializeBinary(bytes: Uint8Array): PostSubmitResponse {
+        return PostSubmitResponse.deserialize(bytes);
+    }
+}
+export class GetSubmitRequest extends pb_1.Message {
+    #one_of_decls: number[][] = [];
+    constructor(data?: any[] | {
+        submit_id?: string;
+    }) {
+        super();
+        pb_1.Message.initialize(this, Array.isArray(data) ? data : [], 0, -1, [], this.#one_of_decls);
+        if (!Array.isArray(data) && typeof data == "object") {
+            if ("submit_id" in data && data.submit_id != undefined) {
+                this.submit_id = data.submit_id;
+            }
+        }
+    }
+    get submit_id() {
+        return pb_1.Message.getFieldWithDefault(this, 1, "") as string;
+    }
+    set submit_id(value: string) {
+        pb_1.Message.setField(this, 1, value);
+    }
+    static fromObject(data: {
+        submit_id?: string;
+    }): GetSubmitRequest {
+        const message = new GetSubmitRequest({});
+        if (data.submit_id != null) {
+            message.submit_id = data.submit_id;
+        }
+        return message;
+    }
+    toObject() {
+        const data: {
+            submit_id?: string;
+        } = {};
+        if (this.submit_id != null) {
+            data.submit_id = this.submit_id;
+        }
+        return data;
+    }
+    serialize(): Uint8Array;
+    serialize(w: pb_1.BinaryWriter): void;
+    serialize(w?: pb_1.BinaryWriter): Uint8Array | void {
+        const writer = w || new pb_1.BinaryWriter();
+        if (this.submit_id.length)
+            writer.writeString(1, this.submit_id);
+        if (!w)
+            return writer.getResultBuffer();
+    }
+    static deserialize(bytes: Uint8Array | pb_1.BinaryReader): GetSubmitRequest {
+        const reader = bytes instanceof pb_1.BinaryReader ? bytes : new pb_1.BinaryReader(bytes), message = new GetSubmitRequest();
+        while (reader.nextField()) {
+            if (reader.isEndGroup())
+                break;
+            switch (reader.getFieldNumber()) {
+                case 1:
+                    message.submit_id = reader.readString();
+                    break;
+                default: reader.skipField();
+            }
+        }
+        return message;
+    }
+    serializeBinary(): Uint8Array {
+        return this.serialize();
+    }
+    static deserializeBinary(bytes: Uint8Array): GetSubmitRequest {
+        return GetSubmitRequest.deserialize(bytes);
+    }
+}
+export class GetSubmitResponse extends pb_1.Message {
+    #one_of_decls: number[][] = [[1, 2]];
+    constructor(data?: any[] | ({} & (({
+        tag_progress?: GetSubmitResponse.TagProgress;
+        submit?: never;
+    } | {
+        tag_progress?: never;
+        submit?: dependency_1.Submit;
+    })))) {
+        super();
+        pb_1.Message.initialize(this, Array.isArray(data) ? data : [], 0, -1, [], this.#one_of_decls);
+        if (!Array.isArray(data) && typeof data == "object") {
+            if ("tag_progress" in data && data.tag_progress != undefined) {
+                this.tag_progress = data.tag_progress;
+            }
+            if ("submit" in data && data.submit != undefined) {
+                this.submit = data.submit;
+            }
+        }
+    }
+    get tag_progress() {
+        return pb_1.Message.getWrapperField(this, GetSubmitResponse.TagProgress, 1) as GetSubmitResponse.TagProgress;
+    }
+    set tag_progress(value: GetSubmitResponse.TagProgress) {
+        pb_1.Message.setOneofWrapperField(this, 1, this.#one_of_decls[0], value);
+    }
+    get has_tag_progress() {
+        return pb_1.Message.getField(this, 1) != null;
+    }
+    get submit() {
+        return pb_1.Message.getWrapperField(this, dependency_1.Submit, 2) as dependency_1.Submit;
+    }
+    set submit(value: dependency_1.Submit) {
+        pb_1.Message.setOneofWrapperField(this, 2, this.#one_of_decls[0], value);
+    }
+    get has_submit() {
+        return pb_1.Message.getField(this, 2) != null;
+    }
+    get result() {
+        const cases: {
+            [index: number]: "none" | "tag_progress" | "submit";
+        } = {
+            0: "none",
+            1: "tag_progress",
+            2: "submit"
+        };
+        return cases[pb_1.Message.computeOneofCase(this, [1, 2])];
+    }
+    static fromObject(data: {
+        tag_progress?: ReturnType<typeof GetSubmitResponse.TagProgress.prototype.toObject>;
+        submit?: ReturnType<typeof dependency_1.Submit.prototype.toObject>;
+    }): GetSubmitResponse {
+        const message = new GetSubmitResponse({});
+        if (data.tag_progress != null) {
+            message.tag_progress = GetSubmitResponse.TagProgress.fromObject(data.tag_progress);
+        }
+        if (data.submit != null) {
+            message.submit = dependency_1.Submit.fromObject(data.submit);
+        }
+        return message;
+    }
+    toObject() {
+        const data: {
+            tag_progress?: ReturnType<typeof GetSubmitResponse.TagProgress.prototype.toObject>;
+            submit?: ReturnType<typeof dependency_1.Submit.prototype.toObject>;
+        } = {};
+        if (this.tag_progress != null) {
+            data.tag_progress = this.tag_progress.toObject();
+        }
+        if (this.submit != null) {
+            data.submit = this.submit.toObject();
+        }
+        return data;
+    }
+    serialize(): Uint8Array;
+    serialize(w: pb_1.BinaryWriter): void;
+    serialize(w?: pb_1.BinaryWriter): Uint8Array | void {
+        const writer = w || new pb_1.BinaryWriter();
+        if (this.has_tag_progress)
+            writer.writeMessage(1, this.tag_progress, () => this.tag_progress.serialize(writer));
+        if (this.has_submit)
+            writer.writeMessage(2, this.submit, () => this.submit.serialize(writer));
+        if (!w)
+            return writer.getResultBuffer();
+    }
+    static deserialize(bytes: Uint8Array | pb_1.BinaryReader): GetSubmitResponse {
+        const reader = bytes instanceof pb_1.BinaryReader ? bytes : new pb_1.BinaryReader(bytes), message = new GetSubmitResponse();
+        while (reader.nextField()) {
+            if (reader.isEndGroup())
+                break;
+            switch (reader.getFieldNumber()) {
+                case 1:
+                    reader.readMessage(message.tag_progress, () => message.tag_progress = GetSubmitResponse.TagProgress.deserialize(reader));
+                    break;
+                case 2:
+                    reader.readMessage(message.submit, () => message.submit = dependency_1.Submit.deserialize(reader));
+                    break;
+                default: reader.skipField();
+            }
+        }
+        return message;
+    }
+    serializeBinary(): Uint8Array {
+        return this.serialize();
+    }
+    static deserializeBinary(bytes: Uint8Array): GetSubmitResponse {
+        return GetSubmitResponse.deserialize(bytes);
+    }
+}
+export namespace GetSubmitResponse {
+    export class TagProgress extends pb_1.Message {
+        #one_of_decls: number[][] = [];
+        constructor(data?: any[] | {
+            submit_id?: string;
+            score?: number;
+            name?: string;
+        }) {
+            super();
+            pb_1.Message.initialize(this, Array.isArray(data) ? data : [], 0, -1, [], this.#one_of_decls);
+            if (!Array.isArray(data) && typeof data == "object") {
+                if ("submit_id" in data && data.submit_id != undefined) {
+                    this.submit_id = data.submit_id;
+                }
+                if ("score" in data && data.score != undefined) {
+                    this.score = data.score;
+                }
+                if ("name" in data && data.name != undefined) {
+                    this.name = data.name;
+                }
+            }
+        }
+        get submit_id() {
+            return pb_1.Message.getFieldWithDefault(this, 1, "") as string;
+        }
+        set submit_id(value: string) {
+            pb_1.Message.setField(this, 1, value);
+        }
+        get score() {
+            return pb_1.Message.getFieldWithDefault(this, 2, 0) as number;
+        }
+        set score(value: number) {
+            pb_1.Message.setField(this, 2, value);
+        }
+        get name() {
+            return pb_1.Message.getFieldWithDefault(this, 3, "") as string;
+        }
+        set name(value: string) {
+            pb_1.Message.setField(this, 3, value);
+        }
+        static fromObject(data: {
+            submit_id?: string;
+            score?: number;
+            name?: string;
+        }): TagProgress {
+            const message = new TagProgress({});
+            if (data.submit_id != null) {
+                message.submit_id = data.submit_id;
+            }
+            if (data.score != null) {
+                message.score = data.score;
+            }
+            if (data.name != null) {
+                message.name = data.name;
+            }
+            return message;
+        }
+        toObject() {
+            const data: {
+                submit_id?: string;
+                score?: number;
+                name?: string;
+            } = {};
+            if (this.submit_id != null) {
+                data.submit_id = this.submit_id;
+            }
+            if (this.score != null) {
+                data.score = this.score;
+            }
+            if (this.name != null) {
+                data.name = this.name;
+            }
+            return data;
+        }
+        serialize(): Uint8Array;
+        serialize(w: pb_1.BinaryWriter): void;
+        serialize(w?: pb_1.BinaryWriter): Uint8Array | void {
+            const writer = w || new pb_1.BinaryWriter();
+            if (this.submit_id.length)
+                writer.writeString(1, this.submit_id);
+            if (this.score != 0)
+                writer.writeInt32(2, this.score);
+            if (this.name.length)
+                writer.writeString(3, this.name);
+            if (!w)
+                return writer.getResultBuffer();
+        }
+        static deserialize(bytes: Uint8Array | pb_1.BinaryReader): TagProgress {
+            const reader = bytes instanceof pb_1.BinaryReader ? bytes : new pb_1.BinaryReader(bytes), message = new TagProgress();
+            while (reader.nextField()) {
+                if (reader.isEndGroup())
+                    break;
+                switch (reader.getFieldNumber()) {
+                    case 1:
+                        message.submit_id = reader.readString();
+                        break;
+                    case 2:
+                        message.score = reader.readInt32();
+                        break;
+                    case 3:
+                        message.name = reader.readString();
+                        break;
+                    default: reader.skipField();
+                }
+            }
+            return message;
+        }
+        serializeBinary(): Uint8Array {
+            return this.serialize();
+        }
+        static deserializeBinary(bytes: Uint8Array): TagProgress {
+            return TagProgress.deserialize(bytes);
+        }
+    }
+}
 export class GetRankingRequest extends pb_1.Message {
     #one_of_decls: number[][] = [];
     constructor(data?: any[] | {
@@ -419,7 +1054,7 @@ export namespace GetGroupResponse {
         #one_of_decls: number[][] = [];
         constructor(data?: any[] | {
             group?: dependency_1.Group;
-            score_histories?: dependency_1.ScoreHistory[];
+            submits?: dependency_1.Submit[];
         }) {
             super();
             pb_1.Message.initialize(this, Array.isArray(data) ? data : [], 0, -1, [2], this.#one_of_decls);
@@ -427,8 +1062,8 @@ export namespace GetGroupResponse {
                 if ("group" in data && data.group != undefined) {
                     this.group = data.group;
                 }
-                if ("score_histories" in data && data.score_histories != undefined) {
-                    this.score_histories = data.score_histories;
+                if ("submits" in data && data.submits != undefined) {
+                    this.submits = data.submits;
                 }
             }
         }
@@ -441,35 +1076,35 @@ export namespace GetGroupResponse {
         get has_group() {
             return pb_1.Message.getField(this, 1) != null;
         }
-        get score_histories() {
-            return pb_1.Message.getRepeatedWrapperField(this, dependency_1.ScoreHistory, 2) as dependency_1.ScoreHistory[];
+        get submits() {
+            return pb_1.Message.getRepeatedWrapperField(this, dependency_1.Submit, 2) as dependency_1.Submit[];
         }
-        set score_histories(value: dependency_1.ScoreHistory[]) {
+        set submits(value: dependency_1.Submit[]) {
             pb_1.Message.setRepeatedWrapperField(this, 2, value);
         }
         static fromObject(data: {
             group?: ReturnType<typeof dependency_1.Group.prototype.toObject>;
-            score_histories?: ReturnType<typeof dependency_1.ScoreHistory.prototype.toObject>[];
+            submits?: ReturnType<typeof dependency_1.Submit.prototype.toObject>[];
         }): GroupInfo {
             const message = new GroupInfo({});
             if (data.group != null) {
                 message.group = dependency_1.Group.fromObject(data.group);
             }
-            if (data.score_histories != null) {
-                message.score_histories = data.score_histories.map(item => dependency_1.ScoreHistory.fromObject(item));
+            if (data.submits != null) {
+                message.submits = data.submits.map(item => dependency_1.Submit.fromObject(item));
             }
             return message;
         }
         toObject() {
             const data: {
                 group?: ReturnType<typeof dependency_1.Group.prototype.toObject>;
-                score_histories?: ReturnType<typeof dependency_1.ScoreHistory.prototype.toObject>[];
+                submits?: ReturnType<typeof dependency_1.Submit.prototype.toObject>[];
             } = {};
             if (this.group != null) {
                 data.group = this.group.toObject();
             }
-            if (this.score_histories != null) {
-                data.score_histories = this.score_histories.map((item: dependency_1.ScoreHistory) => item.toObject());
+            if (this.submits != null) {
+                data.submits = this.submits.map((item: dependency_1.Submit) => item.toObject());
             }
             return data;
         }
@@ -479,8 +1114,8 @@ export namespace GetGroupResponse {
             const writer = w || new pb_1.BinaryWriter();
             if (this.has_group)
                 writer.writeMessage(1, this.group, () => this.group.serialize(writer));
-            if (this.score_histories.length)
-                writer.writeRepeatedMessage(2, this.score_histories, (item: dependency_1.ScoreHistory) => item.serialize(writer));
+            if (this.submits.length)
+                writer.writeRepeatedMessage(2, this.submits, (item: dependency_1.Submit) => item.serialize(writer));
             if (!w)
                 return writer.getResultBuffer();
         }
@@ -494,7 +1129,7 @@ export namespace GetGroupResponse {
                         reader.readMessage(message.group, () => message.group = dependency_1.Group.deserialize(reader));
                         break;
                     case 2:
-                        reader.readMessage(message.score_histories, () => pb_1.Message.addToRepeatedWrapperField(message, 2, dependency_1.ScoreHistory.deserialize(reader), dependency_1.ScoreHistory));
+                        reader.readMessage(message.submits, () => pb_1.Message.addToRepeatedWrapperField(message, 2, dependency_1.Submit.deserialize(reader), dependency_1.Submit));
                         break;
                     default: reader.skipField();
                 }

@@ -39,10 +39,40 @@ export abstract class UnimplementedBackendServiceService {
             requestDeserialize: (bytes: Buffer) => dependency_1.GetRankingRequest.deserialize(new Uint8Array(bytes)),
             responseSerialize: (message: dependency_1.GetRankingResponse) => Buffer.from(message.serialize()),
             responseDeserialize: (bytes: Buffer) => dependency_1.GetRankingResponse.deserialize(new Uint8Array(bytes))
+        },
+        PostSubmit: {
+            path: "/BackendService/PostSubmit",
+            requestStream: false,
+            responseStream: false,
+            requestSerialize: (message: dependency_1.PostSubmitRequest) => Buffer.from(message.serialize()),
+            requestDeserialize: (bytes: Buffer) => dependency_1.PostSubmitRequest.deserialize(new Uint8Array(bytes)),
+            responseSerialize: (message: dependency_1.PostSubmitResponse) => Buffer.from(message.serialize()),
+            responseDeserialize: (bytes: Buffer) => dependency_1.PostSubmitResponse.deserialize(new Uint8Array(bytes))
+        },
+        GetSubmit: {
+            path: "/BackendService/GetSubmit",
+            requestStream: false,
+            responseStream: true,
+            requestSerialize: (message: dependency_1.GetSubmitRequest) => Buffer.from(message.serialize()),
+            requestDeserialize: (bytes: Buffer) => dependency_1.GetSubmitRequest.deserialize(new Uint8Array(bytes)),
+            responseSerialize: (message: dependency_1.GetSubmitResponse) => Buffer.from(message.serialize()),
+            responseDeserialize: (bytes: Buffer) => dependency_1.GetSubmitResponse.deserialize(new Uint8Array(bytes))
+        },
+        PostLogin: {
+            path: "/BackendService/PostLogin",
+            requestStream: false,
+            responseStream: false,
+            requestSerialize: (message: dependency_1.PostLoginRequest) => Buffer.from(message.serialize()),
+            requestDeserialize: (bytes: Buffer) => dependency_1.PostLoginRequest.deserialize(new Uint8Array(bytes)),
+            responseSerialize: (message: dependency_1.PostLoginResponse) => Buffer.from(message.serialize()),
+            responseDeserialize: (bytes: Buffer) => dependency_1.PostLoginResponse.deserialize(new Uint8Array(bytes))
         }
     };
     [method: string]: grpc_1.UntypedHandleCall;
     abstract GetRanking(call: grpc_1.ServerUnaryCall<dependency_1.GetRankingRequest, dependency_1.GetRankingResponse>, callback: grpc_1.sendUnaryData<dependency_1.GetRankingResponse>): void;
+    abstract PostSubmit(call: grpc_1.ServerUnaryCall<dependency_1.PostSubmitRequest, dependency_1.PostSubmitResponse>, callback: grpc_1.sendUnaryData<dependency_1.PostSubmitResponse>): void;
+    abstract GetSubmit(call: grpc_1.ServerWritableStream<dependency_1.GetSubmitRequest, dependency_1.GetSubmitResponse>): void;
+    abstract PostLogin(call: grpc_1.ServerUnaryCall<dependency_1.PostLoginRequest, dependency_1.PostLoginResponse>, callback: grpc_1.sendUnaryData<dependency_1.PostLoginResponse>): void;
 }
 export class BackendServiceClient extends grpc_1.makeGenericClientConstructor(UnimplementedBackendServiceService.definition, "BackendService", {}) {
     constructor(address: string, credentials: grpc_1.ChannelCredentials, options?: Partial<grpc_1.ChannelOptions>) {
@@ -50,5 +80,14 @@ export class BackendServiceClient extends grpc_1.makeGenericClientConstructor(Un
     }
     GetRanking: GrpcUnaryServiceInterface<dependency_1.GetRankingRequest, dependency_1.GetRankingResponse> = (message: dependency_1.GetRankingRequest, metadata: grpc_1.Metadata | grpc_1.CallOptions | grpc_1.requestCallback<dependency_1.GetRankingResponse>, options?: grpc_1.CallOptions | grpc_1.requestCallback<dependency_1.GetRankingResponse>, callback?: grpc_1.requestCallback<dependency_1.GetRankingResponse>): grpc_1.ClientUnaryCall => {
         return super.GetRanking(message, metadata, options, callback);
+    };
+    PostSubmit: GrpcUnaryServiceInterface<dependency_1.PostSubmitRequest, dependency_1.PostSubmitResponse> = (message: dependency_1.PostSubmitRequest, metadata: grpc_1.Metadata | grpc_1.CallOptions | grpc_1.requestCallback<dependency_1.PostSubmitResponse>, options?: grpc_1.CallOptions | grpc_1.requestCallback<dependency_1.PostSubmitResponse>, callback?: grpc_1.requestCallback<dependency_1.PostSubmitResponse>): grpc_1.ClientUnaryCall => {
+        return super.PostSubmit(message, metadata, options, callback);
+    };
+    GetSubmit: GrpcStreamServiceInterface<dependency_1.GetSubmitRequest, dependency_1.GetSubmitRequest> = (message: dependency_1.GetSubmitRequest, metadata?: grpc_1.Metadata | grpc_1.CallOptions, options?: grpc_1.CallOptions): grpc_1.ClientReadableStream<dependency_1.GetSubmitRequest> => {
+        return super.GetSubmit(message, metadata, options);
+    };
+    PostLogin: GrpcUnaryServiceInterface<dependency_1.PostLoginRequest, dependency_1.PostLoginResponse> = (message: dependency_1.PostLoginRequest, metadata: grpc_1.Metadata | grpc_1.CallOptions | grpc_1.requestCallback<dependency_1.PostLoginResponse>, options?: grpc_1.CallOptions | grpc_1.requestCallback<dependency_1.PostLoginResponse>, callback?: grpc_1.requestCallback<dependency_1.PostLoginResponse>): grpc_1.ClientUnaryCall => {
+        return super.PostLogin(message, metadata, options, callback);
     };
 }
