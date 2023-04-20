@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"log"
 	"net"
@@ -22,6 +23,10 @@ func main() {
 	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8&parseTime=True&loc=Local", config.DBUser, config.DBPass, config.DBHost, config.DBPort, config.DBName)
 	entClient, err := ent.Open("mysql", dsn)
 	if err != nil {
+		log.Fatal(err)
+	}
+	// migration
+	if err := entClient.Schema.Create(context.Background()); err != nil {
 		log.Fatal(err)
 	}
 
