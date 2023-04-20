@@ -47,6 +47,12 @@ func (gu *GroupUpdate) SetRole(gr group.Role) *GroupUpdate {
 	return gu
 }
 
+// SetEncryptedPassword sets the "encrypted_password" field.
+func (gu *GroupUpdate) SetEncryptedPassword(s string) *GroupUpdate {
+	gu.mutation.SetEncryptedPassword(s)
+	return gu
+}
+
 // AddSubmitIDs adds the "submits" edge to the Submit entity by IDs.
 func (gu *GroupUpdate) AddSubmitIDs(ids ...string) *GroupUpdate {
 	gu.mutation.AddSubmitIDs(ids...)
@@ -151,6 +157,9 @@ func (gu *GroupUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if value, ok := gu.mutation.Role(); ok {
 		_spec.SetField(group.FieldRole, field.TypeEnum, value)
 	}
+	if value, ok := gu.mutation.EncryptedPassword(); ok {
+		_spec.SetField(group.FieldEncryptedPassword, field.TypeString, value)
+	}
 	if gu.mutation.SubmitsCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2M,
@@ -232,6 +241,12 @@ func (guo *GroupUpdateOne) AddYear(i int) *GroupUpdateOne {
 // SetRole sets the "role" field.
 func (guo *GroupUpdateOne) SetRole(gr group.Role) *GroupUpdateOne {
 	guo.mutation.SetRole(gr)
+	return guo
+}
+
+// SetEncryptedPassword sets the "encrypted_password" field.
+func (guo *GroupUpdateOne) SetEncryptedPassword(s string) *GroupUpdateOne {
+	guo.mutation.SetEncryptedPassword(s)
 	return guo
 }
 
@@ -368,6 +383,9 @@ func (guo *GroupUpdateOne) sqlSave(ctx context.Context) (_node *Group, err error
 	}
 	if value, ok := guo.mutation.Role(); ok {
 		_spec.SetField(group.FieldRole, field.TypeEnum, value)
+	}
+	if value, ok := guo.mutation.EncryptedPassword(); ok {
+		_spec.SetField(group.FieldEncryptedPassword, field.TypeString, value)
 	}
 	if guo.mutation.SubmitsCleared() {
 		edge := &sqlgraph.EdgeSpec{
