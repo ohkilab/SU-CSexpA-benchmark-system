@@ -5,3 +5,6 @@ backend/vendor:
 
 build: backend/vendor
 	docker compose build
+
+up:
+	docker compose up --wait --build
