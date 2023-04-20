@@ -1,7 +1,15 @@
 # SU-CSexpA-benchmark-system
 
-## Directory Structure
+## Build
+
+1. create `.env`
 
 ```shell
+$ cp .env.sample .env
+```
 
+2. docker compose build
+
+```shell
+$ make build
 ```

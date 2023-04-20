@@ -9,6 +9,7 @@ package backend
 import (
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
+	timestamppb "google.golang.org/protobuf/types/known/timestamppb"
 	reflect "reflect"
 	sync "sync"
 )
@@ -20,19 +21,359 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
+type PostLoginRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Id       string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"` // it means group_id
+	Password string `protobuf:"bytes,2,opt,name=password,proto3" json:"password,omitempty"`
+}
+
+func (x *PostLoginRequest) Reset() {
+	*x = PostLoginRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_backend_messages_proto_msgTypes[0]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *PostLoginRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*PostLoginRequest) ProtoMessage() {}
+
+func (x *PostLoginRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_backend_messages_proto_msgTypes[0]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use PostLoginRequest.ProtoReflect.Descriptor instead.
+func (*PostLoginRequest) Descriptor() ([]byte, []int) {
+	return file_backend_messages_proto_rawDescGZIP(), []int{0}
+}
+
+func (x *PostLoginRequest) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
+func (x *PostLoginRequest) GetPassword() string {
+	if x != nil {
+		return x.Password
+	}
+	return ""
+}
+
+type PostLoginResponse struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Group *Group `protobuf:"bytes,1,opt,name=group,proto3" json:"group,omitempty"`
+}
+
+func (x *PostLoginResponse) Reset() {
+	*x = PostLoginResponse{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_backend_messages_proto_msgTypes[1]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *PostLoginResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*PostLoginResponse) ProtoMessage() {}
+
+func (x *PostLoginResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_backend_messages_proto_msgTypes[1]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use PostLoginResponse.ProtoReflect.Descriptor instead.
+func (*PostLoginResponse) Descriptor() ([]byte, []int) {
+	return file_backend_messages_proto_rawDescGZIP(), []int{1}
+}
+
+func (x *PostLoginResponse) GetGroup() *Group {
+	if x != nil {
+		return x.Group
+	}
+	return nil
+}
+
+type PostSubmitRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	IpAddr string `protobuf:"bytes,1,opt,name=ip_addr,json=ipAddr,proto3" json:"ip_addr,omitempty"`
+}
+
+func (x *PostSubmitRequest) Reset() {
+	*x = PostSubmitRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_backend_messages_proto_msgTypes[2]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *PostSubmitRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*PostSubmitRequest) ProtoMessage() {}
+
+func (x *PostSubmitRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_backend_messages_proto_msgTypes[2]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use PostSubmitRequest.ProtoReflect.Descriptor instead.
+func (*PostSubmitRequest) Descriptor() ([]byte, []int) {
+	return file_backend_messages_proto_rawDescGZIP(), []int{2}
+}
+
+func (x *PostSubmitRequest) GetIpAddr() string {
+	if x != nil {
+		return x.IpAddr
+	}
+	return ""
+}
+
+type PostSubmitResponse struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Id         string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	IpAddr     string                 `protobuf:"bytes,2,opt,name=ip_addr,json=ipAddr,proto3" json:"ip_addr,omitempty"`
+	SubmitedAt *timestamppb.Timestamp `protobuf:"bytes,3,opt,name=submited_at,json=submitedAt,proto3" json:"submited_at,omitempty"`
+}
+
+func (x *PostSubmitResponse) Reset() {
+	*x = PostSubmitResponse{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_backend_messages_proto_msgTypes[3]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *PostSubmitResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*PostSubmitResponse) ProtoMessage() {}
+
+func (x *PostSubmitResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_backend_messages_proto_msgTypes[3]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use PostSubmitResponse.ProtoReflect.Descriptor instead.
+func (*PostSubmitResponse) Descriptor() ([]byte, []int) {
+	return file_backend_messages_proto_rawDescGZIP(), []int{3}
+}
+
+func (x *PostSubmitResponse) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
+func (x *PostSubmitResponse) GetIpAddr() string {
+	if x != nil {
+		return x.IpAddr
+	}
+	return ""
+}
+
+func (x *PostSubmitResponse) GetSubmitedAt() *timestamppb.Timestamp {
+	if x != nil {
+		return x.SubmitedAt
+	}
+	return nil
+}
+
+type GetSubmitRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	SubmitId string `protobuf:"bytes,1,opt,name=submit_id,json=submitId,proto3" json:"submit_id,omitempty"`
+}
+
+func (x *GetSubmitRequest) Reset() {
+	*x = GetSubmitRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_backend_messages_proto_msgTypes[4]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *GetSubmitRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetSubmitRequest) ProtoMessage() {}
+
+func (x *GetSubmitRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_backend_messages_proto_msgTypes[4]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetSubmitRequest.ProtoReflect.Descriptor instead.
+func (*GetSubmitRequest) Descriptor() ([]byte, []int) {
+	return file_backend_messages_proto_rawDescGZIP(), []int{4}
+}
+
+func (x *GetSubmitRequest) GetSubmitId() string {
+	if x != nil {
+		return x.SubmitId
+	}
+	return ""
+}
+
+type GetSubmitResponse struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	// Types that are assignable to Result:
+	//
+	//	*GetSubmitResponse_TagProgress_
+	//	*GetSubmitResponse_Submit
+	Result isGetSubmitResponse_Result `protobuf_oneof:"result"`
+}
+
+func (x *GetSubmitResponse) Reset() {
+	*x = GetSubmitResponse{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_backend_messages_proto_msgTypes[5]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *GetSubmitResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetSubmitResponse) ProtoMessage() {}
+
+func (x *GetSubmitResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_backend_messages_proto_msgTypes[5]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetSubmitResponse.ProtoReflect.Descriptor instead.
+func (*GetSubmitResponse) Descriptor() ([]byte, []int) {
+	return file_backend_messages_proto_rawDescGZIP(), []int{5}
+}
+
+func (m *GetSubmitResponse) GetResult() isGetSubmitResponse_Result {
+	if m != nil {
+		return m.Result
+	}
+	return nil
+}
+
+func (x *GetSubmitResponse) GetTagProgress() *GetSubmitResponse_TagProgress {
+	if x, ok := x.GetResult().(*GetSubmitResponse_TagProgress_); ok {
+		return x.TagProgress
+	}
+	return nil
+}
+
+func (x *GetSubmitResponse) GetSubmit() *Submit {
+	if x, ok := x.GetResult().(*GetSubmitResponse_Submit); ok {
+		return x.Submit
+	}
+	return nil
+}
+
+type isGetSubmitResponse_Result interface {
+	isGetSubmitResponse_Result()
+}
+
+type GetSubmitResponse_TagProgress_ struct {
+	TagProgress *GetSubmitResponse_TagProgress `protobuf:"bytes,1,opt,name=tag_progress,json=tagProgress,proto3,oneof"` // if the submit is in progress, return this by server streaming.
+}
+
+type GetSubmitResponse_Submit struct {
+	Submit *Submit `protobuf:"bytes,2,opt,name=submit,proto3,oneof"` // if the submit has been finished, return this only once.
+}
+
+func (*GetSubmitResponse_TagProgress_) isGetSubmitResponse_Result() {}
+
+func (*GetSubmitResponse_Submit) isGetSubmitResponse_Result() {}
+
 type GetRankingRequest struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
 	Year         int32 `protobuf:"varint,1,opt,name=year,proto3" json:"year,omitempty"`
-	ContainGuest bool  `protobuf:"varint,2,opt,name=contain_guest,json=containGuest,proto3" json:"contain_guest,omitempty"` // if this is true, return ranking which includes guests
+	ContainGuest bool  `protobuf:"varint,2,opt,name=contain_guest,json=containGuest,proto3" json:"contain_guest,omitempty"` // if it is true, return ranking which includes guests
 }
 
 func (x *GetRankingRequest) Reset() {
 	*x = GetRankingRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_backend_messages_proto_msgTypes[0]
+		mi := &file_backend_messages_proto_msgTypes[6]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -45,7 +386,7 @@ func (x *GetRankingRequest) String() string {
 func (*GetRankingRequest) ProtoMessage() {}
 
 func (x *GetRankingRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_backend_messages_proto_msgTypes[0]
+	mi := &file_backend_messages_proto_msgTypes[6]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -58,7 +399,7 @@ func (x *GetRankingRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetRankingRequest.ProtoReflect.Descriptor instead.
 func (*GetRankingRequest) Descriptor() ([]byte, []int) {
-	return file_backend_messages_proto_rawDescGZIP(), []int{0}
+	return file_backend_messages_proto_rawDescGZIP(), []int{6}
 }
 
 func (x *GetRankingRequest) GetYear() int32 {
@@ -86,7 +427,7 @@ type GetRankingResponse struct {
 func (x *GetRankingResponse) Reset() {
 	*x = GetRankingResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_backend_messages_proto_msgTypes[1]
+		mi := &file_backend_messages_proto_msgTypes[7]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -99,7 +440,7 @@ func (x *GetRankingResponse) String() string {
 func (*GetRankingResponse) ProtoMessage() {}
 
 func (x *GetRankingResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_backend_messages_proto_msgTypes[1]
+	mi := &file_backend_messages_proto_msgTypes[7]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -112,7 +453,7 @@ func (x *GetRankingResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetRankingResponse.ProtoReflect.Descriptor instead.
 func (*GetRankingResponse) Descriptor() ([]byte, []int) {
-	return file_backend_messages_proto_rawDescGZIP(), []int{1}
+	return file_backend_messages_proto_rawDescGZIP(), []int{7}
 }
 
 func (x *GetRankingResponse) GetRecords() []*GetRankingResponse_Record {
@@ -133,7 +474,7 @@ type GetGroupRequest struct {
 func (x *GetGroupRequest) Reset() {
 	*x = GetGroupRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_backend_messages_proto_msgTypes[2]
+		mi := &file_backend_messages_proto_msgTypes[8]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -146,7 +487,7 @@ func (x *GetGroupRequest) String() string {
 func (*GetGroupRequest) ProtoMessage() {}
 
 func (x *GetGroupRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_backend_messages_proto_msgTypes[2]
+	mi := &file_backend_messages_proto_msgTypes[8]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -159,7 +500,7 @@ func (x *GetGroupRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetGroupRequest.ProtoReflect.Descriptor instead.
 func (*GetGroupRequest) Descriptor() ([]byte, []int) {
-	return file_backend_messages_proto_rawDescGZIP(), []int{2}
+	return file_backend_messages_proto_rawDescGZIP(), []int{8}
 }
 
 func (x *GetGroupRequest) GetGroupId() string {
@@ -180,7 +521,7 @@ type GetGroupResponse struct {
 func (x *GetGroupResponse) Reset() {
 	*x = GetGroupResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_backend_messages_proto_msgTypes[3]
+		mi := &file_backend_messages_proto_msgTypes[9]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -193,7 +534,7 @@ func (x *GetGroupResponse) String() string {
 func (*GetGroupResponse) ProtoMessage() {}
 
 func (x *GetGroupResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_backend_messages_proto_msgTypes[3]
+	mi := &file_backend_messages_proto_msgTypes[9]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -206,7 +547,7 @@ func (x *GetGroupResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetGroupResponse.ProtoReflect.Descriptor instead.
 func (*GetGroupResponse) Descriptor() ([]byte, []int) {
-	return file_backend_messages_proto_rawDescGZIP(), []int{3}
+	return file_backend_messages_proto_rawDescGZIP(), []int{9}
 }
 
 func (x *GetGroupResponse) GetGroups() []*GetGroupResponse_GroupInfo {
@@ -214,6 +555,69 @@ func (x *GetGroupResponse) GetGroups() []*GetGroupResponse_GroupInfo {
 		return x.Groups
 	}
 	return nil
+}
+
+type GetSubmitResponse_TagProgress struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	SubmitId string `protobuf:"bytes,1,opt,name=submit_id,json=submitId,proto3" json:"submit_id,omitempty"`
+	Score    int32  `protobuf:"varint,2,opt,name=score,proto3" json:"score,omitempty"`
+	Name     string `protobuf:"bytes,3,opt,name=name,proto3" json:"name,omitempty"` // it may be secret_{i}
+}
+
+func (x *GetSubmitResponse_TagProgress) Reset() {
+	*x = GetSubmitResponse_TagProgress{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_backend_messages_proto_msgTypes[10]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *GetSubmitResponse_TagProgress) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetSubmitResponse_TagProgress) ProtoMessage() {}
+
+func (x *GetSubmitResponse_TagProgress) ProtoReflect() protoreflect.Message {
+	mi := &file_backend_messages_proto_msgTypes[10]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetSubmitResponse_TagProgress.ProtoReflect.Descriptor instead.
+func (*GetSubmitResponse_TagProgress) Descriptor() ([]byte, []int) {
+	return file_backend_messages_proto_rawDescGZIP(), []int{5, 0}
+}
+
+func (x *GetSubmitResponse_TagProgress) GetSubmitId() string {
+	if x != nil {
+		return x.SubmitId
+	}
+	return ""
+}
+
+func (x *GetSubmitResponse_TagProgress) GetScore() int32 {
+	if x != nil {
+		return x.Score
+	}
+	return 0
+}
+
+func (x *GetSubmitResponse_TagProgress) GetName() string {
+	if x != nil {
+		return x.Name
+	}
+	return ""
 }
 
 type GetRankingResponse_Record struct {
@@ -229,7 +633,7 @@ type GetRankingResponse_Record struct {
 func (x *GetRankingResponse_Record) Reset() {
 	*x = GetRankingResponse_Record{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_backend_messages_proto_msgTypes[4]
+		mi := &file_backend_messages_proto_msgTypes[11]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -242,7 +646,7 @@ func (x *GetRankingResponse_Record) String() string {
 func (*GetRankingResponse_Record) ProtoMessage() {}
 
 func (x *GetRankingResponse_Record) ProtoReflect() protoreflect.Message {
-	mi := &file_backend_messages_proto_msgTypes[4]
+	mi := &file_backend_messages_proto_msgTypes[11]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -255,7 +659,7 @@ func (x *GetRankingResponse_Record) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetRankingResponse_Record.ProtoReflect.Descriptor instead.
 func (*GetRankingResponse_Record) Descriptor() ([]byte, []int) {
-	return file_backend_messages_proto_rawDescGZIP(), []int{1, 0}
+	return file_backend_messages_proto_rawDescGZIP(), []int{7, 0}
 }
 
 func (x *GetRankingResponse_Record) GetRank() int32 {
@@ -284,14 +688,14 @@ type GetGroupResponse_GroupInfo struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Group          *Group          `protobuf:"bytes,1,opt,name=group,proto3" json:"group,omitempty"`
-	ScoreHistories []*ScoreHistory `protobuf:"bytes,2,rep,name=score_histories,json=scoreHistories,proto3" json:"score_histories,omitempty"`
+	Group   *Group    `protobuf:"bytes,1,opt,name=group,proto3" json:"group,omitempty"`
+	Submits []*Submit `protobuf:"bytes,2,rep,name=submits,proto3" json:"submits,omitempty"`
 }
 
 func (x *GetGroupResponse_GroupInfo) Reset() {
 	*x = GetGroupResponse_GroupInfo{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_backend_messages_proto_msgTypes[5]
+		mi := &file_backend_messages_proto_msgTypes[12]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -304,7 +708,7 @@ func (x *GetGroupResponse_GroupInfo) String() string {
 func (*GetGroupResponse_GroupInfo) ProtoMessage() {}
 
 func (x *GetGroupResponse_GroupInfo) ProtoReflect() protoreflect.Message {
-	mi := &file_backend_messages_proto_msgTypes[5]
+	mi := &file_backend_messages_proto_msgTypes[12]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -317,7 +721,7 @@ func (x *GetGroupResponse_GroupInfo) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetGroupResponse_GroupInfo.ProtoReflect.Descriptor instead.
 func (*GetGroupResponse_GroupInfo) Descriptor() ([]byte, []int) {
-	return file_backend_messages_proto_rawDescGZIP(), []int{3, 0}
+	return file_backend_messages_proto_rawDescGZIP(), []int{9, 0}
 }
 
 func (x *GetGroupResponse_GroupInfo) GetGroup() *Group {
@@ -327,9 +731,9 @@ func (x *GetGroupResponse_GroupInfo) GetGroup() *Group {
 	return nil
 }
 
-func (x *GetGroupResponse_GroupInfo) GetScoreHistories() []*ScoreHistory {
+func (x *GetGroupResponse_GroupInfo) GetSubmits() []*Submit {
 	if x != nil {
-		return x.ScoreHistories
+		return x.Submits
 	}
 	return nil
 }
@@ -340,36 +744,72 @@ var file_backend_messages_proto_rawDesc = []byte{
 	0x0a, 0x16, 0x62, 0x61, 0x63, 0x6b, 0x65, 0x6e, 0x64, 0x2f, 0x6d, 0x65, 0x73, 0x73, 0x61, 0x67,
 	0x65, 0x73, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x1a, 0x17, 0x62, 0x61, 0x63, 0x6b, 0x65, 0x6e,
 	0x64, 0x2f, 0x72, 0x65, 0x73, 0x6f, 0x75, 0x72, 0x63, 0x65, 0x73, 0x2e, 0x70, 0x72, 0x6f, 0x74,
-	0x6f, 0x22, 0x4c, 0x0a, 0x11, 0x47, 0x65, 0x74, 0x52, 0x61, 0x6e, 0x6b, 0x69, 0x6e, 0x67, 0x52,
-	0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x12, 0x0a, 0x04, 0x79, 0x65, 0x61, 0x72, 0x18, 0x01,
-	0x20, 0x01, 0x28, 0x05, 0x52, 0x04, 0x79, 0x65, 0x61, 0x72, 0x12, 0x23, 0x0a, 0x0d, 0x63, 0x6f,
-	0x6e, 0x74, 0x61, 0x69, 0x6e, 0x5f, 0x67, 0x75, 0x65, 0x73, 0x74, 0x18, 0x02, 0x20, 0x01, 0x28,
-	0x08, 0x52, 0x0c, 0x63, 0x6f, 0x6e, 0x74, 0x61, 0x69, 0x6e, 0x47, 0x75, 0x65, 0x73, 0x74, 0x22,
-	0x9c, 0x01, 0x0a, 0x12, 0x47, 0x65, 0x74, 0x52, 0x61, 0x6e, 0x6b, 0x69, 0x6e, 0x67, 0x52, 0x65,
-	0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x34, 0x0a, 0x07, 0x72, 0x65, 0x63, 0x6f, 0x72, 0x64,
-	0x73, 0x18, 0x01, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x1a, 0x2e, 0x47, 0x65, 0x74, 0x52, 0x61, 0x6e,
-	0x6b, 0x69, 0x6e, 0x67, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x2e, 0x52, 0x65, 0x63,
-	0x6f, 0x72, 0x64, 0x52, 0x07, 0x72, 0x65, 0x63, 0x6f, 0x72, 0x64, 0x73, 0x1a, 0x50, 0x0a, 0x06,
-	0x52, 0x65, 0x63, 0x6f, 0x72, 0x64, 0x12, 0x12, 0x0a, 0x04, 0x72, 0x61, 0x6e, 0x6b, 0x18, 0x01,
-	0x20, 0x01, 0x28, 0x05, 0x52, 0x04, 0x72, 0x61, 0x6e, 0x6b, 0x12, 0x1c, 0x0a, 0x05, 0x67, 0x72,
-	0x6f, 0x75, 0x70, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x06, 0x2e, 0x47, 0x72, 0x6f, 0x75,
-	0x70, 0x52, 0x05, 0x67, 0x72, 0x6f, 0x75, 0x70, 0x12, 0x14, 0x0a, 0x05, 0x73, 0x63, 0x6f, 0x72,
-	0x65, 0x18, 0x03, 0x20, 0x01, 0x28, 0x05, 0x52, 0x05, 0x73, 0x63, 0x6f, 0x72, 0x65, 0x22, 0x2c,
-	0x0a, 0x0f, 0x47, 0x65, 0x74, 0x47, 0x72, 0x6f, 0x75, 0x70, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73,
-	0x74, 0x12, 0x19, 0x0a, 0x08, 0x67, 0x72, 0x6f, 0x75, 0x70, 0x5f, 0x69, 0x64, 0x18, 0x01, 0x20,
-	0x01, 0x28, 0x09, 0x52, 0x07, 0x67, 0x72, 0x6f, 0x75, 0x70, 0x49, 0x64, 0x22, 0xaa, 0x01, 0x0a,
-	0x10, 0x47, 0x65, 0x74, 0x47, 0x72, 0x6f, 0x75, 0x70, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73,
-	0x65, 0x12, 0x33, 0x0a, 0x06, 0x67, 0x72, 0x6f, 0x75, 0x70, 0x73, 0x18, 0x01, 0x20, 0x03, 0x28,
-	0x0b, 0x32, 0x1b, 0x2e, 0x47, 0x65, 0x74, 0x47, 0x72, 0x6f, 0x75, 0x70, 0x52, 0x65, 0x73, 0x70,
-	0x6f, 0x6e, 0x73, 0x65, 0x2e, 0x47, 0x72, 0x6f, 0x75, 0x70, 0x49, 0x6e, 0x66, 0x6f, 0x52, 0x06,
-	0x67, 0x72, 0x6f, 0x75, 0x70, 0x73, 0x1a, 0x61, 0x0a, 0x09, 0x47, 0x72, 0x6f, 0x75, 0x70, 0x49,
-	0x6e, 0x66, 0x6f, 0x12, 0x1c, 0x0a, 0x05, 0x67, 0x72, 0x6f, 0x75, 0x70, 0x18, 0x01, 0x20, 0x01,
-	0x28, 0x0b, 0x32, 0x06, 0x2e, 0x47, 0x72, 0x6f, 0x75, 0x70, 0x52, 0x05, 0x67, 0x72, 0x6f, 0x75,
-	0x70, 0x12, 0x36, 0x0a, 0x0f, 0x73, 0x63, 0x6f, 0x72, 0x65, 0x5f, 0x68, 0x69, 0x73, 0x74, 0x6f,
-	0x72, 0x69, 0x65, 0x73, 0x18, 0x02, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x0d, 0x2e, 0x53, 0x63, 0x6f,
-	0x72, 0x65, 0x48, 0x69, 0x73, 0x74, 0x6f, 0x72, 0x79, 0x52, 0x0e, 0x73, 0x63, 0x6f, 0x72, 0x65,
-	0x48, 0x69, 0x73, 0x74, 0x6f, 0x72, 0x69, 0x65, 0x73, 0x42, 0x0b, 0x5a, 0x09, 0x2e, 0x2f, 0x62,
-	0x61, 0x63, 0x6b, 0x65, 0x6e, 0x64, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x6f, 0x1a, 0x1f, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62,
+	0x75, 0x66, 0x2f, 0x74, 0x69, 0x6d, 0x65, 0x73, 0x74, 0x61, 0x6d, 0x70, 0x2e, 0x70, 0x72, 0x6f,
+	0x74, 0x6f, 0x22, 0x3e, 0x0a, 0x10, 0x50, 0x6f, 0x73, 0x74, 0x4c, 0x6f, 0x67, 0x69, 0x6e, 0x52,
+	0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01,
+	0x28, 0x09, 0x52, 0x02, 0x69, 0x64, 0x12, 0x1a, 0x0a, 0x08, 0x70, 0x61, 0x73, 0x73, 0x77, 0x6f,
+	0x72, 0x64, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x08, 0x70, 0x61, 0x73, 0x73, 0x77, 0x6f,
+	0x72, 0x64, 0x22, 0x31, 0x0a, 0x11, 0x50, 0x6f, 0x73, 0x74, 0x4c, 0x6f, 0x67, 0x69, 0x6e, 0x52,
+	0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x1c, 0x0a, 0x05, 0x67, 0x72, 0x6f, 0x75, 0x70,
+	0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x06, 0x2e, 0x47, 0x72, 0x6f, 0x75, 0x70, 0x52, 0x05,
+	0x67, 0x72, 0x6f, 0x75, 0x70, 0x22, 0x2c, 0x0a, 0x11, 0x50, 0x6f, 0x73, 0x74, 0x53, 0x75, 0x62,
+	0x6d, 0x69, 0x74, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x17, 0x0a, 0x07, 0x69, 0x70,
+	0x5f, 0x61, 0x64, 0x64, 0x72, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x69, 0x70, 0x41,
+	0x64, 0x64, 0x72, 0x22, 0x7a, 0x0a, 0x12, 0x50, 0x6f, 0x73, 0x74, 0x53, 0x75, 0x62, 0x6d, 0x69,
+	0x74, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18,
+	0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x02, 0x69, 0x64, 0x12, 0x17, 0x0a, 0x07, 0x69, 0x70, 0x5f,
+	0x61, 0x64, 0x64, 0x72, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x69, 0x70, 0x41, 0x64,
+	0x64, 0x72, 0x12, 0x3b, 0x0a, 0x0b, 0x73, 0x75, 0x62, 0x6d, 0x69, 0x74, 0x65, 0x64, 0x5f, 0x61,
+	0x74, 0x18, 0x03, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x1a, 0x2e, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65,
+	0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x54, 0x69, 0x6d, 0x65, 0x73, 0x74,
+	0x61, 0x6d, 0x70, 0x52, 0x0a, 0x73, 0x75, 0x62, 0x6d, 0x69, 0x74, 0x65, 0x64, 0x41, 0x74, 0x22,
+	0x2f, 0x0a, 0x10, 0x47, 0x65, 0x74, 0x53, 0x75, 0x62, 0x6d, 0x69, 0x74, 0x52, 0x65, 0x71, 0x75,
+	0x65, 0x73, 0x74, 0x12, 0x1b, 0x0a, 0x09, 0x73, 0x75, 0x62, 0x6d, 0x69, 0x74, 0x5f, 0x69, 0x64,
+	0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x08, 0x73, 0x75, 0x62, 0x6d, 0x69, 0x74, 0x49, 0x64,
+	0x22, 0xdb, 0x01, 0x0a, 0x11, 0x47, 0x65, 0x74, 0x53, 0x75, 0x62, 0x6d, 0x69, 0x74, 0x52, 0x65,
+	0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x43, 0x0a, 0x0c, 0x74, 0x61, 0x67, 0x5f, 0x70, 0x72,
+	0x6f, 0x67, 0x72, 0x65, 0x73, 0x73, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x1e, 0x2e, 0x47,
+	0x65, 0x74, 0x53, 0x75, 0x62, 0x6d, 0x69, 0x74, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65,
+	0x2e, 0x54, 0x61, 0x67, 0x50, 0x72, 0x6f, 0x67, 0x72, 0x65, 0x73, 0x73, 0x48, 0x00, 0x52, 0x0b,
+	0x74, 0x61, 0x67, 0x50, 0x72, 0x6f, 0x67, 0x72, 0x65, 0x73, 0x73, 0x12, 0x21, 0x0a, 0x06, 0x73,
+	0x75, 0x62, 0x6d, 0x69, 0x74, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x07, 0x2e, 0x53, 0x75,
+	0x62, 0x6d, 0x69, 0x74, 0x48, 0x00, 0x52, 0x06, 0x73, 0x75, 0x62, 0x6d, 0x69, 0x74, 0x1a, 0x54,
+	0x0a, 0x0b, 0x54, 0x61, 0x67, 0x50, 0x72, 0x6f, 0x67, 0x72, 0x65, 0x73, 0x73, 0x12, 0x1b, 0x0a,
+	0x09, 0x73, 0x75, 0x62, 0x6d, 0x69, 0x74, 0x5f, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09,
+	0x52, 0x08, 0x73, 0x75, 0x62, 0x6d, 0x69, 0x74, 0x49, 0x64, 0x12, 0x14, 0x0a, 0x05, 0x73, 0x63,
+	0x6f, 0x72, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x05, 0x52, 0x05, 0x73, 0x63, 0x6f, 0x72, 0x65,
+	0x12, 0x12, 0x0a, 0x04, 0x6e, 0x61, 0x6d, 0x65, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04,
+	0x6e, 0x61, 0x6d, 0x65, 0x42, 0x08, 0x0a, 0x06, 0x72, 0x65, 0x73, 0x75, 0x6c, 0x74, 0x22, 0x4c,
+	0x0a, 0x11, 0x47, 0x65, 0x74, 0x52, 0x61, 0x6e, 0x6b, 0x69, 0x6e, 0x67, 0x52, 0x65, 0x71, 0x75,
+	0x65, 0x73, 0x74, 0x12, 0x12, 0x0a, 0x04, 0x79, 0x65, 0x61, 0x72, 0x18, 0x01, 0x20, 0x01, 0x28,
+	0x05, 0x52, 0x04, 0x79, 0x65, 0x61, 0x72, 0x12, 0x23, 0x0a, 0x0d, 0x63, 0x6f, 0x6e, 0x74, 0x61,
+	0x69, 0x6e, 0x5f, 0x67, 0x75, 0x65, 0x73, 0x74, 0x18, 0x02, 0x20, 0x01, 0x28, 0x08, 0x52, 0x0c,
+	0x63, 0x6f, 0x6e, 0x74, 0x61, 0x69, 0x6e, 0x47, 0x75, 0x65, 0x73, 0x74, 0x22, 0x9c, 0x01, 0x0a,
+	0x12, 0x47, 0x65, 0x74, 0x52, 0x61, 0x6e, 0x6b, 0x69, 0x6e, 0x67, 0x52, 0x65, 0x73, 0x70, 0x6f,
+	0x6e, 0x73, 0x65, 0x12, 0x34, 0x0a, 0x07, 0x72, 0x65, 0x63, 0x6f, 0x72, 0x64, 0x73, 0x18, 0x01,
+	0x20, 0x03, 0x28, 0x0b, 0x32, 0x1a, 0x2e, 0x47, 0x65, 0x74, 0x52, 0x61, 0x6e, 0x6b, 0x69, 0x6e,
+	0x67, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x2e, 0x52, 0x65, 0x63, 0x6f, 0x72, 0x64,
+	0x52, 0x07, 0x72, 0x65, 0x63, 0x6f, 0x72, 0x64, 0x73, 0x1a, 0x50, 0x0a, 0x06, 0x52, 0x65, 0x63,
+	0x6f, 0x72, 0x64, 0x12, 0x12, 0x0a, 0x04, 0x72, 0x61, 0x6e, 0x6b, 0x18, 0x01, 0x20, 0x01, 0x28,
+	0x05, 0x52, 0x04, 0x72, 0x61, 0x6e, 0x6b, 0x12, 0x1c, 0x0a, 0x05, 0x67, 0x72, 0x6f, 0x75, 0x70,
+	0x18, 0x02, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x06, 0x2e, 0x47, 0x72, 0x6f, 0x75, 0x70, 0x52, 0x05,
+	0x67, 0x72, 0x6f, 0x75, 0x70, 0x12, 0x14, 0x0a, 0x05, 0x73, 0x63, 0x6f, 0x72, 0x65, 0x18, 0x03,
+	0x20, 0x01, 0x28, 0x05, 0x52, 0x05, 0x73, 0x63, 0x6f, 0x72, 0x65, 0x22, 0x2c, 0x0a, 0x0f, 0x47,
+	0x65, 0x74, 0x47, 0x72, 0x6f, 0x75, 0x70, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x19,
+	0x0a, 0x08, 0x67, 0x72, 0x6f, 0x75, 0x70, 0x5f, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09,
+	0x52, 0x07, 0x67, 0x72, 0x6f, 0x75, 0x70, 0x49, 0x64, 0x22, 0x95, 0x01, 0x0a, 0x10, 0x47, 0x65,
+	0x74, 0x47, 0x72, 0x6f, 0x75, 0x70, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x33,
+	0x0a, 0x06, 0x67, 0x72, 0x6f, 0x75, 0x70, 0x73, 0x18, 0x01, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x1b,
+	0x2e, 0x47, 0x65, 0x74, 0x47, 0x72, 0x6f, 0x75, 0x70, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73,
+	0x65, 0x2e, 0x47, 0x72, 0x6f, 0x75, 0x70, 0x49, 0x6e, 0x66, 0x6f, 0x52, 0x06, 0x67, 0x72, 0x6f,
+	0x75, 0x70, 0x73, 0x1a, 0x4c, 0x0a, 0x09, 0x47, 0x72, 0x6f, 0x75, 0x70, 0x49, 0x6e, 0x66, 0x6f,
+	0x12, 0x1c, 0x0a, 0x05, 0x67, 0x72, 0x6f, 0x75, 0x70, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32,
+	0x06, 0x2e, 0x47, 0x72, 0x6f, 0x75, 0x70, 0x52, 0x05, 0x67, 0x72, 0x6f, 0x75, 0x70, 0x12, 0x21,
+	0x0a, 0x07, 0x73, 0x75, 0x62, 0x6d, 0x69, 0x74, 0x73, 0x18, 0x02, 0x20, 0x03, 0x28, 0x0b, 0x32,
+	0x07, 0x2e, 0x53, 0x75, 0x62, 0x6d, 0x69, 0x74, 0x52, 0x07, 0x73, 0x75, 0x62, 0x6d, 0x69, 0x74,
+	0x73, 0x42, 0x0b, 0x5a, 0x09, 0x2e, 0x2f, 0x62, 0x61, 0x63, 0x6b, 0x65, 0x6e, 0x64, 0x62, 0x06,
+	0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -384,28 +824,40 @@ func file_backend_messages_proto_rawDescGZIP() []byte {
 	return file_backend_messages_proto_rawDescData
 }
 
-var file_backend_messages_proto_msgTypes = make([]protoimpl.MessageInfo, 6)
+var file_backend_messages_proto_msgTypes = make([]protoimpl.MessageInfo, 13)
 var file_backend_messages_proto_goTypes = []interface{}{
-	(*GetRankingRequest)(nil),          // 0: GetRankingRequest
-	(*GetRankingResponse)(nil),         // 1: GetRankingResponse
-	(*GetGroupRequest)(nil),            // 2: GetGroupRequest
-	(*GetGroupResponse)(nil),           // 3: GetGroupResponse
-	(*GetRankingResponse_Record)(nil),  // 4: GetRankingResponse.Record
-	(*GetGroupResponse_GroupInfo)(nil), // 5: GetGroupResponse.GroupInfo
-	(*Group)(nil),                      // 6: Group
-	(*ScoreHistory)(nil),               // 7: ScoreHistory
+	(*PostLoginRequest)(nil),              // 0: PostLoginRequest
+	(*PostLoginResponse)(nil),             // 1: PostLoginResponse
+	(*PostSubmitRequest)(nil),             // 2: PostSubmitRequest
+	(*PostSubmitResponse)(nil),            // 3: PostSubmitResponse
+	(*GetSubmitRequest)(nil),              // 4: GetSubmitRequest
+	(*GetSubmitResponse)(nil),             // 5: GetSubmitResponse
+	(*GetRankingRequest)(nil),             // 6: GetRankingRequest
+	(*GetRankingResponse)(nil),            // 7: GetRankingResponse
+	(*GetGroupRequest)(nil),               // 8: GetGroupRequest
+	(*GetGroupResponse)(nil),              // 9: GetGroupResponse
+	(*GetSubmitResponse_TagProgress)(nil), // 10: GetSubmitResponse.TagProgress
+	(*GetRankingResponse_Record)(nil),     // 11: GetRankingResponse.Record
+	(*GetGroupResponse_GroupInfo)(nil),    // 12: GetGroupResponse.GroupInfo
+	(*Group)(nil),                         // 13: Group
+	(*timestamppb.Timestamp)(nil),         // 14: google.protobuf.Timestamp
+	(*Submit)(nil),                        // 15: Submit
 }
 var file_backend_messages_proto_depIdxs = []int32{
-	4, // 0: GetRankingResponse.records:type_name -> GetRankingResponse.Record
-	5, // 1: GetGroupResponse.groups:type_name -> GetGroupResponse.GroupInfo
-	6, // 2: GetRankingResponse.Record.group:type_name -> Group
-	6, // 3: GetGroupResponse.GroupInfo.group:type_name -> Group
-	7, // 4: GetGroupResponse.GroupInfo.score_histories:type_name -> ScoreHistory
-	5, // [5:5] is the sub-list for method output_type
-	5, // [5:5] is the sub-list for method input_type
-	5, // [5:5] is the sub-list for extension type_name
-	5, // [5:5] is the sub-list for extension extendee
-	0, // [0:5] is the sub-list for field type_name
+	13, // 0: PostLoginResponse.group:type_name -> Group
+	14, // 1: PostSubmitResponse.submited_at:type_name -> google.protobuf.Timestamp
+	10, // 2: GetSubmitResponse.tag_progress:type_name -> GetSubmitResponse.TagProgress
+	15, // 3: GetSubmitResponse.submit:type_name -> Submit
+	11, // 4: GetRankingResponse.records:type_name -> GetRankingResponse.Record
+	12, // 5: GetGroupResponse.groups:type_name -> GetGroupResponse.GroupInfo
+	13, // 6: GetRankingResponse.Record.group:type_name -> Group
+	13, // 7: GetGroupResponse.GroupInfo.group:type_name -> Group
+	15, // 8: GetGroupResponse.GroupInfo.submits:type_name -> Submit
+	9,  // [9:9] is the sub-list for method output_type
+	9,  // [9:9] is the sub-list for method input_type
+	9,  // [9:9] is the sub-list for extension type_name
+	9,  // [9:9] is the sub-list for extension extendee
+	0,  // [0:9] is the sub-list for field type_name
 }
 
 func init() { file_backend_messages_proto_init() }
@@ -416,7 +868,7 @@ func file_backend_messages_proto_init() {
 	file_backend_resources_proto_init()
 	if !protoimpl.UnsafeEnabled {
 		file_backend_messages_proto_msgTypes[0].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*GetRankingRequest); i {
+			switch v := v.(*PostLoginRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -428,7 +880,7 @@ func file_backend_messages_proto_init() {
 			}
 		}
 		file_backend_messages_proto_msgTypes[1].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*GetRankingResponse); i {
+			switch v := v.(*PostLoginResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -440,7 +892,7 @@ func file_backend_messages_proto_init() {
 			}
 		}
 		file_backend_messages_proto_msgTypes[2].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*GetGroupRequest); i {
+			switch v := v.(*PostSubmitRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -452,7 +904,7 @@ func file_backend_messages_proto_init() {
 			}
 		}
 		file_backend_messages_proto_msgTypes[3].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*GetGroupResponse); i {
+			switch v := v.(*PostSubmitResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -464,7 +916,7 @@ func file_backend_messages_proto_init() {
 			}
 		}
 		file_backend_messages_proto_msgTypes[4].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*GetRankingResponse_Record); i {
+			switch v := v.(*GetSubmitRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -476,6 +928,90 @@ func file_backend_messages_proto_init() {
 			}
 		}
 		file_backend_messages_proto_msgTypes[5].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*GetSubmitResponse); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_backend_messages_proto_msgTypes[6].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*GetRankingRequest); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_backend_messages_proto_msgTypes[7].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*GetRankingResponse); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_backend_messages_proto_msgTypes[8].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*GetGroupRequest); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_backend_messages_proto_msgTypes[9].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*GetGroupResponse); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_backend_messages_proto_msgTypes[10].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*GetSubmitResponse_TagProgress); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_backend_messages_proto_msgTypes[11].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*GetRankingResponse_Record); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_backend_messages_proto_msgTypes[12].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*GetGroupResponse_GroupInfo); i {
 			case 0:
 				return &v.state
@@ -488,13 +1024,17 @@ func file_backend_messages_proto_init() {
 			}
 		}
 	}
+	file_backend_messages_proto_msgTypes[5].OneofWrappers = []interface{}{
+		(*GetSubmitResponse_TagProgress_)(nil),
+		(*GetSubmitResponse_Submit)(nil),
+	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_backend_messages_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   6,
+			NumMessages:   13,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

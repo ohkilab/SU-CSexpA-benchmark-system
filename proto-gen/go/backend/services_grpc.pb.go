@@ -20,6 +20,9 @@ const _ = grpc.SupportPackageIsVersion7
 
 const (
 	BackendService_GetRanking_FullMethodName = "/BackendService/GetRanking"
+	BackendService_PostSubmit_FullMethodName = "/BackendService/PostSubmit"
+	BackendService_GetSubmit_FullMethodName  = "/BackendService/GetSubmit"
+	BackendService_PostLogin_FullMethodName  = "/BackendService/PostLogin"
 )
 
 // BackendServiceClient is the client API for BackendService service.
@@ -27,6 +30,9 @@ const (
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type BackendServiceClient interface {
 	GetRanking(ctx context.Context, in *GetRankingRequest, opts ...grpc.CallOption) (*GetRankingResponse, error)
+	PostSubmit(ctx context.Context, in *PostSubmitRequest, opts ...grpc.CallOption) (*PostSubmitResponse, error)
+	GetSubmit(ctx context.Context, in *GetSubmitRequest, opts ...grpc.CallOption) (BackendService_GetSubmitClient, error)
+	PostLogin(ctx context.Context, in *PostLoginRequest, opts ...grpc.CallOption) (*PostLoginResponse, error)
 }
 
 type backendServiceClient struct {
@@ -46,22 +52,82 @@ func (c *backendServiceClient) GetRanking(ctx context.Context, in *GetRankingReq
 	return out, nil
 }
 
+func (c *backendServiceClient) PostSubmit(ctx context.Context, in *PostSubmitRequest, opts ...grpc.CallOption) (*PostSubmitResponse, error) {
+	out := new(PostSubmitResponse)
+	err := c.cc.Invoke(ctx, BackendService_PostSubmit_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *backendServiceClient) GetSubmit(ctx context.Context, in *GetSubmitRequest, opts ...grpc.CallOption) (BackendService_GetSubmitClient, error) {
+	stream, err := c.cc.NewStream(ctx, &BackendService_ServiceDesc.Streams[0], BackendService_GetSubmit_FullMethodName, opts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &backendServiceGetSubmitClient{stream}
+	if err := x.ClientStream.SendMsg(in); err != nil {
+		return nil, err
+	}
+	if err := x.ClientStream.CloseSend(); err != nil {
+		return nil, err
+	}
+	return x, nil
+}
+
+type BackendService_GetSubmitClient interface {
+	Recv() (*GetSubmitResponse, error)
+	grpc.ClientStream
+}
+
+type backendServiceGetSubmitClient struct {
+	grpc.ClientStream
+}
+
+func (x *backendServiceGetSubmitClient) Recv() (*GetSubmitResponse, error) {
+	m := new(GetSubmitResponse)
+	if err := x.ClientStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
+func (c *backendServiceClient) PostLogin(ctx context.Context, in *PostLoginRequest, opts ...grpc.CallOption) (*PostLoginResponse, error) {
+	out := new(PostLoginResponse)
+	err := c.cc.Invoke(ctx, BackendService_PostLogin_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // BackendServiceServer is the server API for BackendService service.
-// All implementations must embed UnimplementedBackendServiceServer
+// All implementations should embed UnimplementedBackendServiceServer
 // for forward compatibility
 type BackendServiceServer interface {
 	GetRanking(context.Context, *GetRankingRequest) (*GetRankingResponse, error)
-	mustEmbedUnimplementedBackendServiceServer()
+	PostSubmit(context.Context, *PostSubmitRequest) (*PostSubmitResponse, error)
+	GetSubmit(*GetSubmitRequest, BackendService_GetSubmitServer) error
+	PostLogin(context.Context, *PostLoginRequest) (*PostLoginResponse, error)
 }
 
-// UnimplementedBackendServiceServer must be embedded to have forward compatible implementations.
+// UnimplementedBackendServiceServer should be embedded to have forward compatible implementations.
 type UnimplementedBackendServiceServer struct {
 }
 
 func (UnimplementedBackendServiceServer) GetRanking(context.Context, *GetRankingRequest) (*GetRankingResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetRanking not implemented")
 }
-func (UnimplementedBackendServiceServer) mustEmbedUnimplementedBackendServiceServer() {}
+func (UnimplementedBackendServiceServer) PostSubmit(context.Context, *PostSubmitRequest) (*PostSubmitResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method PostSubmit not implemented")
+}
+func (UnimplementedBackendServiceServer) GetSubmit(*GetSubmitRequest, BackendService_GetSubmitServer) error {
+	return status.Errorf(codes.Unimplemented, "method GetSubmit not implemented")
+}
+func (UnimplementedBackendServiceServer) PostLogin(context.Context, *PostLoginRequest) (*PostLoginResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method PostLogin not implemented")
+}
 
 // UnsafeBackendServiceServer may be embedded to opt out of forward compatibility for this service.
 // Use of this interface is not recommended, as added methods to BackendServiceServer will
@@ -92,6 +158,63 @@ func _BackendService_GetRanking_Handler(srv interface{}, ctx context.Context, de
 	return interceptor(ctx, in, info, handler)
 }
 
+func _BackendService_PostSubmit_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(PostSubmitRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BackendServiceServer).PostSubmit(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: BackendService_PostSubmit_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BackendServiceServer).PostSubmit(ctx, req.(*PostSubmitRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _BackendService_GetSubmit_Handler(srv interface{}, stream grpc.ServerStream) error {
+	m := new(GetSubmitRequest)
+	if err := stream.RecvMsg(m); err != nil {
+		return err
+	}
+	return srv.(BackendServiceServer).GetSubmit(m, &backendServiceGetSubmitServer{stream})
+}
+
+type BackendService_GetSubmitServer interface {
+	Send(*GetSubmitResponse) error
+	grpc.ServerStream
+}
+
+type backendServiceGetSubmitServer struct {
+	grpc.ServerStream
+}
+
+func (x *backendServiceGetSubmitServer) Send(m *GetSubmitResponse) error {
+	return x.ServerStream.SendMsg(m)
+}
+
+func _BackendService_PostLogin_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(PostLoginRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BackendServiceServer).PostLogin(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: BackendService_PostLogin_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BackendServiceServer).PostLogin(ctx, req.(*PostLoginRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // BackendService_ServiceDesc is the grpc.ServiceDesc for BackendService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -103,7 +226,21 @@ var BackendService_ServiceDesc = grpc.ServiceDesc{
 			MethodName: "GetRanking",
 			Handler:    _BackendService_GetRanking_Handler,
 		},
+		{
+			MethodName: "PostSubmit",
+			Handler:    _BackendService_PostSubmit_Handler,
+		},
+		{
+			MethodName: "PostLogin",
+			Handler:    _BackendService_PostLogin_Handler,
+		},
 	},
-	Streams:  []grpc.StreamDesc{},
+	Streams: []grpc.StreamDesc{
+		{
+			StreamName:    "GetSubmit",
+			Handler:       _BackendService_GetSubmit_Handler,
+			ServerStreams: true,
+		},
+	},
 	Metadata: "backend/services.proto",
 }

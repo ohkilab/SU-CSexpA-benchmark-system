@@ -3,15 +3,24 @@ services:
     build:
       context: backend
       dockerfile: Dockerfile
+    env_file:
+      - backend/.env
+    restart: always
+    depends_on:
+      - db
 
   benchmark-service:
     build:
       context: benchmark-service
       dockerfile: Dockerfile
+    env_file:
+      - benchmark-service/.env
 
   db:
     image: mysql:8.0
     restart: always
+    env_file:
+      - .env
     volumes:
       - ./data:/var/lib/mysql
 

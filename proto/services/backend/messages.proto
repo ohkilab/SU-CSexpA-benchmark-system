@@ -1,12 +1,50 @@
 syntax = "proto3";
 
 import "backend/resources.proto";
+import "google/protobuf/timestamp.proto";
 
 option go_package = "./backend";
 
+message PostLoginRequest {
+  string id = 1; // it means group_id
+  string password = 2;
+}
+
+message PostLoginResponse {
+  Group group = 1;
+}
+
+message PostSubmitRequest {
+  string ip_addr = 1;
+}
+
+message PostSubmitResponse {
+  string id = 1;
+  string ip_addr = 2;
+  google.protobuf.Timestamp submited_at = 3;
+}
+
+message GetSubmitRequest {
+  string submit_id = 1;
+}
+
+message GetSubmitResponse {
+  message TagProgress {
+    string submit_id = 1;
+    int32 score = 2;
+    string name = 3; // it may be secret_{i}
+  }
+  oneof result {
+    TagProgress tag_progress = 1;  // if the submit is in progress, return this by server streaming.
+    Submit submit = 2;             // if the submit has been finished, return this only once.
+  }
+}
+
 message GetRankingRequest {
   int32 year = 1;
-  bool contain_guest = 2;  // if this is true, return ranking which includes guests
+  bool contain_guest =
+      2; // if it is true, return ranking which includes guests
+
 }
 
 message GetRankingResponse {
@@ -23,7 +61,7 @@ message GetGroupRequest { string group_id = 1; }
 message GetGroupResponse {
   message GroupInfo {
     Group group = 1;
-    repeated ScoreHistory score_histories = 2;
+    repeated Submit submits = 2;
   }
   repeated GroupInfo groups = 1;
 }
