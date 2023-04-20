@@ -3,8 +3,7 @@
  * compiler version: 3.21.12
  * source: backend/services.proto
  * git: https://github.com/thesayyn/protoc-gen-ts */
-import * as dependency_1 from "./../google/protobuf/empty";
-import * as dependency_2 from "./messages";
+import * as dependency_1 from "./messages";
 import * as grpc_1 from "@grpc/grpc-js";
 interface GrpcUnaryServiceInterface<P, R> {
     (message: P, metadata: grpc_1.Metadata, options: grpc_1.CallOptions, callback: grpc_1.requestCallback<R>): grpc_1.ClientUnaryCall;
@@ -36,20 +35,20 @@ export abstract class UnimplementedBackendServiceService {
             path: "/BackendService/GetRanking",
             requestStream: false,
             responseStream: false,
-            requestSerialize: (message: dependency_1.google.protobuf.Empty) => Buffer.from(message.serialize()),
-            requestDeserialize: (bytes: Buffer) => dependency_1.google.protobuf.Empty.deserialize(new Uint8Array(bytes)),
-            responseSerialize: (message: dependency_2.GetRankingResponse) => Buffer.from(message.serialize()),
-            responseDeserialize: (bytes: Buffer) => dependency_2.GetRankingResponse.deserialize(new Uint8Array(bytes))
+            requestSerialize: (message: dependency_1.GetRankingRequest) => Buffer.from(message.serialize()),
+            requestDeserialize: (bytes: Buffer) => dependency_1.GetRankingRequest.deserialize(new Uint8Array(bytes)),
+            responseSerialize: (message: dependency_1.GetRankingResponse) => Buffer.from(message.serialize()),
+            responseDeserialize: (bytes: Buffer) => dependency_1.GetRankingResponse.deserialize(new Uint8Array(bytes))
         }
     };
     [method: string]: grpc_1.UntypedHandleCall;
-    abstract GetRanking(call: grpc_1.ServerUnaryCall<dependency_1.google.protobuf.Empty, dependency_2.GetRankingResponse>, callback: grpc_1.sendUnaryData<dependency_2.GetRankingResponse>): void;
+    abstract GetRanking(call: grpc_1.ServerUnaryCall<dependency_1.GetRankingRequest, dependency_1.GetRankingResponse>, callback: grpc_1.sendUnaryData<dependency_1.GetRankingResponse>): void;
 }
 export class BackendServiceClient extends grpc_1.makeGenericClientConstructor(UnimplementedBackendServiceService.definition, "BackendService", {}) {
     constructor(address: string, credentials: grpc_1.ChannelCredentials, options?: Partial<grpc_1.ChannelOptions>) {
         super(address, credentials, options);
     }
-    GetRanking: GrpcUnaryServiceInterface<dependency_1.google.protobuf.Empty, dependency_2.GetRankingResponse> = (message: dependency_1.google.protobuf.Empty, metadata: grpc_1.Metadata | grpc_1.CallOptions | grpc_1.requestCallback<dependency_2.GetRankingResponse>, options?: grpc_1.CallOptions | grpc_1.requestCallback<dependency_2.GetRankingResponse>, callback?: grpc_1.requestCallback<dependency_2.GetRankingResponse>): grpc_1.ClientUnaryCall => {
+    GetRanking: GrpcUnaryServiceInterface<dependency_1.GetRankingRequest, dependency_1.GetRankingResponse> = (message: dependency_1.GetRankingRequest, metadata: grpc_1.Metadata | grpc_1.CallOptions | grpc_1.requestCallback<dependency_1.GetRankingResponse>, options?: grpc_1.CallOptions | grpc_1.requestCallback<dependency_1.GetRankingResponse>, callback?: grpc_1.requestCallback<dependency_1.GetRankingResponse>): grpc_1.ClientUnaryCall => {
         return super.GetRanking(message, metadata, options, callback);
     };
 }
