@@ -2,7 +2,6 @@
 import HelloWorld from './components/HelloWorld.vue'
 import RankItem from './components/RankItem.vue'
 import TopRank from './components/TopRank.vue'
-import * as proto from '../../proto-gen/ts/backend/messages'
 
 const groups: { name: string; score: number }[] = [
   {
