@@ -25,9 +25,6 @@ dependencies:
   google-protobuf:
     specifier: ^3.21.2
     version: 3.21.2
-  proto-gen-ts:
-    specifier: link:../proto-gen/ts
-    version: link:../proto-gen/ts
   vue:
     specifier: ^3.2.47
     version: 3.2.47
