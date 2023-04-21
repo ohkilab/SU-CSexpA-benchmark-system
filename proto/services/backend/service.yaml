@@ -10,8 +10,8 @@ client:
     dist: ../proto-gen/go
     opts:
       - paths=source_relative
-  ts:
+  grpc-web:
     plugin:
-      name: protoc-gen-ts
-      path: ./node_modules/.bin/protoc-gen-ts
-    dist: ../proto-gen/ts
+      name: protoc-gen-grpc-web
+      path: ./bin/protoc-gen-grpc-web
+    dist: import_style=typescript,mode=grpcweb:../proto-gen/web
