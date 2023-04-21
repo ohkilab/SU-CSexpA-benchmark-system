@@ -3,14 +3,18 @@ package grpc
 import (
 	"context"
 
+	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/ent"
+	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/usecases/auth"
 	pb "github.com/ohkilab/SU-CSexpA-benchmark-system/proto-gen/go/backend"
 )
 
 type backendServiceServer struct {
+	authInteractor *auth.AuthInteractor
 }
 
-func NewBackendService() pb.BackendServiceServer {
-	return &backendServiceServer{}
+func NewBackendService(entClient *ent.Client) pb.BackendServiceServer {
+	authInteractor := auth.NewInteractor(entClient)
+	return &backendServiceServer{authInteractor}
 }
 
 func (s *backendServiceServer) GetRanking(ctx context.Context, req *pb.GetRankingRequest) (*pb.GetRankingResponse, error) {
@@ -29,6 +33,5 @@ func (s *backendServiceServer) GetSubmit(req *pb.GetSubmitRequest, stream pb.Bac
 }
 
 func (s *backendServiceServer) PostLogin(ctx context.Context, req *pb.PostLoginRequest) (*pb.PostLoginResponse, error) {
-	// !!!unimplemented!!!
-	return nil, nil
+	return s.authInteractor.PostLogin(ctx, req.Id, req.Password)
 }
