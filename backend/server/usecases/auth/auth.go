@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/ent"
+	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/core/auth"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/proto-gen/go/backend"
 	"golang.org/x/crypto/bcrypt"
 	"google.golang.org/grpc/codes"
@@ -11,11 +12,12 @@ import (
 )
 
 type AuthInteractor struct {
+	secret    string
 	entClient *ent.Client
 }
 
-func NewInteractor(entClient *ent.Client) *AuthInteractor {
-	return &AuthInteractor{entClient}
+func NewInteractor(secret string, entClient *ent.Client) *AuthInteractor {
+	return &AuthInteractor{secret, entClient}
 }
 
 func (i *AuthInteractor) PostLogin(ctx context.Context, id, password string) (*backend.PostLoginResponse, error) {
@@ -29,9 +31,16 @@ func (i *AuthInteractor) PostLogin(ctx context.Context, id, password string) (*b
 	if err := bcrypt.CompareHashAndPassword([]byte(group.EncryptedPassword), []byte(password)); err != nil {
 		return nil, status.Error(codes.Unauthenticated, "password mismatch")
 	}
-	return &backend.PostLoginResponse{Group: &backend.Group{
-		Id:   group.ID,
-		Year: int32(group.Year),
-		Role: backend.Role(backend.Role_value[group.Role.String()]),
-	}}, nil
+	jwtToken, err := auth.GenerateJWTToken(i.secret, group.ID, group.Year)
+	if err != nil {
+		return nil, err
+	}
+	return &backend.PostLoginResponse{
+		Group: &backend.Group{
+			Id:   group.ID,
+			Year: int32(group.Year),
+			Role: backend.Role(backend.Role_value[group.Role.String()]),
+		},
+		Token: jwtToken,
+	}, nil
 }

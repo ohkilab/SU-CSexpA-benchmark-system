@@ -12,8 +12,8 @@ type backendServiceServer struct {
 	authInteractor *auth.AuthInteractor
 }
 
-func NewBackendService(entClient *ent.Client) pb.BackendServiceServer {
-	authInteractor := auth.NewInteractor(entClient)
+func NewBackendService(secret string, entClient *ent.Client) pb.BackendServiceServer {
+	authInteractor := auth.NewInteractor(secret, entClient)
 	return &backendServiceServer{authInteractor}
 }
 
