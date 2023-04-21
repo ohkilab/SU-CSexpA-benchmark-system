@@ -12,6 +12,7 @@ message PostLoginRequest {
 
 message PostLoginResponse {
   Group group = 1;
+  string token = 2;
 }
 
 message PostSubmitRequest {

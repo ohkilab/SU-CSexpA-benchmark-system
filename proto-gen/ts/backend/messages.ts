@@ -100,12 +100,16 @@ export class PostLoginResponse extends pb_1.Message {
     #one_of_decls: number[][] = [];
     constructor(data?: any[] | {
         group?: dependency_1.Group;
+        token?: string;
     }) {
         super();
         pb_1.Message.initialize(this, Array.isArray(data) ? data : [], 0, -1, [], this.#one_of_decls);
         if (!Array.isArray(data) && typeof data == "object") {
             if ("group" in data && data.group != undefined) {
                 this.group = data.group;
+            }
+            if ("token" in data && data.token != undefined) {
+                this.token = data.token;
             }
         }
     }
@@ -118,21 +122,35 @@ export class PostLoginResponse extends pb_1.Message {
     get has_group() {
         return pb_1.Message.getField(this, 1) != null;
     }
+    get token() {
+        return pb_1.Message.getFieldWithDefault(this, 2, "") as string;
+    }
+    set token(value: string) {
+        pb_1.Message.setField(this, 2, value);
+    }
     static fromObject(data: {
         group?: ReturnType<typeof dependency_1.Group.prototype.toObject>;
+        token?: string;
     }): PostLoginResponse {
         const message = new PostLoginResponse({});
         if (data.group != null) {
             message.group = dependency_1.Group.fromObject(data.group);
+        }
+        if (data.token != null) {
+            message.token = data.token;
         }
         return message;
     }
     toObject() {
         const data: {
             group?: ReturnType<typeof dependency_1.Group.prototype.toObject>;
+            token?: string;
         } = {};
         if (this.group != null) {
             data.group = this.group.toObject();
+        }
+        if (this.token != null) {
+            data.token = this.token;
         }
         return data;
     }
@@ -142,6 +160,8 @@ export class PostLoginResponse extends pb_1.Message {
         const writer = w || new pb_1.BinaryWriter();
         if (this.has_group)
             writer.writeMessage(1, this.group, () => this.group.serialize(writer));
+        if (this.token.length)
+            writer.writeString(2, this.token);
         if (!w)
             return writer.getResultBuffer();
     }
@@ -153,6 +173,9 @@ export class PostLoginResponse extends pb_1.Message {
             switch (reader.getFieldNumber()) {
                 case 1:
                     reader.readMessage(message.group, () => message.group = dependency_1.Group.deserialize(reader));
+                    break;
+                case 2:
+                    message.token = reader.readString();
                     break;
                 default: reader.skipField();
             }
