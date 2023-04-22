@@ -10,13 +10,9 @@ message PostLoginRequest {
   string password = 2;
 }
 
-message PostLoginResponse {
-  Group group = 1;
-}
+message PostLoginResponse { Group group = 1; }
 
-message PostSubmitRequest {
-  string ip_addr = 1;
-}
+message PostSubmitRequest { string ip_addr = 1; }
 
 message PostSubmitResponse {
   string id = 1;
@@ -24,9 +20,7 @@ message PostSubmitResponse {
   google.protobuf.Timestamp submited_at = 3;
 }
 
-message GetSubmitRequest {
-  string submit_id = 1;
-}
+message GetSubmitRequest { string submit_id = 1; }
 
 message GetSubmitResponse {
   message TagProgress {
@@ -35,16 +29,16 @@ message GetSubmitResponse {
     string name = 3; // it may be secret_{i}
   }
   oneof result {
-    TagProgress tag_progress = 1;  // if the submit is in progress, return this by server streaming.
-    Submit submit = 2;             // if the submit has been finished, return this only once.
+    TagProgress tag_progress =
+        1; // if the submit is in progress, return this by server streaming.
+    Submit submit =
+        2; // if the submit has been finished, return this only once.
   }
 }
 
 message GetRankingRequest {
   int32 year = 1;
-  bool contain_guest =
-      2; // if it is true, return ranking which includes guests
-
+  bool contain_guest = 2; // if it is true, return ranking which includes guests
 }
 
 message GetRankingResponse {
@@ -66,11 +60,10 @@ message GetGroupResponse {
   repeated GroupInfo groups = 1;
 }
 
+message PingUnaryRequest { string ping = 1; }
 
-message PingRequest {
-  string ping = 1;
-}
+message PingUnaryResponse { string pong = 1; }
 
-message PingResponse {
-  string pong = 1;
-}
+message PingServerSideStreamingRequest { string ping = 2; }
+
+message PingServerSideStreamingResponse { string pong = 2; }
