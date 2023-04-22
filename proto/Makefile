@@ -15,3 +15,4 @@ tools/install:
 .PHONY: generate
 generate:
 	go run -mod=mod ./cmd/generate
+	cp -r ../proto-gen/web ../frontend/proto-gen-web
