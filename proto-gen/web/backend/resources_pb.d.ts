@@ -1,41 +1,44 @@
-import * as jspb from 'google-protobuf'
+// package: 
+// file: backend/resources.proto
 
-import * as google_protobuf_timestamp_pb from 'google-protobuf/google/protobuf/timestamp_pb';
-
+import * as jspb from "google-protobuf";
+import * as google_protobuf_timestamp_pb from "google-protobuf/google/protobuf/timestamp_pb";
 
 export class Contest extends jspb.Message {
   getYear(): number;
-  setYear(value: number): Contest;
+  setYear(value: number): void;
 
-  getQualifierStartAt(): google_protobuf_timestamp_pb.Timestamp | undefined;
-  setQualifierStartAt(value?: google_protobuf_timestamp_pb.Timestamp): Contest;
   hasQualifierStartAt(): boolean;
-  clearQualifierStartAt(): Contest;
+  clearQualifierStartAt(): void;
+  getQualifierStartAt(): google_protobuf_timestamp_pb.Timestamp | undefined;
+  setQualifierStartAt(value?: google_protobuf_timestamp_pb.Timestamp): void;
 
-  getQualifierEndAt(): google_protobuf_timestamp_pb.Timestamp | undefined;
-  setQualifierEndAt(value?: google_protobuf_timestamp_pb.Timestamp): Contest;
   hasQualifierEndAt(): boolean;
-  clearQualifierEndAt(): Contest;
+  clearQualifierEndAt(): void;
+  getQualifierEndAt(): google_protobuf_timestamp_pb.Timestamp | undefined;
+  setQualifierEndAt(value?: google_protobuf_timestamp_pb.Timestamp): void;
 
   getQualifierSubmitLimit(): number;
-  setQualifierSubmitLimit(value: number): Contest;
+  setQualifierSubmitLimit(value: number): void;
 
-  getFinalStartAt(): google_protobuf_timestamp_pb.Timestamp | undefined;
-  setFinalStartAt(value?: google_protobuf_timestamp_pb.Timestamp): Contest;
   hasFinalStartAt(): boolean;
-  clearFinalStartAt(): Contest;
+  clearFinalStartAt(): void;
+  getFinalStartAt(): google_protobuf_timestamp_pb.Timestamp | undefined;
+  setFinalStartAt(value?: google_protobuf_timestamp_pb.Timestamp): void;
 
-  getFinalEndAt(): google_protobuf_timestamp_pb.Timestamp | undefined;
-  setFinalEndAt(value?: google_protobuf_timestamp_pb.Timestamp): Contest;
   hasFinalEndAt(): boolean;
-  clearFinalEndAt(): Contest;
+  clearFinalEndAt(): void;
+  getFinalEndAt(): google_protobuf_timestamp_pb.Timestamp | undefined;
+  setFinalEndAt(value?: google_protobuf_timestamp_pb.Timestamp): void;
 
   getFinalSubmitLimit(): number;
-  setFinalSubmitLimit(value: number): Contest;
+  setFinalSubmitLimit(value: number): void;
 
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): Contest.AsObject;
   static toObject(includeInstance: boolean, msg: Contest): Contest.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
   static serializeBinaryToWriter(message: Contest, writer: jspb.BinaryWriter): void;
   static deserializeBinary(bytes: Uint8Array): Contest;
   static deserializeBinaryFromReader(message: Contest, reader: jspb.BinaryReader): Contest;
@@ -55,17 +58,19 @@ export namespace Contest {
 
 export class Group extends jspb.Message {
   getId(): string;
-  setId(value: string): Group;
+  setId(value: string): void;
 
   getYear(): number;
-  setYear(value: number): Group;
+  setYear(value: number): void;
 
-  getRole(): Role;
-  setRole(value: Role): Group;
+  getRole(): RoleMap[keyof RoleMap];
+  setRole(value: RoleMap[keyof RoleMap]): void;
 
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): Group.AsObject;
   static toObject(includeInstance: boolean, msg: Group): Group.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
   static serializeBinaryToWriter(message: Group, writer: jspb.BinaryWriter): void;
   static deserializeBinary(bytes: Uint8Array): Group;
   static deserializeBinaryFromReader(message: Group, reader: jspb.BinaryReader): Group;
@@ -75,39 +80,41 @@ export namespace Group {
   export type AsObject = {
     id: string,
     year: number,
-    role: Role,
+    role: RoleMap[keyof RoleMap],
   }
 }
 
 export class Submit extends jspb.Message {
   getId(): string;
-  setId(value: string): Submit;
+  setId(value: string): void;
 
   getGroupId(): string;
-  setGroupId(value: string): Submit;
+  setGroupId(value: string): void;
 
   getYear(): number;
-  setYear(value: number): Submit;
+  setYear(value: number): void;
 
   getScore(): number;
-  setScore(value: number): Submit;
+  setScore(value: number): void;
 
-  getLanguage(): Language;
-  setLanguage(value: Language): Submit;
+  getLanguage(): LanguageMap[keyof LanguageMap];
+  setLanguage(value: LanguageMap[keyof LanguageMap]): void;
 
-  getSubmitedAt(): google_protobuf_timestamp_pb.Timestamp | undefined;
-  setSubmitedAt(value?: google_protobuf_timestamp_pb.Timestamp): Submit;
   hasSubmitedAt(): boolean;
-  clearSubmitedAt(): Submit;
+  clearSubmitedAt(): void;
+  getSubmitedAt(): google_protobuf_timestamp_pb.Timestamp | undefined;
+  setSubmitedAt(value?: google_protobuf_timestamp_pb.Timestamp): void;
 
+  clearTagResultsList(): void;
   getTagResultsList(): Array<TagResult>;
-  setTagResultsList(value: Array<TagResult>): Submit;
-  clearTagResultsList(): Submit;
+  setTagResultsList(value: Array<TagResult>): void;
   addTagResults(value?: TagResult, index?: number): TagResult;
 
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): Submit.AsObject;
   static toObject(includeInstance: boolean, msg: Submit): Submit.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
   static serializeBinaryToWriter(message: Submit, writer: jspb.BinaryWriter): void;
   static deserializeBinary(bytes: Uint8Array): Submit;
   static deserializeBinaryFromReader(message: Submit, reader: jspb.BinaryReader): Submit;
@@ -119,7 +126,7 @@ export namespace Submit {
     groupId: string,
     year: number,
     score: number,
-    language: Language,
+    language: LanguageMap[keyof LanguageMap],
     submitedAt?: google_protobuf_timestamp_pb.Timestamp.AsObject,
     tagResultsList: Array<TagResult.AsObject>,
   }
@@ -127,17 +134,19 @@ export namespace Submit {
 
 export class TagResult extends jspb.Message {
   getSubmitId(): string;
-  setSubmitId(value: string): TagResult;
+  setSubmitId(value: string): void;
 
   getName(): string;
-  setName(value: string): TagResult;
+  setName(value: string): void;
 
   getScore(): number;
-  setScore(value: number): TagResult;
+  setScore(value: number): void;
 
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): TagResult.AsObject;
   static toObject(includeInstance: boolean, msg: TagResult): TagResult.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
   static serializeBinaryToWriter(message: TagResult, writer: jspb.BinaryWriter): void;
   static deserializeBinary(bytes: Uint8Array): TagResult;
   static deserializeBinaryFromReader(message: TagResult, reader: jspb.BinaryReader): TagResult;
@@ -151,17 +160,23 @@ export namespace TagResult {
   }
 }
 
-export enum Language { 
-  PHP = 0,
-  GO = 1,
-  RUST = 2,
-  JAVASCRIPT = 3,
-  CSHARP = 4,
-  CPP = 5,
-  RUBY = 6,
-  PYTHON = 7,
+export interface LanguageMap {
+  PHP: 0;
+  GO: 1;
+  RUST: 2;
+  JAVASCRIPT: 3;
+  CSHARP: 4;
+  CPP: 5;
+  RUBY: 6;
+  PYTHON: 7;
 }
-export enum Role { 
-  CONTESTANT = 0,
-  GUEST = 1,
+
+export const Language: LanguageMap;
+
+export interface RoleMap {
+  CONTESTANT: 0;
+  GUEST: 1;
 }
+
+export const Role: RoleMap;
+
