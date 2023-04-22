@@ -244,3 +244,91 @@ var BackendService_ServiceDesc = grpc.ServiceDesc{
 	},
 	Metadata: "backend/services.proto",
 }
+
+const (
+	HealthCheck_Ping_FullMethodName = "/HealthCheck/Ping"
+)
+
+// HealthCheckClient is the client API for HealthCheck service.
+//
+// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
+type HealthCheckClient interface {
+	Ping(ctx context.Context, in *PingRequest, opts ...grpc.CallOption) (*PingResponse, error)
+}
+
+type healthCheckClient struct {
+	cc grpc.ClientConnInterface
+}
+
+func NewHealthCheckClient(cc grpc.ClientConnInterface) HealthCheckClient {
+	return &healthCheckClient{cc}
+}
+
+func (c *healthCheckClient) Ping(ctx context.Context, in *PingRequest, opts ...grpc.CallOption) (*PingResponse, error) {
+	out := new(PingResponse)
+	err := c.cc.Invoke(ctx, HealthCheck_Ping_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+// HealthCheckServer is the server API for HealthCheck service.
+// All implementations should embed UnimplementedHealthCheckServer
+// for forward compatibility
+type HealthCheckServer interface {
+	Ping(context.Context, *PingRequest) (*PingResponse, error)
+}
+
+// UnimplementedHealthCheckServer should be embedded to have forward compatible implementations.
+type UnimplementedHealthCheckServer struct {
+}
+
+func (UnimplementedHealthCheckServer) Ping(context.Context, *PingRequest) (*PingResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Ping not implemented")
+}
+
+// UnsafeHealthCheckServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to HealthCheckServer will
+// result in compilation errors.
+type UnsafeHealthCheckServer interface {
+	mustEmbedUnimplementedHealthCheckServer()
+}
+
+func RegisterHealthCheckServer(s grpc.ServiceRegistrar, srv HealthCheckServer) {
+	s.RegisterService(&HealthCheck_ServiceDesc, srv)
+}
+
+func _HealthCheck_Ping_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(PingRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(HealthCheckServer).Ping(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: HealthCheck_Ping_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(HealthCheckServer).Ping(ctx, req.(*PingRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+// HealthCheck_ServiceDesc is the grpc.ServiceDesc for HealthCheck service.
+// It's only intended for direct use with grpc.RegisterService,
+// and not to be introspected or modified (even as a copy)
+var HealthCheck_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "HealthCheck",
+	HandlerType: (*HealthCheckServer)(nil),
+	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "Ping",
+			Handler:    _HealthCheck_Ping_Handler,
+		},
+	},
+	Streams:  []grpc.StreamDesc{},
+	Metadata: "backend/services.proto",
+}

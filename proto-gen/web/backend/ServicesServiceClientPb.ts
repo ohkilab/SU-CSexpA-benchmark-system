@@ -192,3 +192,67 @@ export class BackendServiceClient {
 
 }
 
+export class HealthCheckClient {
+  client_: grpcWeb.AbstractClientBase;
+  hostname_: string;
+  credentials_: null | { [index: string]: string; };
+  options_: null | { [index: string]: any; };
+
+  constructor (hostname: string,
+               credentials?: null | { [index: string]: string; },
+               options?: null | { [index: string]: any; }) {
+    if (!options) options = {};
+    if (!credentials) credentials = {};
+    options['format'] = 'binary';
+
+    this.client_ = new grpcWeb.GrpcWebClientBase(options);
+    this.hostname_ = hostname.replace(/\/+$/, '');
+    this.credentials_ = credentials;
+    this.options_ = options;
+  }
+
+  methodDescriptorPing = new grpcWeb.MethodDescriptor(
+    '/HealthCheck/Ping',
+    grpcWeb.MethodType.UNARY,
+    backend_messages_pb.PingRequest,
+    backend_messages_pb.PingResponse,
+    (request: backend_messages_pb.PingRequest) => {
+      return request.serializeBinary();
+    },
+    backend_messages_pb.PingResponse.deserializeBinary
+  );
+
+  ping(
+    request: backend_messages_pb.PingRequest,
+    metadata: grpcWeb.Metadata | null): Promise<backend_messages_pb.PingResponse>;
+
+  ping(
+    request: backend_messages_pb.PingRequest,
+    metadata: grpcWeb.Metadata | null,
+    callback: (err: grpcWeb.RpcError,
+               response: backend_messages_pb.PingResponse) => void): grpcWeb.ClientReadableStream<backend_messages_pb.PingResponse>;
+
+  ping(
+    request: backend_messages_pb.PingRequest,
+    metadata: grpcWeb.Metadata | null,
+    callback?: (err: grpcWeb.RpcError,
+               response: backend_messages_pb.PingResponse) => void) {
+    if (callback !== undefined) {
+      return this.client_.rpcCall(
+        this.hostname_ +
+          '/HealthCheck/Ping',
+        request,
+        metadata || {},
+        this.methodDescriptorPing,
+        callback);
+    }
+    return this.client_.unaryCall(
+    this.hostname_ +
+      '/HealthCheck/Ping',
+    request,
+    metadata || {},
+    this.methodDescriptorPing);
+  }
+
+}
+

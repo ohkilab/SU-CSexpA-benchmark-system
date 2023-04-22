@@ -65,3 +65,12 @@ message GetGroupResponse {
   }
   repeated GroupInfo groups = 1;
 }
+
+
+message PingRequest {
+  string ping = 1;
+}
+
+message PingResponse {
+  string pong = 1;
+}

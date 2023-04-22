@@ -557,6 +557,100 @@ func (x *GetGroupResponse) GetGroups() []*GetGroupResponse_GroupInfo {
 	return nil
 }
 
+type PingRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Ping string `protobuf:"bytes,1,opt,name=ping,proto3" json:"ping,omitempty"`
+}
+
+func (x *PingRequest) Reset() {
+	*x = PingRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_backend_messages_proto_msgTypes[10]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *PingRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*PingRequest) ProtoMessage() {}
+
+func (x *PingRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_backend_messages_proto_msgTypes[10]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use PingRequest.ProtoReflect.Descriptor instead.
+func (*PingRequest) Descriptor() ([]byte, []int) {
+	return file_backend_messages_proto_rawDescGZIP(), []int{10}
+}
+
+func (x *PingRequest) GetPing() string {
+	if x != nil {
+		return x.Ping
+	}
+	return ""
+}
+
+type PingResponse struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Pong string `protobuf:"bytes,1,opt,name=pong,proto3" json:"pong,omitempty"`
+}
+
+func (x *PingResponse) Reset() {
+	*x = PingResponse{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_backend_messages_proto_msgTypes[11]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *PingResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*PingResponse) ProtoMessage() {}
+
+func (x *PingResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_backend_messages_proto_msgTypes[11]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use PingResponse.ProtoReflect.Descriptor instead.
+func (*PingResponse) Descriptor() ([]byte, []int) {
+	return file_backend_messages_proto_rawDescGZIP(), []int{11}
+}
+
+func (x *PingResponse) GetPong() string {
+	if x != nil {
+		return x.Pong
+	}
+	return ""
+}
+
 type GetSubmitResponse_TagProgress struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -570,7 +664,7 @@ type GetSubmitResponse_TagProgress struct {
 func (x *GetSubmitResponse_TagProgress) Reset() {
 	*x = GetSubmitResponse_TagProgress{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_backend_messages_proto_msgTypes[10]
+		mi := &file_backend_messages_proto_msgTypes[12]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -583,7 +677,7 @@ func (x *GetSubmitResponse_TagProgress) String() string {
 func (*GetSubmitResponse_TagProgress) ProtoMessage() {}
 
 func (x *GetSubmitResponse_TagProgress) ProtoReflect() protoreflect.Message {
-	mi := &file_backend_messages_proto_msgTypes[10]
+	mi := &file_backend_messages_proto_msgTypes[12]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -633,7 +727,7 @@ type GetRankingResponse_Record struct {
 func (x *GetRankingResponse_Record) Reset() {
 	*x = GetRankingResponse_Record{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_backend_messages_proto_msgTypes[11]
+		mi := &file_backend_messages_proto_msgTypes[13]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -646,7 +740,7 @@ func (x *GetRankingResponse_Record) String() string {
 func (*GetRankingResponse_Record) ProtoMessage() {}
 
 func (x *GetRankingResponse_Record) ProtoReflect() protoreflect.Message {
-	mi := &file_backend_messages_proto_msgTypes[11]
+	mi := &file_backend_messages_proto_msgTypes[13]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -695,7 +789,7 @@ type GetGroupResponse_GroupInfo struct {
 func (x *GetGroupResponse_GroupInfo) Reset() {
 	*x = GetGroupResponse_GroupInfo{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_backend_messages_proto_msgTypes[12]
+		mi := &file_backend_messages_proto_msgTypes[14]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -708,7 +802,7 @@ func (x *GetGroupResponse_GroupInfo) String() string {
 func (*GetGroupResponse_GroupInfo) ProtoMessage() {}
 
 func (x *GetGroupResponse_GroupInfo) ProtoReflect() protoreflect.Message {
-	mi := &file_backend_messages_proto_msgTypes[12]
+	mi := &file_backend_messages_proto_msgTypes[14]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -808,8 +902,12 @@ var file_backend_messages_proto_rawDesc = []byte{
 	0x06, 0x2e, 0x47, 0x72, 0x6f, 0x75, 0x70, 0x52, 0x05, 0x67, 0x72, 0x6f, 0x75, 0x70, 0x12, 0x21,
 	0x0a, 0x07, 0x73, 0x75, 0x62, 0x6d, 0x69, 0x74, 0x73, 0x18, 0x02, 0x20, 0x03, 0x28, 0x0b, 0x32,
 	0x07, 0x2e, 0x53, 0x75, 0x62, 0x6d, 0x69, 0x74, 0x52, 0x07, 0x73, 0x75, 0x62, 0x6d, 0x69, 0x74,
-	0x73, 0x42, 0x0b, 0x5a, 0x09, 0x2e, 0x2f, 0x62, 0x61, 0x63, 0x6b, 0x65, 0x6e, 0x64, 0x62, 0x06,
-	0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x73, 0x22, 0x21, 0x0a, 0x0b, 0x50, 0x69, 0x6e, 0x67, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74,
+	0x12, 0x12, 0x0a, 0x04, 0x70, 0x69, 0x6e, 0x67, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04,
+	0x70, 0x69, 0x6e, 0x67, 0x22, 0x22, 0x0a, 0x0c, 0x50, 0x69, 0x6e, 0x67, 0x52, 0x65, 0x73, 0x70,
+	0x6f, 0x6e, 0x73, 0x65, 0x12, 0x12, 0x0a, 0x04, 0x70, 0x6f, 0x6e, 0x67, 0x18, 0x01, 0x20, 0x01,
+	0x28, 0x09, 0x52, 0x04, 0x70, 0x6f, 0x6e, 0x67, 0x42, 0x0b, 0x5a, 0x09, 0x2e, 0x2f, 0x62, 0x61,
+	0x63, 0x6b, 0x65, 0x6e, 0x64, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -824,7 +922,7 @@ func file_backend_messages_proto_rawDescGZIP() []byte {
 	return file_backend_messages_proto_rawDescData
 }
 
-var file_backend_messages_proto_msgTypes = make([]protoimpl.MessageInfo, 13)
+var file_backend_messages_proto_msgTypes = make([]protoimpl.MessageInfo, 15)
 var file_backend_messages_proto_goTypes = []interface{}{
 	(*PostLoginRequest)(nil),              // 0: PostLoginRequest
 	(*PostLoginResponse)(nil),             // 1: PostLoginResponse
@@ -836,23 +934,25 @@ var file_backend_messages_proto_goTypes = []interface{}{
 	(*GetRankingResponse)(nil),            // 7: GetRankingResponse
 	(*GetGroupRequest)(nil),               // 8: GetGroupRequest
 	(*GetGroupResponse)(nil),              // 9: GetGroupResponse
-	(*GetSubmitResponse_TagProgress)(nil), // 10: GetSubmitResponse.TagProgress
-	(*GetRankingResponse_Record)(nil),     // 11: GetRankingResponse.Record
-	(*GetGroupResponse_GroupInfo)(nil),    // 12: GetGroupResponse.GroupInfo
-	(*Group)(nil),                         // 13: Group
-	(*timestamppb.Timestamp)(nil),         // 14: google.protobuf.Timestamp
-	(*Submit)(nil),                        // 15: Submit
+	(*PingRequest)(nil),                   // 10: PingRequest
+	(*PingResponse)(nil),                  // 11: PingResponse
+	(*GetSubmitResponse_TagProgress)(nil), // 12: GetSubmitResponse.TagProgress
+	(*GetRankingResponse_Record)(nil),     // 13: GetRankingResponse.Record
+	(*GetGroupResponse_GroupInfo)(nil),    // 14: GetGroupResponse.GroupInfo
+	(*Group)(nil),                         // 15: Group
+	(*timestamppb.Timestamp)(nil),         // 16: google.protobuf.Timestamp
+	(*Submit)(nil),                        // 17: Submit
 }
 var file_backend_messages_proto_depIdxs = []int32{
-	13, // 0: PostLoginResponse.group:type_name -> Group
-	14, // 1: PostSubmitResponse.submited_at:type_name -> google.protobuf.Timestamp
-	10, // 2: GetSubmitResponse.tag_progress:type_name -> GetSubmitResponse.TagProgress
-	15, // 3: GetSubmitResponse.submit:type_name -> Submit
-	11, // 4: GetRankingResponse.records:type_name -> GetRankingResponse.Record
-	12, // 5: GetGroupResponse.groups:type_name -> GetGroupResponse.GroupInfo
-	13, // 6: GetRankingResponse.Record.group:type_name -> Group
-	13, // 7: GetGroupResponse.GroupInfo.group:type_name -> Group
-	15, // 8: GetGroupResponse.GroupInfo.submits:type_name -> Submit
+	15, // 0: PostLoginResponse.group:type_name -> Group
+	16, // 1: PostSubmitResponse.submited_at:type_name -> google.protobuf.Timestamp
+	12, // 2: GetSubmitResponse.tag_progress:type_name -> GetSubmitResponse.TagProgress
+	17, // 3: GetSubmitResponse.submit:type_name -> Submit
+	13, // 4: GetRankingResponse.records:type_name -> GetRankingResponse.Record
+	14, // 5: GetGroupResponse.groups:type_name -> GetGroupResponse.GroupInfo
+	15, // 6: GetRankingResponse.Record.group:type_name -> Group
+	15, // 7: GetGroupResponse.GroupInfo.group:type_name -> Group
+	17, // 8: GetGroupResponse.GroupInfo.submits:type_name -> Submit
 	9,  // [9:9] is the sub-list for method output_type
 	9,  // [9:9] is the sub-list for method input_type
 	9,  // [9:9] is the sub-list for extension type_name
@@ -988,7 +1088,7 @@ func file_backend_messages_proto_init() {
 			}
 		}
 		file_backend_messages_proto_msgTypes[10].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*GetSubmitResponse_TagProgress); i {
+			switch v := v.(*PingRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1000,7 +1100,7 @@ func file_backend_messages_proto_init() {
 			}
 		}
 		file_backend_messages_proto_msgTypes[11].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*GetRankingResponse_Record); i {
+			switch v := v.(*PingResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1012,6 +1112,30 @@ func file_backend_messages_proto_init() {
 			}
 		}
 		file_backend_messages_proto_msgTypes[12].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*GetSubmitResponse_TagProgress); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_backend_messages_proto_msgTypes[13].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*GetRankingResponse_Record); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_backend_messages_proto_msgTypes[14].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*GetGroupResponse_GroupInfo); i {
 			case 0:
 				return &v.state
@@ -1034,7 +1158,7 @@ func file_backend_messages_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_backend_messages_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   13,
+			NumMessages:   15,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

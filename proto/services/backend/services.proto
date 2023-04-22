@@ -10,3 +10,7 @@ service BackendService {
     rpc GetSubmit (GetSubmitRequest) returns (stream GetSubmitResponse);
     rpc PostLogin (PostLoginRequest) returns (PostLoginResponse);
 }
+
+service HealthCheck {
+    rpc Ping (PingRequest) returns (PingResponse);
+}

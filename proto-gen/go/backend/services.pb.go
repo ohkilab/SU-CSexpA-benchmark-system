@@ -39,8 +39,12 @@ var file_backend_services_proto_rawDesc = []byte{
 	0x70, 0x6f, 0x6e, 0x73, 0x65, 0x30, 0x01, 0x12, 0x32, 0x0a, 0x09, 0x50, 0x6f, 0x73, 0x74, 0x4c,
 	0x6f, 0x67, 0x69, 0x6e, 0x12, 0x11, 0x2e, 0x50, 0x6f, 0x73, 0x74, 0x4c, 0x6f, 0x67, 0x69, 0x6e,
 	0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x12, 0x2e, 0x50, 0x6f, 0x73, 0x74, 0x4c, 0x6f,
-	0x67, 0x69, 0x6e, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x42, 0x0b, 0x5a, 0x09, 0x2e,
-	0x2f, 0x62, 0x61, 0x63, 0x6b, 0x65, 0x6e, 0x64, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x67, 0x69, 0x6e, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x32, 0x32, 0x0a, 0x0b, 0x48,
+	0x65, 0x61, 0x6c, 0x74, 0x68, 0x43, 0x68, 0x65, 0x63, 0x6b, 0x12, 0x23, 0x0a, 0x04, 0x50, 0x69,
+	0x6e, 0x67, 0x12, 0x0c, 0x2e, 0x50, 0x69, 0x6e, 0x67, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74,
+	0x1a, 0x0d, 0x2e, 0x50, 0x69, 0x6e, 0x67, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x42,
+	0x0b, 0x5a, 0x09, 0x2e, 0x2f, 0x62, 0x61, 0x63, 0x6b, 0x65, 0x6e, 0x64, 0x62, 0x06, 0x70, 0x72,
+	0x6f, 0x74, 0x6f, 0x33,
 }
 
 var file_backend_services_proto_goTypes = []interface{}{
@@ -48,22 +52,26 @@ var file_backend_services_proto_goTypes = []interface{}{
 	(*PostSubmitRequest)(nil),  // 1: PostSubmitRequest
 	(*GetSubmitRequest)(nil),   // 2: GetSubmitRequest
 	(*PostLoginRequest)(nil),   // 3: PostLoginRequest
-	(*GetRankingResponse)(nil), // 4: GetRankingResponse
-	(*PostSubmitResponse)(nil), // 5: PostSubmitResponse
-	(*GetSubmitResponse)(nil),  // 6: GetSubmitResponse
-	(*PostLoginResponse)(nil),  // 7: PostLoginResponse
+	(*PingRequest)(nil),        // 4: PingRequest
+	(*GetRankingResponse)(nil), // 5: GetRankingResponse
+	(*PostSubmitResponse)(nil), // 6: PostSubmitResponse
+	(*GetSubmitResponse)(nil),  // 7: GetSubmitResponse
+	(*PostLoginResponse)(nil),  // 8: PostLoginResponse
+	(*PingResponse)(nil),       // 9: PingResponse
 }
 var file_backend_services_proto_depIdxs = []int32{
 	0, // 0: BackendService.GetRanking:input_type -> GetRankingRequest
 	1, // 1: BackendService.PostSubmit:input_type -> PostSubmitRequest
 	2, // 2: BackendService.GetSubmit:input_type -> GetSubmitRequest
 	3, // 3: BackendService.PostLogin:input_type -> PostLoginRequest
-	4, // 4: BackendService.GetRanking:output_type -> GetRankingResponse
-	5, // 5: BackendService.PostSubmit:output_type -> PostSubmitResponse
-	6, // 6: BackendService.GetSubmit:output_type -> GetSubmitResponse
-	7, // 7: BackendService.PostLogin:output_type -> PostLoginResponse
-	4, // [4:8] is the sub-list for method output_type
-	0, // [0:4] is the sub-list for method input_type
+	4, // 4: HealthCheck.Ping:input_type -> PingRequest
+	5, // 5: BackendService.GetRanking:output_type -> GetRankingResponse
+	6, // 6: BackendService.PostSubmit:output_type -> PostSubmitResponse
+	7, // 7: BackendService.GetSubmit:output_type -> GetSubmitResponse
+	8, // 8: BackendService.PostLogin:output_type -> PostLoginResponse
+	9, // 9: HealthCheck.Ping:output_type -> PingResponse
+	5, // [5:10] is the sub-list for method output_type
+	0, // [0:5] is the sub-list for method input_type
 	0, // [0:0] is the sub-list for extension type_name
 	0, // [0:0] is the sub-list for extension extendee
 	0, // [0:0] is the sub-list for field type_name
@@ -83,7 +91,7 @@ func file_backend_services_proto_init() {
 			NumEnums:      0,
 			NumMessages:   0,
 			NumExtensions: 0,
-			NumServices:   1,
+			NumServices:   2,
 		},
 		GoTypes:           file_backend_services_proto_goTypes,
 		DependencyIndexes: file_backend_services_proto_depIdxs,
