@@ -32,6 +32,12 @@ func (gc *GroupCreate) SetRole(gr group.Role) *GroupCreate {
 	return gc
 }
 
+// SetEncryptedPassword sets the "encrypted_password" field.
+func (gc *GroupCreate) SetEncryptedPassword(s string) *GroupCreate {
+	gc.mutation.SetEncryptedPassword(s)
+	return gc
+}
+
 // SetID sets the "id" field.
 func (gc *GroupCreate) SetID(s string) *GroupCreate {
 	gc.mutation.SetID(s)
@@ -103,6 +109,9 @@ func (gc *GroupCreate) check() error {
 			return &ValidationError{Name: "role", err: fmt.Errorf(`ent: validator failed for field "Group.role": %w`, err)}
 		}
 	}
+	if _, ok := gc.mutation.EncryptedPassword(); !ok {
+		return &ValidationError{Name: "encrypted_password", err: errors.New(`ent: missing required field "Group.encrypted_password"`)}
+	}
 	return nil
 }
 
@@ -145,6 +154,10 @@ func (gc *GroupCreate) createSpec() (*Group, *sqlgraph.CreateSpec) {
 	if value, ok := gc.mutation.Role(); ok {
 		_spec.SetField(group.FieldRole, field.TypeEnum, value)
 		_node.Role = value
+	}
+	if value, ok := gc.mutation.EncryptedPassword(); ok {
+		_spec.SetField(group.FieldEncryptedPassword, field.TypeString, value)
+		_node.EncryptedPassword = value
 	}
 	if nodes := gc.mutation.SubmitsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{

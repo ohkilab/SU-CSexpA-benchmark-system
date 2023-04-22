@@ -20,6 +20,8 @@ type Group struct {
 	Year int `json:"year,omitempty"`
 	// Role holds the value of the "role" field.
 	Role group.Role `json:"role,omitempty"`
+	// EncryptedPassword holds the value of the "encrypted_password" field.
+	EncryptedPassword string `json:"encrypted_password,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the GroupQuery when eager-loading is set.
 	Edges        GroupEdges `json:"edges"`
@@ -51,7 +53,7 @@ func (*Group) scanValues(columns []string) ([]any, error) {
 		switch columns[i] {
 		case group.FieldYear:
 			values[i] = new(sql.NullInt64)
-		case group.FieldID, group.FieldRole:
+		case group.FieldID, group.FieldRole, group.FieldEncryptedPassword:
 			values[i] = new(sql.NullString)
 		default:
 			values[i] = new(sql.UnknownType)
@@ -85,6 +87,12 @@ func (gr *Group) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field role", values[i])
 			} else if value.Valid {
 				gr.Role = group.Role(value.String)
+			}
+		case group.FieldEncryptedPassword:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field encrypted_password", values[i])
+			} else if value.Valid {
+				gr.EncryptedPassword = value.String
 			}
 		default:
 			gr.selectValues.Set(columns[i], values[i])
@@ -132,6 +140,9 @@ func (gr *Group) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("role=")
 	builder.WriteString(fmt.Sprintf("%v", gr.Role))
+	builder.WriteString(", ")
+	builder.WriteString("encrypted_password=")
+	builder.WriteString(gr.EncryptedPassword)
 	builder.WriteByte(')')
 	return builder.String()
 }
