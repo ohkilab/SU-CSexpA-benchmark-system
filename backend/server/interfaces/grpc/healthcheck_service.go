@@ -13,7 +13,7 @@ type healthcheckServiceServer struct {
 	healthcheckInteractor *healthcheck.HealthcheckInteractor
 }
 
-func NewHealthcheckService() pb.HealthCheckServer {
+func NewHealthcheckService() pb.HealthcheckServiceServer {
 	healthcheckInteractor := healthcheck.NewInteractor()
 	return &healthcheckServiceServer{healthcheckInteractor}
 }

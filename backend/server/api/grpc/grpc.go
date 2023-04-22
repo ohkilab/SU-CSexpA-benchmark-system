@@ -20,7 +20,7 @@ func NewServer(optionFuncs ...optionFunc) *grpc.Server {
 	backendService := interfaces.NewBackendService()
 	backend.RegisterBackendServiceServer(grpcServer, backendService)
 	healthcheckService := interfaces.NewHealthcheckService()
-	backend.RegisterHealthCheckServer(grpcServer, healthcheckService)
+	backend.RegisterHealthcheckServiceServer(grpcServer, healthcheckService)
 
 	return grpcServer
 }
