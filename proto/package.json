@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "ts-protoc-gen": "next"
+  }
+}
