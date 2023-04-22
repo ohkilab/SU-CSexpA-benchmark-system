@@ -2,6 +2,7 @@ package grpc
 
 import (
 	"context"
+	"time"
 
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/usecases/healthcheck"
 	pb "github.com/ohkilab/SU-CSexpA-benchmark-system/proto-gen/go/backend"
@@ -18,12 +19,32 @@ func NewHealthcheckService() pb.HealthcheckServiceServer {
 	return &healthcheckServiceServer{healthcheckInteractor}
 }
 
-func (s *healthcheckServiceServer) Ping(ctx context.Context, req *pb.PingRequest) (*pb.PingResponse, error) {
+func (s *healthcheckServiceServer) PingUnary(ctx context.Context, req *pb.PingUnaryRequest) (*pb.PingUnaryResponse, error) {
 	if len(req.Ping) == 0 {
 		return nil, status.Error(codes.InvalidArgument, "field ping: must not be empty")
 	}
 	if len(req.Ping) > 100000 {
 		return nil, status.Error(codes.InvalidArgument, "field ping: length must be less than 100000")
 	}
-	return s.healthcheckInteractor.Ping(ctx, req.Ping)
+	resp := &pb.PingUnaryResponse{
+		Pong: s.healthcheckInteractor.Ping(req.Ping),
+	}
+	return resp, nil
+}
+
+func (s *healthcheckServiceServer) PingServerSideStreaming(req *pb.PingServerSideStreamingRequest, stream pb.HealthcheckService_PingServerSideStreamingServer) error {
+	if len(req.Ping) == 0 {
+		return status.Error(codes.InvalidArgument, "field ping: must not be empty")
+	}
+	if len(req.Ping) > 100000 {
+		return status.Error(codes.InvalidArgument, "field ping: length must be less than 100000")
+	}
+	for {
+		if err := stream.Send(&pb.PingServerSideStreamingResponse{
+			Pong: s.healthcheckInteractor.Ping(req.Ping),
+		}); err != nil {
+			return err
+		}
+		time.Sleep(time.Second)
+	}
 }
