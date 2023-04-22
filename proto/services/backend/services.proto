@@ -11,6 +11,6 @@ service BackendService {
     rpc PostLogin (PostLoginRequest) returns (PostLoginResponse);
 }
 
-service HealthCheck {
+service HealthcheckService {
     rpc Ping (PingRequest) returns (PingResponse);
 }

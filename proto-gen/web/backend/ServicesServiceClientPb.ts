@@ -192,7 +192,7 @@ export class BackendServiceClient {
 
 }
 
-export class HealthCheckClient {
+export class HealthcheckServiceClient {
   client_: grpcWeb.AbstractClientBase;
   hostname_: string;
   credentials_: null | { [index: string]: string; };
@@ -212,7 +212,7 @@ export class HealthCheckClient {
   }
 
   methodDescriptorPing = new grpcWeb.MethodDescriptor(
-    '/HealthCheck/Ping',
+    '/HealthcheckService/Ping',
     grpcWeb.MethodType.UNARY,
     backend_messages_pb.PingRequest,
     backend_messages_pb.PingResponse,
@@ -240,7 +240,7 @@ export class HealthCheckClient {
     if (callback !== undefined) {
       return this.client_.rpcCall(
         this.hostname_ +
-          '/HealthCheck/Ping',
+          '/HealthcheckService/Ping',
         request,
         metadata || {},
         this.methodDescriptorPing,
@@ -248,7 +248,7 @@ export class HealthCheckClient {
     }
     return this.client_.unaryCall(
     this.hostname_ +
-      '/HealthCheck/Ping',
+      '/HealthcheckService/Ping',
     request,
     metadata || {},
     this.methodDescriptorPing);
