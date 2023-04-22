@@ -557,7 +557,7 @@ func (x *GetGroupResponse) GetGroups() []*GetGroupResponse_GroupInfo {
 	return nil
 }
 
-type PingRequest struct {
+type PingUnaryRequest struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
@@ -565,8 +565,8 @@ type PingRequest struct {
 	Ping string `protobuf:"bytes,1,opt,name=ping,proto3" json:"ping,omitempty"`
 }
 
-func (x *PingRequest) Reset() {
-	*x = PingRequest{}
+func (x *PingUnaryRequest) Reset() {
+	*x = PingUnaryRequest{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_backend_messages_proto_msgTypes[10]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -574,13 +574,13 @@ func (x *PingRequest) Reset() {
 	}
 }
 
-func (x *PingRequest) String() string {
+func (x *PingUnaryRequest) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*PingRequest) ProtoMessage() {}
+func (*PingUnaryRequest) ProtoMessage() {}
 
-func (x *PingRequest) ProtoReflect() protoreflect.Message {
+func (x *PingUnaryRequest) ProtoReflect() protoreflect.Message {
 	mi := &file_backend_messages_proto_msgTypes[10]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -592,19 +592,19 @@ func (x *PingRequest) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use PingRequest.ProtoReflect.Descriptor instead.
-func (*PingRequest) Descriptor() ([]byte, []int) {
+// Deprecated: Use PingUnaryRequest.ProtoReflect.Descriptor instead.
+func (*PingUnaryRequest) Descriptor() ([]byte, []int) {
 	return file_backend_messages_proto_rawDescGZIP(), []int{10}
 }
 
-func (x *PingRequest) GetPing() string {
+func (x *PingUnaryRequest) GetPing() string {
 	if x != nil {
 		return x.Ping
 	}
 	return ""
 }
 
-type PingResponse struct {
+type PingUnaryResponse struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
@@ -612,8 +612,8 @@ type PingResponse struct {
 	Pong string `protobuf:"bytes,1,opt,name=pong,proto3" json:"pong,omitempty"`
 }
 
-func (x *PingResponse) Reset() {
-	*x = PingResponse{}
+func (x *PingUnaryResponse) Reset() {
+	*x = PingUnaryResponse{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_backend_messages_proto_msgTypes[11]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -621,13 +621,13 @@ func (x *PingResponse) Reset() {
 	}
 }
 
-func (x *PingResponse) String() string {
+func (x *PingUnaryResponse) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*PingResponse) ProtoMessage() {}
+func (*PingUnaryResponse) ProtoMessage() {}
 
-func (x *PingResponse) ProtoReflect() protoreflect.Message {
+func (x *PingUnaryResponse) ProtoReflect() protoreflect.Message {
 	mi := &file_backend_messages_proto_msgTypes[11]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -639,12 +639,106 @@ func (x *PingResponse) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use PingResponse.ProtoReflect.Descriptor instead.
-func (*PingResponse) Descriptor() ([]byte, []int) {
+// Deprecated: Use PingUnaryResponse.ProtoReflect.Descriptor instead.
+func (*PingUnaryResponse) Descriptor() ([]byte, []int) {
 	return file_backend_messages_proto_rawDescGZIP(), []int{11}
 }
 
-func (x *PingResponse) GetPong() string {
+func (x *PingUnaryResponse) GetPong() string {
+	if x != nil {
+		return x.Pong
+	}
+	return ""
+}
+
+type PingServerSideStreamingRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Ping string `protobuf:"bytes,2,opt,name=ping,proto3" json:"ping,omitempty"`
+}
+
+func (x *PingServerSideStreamingRequest) Reset() {
+	*x = PingServerSideStreamingRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_backend_messages_proto_msgTypes[12]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *PingServerSideStreamingRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*PingServerSideStreamingRequest) ProtoMessage() {}
+
+func (x *PingServerSideStreamingRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_backend_messages_proto_msgTypes[12]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use PingServerSideStreamingRequest.ProtoReflect.Descriptor instead.
+func (*PingServerSideStreamingRequest) Descriptor() ([]byte, []int) {
+	return file_backend_messages_proto_rawDescGZIP(), []int{12}
+}
+
+func (x *PingServerSideStreamingRequest) GetPing() string {
+	if x != nil {
+		return x.Ping
+	}
+	return ""
+}
+
+type PingServerSideStreamingResponse struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Pong string `protobuf:"bytes,2,opt,name=pong,proto3" json:"pong,omitempty"`
+}
+
+func (x *PingServerSideStreamingResponse) Reset() {
+	*x = PingServerSideStreamingResponse{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_backend_messages_proto_msgTypes[13]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *PingServerSideStreamingResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*PingServerSideStreamingResponse) ProtoMessage() {}
+
+func (x *PingServerSideStreamingResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_backend_messages_proto_msgTypes[13]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use PingServerSideStreamingResponse.ProtoReflect.Descriptor instead.
+func (*PingServerSideStreamingResponse) Descriptor() ([]byte, []int) {
+	return file_backend_messages_proto_rawDescGZIP(), []int{13}
+}
+
+func (x *PingServerSideStreamingResponse) GetPong() string {
 	if x != nil {
 		return x.Pong
 	}
@@ -664,7 +758,7 @@ type GetSubmitResponse_TagProgress struct {
 func (x *GetSubmitResponse_TagProgress) Reset() {
 	*x = GetSubmitResponse_TagProgress{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_backend_messages_proto_msgTypes[12]
+		mi := &file_backend_messages_proto_msgTypes[14]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -677,7 +771,7 @@ func (x *GetSubmitResponse_TagProgress) String() string {
 func (*GetSubmitResponse_TagProgress) ProtoMessage() {}
 
 func (x *GetSubmitResponse_TagProgress) ProtoReflect() protoreflect.Message {
-	mi := &file_backend_messages_proto_msgTypes[12]
+	mi := &file_backend_messages_proto_msgTypes[14]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -727,7 +821,7 @@ type GetRankingResponse_Record struct {
 func (x *GetRankingResponse_Record) Reset() {
 	*x = GetRankingResponse_Record{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_backend_messages_proto_msgTypes[13]
+		mi := &file_backend_messages_proto_msgTypes[15]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -740,7 +834,7 @@ func (x *GetRankingResponse_Record) String() string {
 func (*GetRankingResponse_Record) ProtoMessage() {}
 
 func (x *GetRankingResponse_Record) ProtoReflect() protoreflect.Message {
-	mi := &file_backend_messages_proto_msgTypes[13]
+	mi := &file_backend_messages_proto_msgTypes[15]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -789,7 +883,7 @@ type GetGroupResponse_GroupInfo struct {
 func (x *GetGroupResponse_GroupInfo) Reset() {
 	*x = GetGroupResponse_GroupInfo{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_backend_messages_proto_msgTypes[14]
+		mi := &file_backend_messages_proto_msgTypes[16]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -802,7 +896,7 @@ func (x *GetGroupResponse_GroupInfo) String() string {
 func (*GetGroupResponse_GroupInfo) ProtoMessage() {}
 
 func (x *GetGroupResponse_GroupInfo) ProtoReflect() protoreflect.Message {
-	mi := &file_backend_messages_proto_msgTypes[14]
+	mi := &file_backend_messages_proto_msgTypes[16]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -902,12 +996,20 @@ var file_backend_messages_proto_rawDesc = []byte{
 	0x06, 0x2e, 0x47, 0x72, 0x6f, 0x75, 0x70, 0x52, 0x05, 0x67, 0x72, 0x6f, 0x75, 0x70, 0x12, 0x21,
 	0x0a, 0x07, 0x73, 0x75, 0x62, 0x6d, 0x69, 0x74, 0x73, 0x18, 0x02, 0x20, 0x03, 0x28, 0x0b, 0x32,
 	0x07, 0x2e, 0x53, 0x75, 0x62, 0x6d, 0x69, 0x74, 0x52, 0x07, 0x73, 0x75, 0x62, 0x6d, 0x69, 0x74,
-	0x73, 0x22, 0x21, 0x0a, 0x0b, 0x50, 0x69, 0x6e, 0x67, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74,
-	0x12, 0x12, 0x0a, 0x04, 0x70, 0x69, 0x6e, 0x67, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04,
-	0x70, 0x69, 0x6e, 0x67, 0x22, 0x22, 0x0a, 0x0c, 0x50, 0x69, 0x6e, 0x67, 0x52, 0x65, 0x73, 0x70,
-	0x6f, 0x6e, 0x73, 0x65, 0x12, 0x12, 0x0a, 0x04, 0x70, 0x6f, 0x6e, 0x67, 0x18, 0x01, 0x20, 0x01,
-	0x28, 0x09, 0x52, 0x04, 0x70, 0x6f, 0x6e, 0x67, 0x42, 0x0b, 0x5a, 0x09, 0x2e, 0x2f, 0x62, 0x61,
-	0x63, 0x6b, 0x65, 0x6e, 0x64, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x73, 0x22, 0x26, 0x0a, 0x10, 0x50, 0x69, 0x6e, 0x67, 0x55, 0x6e, 0x61, 0x72, 0x79, 0x52, 0x65,
+	0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x12, 0x0a, 0x04, 0x70, 0x69, 0x6e, 0x67, 0x18, 0x01, 0x20,
+	0x01, 0x28, 0x09, 0x52, 0x04, 0x70, 0x69, 0x6e, 0x67, 0x22, 0x27, 0x0a, 0x11, 0x50, 0x69, 0x6e,
+	0x67, 0x55, 0x6e, 0x61, 0x72, 0x79, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x12,
+	0x0a, 0x04, 0x70, 0x6f, 0x6e, 0x67, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x70, 0x6f,
+	0x6e, 0x67, 0x22, 0x34, 0x0a, 0x1e, 0x50, 0x69, 0x6e, 0x67, 0x53, 0x65, 0x72, 0x76, 0x65, 0x72,
+	0x53, 0x69, 0x64, 0x65, 0x53, 0x74, 0x72, 0x65, 0x61, 0x6d, 0x69, 0x6e, 0x67, 0x52, 0x65, 0x71,
+	0x75, 0x65, 0x73, 0x74, 0x12, 0x12, 0x0a, 0x04, 0x70, 0x69, 0x6e, 0x67, 0x18, 0x02, 0x20, 0x01,
+	0x28, 0x09, 0x52, 0x04, 0x70, 0x69, 0x6e, 0x67, 0x22, 0x35, 0x0a, 0x1f, 0x50, 0x69, 0x6e, 0x67,
+	0x53, 0x65, 0x72, 0x76, 0x65, 0x72, 0x53, 0x69, 0x64, 0x65, 0x53, 0x74, 0x72, 0x65, 0x61, 0x6d,
+	0x69, 0x6e, 0x67, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x12, 0x0a, 0x04, 0x70,
+	0x6f, 0x6e, 0x67, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x70, 0x6f, 0x6e, 0x67, 0x42,
+	0x0b, 0x5a, 0x09, 0x2e, 0x2f, 0x62, 0x61, 0x63, 0x6b, 0x65, 0x6e, 0x64, 0x62, 0x06, 0x70, 0x72,
+	0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -922,37 +1024,39 @@ func file_backend_messages_proto_rawDescGZIP() []byte {
 	return file_backend_messages_proto_rawDescData
 }
 
-var file_backend_messages_proto_msgTypes = make([]protoimpl.MessageInfo, 15)
+var file_backend_messages_proto_msgTypes = make([]protoimpl.MessageInfo, 17)
 var file_backend_messages_proto_goTypes = []interface{}{
-	(*PostLoginRequest)(nil),              // 0: PostLoginRequest
-	(*PostLoginResponse)(nil),             // 1: PostLoginResponse
-	(*PostSubmitRequest)(nil),             // 2: PostSubmitRequest
-	(*PostSubmitResponse)(nil),            // 3: PostSubmitResponse
-	(*GetSubmitRequest)(nil),              // 4: GetSubmitRequest
-	(*GetSubmitResponse)(nil),             // 5: GetSubmitResponse
-	(*GetRankingRequest)(nil),             // 6: GetRankingRequest
-	(*GetRankingResponse)(nil),            // 7: GetRankingResponse
-	(*GetGroupRequest)(nil),               // 8: GetGroupRequest
-	(*GetGroupResponse)(nil),              // 9: GetGroupResponse
-	(*PingRequest)(nil),                   // 10: PingRequest
-	(*PingResponse)(nil),                  // 11: PingResponse
-	(*GetSubmitResponse_TagProgress)(nil), // 12: GetSubmitResponse.TagProgress
-	(*GetRankingResponse_Record)(nil),     // 13: GetRankingResponse.Record
-	(*GetGroupResponse_GroupInfo)(nil),    // 14: GetGroupResponse.GroupInfo
-	(*Group)(nil),                         // 15: Group
-	(*timestamppb.Timestamp)(nil),         // 16: google.protobuf.Timestamp
-	(*Submit)(nil),                        // 17: Submit
+	(*PostLoginRequest)(nil),                // 0: PostLoginRequest
+	(*PostLoginResponse)(nil),               // 1: PostLoginResponse
+	(*PostSubmitRequest)(nil),               // 2: PostSubmitRequest
+	(*PostSubmitResponse)(nil),              // 3: PostSubmitResponse
+	(*GetSubmitRequest)(nil),                // 4: GetSubmitRequest
+	(*GetSubmitResponse)(nil),               // 5: GetSubmitResponse
+	(*GetRankingRequest)(nil),               // 6: GetRankingRequest
+	(*GetRankingResponse)(nil),              // 7: GetRankingResponse
+	(*GetGroupRequest)(nil),                 // 8: GetGroupRequest
+	(*GetGroupResponse)(nil),                // 9: GetGroupResponse
+	(*PingUnaryRequest)(nil),                // 10: PingUnaryRequest
+	(*PingUnaryResponse)(nil),               // 11: PingUnaryResponse
+	(*PingServerSideStreamingRequest)(nil),  // 12: PingServerSideStreamingRequest
+	(*PingServerSideStreamingResponse)(nil), // 13: PingServerSideStreamingResponse
+	(*GetSubmitResponse_TagProgress)(nil),   // 14: GetSubmitResponse.TagProgress
+	(*GetRankingResponse_Record)(nil),       // 15: GetRankingResponse.Record
+	(*GetGroupResponse_GroupInfo)(nil),      // 16: GetGroupResponse.GroupInfo
+	(*Group)(nil),                           // 17: Group
+	(*timestamppb.Timestamp)(nil),           // 18: google.protobuf.Timestamp
+	(*Submit)(nil),                          // 19: Submit
 }
 var file_backend_messages_proto_depIdxs = []int32{
-	15, // 0: PostLoginResponse.group:type_name -> Group
-	16, // 1: PostSubmitResponse.submited_at:type_name -> google.protobuf.Timestamp
-	12, // 2: GetSubmitResponse.tag_progress:type_name -> GetSubmitResponse.TagProgress
-	17, // 3: GetSubmitResponse.submit:type_name -> Submit
-	13, // 4: GetRankingResponse.records:type_name -> GetRankingResponse.Record
-	14, // 5: GetGroupResponse.groups:type_name -> GetGroupResponse.GroupInfo
-	15, // 6: GetRankingResponse.Record.group:type_name -> Group
-	15, // 7: GetGroupResponse.GroupInfo.group:type_name -> Group
-	17, // 8: GetGroupResponse.GroupInfo.submits:type_name -> Submit
+	17, // 0: PostLoginResponse.group:type_name -> Group
+	18, // 1: PostSubmitResponse.submited_at:type_name -> google.protobuf.Timestamp
+	14, // 2: GetSubmitResponse.tag_progress:type_name -> GetSubmitResponse.TagProgress
+	19, // 3: GetSubmitResponse.submit:type_name -> Submit
+	15, // 4: GetRankingResponse.records:type_name -> GetRankingResponse.Record
+	16, // 5: GetGroupResponse.groups:type_name -> GetGroupResponse.GroupInfo
+	17, // 6: GetRankingResponse.Record.group:type_name -> Group
+	17, // 7: GetGroupResponse.GroupInfo.group:type_name -> Group
+	19, // 8: GetGroupResponse.GroupInfo.submits:type_name -> Submit
 	9,  // [9:9] is the sub-list for method output_type
 	9,  // [9:9] is the sub-list for method input_type
 	9,  // [9:9] is the sub-list for extension type_name
@@ -1088,7 +1192,7 @@ func file_backend_messages_proto_init() {
 			}
 		}
 		file_backend_messages_proto_msgTypes[10].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*PingRequest); i {
+			switch v := v.(*PingUnaryRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1100,7 +1204,7 @@ func file_backend_messages_proto_init() {
 			}
 		}
 		file_backend_messages_proto_msgTypes[11].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*PingResponse); i {
+			switch v := v.(*PingUnaryResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1112,7 +1216,7 @@ func file_backend_messages_proto_init() {
 			}
 		}
 		file_backend_messages_proto_msgTypes[12].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*GetSubmitResponse_TagProgress); i {
+			switch v := v.(*PingServerSideStreamingRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1124,7 +1228,7 @@ func file_backend_messages_proto_init() {
 			}
 		}
 		file_backend_messages_proto_msgTypes[13].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*GetRankingResponse_Record); i {
+			switch v := v.(*PingServerSideStreamingResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1136,6 +1240,30 @@ func file_backend_messages_proto_init() {
 			}
 		}
 		file_backend_messages_proto_msgTypes[14].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*GetSubmitResponse_TagProgress); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_backend_messages_proto_msgTypes[15].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*GetRankingResponse_Record); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_backend_messages_proto_msgTypes[16].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*GetGroupResponse_GroupInfo); i {
 			case 0:
 				return &v.state
@@ -1158,7 +1286,7 @@ func file_backend_messages_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_backend_messages_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   15,
+			NumMessages:   17,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

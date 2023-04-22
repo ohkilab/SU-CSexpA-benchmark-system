@@ -211,47 +211,69 @@ export class HealthcheckServiceClient {
     this.options_ = options;
   }
 
-  methodDescriptorPing = new grpcWeb.MethodDescriptor(
-    '/HealthcheckService/Ping',
+  methodDescriptorPingUnary = new grpcWeb.MethodDescriptor(
+    '/HealthcheckService/PingUnary',
     grpcWeb.MethodType.UNARY,
-    backend_messages_pb.PingRequest,
-    backend_messages_pb.PingResponse,
-    (request: backend_messages_pb.PingRequest) => {
+    backend_messages_pb.PingUnaryRequest,
+    backend_messages_pb.PingUnaryResponse,
+    (request: backend_messages_pb.PingUnaryRequest) => {
       return request.serializeBinary();
     },
-    backend_messages_pb.PingResponse.deserializeBinary
+    backend_messages_pb.PingUnaryResponse.deserializeBinary
   );
 
-  ping(
-    request: backend_messages_pb.PingRequest,
-    metadata: grpcWeb.Metadata | null): Promise<backend_messages_pb.PingResponse>;
+  pingUnary(
+    request: backend_messages_pb.PingUnaryRequest,
+    metadata: grpcWeb.Metadata | null): Promise<backend_messages_pb.PingUnaryResponse>;
 
-  ping(
-    request: backend_messages_pb.PingRequest,
+  pingUnary(
+    request: backend_messages_pb.PingUnaryRequest,
     metadata: grpcWeb.Metadata | null,
     callback: (err: grpcWeb.RpcError,
-               response: backend_messages_pb.PingResponse) => void): grpcWeb.ClientReadableStream<backend_messages_pb.PingResponse>;
+               response: backend_messages_pb.PingUnaryResponse) => void): grpcWeb.ClientReadableStream<backend_messages_pb.PingUnaryResponse>;
 
-  ping(
-    request: backend_messages_pb.PingRequest,
+  pingUnary(
+    request: backend_messages_pb.PingUnaryRequest,
     metadata: grpcWeb.Metadata | null,
     callback?: (err: grpcWeb.RpcError,
-               response: backend_messages_pb.PingResponse) => void) {
+               response: backend_messages_pb.PingUnaryResponse) => void) {
     if (callback !== undefined) {
       return this.client_.rpcCall(
         this.hostname_ +
-          '/HealthcheckService/Ping',
+          '/HealthcheckService/PingUnary',
         request,
         metadata || {},
-        this.methodDescriptorPing,
+        this.methodDescriptorPingUnary,
         callback);
     }
     return this.client_.unaryCall(
     this.hostname_ +
-      '/HealthcheckService/Ping',
+      '/HealthcheckService/PingUnary',
     request,
     metadata || {},
-    this.methodDescriptorPing);
+    this.methodDescriptorPingUnary);
+  }
+
+  methodDescriptorPingServerSideStreaming = new grpcWeb.MethodDescriptor(
+    '/HealthcheckService/PingServerSideStreaming',
+    grpcWeb.MethodType.SERVER_STREAMING,
+    backend_messages_pb.PingServerSideStreamingRequest,
+    backend_messages_pb.PingServerSideStreamingResponse,
+    (request: backend_messages_pb.PingServerSideStreamingRequest) => {
+      return request.serializeBinary();
+    },
+    backend_messages_pb.PingServerSideStreamingResponse.deserializeBinary
+  );
+
+  pingServerSideStreaming(
+    request: backend_messages_pb.PingServerSideStreamingRequest,
+    metadata?: grpcWeb.Metadata): grpcWeb.ClientReadableStream<backend_messages_pb.PingServerSideStreamingResponse> {
+    return this.client_.serverStreaming(
+      this.hostname_ +
+        '/HealthcheckService/PingServerSideStreaming',
+      request,
+      metadata || {},
+      this.methodDescriptorPingServerSideStreaming);
   }
 
 }

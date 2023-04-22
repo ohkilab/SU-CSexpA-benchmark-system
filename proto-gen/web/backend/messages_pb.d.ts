@@ -307,37 +307,73 @@ export namespace GetGroupResponse {
 
 }
 
-export class PingRequest extends jspb.Message {
+export class PingUnaryRequest extends jspb.Message {
   getPing(): string;
-  setPing(value: string): PingRequest;
+  setPing(value: string): PingUnaryRequest;
 
   serializeBinary(): Uint8Array;
-  toObject(includeInstance?: boolean): PingRequest.AsObject;
-  static toObject(includeInstance: boolean, msg: PingRequest): PingRequest.AsObject;
-  static serializeBinaryToWriter(message: PingRequest, writer: jspb.BinaryWriter): void;
-  static deserializeBinary(bytes: Uint8Array): PingRequest;
-  static deserializeBinaryFromReader(message: PingRequest, reader: jspb.BinaryReader): PingRequest;
+  toObject(includeInstance?: boolean): PingUnaryRequest.AsObject;
+  static toObject(includeInstance: boolean, msg: PingUnaryRequest): PingUnaryRequest.AsObject;
+  static serializeBinaryToWriter(message: PingUnaryRequest, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): PingUnaryRequest;
+  static deserializeBinaryFromReader(message: PingUnaryRequest, reader: jspb.BinaryReader): PingUnaryRequest;
 }
 
-export namespace PingRequest {
+export namespace PingUnaryRequest {
   export type AsObject = {
     ping: string,
   }
 }
 
-export class PingResponse extends jspb.Message {
+export class PingUnaryResponse extends jspb.Message {
   getPong(): string;
-  setPong(value: string): PingResponse;
+  setPong(value: string): PingUnaryResponse;
 
   serializeBinary(): Uint8Array;
-  toObject(includeInstance?: boolean): PingResponse.AsObject;
-  static toObject(includeInstance: boolean, msg: PingResponse): PingResponse.AsObject;
-  static serializeBinaryToWriter(message: PingResponse, writer: jspb.BinaryWriter): void;
-  static deserializeBinary(bytes: Uint8Array): PingResponse;
-  static deserializeBinaryFromReader(message: PingResponse, reader: jspb.BinaryReader): PingResponse;
+  toObject(includeInstance?: boolean): PingUnaryResponse.AsObject;
+  static toObject(includeInstance: boolean, msg: PingUnaryResponse): PingUnaryResponse.AsObject;
+  static serializeBinaryToWriter(message: PingUnaryResponse, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): PingUnaryResponse;
+  static deserializeBinaryFromReader(message: PingUnaryResponse, reader: jspb.BinaryReader): PingUnaryResponse;
 }
 
-export namespace PingResponse {
+export namespace PingUnaryResponse {
+  export type AsObject = {
+    pong: string,
+  }
+}
+
+export class PingServerSideStreamingRequest extends jspb.Message {
+  getPing(): string;
+  setPing(value: string): PingServerSideStreamingRequest;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): PingServerSideStreamingRequest.AsObject;
+  static toObject(includeInstance: boolean, msg: PingServerSideStreamingRequest): PingServerSideStreamingRequest.AsObject;
+  static serializeBinaryToWriter(message: PingServerSideStreamingRequest, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): PingServerSideStreamingRequest;
+  static deserializeBinaryFromReader(message: PingServerSideStreamingRequest, reader: jspb.BinaryReader): PingServerSideStreamingRequest;
+}
+
+export namespace PingServerSideStreamingRequest {
+  export type AsObject = {
+    ping: string,
+  }
+}
+
+export class PingServerSideStreamingResponse extends jspb.Message {
+  getPong(): string;
+  setPong(value: string): PingServerSideStreamingResponse;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): PingServerSideStreamingResponse.AsObject;
+  static toObject(includeInstance: boolean, msg: PingServerSideStreamingResponse): PingServerSideStreamingResponse.AsObject;
+  static serializeBinaryToWriter(message: PingServerSideStreamingResponse, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): PingServerSideStreamingResponse;
+  static deserializeBinaryFromReader(message: PingServerSideStreamingResponse, reader: jspb.BinaryReader): PingServerSideStreamingResponse;
+}
+
+export namespace PingServerSideStreamingResponse {
   export type AsObject = {
     pong: string,
   }
