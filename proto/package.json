@@ -1,5 +1,5 @@
 {
   "dependencies": {
-    "ts-protoc-gen": "next"
+    "ts-proto": "^1.146.0"
   }
 }

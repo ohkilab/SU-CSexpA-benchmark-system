@@ -14,4 +14,9 @@ client:
     plugin:
       name: protoc-gen-grpc-web
       path: ./bin/protoc-gen-grpc-web
-    dist: import_style=typescript,mode=grpcwebtext:../proto-gen/web
+    dist: import_style=typescript,mode=grpcwebtext:../proto-gen/web/src
+  ts:
+    plugin:
+      name: protoc-gen-ts_proto
+      path: ./node_modules/.bin/protoc-gen-ts_proto
+    dist: service=grpc-web:../proto-gen/web/src
