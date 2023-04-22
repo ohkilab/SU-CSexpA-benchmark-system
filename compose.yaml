@@ -30,7 +30,7 @@ services:
   #     context: frontend
   #     dockerfile: Dockerfile
   #   ports:
-  #     - 8080:8080
+  #     - 8000:8000
   #   depends_on:
   #     - envoy
   #     - backend
@@ -38,6 +38,6 @@ services:
   envoy:
     image: envoyproxy/envoy:v1.26-latest
     ports:
-      - "9000:9000"
+      - "8080:8080"
     volumes:
       - ./frontend/envoy_docker.yaml:/etc/envoy/envoy.yaml
