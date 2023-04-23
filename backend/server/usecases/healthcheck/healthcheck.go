@@ -7,5 +7,5 @@ func NewInteractor() *HealthcheckInteractor {
 }
 
 func (i *HealthcheckInteractor) Ping(ping string) string {
-	return ping + " Pong:)"
+	return ping + " pong:)"
 }
