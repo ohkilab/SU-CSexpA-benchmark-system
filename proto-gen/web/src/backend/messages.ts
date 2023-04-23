@@ -35,6 +35,10 @@ export interface PostLoginResponse {
      * @generated from protobuf field: Group group = 1;
      */
     group?: Group;
+    /**
+     * @generated from protobuf field: string token = 2;
+     */
+    token: string;
 }
 /**
  * @generated from protobuf message PostSubmitRequest
@@ -275,11 +279,12 @@ export const PostLoginRequest = new PostLoginRequest$Type();
 class PostLoginResponse$Type extends MessageType<PostLoginResponse> {
     constructor() {
         super("PostLoginResponse", [
-            { no: 1, name: "group", kind: "message", T: () => Group }
+            { no: 1, name: "group", kind: "message", T: () => Group },
+            { no: 2, name: "token", kind: "scalar", T: 9 /*ScalarType.STRING*/ }
         ]);
     }
     create(value?: PartialMessage<PostLoginResponse>): PostLoginResponse {
-        const message = {};
+        const message = { token: "" };
         globalThis.Object.defineProperty(message, MESSAGE_TYPE, { enumerable: false, value: this });
         if (value !== undefined)
             reflectionMergePartial<PostLoginResponse>(this, message, value);
@@ -292,6 +297,9 @@ class PostLoginResponse$Type extends MessageType<PostLoginResponse> {
             switch (fieldNo) {
                 case /* Group group */ 1:
                     message.group = Group.internalBinaryRead(reader, reader.uint32(), options, message.group);
+                    break;
+                case /* string token */ 2:
+                    message.token = reader.string();
                     break;
                 default:
                     let u = options.readUnknownField;
@@ -308,6 +316,9 @@ class PostLoginResponse$Type extends MessageType<PostLoginResponse> {
         /* Group group = 1; */
         if (message.group)
             Group.internalBinaryWrite(message.group, writer.tag(1, WireType.LengthDelimited).fork(), options).join();
+        /* string token = 2; */
+        if (message.token !== "")
+            writer.tag(2, WireType.LengthDelimited).string(message.token);
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
