@@ -12,6 +12,7 @@ require (
 	github.com/kelseyhightower/envconfig v1.4.0
 	github.com/ohkilab/SU-CSexpA-benchmark-system/proto-gen/go v0.0.0-00010101000000-000000000000
 	github.com/pkg/errors v0.9.1
+	golang.org/x/crypto v0.0.0-20220517005047-85d78b3ac167
 	google.golang.org/grpc v1.54.0
 )
 

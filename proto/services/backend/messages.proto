@@ -10,7 +10,10 @@ message PostLoginRequest {
   string password = 2;
 }
 
-message PostLoginResponse { Group group = 1; }
+message PostLoginResponse {
+  Group group = 1;
+  string token = 2;
+}
 
 message PostSubmitRequest { string ip_addr = 1; }
 

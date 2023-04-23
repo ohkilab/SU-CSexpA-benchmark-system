@@ -18,6 +18,8 @@ const (
 	FieldYear = "year"
 	// FieldRole holds the string denoting the role field in the database.
 	FieldRole = "role"
+	// FieldEncryptedPassword holds the string denoting the encrypted_password field in the database.
+	FieldEncryptedPassword = "encrypted_password"
 	// EdgeSubmits holds the string denoting the submits edge name in mutations.
 	EdgeSubmits = "submits"
 	// Table holds the table name of the group in the database.
@@ -34,6 +36,7 @@ var Columns = []string{
 	FieldID,
 	FieldYear,
 	FieldRole,
+	FieldEncryptedPassword,
 }
 
 var (
@@ -96,6 +99,11 @@ func ByYear(opts ...sql.OrderTermOption) OrderOption {
 // ByRole orders the results by the role field.
 func ByRole(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldRole, opts...).ToFunc()
+}
+
+// ByEncryptedPassword orders the results by the encrypted_password field.
+func ByEncryptedPassword(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldEncryptedPassword, opts...).ToFunc()
 }
 
 // BySubmitsCount orders the results by submits count.

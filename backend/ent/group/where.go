@@ -68,6 +68,11 @@ func Year(v int) predicate.Group {
 	return predicate.Group(sql.FieldEQ(FieldYear, v))
 }
 
+// EncryptedPassword applies equality check predicate on the "encrypted_password" field. It's identical to EncryptedPasswordEQ.
+func EncryptedPassword(v string) predicate.Group {
+	return predicate.Group(sql.FieldEQ(FieldEncryptedPassword, v))
+}
+
 // YearEQ applies the EQ predicate on the "year" field.
 func YearEQ(v int) predicate.Group {
 	return predicate.Group(sql.FieldEQ(FieldYear, v))
@@ -126,6 +131,71 @@ func RoleIn(vs ...Role) predicate.Group {
 // RoleNotIn applies the NotIn predicate on the "role" field.
 func RoleNotIn(vs ...Role) predicate.Group {
 	return predicate.Group(sql.FieldNotIn(FieldRole, vs...))
+}
+
+// EncryptedPasswordEQ applies the EQ predicate on the "encrypted_password" field.
+func EncryptedPasswordEQ(v string) predicate.Group {
+	return predicate.Group(sql.FieldEQ(FieldEncryptedPassword, v))
+}
+
+// EncryptedPasswordNEQ applies the NEQ predicate on the "encrypted_password" field.
+func EncryptedPasswordNEQ(v string) predicate.Group {
+	return predicate.Group(sql.FieldNEQ(FieldEncryptedPassword, v))
+}
+
+// EncryptedPasswordIn applies the In predicate on the "encrypted_password" field.
+func EncryptedPasswordIn(vs ...string) predicate.Group {
+	return predicate.Group(sql.FieldIn(FieldEncryptedPassword, vs...))
+}
+
+// EncryptedPasswordNotIn applies the NotIn predicate on the "encrypted_password" field.
+func EncryptedPasswordNotIn(vs ...string) predicate.Group {
+	return predicate.Group(sql.FieldNotIn(FieldEncryptedPassword, vs...))
+}
+
+// EncryptedPasswordGT applies the GT predicate on the "encrypted_password" field.
+func EncryptedPasswordGT(v string) predicate.Group {
+	return predicate.Group(sql.FieldGT(FieldEncryptedPassword, v))
+}
+
+// EncryptedPasswordGTE applies the GTE predicate on the "encrypted_password" field.
+func EncryptedPasswordGTE(v string) predicate.Group {
+	return predicate.Group(sql.FieldGTE(FieldEncryptedPassword, v))
+}
+
+// EncryptedPasswordLT applies the LT predicate on the "encrypted_password" field.
+func EncryptedPasswordLT(v string) predicate.Group {
+	return predicate.Group(sql.FieldLT(FieldEncryptedPassword, v))
+}
+
+// EncryptedPasswordLTE applies the LTE predicate on the "encrypted_password" field.
+func EncryptedPasswordLTE(v string) predicate.Group {
+	return predicate.Group(sql.FieldLTE(FieldEncryptedPassword, v))
+}
+
+// EncryptedPasswordContains applies the Contains predicate on the "encrypted_password" field.
+func EncryptedPasswordContains(v string) predicate.Group {
+	return predicate.Group(sql.FieldContains(FieldEncryptedPassword, v))
+}
+
+// EncryptedPasswordHasPrefix applies the HasPrefix predicate on the "encrypted_password" field.
+func EncryptedPasswordHasPrefix(v string) predicate.Group {
+	return predicate.Group(sql.FieldHasPrefix(FieldEncryptedPassword, v))
+}
+
+// EncryptedPasswordHasSuffix applies the HasSuffix predicate on the "encrypted_password" field.
+func EncryptedPasswordHasSuffix(v string) predicate.Group {
+	return predicate.Group(sql.FieldHasSuffix(FieldEncryptedPassword, v))
+}
+
+// EncryptedPasswordEqualFold applies the EqualFold predicate on the "encrypted_password" field.
+func EncryptedPasswordEqualFold(v string) predicate.Group {
+	return predicate.Group(sql.FieldEqualFold(FieldEncryptedPassword, v))
+}
+
+// EncryptedPasswordContainsFold applies the ContainsFold predicate on the "encrypted_password" field.
+func EncryptedPasswordContainsFold(v string) predicate.Group {
+	return predicate.Group(sql.FieldContainsFold(FieldEncryptedPassword, v))
 }
 
 // HasSubmits applies the HasEdge predicate on the "submits" edge.
