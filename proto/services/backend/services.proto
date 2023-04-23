@@ -5,8 +5,14 @@ import "backend/messages.proto";
 option go_package = "./backend";
 
 service BackendService {
-    rpc GetRanking (GetRankingRequest) returns (GetRankingResponse);
-    rpc PostSubmit (PostSubmitRequest) returns (PostSubmitResponse);
-    rpc GetSubmit (GetSubmitRequest) returns (stream GetSubmitResponse);
-    rpc PostLogin (PostLoginRequest) returns (PostLoginResponse);
+  rpc GetRanking(GetRankingRequest) returns (GetRankingResponse);
+  rpc PostSubmit(PostSubmitRequest) returns (PostSubmitResponse);
+  rpc GetSubmit(GetSubmitRequest) returns (stream GetSubmitResponse);
+  rpc PostLogin(PostLoginRequest) returns (PostLoginResponse);
+}
+
+service HealthcheckService {
+  rpc PingUnary(PingUnaryRequest) returns (PingUnaryResponse);
+  rpc PingServerSideStreaming(PingServerSideStreamingRequest)
+      returns (stream PingServerSideStreamingResponse);
 }

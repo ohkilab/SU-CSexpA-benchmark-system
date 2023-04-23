@@ -6,15 +6,18 @@ services:
     env_file:
       - backend/.env
     restart: always
+    ports:
+      - "50051:50051"
     depends_on:
       - db
+      # - benchmark-service
 
-  benchmark-service:
-    build:
-      context: benchmark-service
-      dockerfile: Dockerfile
-    env_file:
-      - benchmark-service/.env
+  # benchmark-service:
+  #   build:
+  #     context: benchmark-service
+  #     dockerfile: Dockerfile
+  #   env_file:
+  #     - benchmark-service/.env
 
   db:
     image: mysql:8.0
@@ -24,9 +27,20 @@ services:
     volumes:
       - ./data:/var/lib/mysql
 
-  frontend:
-    build:
-      context: frontend
-      dockerfile: Dockerfile
+  # frontend:
+  #   build:
+  #     context: frontend
+  #     dockerfile: Dockerfile
+  #   ports:
+  #     - 8000:8000
+  #   depends_on:
+  #     - envoy
+  #     - backend
+
+  envoy:
+    image: envoyproxy/envoy:v1.26-latest
     ports:
-      - 8080:8080
+      - "8080:8080"
+      - "9901:9901"
+    volumes:
+      - ./frontend/envoy_docker.yaml:/etc/envoy/envoy.yaml

@@ -43,16 +43,22 @@ func optPlugin(name, path string) protocOptFunc {
 	}
 }
 
+func optRawOption(key, value string) protocOptFunc {
+	return func(lang string, mp map[string]string) {
+		mp[key] = value
+	}
+}
+
 func runProtoc(lang, protoPath string, opts ...protocOptFunc) error {
 	mp := make(map[string]string)
 	for _, optFunc := range opts {
 		optFunc(lang, mp)
 	}
-	args := []string{}
+	args := []string{"protoc"}
 	for key, val := range mp {
 		args = append(args, key+"="+val)
 	}
-	cmd := exec.Command("protoc", append(args, protoPath, "-I./vendor/protobuf/src", "-I./services")...)
+	cmd := exec.Command("npx", append(args, protoPath, "-I./vendor/protobuf/src", "-I./services")...)
 	log.Println(cmd.String())
 	stderr := &bytes.Buffer{}
 	cmd.Stderr = stderr

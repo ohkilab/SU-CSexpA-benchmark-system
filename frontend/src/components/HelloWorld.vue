@@ -1,9 +1,23 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-
+import { PingUnaryRequest } from "proto-gen-web/src/backend/messages"
+import { GrpcWebFetchTransport } from "@protobuf-ts/grpcweb-transport";
+import { HealthcheckServiceClient } from "proto-gen-web/src/backend/services.client";
 defineProps<{ msg: string }>()
 
 const count = ref(0)
+// it is recommend to use one client between modules.
+const healthcheckClient = new HealthcheckServiceClient(
+  new GrpcWebFetchTransport({
+    baseUrl: "http://localhost:8080", // request to envoy proxy
+  })
+);
+const req: PingUnaryRequest = { ping: "ping" };
+healthcheckClient.pingUnary(req, { meta: { "authorization": "Bearer <jwt-token>" } }).then((value) => {
+  console.log(value.response)
+}).catch((e) => {
+  console.error(e)
+})
 </script>
 
 <template>
@@ -19,9 +33,8 @@ const count = ref(0)
 
   <p>
     Check out
-    <a href="https://vuejs.org/guide/quick-start.html#local" target="_blank"
-      >create-vue</a
-    >, the official Vue + Vite starter
+    <a href="https://vuejs.org/guide/quick-start.html#local" target="_blank">create-vue</a>, the official Vue + Vite
+    starter
   </p>
   <p>
     Install
