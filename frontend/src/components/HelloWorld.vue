@@ -1,24 +1,23 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { PingUnaryRequest } from '../../proto-gen-web/backend/messages_pb';
-import { HealthcheckServiceClient } from '../../proto-gen-web/backend/ServicesServiceClientPb';
+import { PingUnaryRequest } from "proto-gen-web/src/backend/messages"
+import { GrpcWebFetchTransport } from "@protobuf-ts/grpcweb-transport";
+import { HealthcheckServiceClient } from "proto-gen-web/src/backend/services.client";
 defineProps<{ msg: string }>()
 
 const count = ref(0)
 // it is recommend to use one client between modules.
 const healthcheckClient = new HealthcheckServiceClient(
-  "http://localhost:9000" // request to envoy proxy
+  new GrpcWebFetchTransport({
+    baseUrl: "http://localhost:8080", // request to envoy proxy
+  })
 );
-const req = new PingUnaryRequest();
-req.setPing("ping");
-const metadata = {}; // gRPC metadata(e.g. set jwt token)
-healthcheckClient.pingUnary(req, metadata, (err, resp) => {
-  if (err) {
-    console.error(err);
-  } else {
-    console.log(resp.getPong());
-  }
-});
+const req: PingUnaryRequest = { ping: "ping" };
+healthcheckClient.pingUnary(req, { meta: { "authorization": "Bearer <jwt-token>" } }).then((value) => {
+  console.log(value.response)
+}).catch((e) => {
+  console.error(e)
+})
 </script>
 
 <template>
