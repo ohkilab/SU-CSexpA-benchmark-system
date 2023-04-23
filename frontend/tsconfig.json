@@ -13,16 +13,12 @@
     "skipLibCheck": true,
     "noEmit": true,
     "baseUrl": "./",
-    "paths": {
-      "@/*": ["./*"]
-    }
   },
   "include": [
     "src/**/*.ts",
     "src/**/*.d.ts",
     "src/**/*.tsx",
     "src/**/*.vue",
-    "proto-gen-web/**/*.ts"
   ],
   "references": [{ "path": "./tsconfig.node.json" }]
 }
