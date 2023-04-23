@@ -6,6 +6,8 @@ services:
     env_file:
       - backend/.env
     restart: always
+    ports:
+      - "50051:50051"
     depends_on:
       - db
       # - benchmark-service
