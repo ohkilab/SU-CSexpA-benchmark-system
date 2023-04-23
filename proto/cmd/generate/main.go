@@ -23,6 +23,7 @@ type LangYaml struct {
 		Name string `yaml:"name"`
 		Path string `yaml:"path"`
 	} `yaml:"plugin"`
+	RawOptions map[string]string `yaml:"raw_options"`
 }
 
 func (l *LangYaml) GrpcServerOptions() []protocOptFunc {
@@ -45,6 +46,9 @@ func (l *LangYaml) ClientOptions() []protocOptFunc {
 	}
 	for _, opt := range l.Opts {
 		opts = append(opts, optOpt(opt))
+	}
+	for key, value := range l.RawOptions {
+		opts = append(opts, optRawOption(key, value))
 	}
 	return opts
 }

@@ -1,5 +1,7 @@
 {
   "dependencies": {
+    "@protobuf-ts/grpcweb-transport": "^2.8.3",
+    "@protobuf-ts/plugin": "^2.8.3",
     "ts-proto": "^1.146.0"
   }
 }
