@@ -22,7 +22,7 @@ onMounted(() => {
 })
 </script>
 <template>
-  <div class="flex flex-col my-auto">
+  <div class="flex flex-col mt-auto">
     <div v-if="status.benchmarking">
       <div class="flex flex-col gap-8 my-auto items-center justify-center">
         <div class="p-3 bg-gray-700 rounded shadow-md shadow-black opacity-70 scale-90">
