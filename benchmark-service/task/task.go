@@ -8,15 +8,19 @@ import (
 	"github.com/redis/go-redis/v9"
 )
 
-type Client struct {
+type Client interface {
+	SetTask(ctx context.Context, key string, task *Task) error
+}
+
+type client struct {
 	rds *redis.Client
 }
 
-func NewClient(rds *redis.Client) *Client {
-	return &Client{rds}
+func NewClient(rds *redis.Client) Client {
+	return &client{rds}
 }
 
-func (c *Client) SetTask(ctx context.Context, key string, task *Task) error {
+func (c *client) SetTask(ctx context.Context, key string, task *Task) error {
 	return c.rds.Set(ctx, key, task, time.Hour).Err()
 }
 

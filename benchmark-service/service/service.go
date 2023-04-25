@@ -6,9 +6,9 @@ import (
 )
 
 type service struct {
-	taskClient *task.Client
+	taskClient task.Client
 }
 
-func New(taskClient *task.Client) pb.BenchmarkServiceServer {
+func New(taskClient task.Client) pb.BenchmarkServiceServer {
 	return &service{taskClient}
 }
