@@ -7,7 +7,7 @@ import (
 	"net"
 
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/benchmark-service/task"
-	pb "github.com/ohkilab/SU-CSexpA-benchmark-system/proto-gen/go/benchmark-service"
+	pb "github.com/ohkilab/SU-CSexpA-benchmark-system/proto-gen/go/benchmark"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/types/known/timestamppb"
