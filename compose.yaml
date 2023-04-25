@@ -27,15 +27,17 @@ services:
     volumes:
       - ./data:/var/lib/mysql
 
-  # frontend:
-  #   build:
-  #     context: frontend
-  #     dockerfile: Dockerfile
-  #   ports:
-  #     - 8000:8000
-  #   depends_on:
-  #     - envoy
-  #     - backend
+  frontend:
+    build:
+      context: .
+      dockerfile: frontend/Dockerfile
+    ports:
+      - 8000:80
+    environment:
+      - NGINX_PORT=80
+    depends_on:
+      - envoy
+      - backend
 
   envoy:
     image: envoyproxy/envoy:v1.26-latest
