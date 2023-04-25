@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-import "benchmark-service/messages.proto";
+import "benchmark/messages.proto";
 
 option go_package = "./benchmark";
 

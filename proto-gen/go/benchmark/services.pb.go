@@ -2,7 +2,7 @@
 // versions:
 // 	protoc-gen-go v1.30.0
 // 	protoc        v3.21.12
-// source: benchmark-service/services.proto
+// source: benchmark/services.proto
 
 package benchmark
 
@@ -19,13 +19,12 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-var File_benchmark_service_services_proto protoreflect.FileDescriptor
+var File_benchmark_services_proto protoreflect.FileDescriptor
 
-var file_benchmark_service_services_proto_rawDesc = []byte{
-	0x0a, 0x20, 0x62, 0x65, 0x6e, 0x63, 0x68, 0x6d, 0x61, 0x72, 0x6b, 0x2d, 0x73, 0x65, 0x72, 0x76,
-	0x69, 0x63, 0x65, 0x2f, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x73, 0x2e, 0x70, 0x72, 0x6f,
-	0x74, 0x6f, 0x1a, 0x20, 0x62, 0x65, 0x6e, 0x63, 0x68, 0x6d, 0x61, 0x72, 0x6b, 0x2d, 0x73, 0x65,
-	0x72, 0x76, 0x69, 0x63, 0x65, 0x2f, 0x6d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x73, 0x2e, 0x70,
+var file_benchmark_services_proto_rawDesc = []byte{
+	0x0a, 0x18, 0x62, 0x65, 0x6e, 0x63, 0x68, 0x6d, 0x61, 0x72, 0x6b, 0x2f, 0x73, 0x65, 0x72, 0x76,
+	0x69, 0x63, 0x65, 0x73, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x1a, 0x18, 0x62, 0x65, 0x6e, 0x63,
+	0x68, 0x6d, 0x61, 0x72, 0x6b, 0x2f, 0x6d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x73, 0x2e, 0x70,
 	0x72, 0x6f, 0x74, 0x6f, 0x32, 0x49, 0x0a, 0x10, 0x42, 0x65, 0x6e, 0x63, 0x68, 0x6d, 0x61, 0x72,
 	0x6b, 0x53, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x12, 0x35, 0x0a, 0x0a, 0x43, 0x72, 0x65, 0x61,
 	0x74, 0x65, 0x54, 0x61, 0x73, 0x6b, 0x12, 0x12, 0x2e, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x54,
@@ -35,11 +34,11 @@ var file_benchmark_service_services_proto_rawDesc = []byte{
 	0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
-var file_benchmark_service_services_proto_goTypes = []interface{}{
+var file_benchmark_services_proto_goTypes = []interface{}{
 	(*CreateTaskRequest)(nil),  // 0: CreateTaskRequest
 	(*CreateTaskResponse)(nil), // 1: CreateTaskResponse
 }
-var file_benchmark_service_services_proto_depIdxs = []int32{
+var file_benchmark_services_proto_depIdxs = []int32{
 	0, // 0: BenchmarkService.CreateTask:input_type -> CreateTaskRequest
 	1, // 1: BenchmarkService.CreateTask:output_type -> CreateTaskResponse
 	1, // [1:2] is the sub-list for method output_type
@@ -49,27 +48,27 @@ var file_benchmark_service_services_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for field type_name
 }
 
-func init() { file_benchmark_service_services_proto_init() }
-func file_benchmark_service_services_proto_init() {
-	if File_benchmark_service_services_proto != nil {
+func init() { file_benchmark_services_proto_init() }
+func file_benchmark_services_proto_init() {
+	if File_benchmark_services_proto != nil {
 		return
 	}
-	file_benchmark_service_messages_proto_init()
+	file_benchmark_messages_proto_init()
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
-			RawDescriptor: file_benchmark_service_services_proto_rawDesc,
+			RawDescriptor: file_benchmark_services_proto_rawDesc,
 			NumEnums:      0,
 			NumMessages:   0,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
-		GoTypes:           file_benchmark_service_services_proto_goTypes,
-		DependencyIndexes: file_benchmark_service_services_proto_depIdxs,
+		GoTypes:           file_benchmark_services_proto_goTypes,
+		DependencyIndexes: file_benchmark_services_proto_depIdxs,
 	}.Build()
-	File_benchmark_service_services_proto = out.File
-	file_benchmark_service_services_proto_rawDesc = nil
-	file_benchmark_service_services_proto_goTypes = nil
-	file_benchmark_service_services_proto_depIdxs = nil
+	File_benchmark_services_proto = out.File
+	file_benchmark_services_proto_rawDesc = nil
+	file_benchmark_services_proto_goTypes = nil
+	file_benchmark_services_proto_depIdxs = nil
 }
