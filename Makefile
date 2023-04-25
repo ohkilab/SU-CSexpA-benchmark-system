@@ -7,6 +7,7 @@ backend/.env:
 .PHONY: prepare
 prepare:
 	cd backend && go mod vendor
+	cd benchmark-service && go mod vendor
 
 .PHONY: build
 build: prepare
