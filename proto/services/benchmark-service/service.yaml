@@ -9,8 +9,3 @@ client:
     dist: ../proto-gen/go
     opts:
       - paths=source_relative
-  ts:
-    plugin:
-      name: protoc-gen-ts
-      path: protoc-gen-ts
-    dist: ../proto-gen/ts

@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+import "google/protobuf/timestamp.proto";
+
+option go_package = "./benchmark";
+
+message CreateTaskRequest {
+    string ip_addr = 1;
+    string group_id = 2; // for logging
+}
+
+message CreateTaskResponse {
+    string id = 1;
+    string group_id = 2;
+    string ip_addr = 3;
+    google.protobuf.Timestamp submitted_at = 4;
+}

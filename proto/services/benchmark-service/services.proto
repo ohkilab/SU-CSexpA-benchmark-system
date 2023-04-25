@@ -1,0 +1,9 @@
+syntax = "proto3";
+
+import "benchmark-service/messages.proto";
+
+option go_package = "./benchmark";
+
+service BenchmarkService {
+    rpc CreateTask(CreateTaskRequest) returns (stream CreateTaskResponse);
+}
