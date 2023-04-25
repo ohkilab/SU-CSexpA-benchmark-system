@@ -26,7 +26,7 @@ const (
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type BenchmarkServiceClient interface {
-	CreateTask(ctx context.Context, in *CreateTaskRequest, opts ...grpc.CallOption) (BenchmarkService_CreateTaskClient, error)
+	CreateTask(ctx context.Context, in *CreateTaskRequest, opts ...grpc.CallOption) (*CreateTaskResponse, error)
 }
 
 type benchmarkServiceClient struct {
@@ -37,43 +37,20 @@ func NewBenchmarkServiceClient(cc grpc.ClientConnInterface) BenchmarkServiceClie
 	return &benchmarkServiceClient{cc}
 }
 
-func (c *benchmarkServiceClient) CreateTask(ctx context.Context, in *CreateTaskRequest, opts ...grpc.CallOption) (BenchmarkService_CreateTaskClient, error) {
-	stream, err := c.cc.NewStream(ctx, &BenchmarkService_ServiceDesc.Streams[0], BenchmarkService_CreateTask_FullMethodName, opts...)
+func (c *benchmarkServiceClient) CreateTask(ctx context.Context, in *CreateTaskRequest, opts ...grpc.CallOption) (*CreateTaskResponse, error) {
+	out := new(CreateTaskResponse)
+	err := c.cc.Invoke(ctx, BenchmarkService_CreateTask_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
-	x := &benchmarkServiceCreateTaskClient{stream}
-	if err := x.ClientStream.SendMsg(in); err != nil {
-		return nil, err
-	}
-	if err := x.ClientStream.CloseSend(); err != nil {
-		return nil, err
-	}
-	return x, nil
-}
-
-type BenchmarkService_CreateTaskClient interface {
-	Recv() (*CreateTaskResponse, error)
-	grpc.ClientStream
-}
-
-type benchmarkServiceCreateTaskClient struct {
-	grpc.ClientStream
-}
-
-func (x *benchmarkServiceCreateTaskClient) Recv() (*CreateTaskResponse, error) {
-	m := new(CreateTaskResponse)
-	if err := x.ClientStream.RecvMsg(m); err != nil {
-		return nil, err
-	}
-	return m, nil
+	return out, nil
 }
 
 // BenchmarkServiceServer is the server API for BenchmarkService service.
 // All implementations must embed UnimplementedBenchmarkServiceServer
 // for forward compatibility
 type BenchmarkServiceServer interface {
-	CreateTask(*CreateTaskRequest, BenchmarkService_CreateTaskServer) error
+	CreateTask(context.Context, *CreateTaskRequest) (*CreateTaskResponse, error)
 	mustEmbedUnimplementedBenchmarkServiceServer()
 }
 
@@ -81,8 +58,8 @@ type BenchmarkServiceServer interface {
 type UnimplementedBenchmarkServiceServer struct {
 }
 
-func (UnimplementedBenchmarkServiceServer) CreateTask(*CreateTaskRequest, BenchmarkService_CreateTaskServer) error {
-	return status.Errorf(codes.Unimplemented, "method CreateTask not implemented")
+func (UnimplementedBenchmarkServiceServer) CreateTask(context.Context, *CreateTaskRequest) (*CreateTaskResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateTask not implemented")
 }
 func (UnimplementedBenchmarkServiceServer) mustEmbedUnimplementedBenchmarkServiceServer() {}
 
@@ -97,25 +74,22 @@ func RegisterBenchmarkServiceServer(s grpc.ServiceRegistrar, srv BenchmarkServic
 	s.RegisterService(&BenchmarkService_ServiceDesc, srv)
 }
 
-func _BenchmarkService_CreateTask_Handler(srv interface{}, stream grpc.ServerStream) error {
-	m := new(CreateTaskRequest)
-	if err := stream.RecvMsg(m); err != nil {
-		return err
+func _BenchmarkService_CreateTask_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateTaskRequest)
+	if err := dec(in); err != nil {
+		return nil, err
 	}
-	return srv.(BenchmarkServiceServer).CreateTask(m, &benchmarkServiceCreateTaskServer{stream})
-}
-
-type BenchmarkService_CreateTaskServer interface {
-	Send(*CreateTaskResponse) error
-	grpc.ServerStream
-}
-
-type benchmarkServiceCreateTaskServer struct {
-	grpc.ServerStream
-}
-
-func (x *benchmarkServiceCreateTaskServer) Send(m *CreateTaskResponse) error {
-	return x.ServerStream.SendMsg(m)
+	if interceptor == nil {
+		return srv.(BenchmarkServiceServer).CreateTask(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: BenchmarkService_CreateTask_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BenchmarkServiceServer).CreateTask(ctx, req.(*CreateTaskRequest))
+	}
+	return interceptor(ctx, in, info, handler)
 }
 
 // BenchmarkService_ServiceDesc is the grpc.ServiceDesc for BenchmarkService service.
@@ -124,13 +98,12 @@ func (x *benchmarkServiceCreateTaskServer) Send(m *CreateTaskResponse) error {
 var BenchmarkService_ServiceDesc = grpc.ServiceDesc{
 	ServiceName: "BenchmarkService",
 	HandlerType: (*BenchmarkServiceServer)(nil),
-	Methods:     []grpc.MethodDesc{},
-	Streams: []grpc.StreamDesc{
+	Methods: []grpc.MethodDesc{
 		{
-			StreamName:    "CreateTask",
-			Handler:       _BenchmarkService_CreateTask_Handler,
-			ServerStreams: true,
+			MethodName: "CreateTask",
+			Handler:    _BenchmarkService_CreateTask_Handler,
 		},
 	},
+	Streams:  []grpc.StreamDesc{},
 	Metadata: "benchmark-service/services.proto",
 }
