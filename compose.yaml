@@ -16,6 +16,8 @@ services:
     build:
       context: benchmark-service
       dockerfile: Dockerfile
+    environment:
+      - REDIS_ADDR=redis
     depends_on:
       - redis
 
