@@ -19,7 +19,8 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	BenchmarkService_CreateTask_FullMethodName = "/BenchmarkService/CreateTask"
+	BenchmarkService_CreateTask_FullMethodName      = "/BenchmarkService/CreateTask"
+	BenchmarkService_GetTaskProgress_FullMethodName = "/BenchmarkService/GetTaskProgress"
 )
 
 // BenchmarkServiceClient is the client API for BenchmarkService service.
@@ -27,6 +28,7 @@ const (
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type BenchmarkServiceClient interface {
 	CreateTask(ctx context.Context, in *CreateTaskRequest, opts ...grpc.CallOption) (*CreateTaskResponse, error)
+	GetTaskProgress(ctx context.Context, in *GetTaskProgressRequest, opts ...grpc.CallOption) (BenchmarkService_GetTaskProgressClient, error)
 }
 
 type benchmarkServiceClient struct {
@@ -46,11 +48,44 @@ func (c *benchmarkServiceClient) CreateTask(ctx context.Context, in *CreateTaskR
 	return out, nil
 }
 
+func (c *benchmarkServiceClient) GetTaskProgress(ctx context.Context, in *GetTaskProgressRequest, opts ...grpc.CallOption) (BenchmarkService_GetTaskProgressClient, error) {
+	stream, err := c.cc.NewStream(ctx, &BenchmarkService_ServiceDesc.Streams[0], BenchmarkService_GetTaskProgress_FullMethodName, opts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &benchmarkServiceGetTaskProgressClient{stream}
+	if err := x.ClientStream.SendMsg(in); err != nil {
+		return nil, err
+	}
+	if err := x.ClientStream.CloseSend(); err != nil {
+		return nil, err
+	}
+	return x, nil
+}
+
+type BenchmarkService_GetTaskProgressClient interface {
+	Recv() (*GetTaskProgressResponse, error)
+	grpc.ClientStream
+}
+
+type benchmarkServiceGetTaskProgressClient struct {
+	grpc.ClientStream
+}
+
+func (x *benchmarkServiceGetTaskProgressClient) Recv() (*GetTaskProgressResponse, error) {
+	m := new(GetTaskProgressResponse)
+	if err := x.ClientStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
 // BenchmarkServiceServer is the server API for BenchmarkService service.
 // All implementations should embed UnimplementedBenchmarkServiceServer
 // for forward compatibility
 type BenchmarkServiceServer interface {
 	CreateTask(context.Context, *CreateTaskRequest) (*CreateTaskResponse, error)
+	GetTaskProgress(*GetTaskProgressRequest, BenchmarkService_GetTaskProgressServer) error
 }
 
 // UnimplementedBenchmarkServiceServer should be embedded to have forward compatible implementations.
@@ -59,6 +94,9 @@ type UnimplementedBenchmarkServiceServer struct {
 
 func (UnimplementedBenchmarkServiceServer) CreateTask(context.Context, *CreateTaskRequest) (*CreateTaskResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateTask not implemented")
+}
+func (UnimplementedBenchmarkServiceServer) GetTaskProgress(*GetTaskProgressRequest, BenchmarkService_GetTaskProgressServer) error {
+	return status.Errorf(codes.Unimplemented, "method GetTaskProgress not implemented")
 }
 
 // UnsafeBenchmarkServiceServer may be embedded to opt out of forward compatibility for this service.
@@ -90,6 +128,27 @@ func _BenchmarkService_CreateTask_Handler(srv interface{}, ctx context.Context, 
 	return interceptor(ctx, in, info, handler)
 }
 
+func _BenchmarkService_GetTaskProgress_Handler(srv interface{}, stream grpc.ServerStream) error {
+	m := new(GetTaskProgressRequest)
+	if err := stream.RecvMsg(m); err != nil {
+		return err
+	}
+	return srv.(BenchmarkServiceServer).GetTaskProgress(m, &benchmarkServiceGetTaskProgressServer{stream})
+}
+
+type BenchmarkService_GetTaskProgressServer interface {
+	Send(*GetTaskProgressResponse) error
+	grpc.ServerStream
+}
+
+type benchmarkServiceGetTaskProgressServer struct {
+	grpc.ServerStream
+}
+
+func (x *benchmarkServiceGetTaskProgressServer) Send(m *GetTaskProgressResponse) error {
+	return x.ServerStream.SendMsg(m)
+}
+
 // BenchmarkService_ServiceDesc is the grpc.ServiceDesc for BenchmarkService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -102,6 +161,12 @@ var BenchmarkService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _BenchmarkService_CreateTask_Handler,
 		},
 	},
-	Streams:  []grpc.StreamDesc{},
+	Streams: []grpc.StreamDesc{
+		{
+			StreamName:    "GetTaskProgress",
+			Handler:       _BenchmarkService_GetTaskProgress_Handler,
+			ServerStreams: true,
+		},
+	},
 	Metadata: "benchmark/services.proto",
 }
