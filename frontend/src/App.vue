@@ -1,6 +1,37 @@
 <script setup lang="ts">
-  import Login from './pages/Login.vue'
-  const loggedIn:boolean = false
+import Login from './pages/Login.vue'
+const loggedIn:boolean = false
+
+const groups: { name: string; score: number }[] = [
+  {
+    name: 'a1',
+    score: 1000
+  },
+  {
+    name: 'b2',
+    score: 10000
+  },
+  {
+    name: 'a2',
+    score: 2000
+  },
+  {
+    name: 'a3',
+    score: 1234
+  },
+  {
+    name: 'a4',
+    score: 5431
+  },
+  {
+    name: 'b2',
+    score: 50
+  },
+  {
+    name: 'b3',
+    score: 51
+  }
+]
 </script>
 <template>
   <div

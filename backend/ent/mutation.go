@@ -783,19 +783,20 @@ func (m *ContestMutation) ResetEdge(name string) error {
 // GroupMutation represents an operation that mutates the Group nodes in the graph.
 type GroupMutation struct {
 	config
-	op             Op
-	typ            string
-	id             *string
-	year           *int
-	addyear        *int
-	role           *group.Role
-	clearedFields  map[string]struct{}
-	submits        map[string]struct{}
-	removedsubmits map[string]struct{}
-	clearedsubmits bool
-	done           bool
-	oldValue       func(context.Context) (*Group, error)
-	predicates     []predicate.Group
+	op                 Op
+	typ                string
+	id                 *string
+	year               *int
+	addyear            *int
+	role               *group.Role
+	encrypted_password *string
+	clearedFields      map[string]struct{}
+	submits            map[string]struct{}
+	removedsubmits     map[string]struct{}
+	clearedsubmits     bool
+	done               bool
+	oldValue           func(context.Context) (*Group, error)
+	predicates         []predicate.Group
 }
 
 var _ ent.Mutation = (*GroupMutation)(nil)
@@ -994,6 +995,42 @@ func (m *GroupMutation) ResetRole() {
 	m.role = nil
 }
 
+// SetEncryptedPassword sets the "encrypted_password" field.
+func (m *GroupMutation) SetEncryptedPassword(s string) {
+	m.encrypted_password = &s
+}
+
+// EncryptedPassword returns the value of the "encrypted_password" field in the mutation.
+func (m *GroupMutation) EncryptedPassword() (r string, exists bool) {
+	v := m.encrypted_password
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldEncryptedPassword returns the old "encrypted_password" field's value of the Group entity.
+// If the Group object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *GroupMutation) OldEncryptedPassword(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldEncryptedPassword is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldEncryptedPassword requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldEncryptedPassword: %w", err)
+	}
+	return oldValue.EncryptedPassword, nil
+}
+
+// ResetEncryptedPassword resets all changes to the "encrypted_password" field.
+func (m *GroupMutation) ResetEncryptedPassword() {
+	m.encrypted_password = nil
+}
+
 // AddSubmitIDs adds the "submits" edge to the Submit entity by ids.
 func (m *GroupMutation) AddSubmitIDs(ids ...string) {
 	if m.submits == nil {
@@ -1082,12 +1119,15 @@ func (m *GroupMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *GroupMutation) Fields() []string {
-	fields := make([]string, 0, 2)
+	fields := make([]string, 0, 3)
 	if m.year != nil {
 		fields = append(fields, group.FieldYear)
 	}
 	if m.role != nil {
 		fields = append(fields, group.FieldRole)
+	}
+	if m.encrypted_password != nil {
+		fields = append(fields, group.FieldEncryptedPassword)
 	}
 	return fields
 }
@@ -1101,6 +1141,8 @@ func (m *GroupMutation) Field(name string) (ent.Value, bool) {
 		return m.Year()
 	case group.FieldRole:
 		return m.Role()
+	case group.FieldEncryptedPassword:
+		return m.EncryptedPassword()
 	}
 	return nil, false
 }
@@ -1114,6 +1156,8 @@ func (m *GroupMutation) OldField(ctx context.Context, name string) (ent.Value, e
 		return m.OldYear(ctx)
 	case group.FieldRole:
 		return m.OldRole(ctx)
+	case group.FieldEncryptedPassword:
+		return m.OldEncryptedPassword(ctx)
 	}
 	return nil, fmt.Errorf("unknown Group field %s", name)
 }
@@ -1136,6 +1180,13 @@ func (m *GroupMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetRole(v)
+		return nil
+	case group.FieldEncryptedPassword:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetEncryptedPassword(v)
 		return nil
 	}
 	return fmt.Errorf("unknown Group field %s", name)
@@ -1206,6 +1257,9 @@ func (m *GroupMutation) ResetField(name string) error {
 		return nil
 	case group.FieldRole:
 		m.ResetRole()
+		return nil
+	case group.FieldEncryptedPassword:
+		m.ResetEncryptedPassword()
 		return nil
 	}
 	return fmt.Errorf("unknown Group field %s", name)
