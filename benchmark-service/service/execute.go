@@ -10,8 +10,6 @@ import (
 	"google.golang.org/grpc/status"
 )
 
-const taskKey = "task"
-
 func (s *service) Execute(req *pb.ExecuteRequest, stream pb.BenchmarkService_ExecuteServer) error {
 	ipAddr := net.ParseIP(req.IpAddr)
 	if ipAddr == nil {
