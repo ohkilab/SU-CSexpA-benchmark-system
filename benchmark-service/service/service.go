@@ -1,14 +1,14 @@
 package service
 
 import (
-	"github.com/ohkilab/SU-CSexpA-benchmark-system/benchmark-service/task"
+	"github.com/ohkilab/SU-CSexpA-benchmark-system/benchmark-service/benchmark"
 	pb "github.com/ohkilab/SU-CSexpA-benchmark-system/proto-gen/go/benchmark"
 )
 
 type service struct {
-	taskClient task.Client
+	client *benchmark.Client
 }
 
-func New(taskClient task.Client) pb.BenchmarkServiceServer {
-	return &service{taskClient}
+func New(client *benchmark.Client) pb.BenchmarkServiceServer {
+	return &service{client}
 }
