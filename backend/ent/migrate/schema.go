@@ -29,6 +29,7 @@ var (
 	GroupsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeString},
 		{Name: "year", Type: field.TypeInt},
+		{Name: "score", Type: field.TypeInt},
 		{Name: "role", Type: field.TypeEnum, Enums: []string{"contestant", "guest"}},
 		{Name: "encrypted_password", Type: field.TypeString},
 	}

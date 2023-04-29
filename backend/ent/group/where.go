@@ -68,6 +68,11 @@ func Year(v int) predicate.Group {
 	return predicate.Group(sql.FieldEQ(FieldYear, v))
 }
 
+// Score applies equality check predicate on the "score" field. It's identical to ScoreEQ.
+func Score(v int) predicate.Group {
+	return predicate.Group(sql.FieldEQ(FieldScore, v))
+}
+
 // EncryptedPassword applies equality check predicate on the "encrypted_password" field. It's identical to EncryptedPasswordEQ.
 func EncryptedPassword(v string) predicate.Group {
 	return predicate.Group(sql.FieldEQ(FieldEncryptedPassword, v))
@@ -111,6 +116,46 @@ func YearLT(v int) predicate.Group {
 // YearLTE applies the LTE predicate on the "year" field.
 func YearLTE(v int) predicate.Group {
 	return predicate.Group(sql.FieldLTE(FieldYear, v))
+}
+
+// ScoreEQ applies the EQ predicate on the "score" field.
+func ScoreEQ(v int) predicate.Group {
+	return predicate.Group(sql.FieldEQ(FieldScore, v))
+}
+
+// ScoreNEQ applies the NEQ predicate on the "score" field.
+func ScoreNEQ(v int) predicate.Group {
+	return predicate.Group(sql.FieldNEQ(FieldScore, v))
+}
+
+// ScoreIn applies the In predicate on the "score" field.
+func ScoreIn(vs ...int) predicate.Group {
+	return predicate.Group(sql.FieldIn(FieldScore, vs...))
+}
+
+// ScoreNotIn applies the NotIn predicate on the "score" field.
+func ScoreNotIn(vs ...int) predicate.Group {
+	return predicate.Group(sql.FieldNotIn(FieldScore, vs...))
+}
+
+// ScoreGT applies the GT predicate on the "score" field.
+func ScoreGT(v int) predicate.Group {
+	return predicate.Group(sql.FieldGT(FieldScore, v))
+}
+
+// ScoreGTE applies the GTE predicate on the "score" field.
+func ScoreGTE(v int) predicate.Group {
+	return predicate.Group(sql.FieldGTE(FieldScore, v))
+}
+
+// ScoreLT applies the LT predicate on the "score" field.
+func ScoreLT(v int) predicate.Group {
+	return predicate.Group(sql.FieldLT(FieldScore, v))
+}
+
+// ScoreLTE applies the LTE predicate on the "score" field.
+func ScoreLTE(v int) predicate.Group {
+	return predicate.Group(sql.FieldLTE(FieldScore, v))
 }
 
 // RoleEQ applies the EQ predicate on the "role" field.

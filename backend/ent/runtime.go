@@ -25,6 +25,10 @@ func init() {
 	groupDescYear := groupFields[1].Descriptor()
 	// group.YearValidator is a validator for the "year" field. It is called by the builders before save.
 	group.YearValidator = groupDescYear.Validators[0].(func(int) error)
+	// groupDescScore is the schema descriptor for score field.
+	groupDescScore := groupFields[2].Descriptor()
+	// group.ScoreValidator is a validator for the "score" field. It is called by the builders before save.
+	group.ScoreValidator = groupDescScore.Validators[0].(func(int) error)
 	submitFields := schema.Submit{}.Fields()
 	_ = submitFields
 	// submitDescYear is the schema descriptor for year field.

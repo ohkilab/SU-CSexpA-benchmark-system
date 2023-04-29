@@ -16,6 +16,7 @@ func (Group) Fields() []ent.Field {
 	return []ent.Field{
 		field.String("id"),
 		field.Int("year").Positive(),
+		field.Int("score").Positive(),
 		field.Enum("role").Values("contestant", "guest"),
 		field.String("encrypted_password"),
 	}
