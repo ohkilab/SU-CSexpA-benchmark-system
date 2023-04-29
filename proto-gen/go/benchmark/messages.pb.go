@@ -9,7 +9,7 @@ package benchmark
 import (
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
-	timestamppb "google.golang.org/protobuf/types/known/timestamppb"
+	_ "google.golang.org/protobuf/types/known/timestamppb"
 	reflect "reflect"
 	sync "sync"
 )
@@ -21,7 +21,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-type CreateTaskRequest struct {
+type ExecuteRequest struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
@@ -30,8 +30,8 @@ type CreateTaskRequest struct {
 	GroupId string `protobuf:"bytes,2,opt,name=group_id,json=groupId,proto3" json:"group_id,omitempty"` // for logging
 }
 
-func (x *CreateTaskRequest) Reset() {
-	*x = CreateTaskRequest{}
+func (x *ExecuteRequest) Reset() {
+	*x = ExecuteRequest{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_benchmark_messages_proto_msgTypes[0]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -39,13 +39,13 @@ func (x *CreateTaskRequest) Reset() {
 	}
 }
 
-func (x *CreateTaskRequest) String() string {
+func (x *ExecuteRequest) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*CreateTaskRequest) ProtoMessage() {}
+func (*ExecuteRequest) ProtoMessage() {}
 
-func (x *CreateTaskRequest) ProtoReflect() protoreflect.Message {
+func (x *ExecuteRequest) ProtoReflect() protoreflect.Message {
 	mi := &file_benchmark_messages_proto_msgTypes[0]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -57,38 +57,35 @@ func (x *CreateTaskRequest) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use CreateTaskRequest.ProtoReflect.Descriptor instead.
-func (*CreateTaskRequest) Descriptor() ([]byte, []int) {
+// Deprecated: Use ExecuteRequest.ProtoReflect.Descriptor instead.
+func (*ExecuteRequest) Descriptor() ([]byte, []int) {
 	return file_benchmark_messages_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *CreateTaskRequest) GetIpAddr() string {
+func (x *ExecuteRequest) GetIpAddr() string {
 	if x != nil {
 		return x.IpAddr
 	}
 	return ""
 }
 
-func (x *CreateTaskRequest) GetGroupId() string {
+func (x *ExecuteRequest) GetGroupId() string {
 	if x != nil {
 		return x.GroupId
 	}
 	return ""
 }
 
-type CreateTaskResponse struct {
+type ExecuteResponse struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Id          string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-	GroupId     string                 `protobuf:"bytes,2,opt,name=group_id,json=groupId,proto3" json:"group_id,omitempty"`
-	IpAddr      string                 `protobuf:"bytes,3,opt,name=ip_addr,json=ipAddr,proto3" json:"ip_addr,omitempty"`
-	SubmittedAt *timestamppb.Timestamp `protobuf:"bytes,4,opt,name=submitted_at,json=submittedAt,proto3" json:"submitted_at,omitempty"`
+	Response *HttpResponse `protobuf:"bytes,2,opt,name=response,proto3" json:"response,omitempty"`
 }
 
-func (x *CreateTaskResponse) Reset() {
-	*x = CreateTaskResponse{}
+func (x *ExecuteResponse) Reset() {
+	*x = ExecuteResponse{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_benchmark_messages_proto_msgTypes[1]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -96,13 +93,13 @@ func (x *CreateTaskResponse) Reset() {
 	}
 }
 
-func (x *CreateTaskResponse) String() string {
+func (x *ExecuteResponse) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*CreateTaskResponse) ProtoMessage() {}
+func (*ExecuteResponse) ProtoMessage() {}
 
-func (x *CreateTaskResponse) ProtoReflect() protoreflect.Message {
+func (x *ExecuteResponse) ProtoReflect() protoreflect.Message {
 	mi := &file_benchmark_messages_proto_msgTypes[1]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -114,49 +111,26 @@ func (x *CreateTaskResponse) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use CreateTaskResponse.ProtoReflect.Descriptor instead.
-func (*CreateTaskResponse) Descriptor() ([]byte, []int) {
+// Deprecated: Use ExecuteResponse.ProtoReflect.Descriptor instead.
+func (*ExecuteResponse) Descriptor() ([]byte, []int) {
 	return file_benchmark_messages_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *CreateTaskResponse) GetId() string {
+func (x *ExecuteResponse) GetResponse() *HttpResponse {
 	if x != nil {
-		return x.Id
-	}
-	return ""
-}
-
-func (x *CreateTaskResponse) GetGroupId() string {
-	if x != nil {
-		return x.GroupId
-	}
-	return ""
-}
-
-func (x *CreateTaskResponse) GetIpAddr() string {
-	if x != nil {
-		return x.IpAddr
-	}
-	return ""
-}
-
-func (x *CreateTaskResponse) GetSubmittedAt() *timestamppb.Timestamp {
-	if x != nil {
-		return x.SubmittedAt
+		return x.Response
 	}
 	return nil
 }
 
-type GetTaskProgressRequest struct {
+type HttpResponse struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
-
-	Id string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
 }
 
-func (x *GetTaskProgressRequest) Reset() {
-	*x = GetTaskProgressRequest{}
+func (x *HttpResponse) Reset() {
+	*x = HttpResponse{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_benchmark_messages_proto_msgTypes[2]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -164,13 +138,13 @@ func (x *GetTaskProgressRequest) Reset() {
 	}
 }
 
-func (x *GetTaskProgressRequest) String() string {
+func (x *HttpResponse) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GetTaskProgressRequest) ProtoMessage() {}
+func (*HttpResponse) ProtoMessage() {}
 
-func (x *GetTaskProgressRequest) ProtoReflect() protoreflect.Message {
+func (x *HttpResponse) ProtoReflect() protoreflect.Message {
 	mi := &file_benchmark_messages_proto_msgTypes[2]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -182,95 +156,9 @@ func (x *GetTaskProgressRequest) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GetTaskProgressRequest.ProtoReflect.Descriptor instead.
-func (*GetTaskProgressRequest) Descriptor() ([]byte, []int) {
+// Deprecated: Use HttpResponse.ProtoReflect.Descriptor instead.
+func (*HttpResponse) Descriptor() ([]byte, []int) {
 	return file_benchmark_messages_proto_rawDescGZIP(), []int{2}
-}
-
-func (x *GetTaskProgressRequest) GetId() string {
-	if x != nil {
-		return x.Id
-	}
-	return ""
-}
-
-type GetTaskProgressResponse struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-
-	Id           string  `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-	GroupId      string  `protobuf:"bytes,2,opt,name=group_id,json=groupId,proto3" json:"group_id,omitempty"`
-	Tag          string  `protobuf:"bytes,3,opt,name=tag,proto3" json:"tag,omitempty"`                                             // used tag
-	Rps          float32 `protobuf:"fixed32,4,opt,name=rps,proto3" json:"rps,omitempty"`                                           // request per second
-	ErrorMessage *string `protobuf:"bytes,5,opt,name=error_message,json=errorMessage,proto3,oneof" json:"error_message,omitempty"` // if there are some errors, this field show it.
-}
-
-func (x *GetTaskProgressResponse) Reset() {
-	*x = GetTaskProgressResponse{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_benchmark_messages_proto_msgTypes[3]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *GetTaskProgressResponse) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*GetTaskProgressResponse) ProtoMessage() {}
-
-func (x *GetTaskProgressResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_benchmark_messages_proto_msgTypes[3]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use GetTaskProgressResponse.ProtoReflect.Descriptor instead.
-func (*GetTaskProgressResponse) Descriptor() ([]byte, []int) {
-	return file_benchmark_messages_proto_rawDescGZIP(), []int{3}
-}
-
-func (x *GetTaskProgressResponse) GetId() string {
-	if x != nil {
-		return x.Id
-	}
-	return ""
-}
-
-func (x *GetTaskProgressResponse) GetGroupId() string {
-	if x != nil {
-		return x.GroupId
-	}
-	return ""
-}
-
-func (x *GetTaskProgressResponse) GetTag() string {
-	if x != nil {
-		return x.Tag
-	}
-	return ""
-}
-
-func (x *GetTaskProgressResponse) GetRps() float32 {
-	if x != nil {
-		return x.Rps
-	}
-	return 0
-}
-
-func (x *GetTaskProgressResponse) GetErrorMessage() string {
-	if x != nil && x.ErrorMessage != nil {
-		return *x.ErrorMessage
-	}
-	return ""
 }
 
 var File_benchmark_messages_proto protoreflect.FileDescriptor
@@ -279,34 +167,16 @@ var file_benchmark_messages_proto_rawDesc = []byte{
 	0x0a, 0x18, 0x62, 0x65, 0x6e, 0x63, 0x68, 0x6d, 0x61, 0x72, 0x6b, 0x2f, 0x6d, 0x65, 0x73, 0x73,
 	0x61, 0x67, 0x65, 0x73, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x1a, 0x1f, 0x67, 0x6f, 0x6f, 0x67,
 	0x6c, 0x65, 0x2f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2f, 0x74, 0x69, 0x6d, 0x65,
-	0x73, 0x74, 0x61, 0x6d, 0x70, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22, 0x47, 0x0a, 0x11, 0x43,
-	0x72, 0x65, 0x61, 0x74, 0x65, 0x54, 0x61, 0x73, 0x6b, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74,
-	0x12, 0x17, 0x0a, 0x07, 0x69, 0x70, 0x5f, 0x61, 0x64, 0x64, 0x72, 0x18, 0x01, 0x20, 0x01, 0x28,
-	0x09, 0x52, 0x06, 0x69, 0x70, 0x41, 0x64, 0x64, 0x72, 0x12, 0x19, 0x0a, 0x08, 0x67, 0x72, 0x6f,
-	0x75, 0x70, 0x5f, 0x69, 0x64, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x67, 0x72, 0x6f,
-	0x75, 0x70, 0x49, 0x64, 0x22, 0x97, 0x01, 0x0a, 0x12, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x54,
-	0x61, 0x73, 0x6b, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x0e, 0x0a, 0x02, 0x69,
-	0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x02, 0x69, 0x64, 0x12, 0x19, 0x0a, 0x08, 0x67,
-	0x72, 0x6f, 0x75, 0x70, 0x5f, 0x69, 0x64, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x67,
-	0x72, 0x6f, 0x75, 0x70, 0x49, 0x64, 0x12, 0x17, 0x0a, 0x07, 0x69, 0x70, 0x5f, 0x61, 0x64, 0x64,
-	0x72, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x69, 0x70, 0x41, 0x64, 0x64, 0x72, 0x12,
-	0x3d, 0x0a, 0x0c, 0x73, 0x75, 0x62, 0x6d, 0x69, 0x74, 0x74, 0x65, 0x64, 0x5f, 0x61, 0x74, 0x18,
-	0x04, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x1a, 0x2e, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70,
-	0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x54, 0x69, 0x6d, 0x65, 0x73, 0x74, 0x61, 0x6d,
-	0x70, 0x52, 0x0b, 0x73, 0x75, 0x62, 0x6d, 0x69, 0x74, 0x74, 0x65, 0x64, 0x41, 0x74, 0x22, 0x28,
-	0x0a, 0x16, 0x47, 0x65, 0x74, 0x54, 0x61, 0x73, 0x6b, 0x50, 0x72, 0x6f, 0x67, 0x72, 0x65, 0x73,
-	0x73, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01,
-	0x20, 0x01, 0x28, 0x09, 0x52, 0x02, 0x69, 0x64, 0x22, 0xa4, 0x01, 0x0a, 0x17, 0x47, 0x65, 0x74,
-	0x54, 0x61, 0x73, 0x6b, 0x50, 0x72, 0x6f, 0x67, 0x72, 0x65, 0x73, 0x73, 0x52, 0x65, 0x73, 0x70,
-	0x6f, 0x6e, 0x73, 0x65, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09,
-	0x52, 0x02, 0x69, 0x64, 0x12, 0x19, 0x0a, 0x08, 0x67, 0x72, 0x6f, 0x75, 0x70, 0x5f, 0x69, 0x64,
-	0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x67, 0x72, 0x6f, 0x75, 0x70, 0x49, 0x64, 0x12,
-	0x10, 0x0a, 0x03, 0x74, 0x61, 0x67, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x03, 0x74, 0x61,
-	0x67, 0x12, 0x10, 0x0a, 0x03, 0x72, 0x70, 0x73, 0x18, 0x04, 0x20, 0x01, 0x28, 0x02, 0x52, 0x03,
-	0x72, 0x70, 0x73, 0x12, 0x28, 0x0a, 0x0d, 0x65, 0x72, 0x72, 0x6f, 0x72, 0x5f, 0x6d, 0x65, 0x73,
-	0x73, 0x61, 0x67, 0x65, 0x18, 0x05, 0x20, 0x01, 0x28, 0x09, 0x48, 0x00, 0x52, 0x0c, 0x65, 0x72,
-	0x72, 0x6f, 0x72, 0x4d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x88, 0x01, 0x01, 0x42, 0x10, 0x0a,
-	0x0e, 0x5f, 0x65, 0x72, 0x72, 0x6f, 0x72, 0x5f, 0x6d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x42,
+	0x73, 0x74, 0x61, 0x6d, 0x70, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22, 0x44, 0x0a, 0x0e, 0x45,
+	0x78, 0x65, 0x63, 0x75, 0x74, 0x65, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x17, 0x0a,
+	0x07, 0x69, 0x70, 0x5f, 0x61, 0x64, 0x64, 0x72, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06,
+	0x69, 0x70, 0x41, 0x64, 0x64, 0x72, 0x12, 0x19, 0x0a, 0x08, 0x67, 0x72, 0x6f, 0x75, 0x70, 0x5f,
+	0x69, 0x64, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x67, 0x72, 0x6f, 0x75, 0x70, 0x49,
+	0x64, 0x22, 0x3c, 0x0a, 0x0f, 0x45, 0x78, 0x65, 0x63, 0x75, 0x74, 0x65, 0x52, 0x65, 0x73, 0x70,
+	0x6f, 0x6e, 0x73, 0x65, 0x12, 0x29, 0x0a, 0x08, 0x72, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65,
+	0x18, 0x02, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x0d, 0x2e, 0x48, 0x74, 0x74, 0x70, 0x52, 0x65, 0x73,
+	0x70, 0x6f, 0x6e, 0x73, 0x65, 0x52, 0x08, 0x72, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22,
+	0x0e, 0x0a, 0x0c, 0x48, 0x74, 0x74, 0x70, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x42,
 	0x0d, 0x5a, 0x0b, 0x2e, 0x2f, 0x62, 0x65, 0x6e, 0x63, 0x68, 0x6d, 0x61, 0x72, 0x6b, 0x62, 0x06,
 	0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
@@ -323,16 +193,14 @@ func file_benchmark_messages_proto_rawDescGZIP() []byte {
 	return file_benchmark_messages_proto_rawDescData
 }
 
-var file_benchmark_messages_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
+var file_benchmark_messages_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
 var file_benchmark_messages_proto_goTypes = []interface{}{
-	(*CreateTaskRequest)(nil),       // 0: CreateTaskRequest
-	(*CreateTaskResponse)(nil),      // 1: CreateTaskResponse
-	(*GetTaskProgressRequest)(nil),  // 2: GetTaskProgressRequest
-	(*GetTaskProgressResponse)(nil), // 3: GetTaskProgressResponse
-	(*timestamppb.Timestamp)(nil),   // 4: google.protobuf.Timestamp
+	(*ExecuteRequest)(nil),  // 0: ExecuteRequest
+	(*ExecuteResponse)(nil), // 1: ExecuteResponse
+	(*HttpResponse)(nil),    // 2: HttpResponse
 }
 var file_benchmark_messages_proto_depIdxs = []int32{
-	4, // 0: CreateTaskResponse.submitted_at:type_name -> google.protobuf.Timestamp
+	2, // 0: ExecuteResponse.response:type_name -> HttpResponse
 	1, // [1:1] is the sub-list for method output_type
 	1, // [1:1] is the sub-list for method input_type
 	1, // [1:1] is the sub-list for extension type_name
@@ -347,7 +215,7 @@ func file_benchmark_messages_proto_init() {
 	}
 	if !protoimpl.UnsafeEnabled {
 		file_benchmark_messages_proto_msgTypes[0].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*CreateTaskRequest); i {
+			switch v := v.(*ExecuteRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -359,7 +227,7 @@ func file_benchmark_messages_proto_init() {
 			}
 		}
 		file_benchmark_messages_proto_msgTypes[1].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*CreateTaskResponse); i {
+			switch v := v.(*ExecuteResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -371,19 +239,7 @@ func file_benchmark_messages_proto_init() {
 			}
 		}
 		file_benchmark_messages_proto_msgTypes[2].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*GetTaskProgressRequest); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_benchmark_messages_proto_msgTypes[3].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*GetTaskProgressResponse); i {
+			switch v := v.(*HttpResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -395,14 +251,13 @@ func file_benchmark_messages_proto_init() {
 			}
 		}
 	}
-	file_benchmark_messages_proto_msgTypes[3].OneofWrappers = []interface{}{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_benchmark_messages_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   4,
+			NumMessages:   3,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

@@ -19,16 +19,14 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	BenchmarkService_CreateTask_FullMethodName      = "/BenchmarkService/CreateTask"
-	BenchmarkService_GetTaskProgress_FullMethodName = "/BenchmarkService/GetTaskProgress"
+	BenchmarkService_Execute_FullMethodName = "/BenchmarkService/Execute"
 )
 
 // BenchmarkServiceClient is the client API for BenchmarkService service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type BenchmarkServiceClient interface {
-	CreateTask(ctx context.Context, in *CreateTaskRequest, opts ...grpc.CallOption) (*CreateTaskResponse, error)
-	GetTaskProgress(ctx context.Context, in *GetTaskProgressRequest, opts ...grpc.CallOption) (BenchmarkService_GetTaskProgressClient, error)
+	Execute(ctx context.Context, in *ExecuteRequest, opts ...grpc.CallOption) (BenchmarkService_ExecuteClient, error)
 }
 
 type benchmarkServiceClient struct {
@@ -39,21 +37,12 @@ func NewBenchmarkServiceClient(cc grpc.ClientConnInterface) BenchmarkServiceClie
 	return &benchmarkServiceClient{cc}
 }
 
-func (c *benchmarkServiceClient) CreateTask(ctx context.Context, in *CreateTaskRequest, opts ...grpc.CallOption) (*CreateTaskResponse, error) {
-	out := new(CreateTaskResponse)
-	err := c.cc.Invoke(ctx, BenchmarkService_CreateTask_FullMethodName, in, out, opts...)
+func (c *benchmarkServiceClient) Execute(ctx context.Context, in *ExecuteRequest, opts ...grpc.CallOption) (BenchmarkService_ExecuteClient, error) {
+	stream, err := c.cc.NewStream(ctx, &BenchmarkService_ServiceDesc.Streams[0], BenchmarkService_Execute_FullMethodName, opts...)
 	if err != nil {
 		return nil, err
 	}
-	return out, nil
-}
-
-func (c *benchmarkServiceClient) GetTaskProgress(ctx context.Context, in *GetTaskProgressRequest, opts ...grpc.CallOption) (BenchmarkService_GetTaskProgressClient, error) {
-	stream, err := c.cc.NewStream(ctx, &BenchmarkService_ServiceDesc.Streams[0], BenchmarkService_GetTaskProgress_FullMethodName, opts...)
-	if err != nil {
-		return nil, err
-	}
-	x := &benchmarkServiceGetTaskProgressClient{stream}
+	x := &benchmarkServiceExecuteClient{stream}
 	if err := x.ClientStream.SendMsg(in); err != nil {
 		return nil, err
 	}
@@ -63,17 +52,17 @@ func (c *benchmarkServiceClient) GetTaskProgress(ctx context.Context, in *GetTas
 	return x, nil
 }
 
-type BenchmarkService_GetTaskProgressClient interface {
-	Recv() (*GetTaskProgressResponse, error)
+type BenchmarkService_ExecuteClient interface {
+	Recv() (*ExecuteResponse, error)
 	grpc.ClientStream
 }
 
-type benchmarkServiceGetTaskProgressClient struct {
+type benchmarkServiceExecuteClient struct {
 	grpc.ClientStream
 }
 
-func (x *benchmarkServiceGetTaskProgressClient) Recv() (*GetTaskProgressResponse, error) {
-	m := new(GetTaskProgressResponse)
+func (x *benchmarkServiceExecuteClient) Recv() (*ExecuteResponse, error) {
+	m := new(ExecuteResponse)
 	if err := x.ClientStream.RecvMsg(m); err != nil {
 		return nil, err
 	}
@@ -84,19 +73,15 @@ func (x *benchmarkServiceGetTaskProgressClient) Recv() (*GetTaskProgressResponse
 // All implementations should embed UnimplementedBenchmarkServiceServer
 // for forward compatibility
 type BenchmarkServiceServer interface {
-	CreateTask(context.Context, *CreateTaskRequest) (*CreateTaskResponse, error)
-	GetTaskProgress(*GetTaskProgressRequest, BenchmarkService_GetTaskProgressServer) error
+	Execute(*ExecuteRequest, BenchmarkService_ExecuteServer) error
 }
 
 // UnimplementedBenchmarkServiceServer should be embedded to have forward compatible implementations.
 type UnimplementedBenchmarkServiceServer struct {
 }
 
-func (UnimplementedBenchmarkServiceServer) CreateTask(context.Context, *CreateTaskRequest) (*CreateTaskResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method CreateTask not implemented")
-}
-func (UnimplementedBenchmarkServiceServer) GetTaskProgress(*GetTaskProgressRequest, BenchmarkService_GetTaskProgressServer) error {
-	return status.Errorf(codes.Unimplemented, "method GetTaskProgress not implemented")
+func (UnimplementedBenchmarkServiceServer) Execute(*ExecuteRequest, BenchmarkService_ExecuteServer) error {
+	return status.Errorf(codes.Unimplemented, "method Execute not implemented")
 }
 
 // UnsafeBenchmarkServiceServer may be embedded to opt out of forward compatibility for this service.
@@ -110,42 +95,24 @@ func RegisterBenchmarkServiceServer(s grpc.ServiceRegistrar, srv BenchmarkServic
 	s.RegisterService(&BenchmarkService_ServiceDesc, srv)
 }
 
-func _BenchmarkService_CreateTask_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(CreateTaskRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(BenchmarkServiceServer).CreateTask(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: BenchmarkService_CreateTask_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(BenchmarkServiceServer).CreateTask(ctx, req.(*CreateTaskRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _BenchmarkService_GetTaskProgress_Handler(srv interface{}, stream grpc.ServerStream) error {
-	m := new(GetTaskProgressRequest)
+func _BenchmarkService_Execute_Handler(srv interface{}, stream grpc.ServerStream) error {
+	m := new(ExecuteRequest)
 	if err := stream.RecvMsg(m); err != nil {
 		return err
 	}
-	return srv.(BenchmarkServiceServer).GetTaskProgress(m, &benchmarkServiceGetTaskProgressServer{stream})
+	return srv.(BenchmarkServiceServer).Execute(m, &benchmarkServiceExecuteServer{stream})
 }
 
-type BenchmarkService_GetTaskProgressServer interface {
-	Send(*GetTaskProgressResponse) error
+type BenchmarkService_ExecuteServer interface {
+	Send(*ExecuteResponse) error
 	grpc.ServerStream
 }
 
-type benchmarkServiceGetTaskProgressServer struct {
+type benchmarkServiceExecuteServer struct {
 	grpc.ServerStream
 }
 
-func (x *benchmarkServiceGetTaskProgressServer) Send(m *GetTaskProgressResponse) error {
+func (x *benchmarkServiceExecuteServer) Send(m *ExecuteResponse) error {
 	return x.ServerStream.SendMsg(m)
 }
 
@@ -155,16 +122,11 @@ func (x *benchmarkServiceGetTaskProgressServer) Send(m *GetTaskProgressResponse)
 var BenchmarkService_ServiceDesc = grpc.ServiceDesc{
 	ServiceName: "BenchmarkService",
 	HandlerType: (*BenchmarkServiceServer)(nil),
-	Methods: []grpc.MethodDesc{
-		{
-			MethodName: "CreateTask",
-			Handler:    _BenchmarkService_CreateTask_Handler,
-		},
-	},
+	Methods:     []grpc.MethodDesc{},
 	Streams: []grpc.StreamDesc{
 		{
-			StreamName:    "GetTaskProgress",
-			Handler:       _BenchmarkService_GetTaskProgress_Handler,
+			StreamName:    "Execute",
+			Handler:       _BenchmarkService_Execute_Handler,
 			ServerStreams: true,
 		},
 	},

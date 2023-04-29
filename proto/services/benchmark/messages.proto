@@ -4,26 +4,15 @@ import "google/protobuf/timestamp.proto";
 
 option go_package = "./benchmark";
 
-message CreateTaskRequest {
+message ExecuteRequest {
   string ip_addr = 1;
   string group_id = 2; // for logging
 }
 
-message CreateTaskResponse {
-  string id = 1;
-  string group_id = 2;
-  string ip_addr = 3;
-  google.protobuf.Timestamp submitted_at = 4;
+message ExecuteResponse {
+  HttpResponse response = 2;
 }
 
-message GetTaskProgressRequest { string id = 1; }
-
-message GetTaskProgressResponse {
-  string id = 1;
-  string group_id = 2;
-
-  string tag = 3; // used tag
-  float rps = 4;  // request per second
-  optional string error_message =
-      5; // if there are some errors, this field show it.
+message HttpResponse {
+  // TODO
 }

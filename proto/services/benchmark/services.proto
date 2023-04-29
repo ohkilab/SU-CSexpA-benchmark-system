@@ -5,7 +5,5 @@ import "benchmark/messages.proto";
 option go_package = "./benchmark";
 
 service BenchmarkService {
-  rpc CreateTask(CreateTaskRequest) returns (CreateTaskResponse);
-  rpc GetTaskProgress(GetTaskProgressRequest)
-      returns (stream GetTaskProgressResponse);
+  rpc Execute(ExecuteRequest) returns (stream ExecuteResponse);
 }
