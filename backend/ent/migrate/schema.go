@@ -38,6 +38,13 @@ var (
 		Name:       "groups",
 		Columns:    GroupsColumns,
 		PrimaryKey: []*schema.Column{GroupsColumns[0]},
+		Indexes: []*schema.Index{
+			{
+				Name:    "group_score",
+				Unique:  false,
+				Columns: []*schema.Column{GroupsColumns[2]},
+			},
+		},
 	}
 	// SubmitsColumns holds the columns for the "submits" table.
 	SubmitsColumns = []*schema.Column{

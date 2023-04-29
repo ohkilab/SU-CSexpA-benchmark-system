@@ -4,6 +4,7 @@ import (
 	"entgo.io/ent"
 	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
+	"entgo.io/ent/schema/index"
 )
 
 // Group holds the schema definition for the Group entity.
@@ -26,5 +27,11 @@ func (Group) Fields() []ent.Field {
 func (Group) Edges() []ent.Edge {
 	return []ent.Edge{
 		edge.To("submits", Submit.Type),
+	}
+}
+
+func (Group) Indexes() []ent.Index {
+	return []ent.Index{
+		index.Fields("score"),
 	}
 }
