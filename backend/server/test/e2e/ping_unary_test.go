@@ -6,13 +6,11 @@ import (
 
 	pb "github.com/ohkilab/SU-CSexpA-benchmark-system/proto-gen/go/backend"
 	"github.com/stretchr/testify/assert"
-	"google.golang.org/grpc"
-	"google.golang.org/grpc/credentials/insecure"
 )
 
 func Test_PingUnary(t *testing.T) {
 	ctx := context.Background()
-	conn, err := grpc.DialContext(ctx, "localhost:3776", grpc.WithTransportCredentials(insecure.NewCredentials()))
+	conn, err := launchGrpcServer()
 	if err != nil {
 		t.Fatal(err)
 	}

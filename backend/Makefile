@@ -1,3 +1,18 @@
 .PHONY: generate
 generate:
 	go generate ./ent
+
+.PHONY: mysql/start
+mysql/start:
+	$(eval CONTAINER_ID := $(shell docker run -d -P \
+		-e MYSQL_DATABASE=su-exp-a \
+		-e MYSQL_ROOT_PASSWORD=ohkilab \
+		mysql:8.0))
+	@echo $(CONTAINER_ID)
+
+.PHONY: e2e_test
+e2e_test: mysql/start
+	@TEST_MYSQL_PORT=$(shell docker port $(CONTAINER_ID) | rg 3306/tcp | awk -F ' -> ' '{print $$2}' | awk -F ':' '{print $$2}') \
+	MYSQL_ROOT_PASSWORD=ohkilab \
+	MYSQL_DATABASE=su-exp-a \
+		go test ./server/test/e2e -v
