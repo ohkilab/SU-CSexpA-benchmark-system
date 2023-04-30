@@ -14,7 +14,7 @@ type backendServiceServer struct {
 	rankingInteractor *ranking.RankingInteractor
 }
 
-func NewBackendService(secret string, entClient *ent.Client) pb.BackendServiceServer {
+func NewBackendService(secret []byte, entClient *ent.Client) pb.BackendServiceServer {
 	authInteractor := auth.NewInteractor(secret, entClient)
 	rankingInteractor := ranking.NewInteractor(entClient)
 	return &backendServiceServer{authInteractor, rankingInteractor}

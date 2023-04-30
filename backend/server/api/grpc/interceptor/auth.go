@@ -19,7 +19,7 @@ var excludeMethodSet = map[string]struct{}{
 }
 
 // authentication with JWT
-func Auth(secret string) grpc.UnaryServerInterceptor {
+func Auth(secret []byte) grpc.UnaryServerInterceptor {
 	return grpc_auth.UnaryServerInterceptor(func(ctx context.Context) (context.Context, error) {
 		method, ok := grpc.Method(ctx)
 		if !ok {

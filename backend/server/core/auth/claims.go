@@ -13,7 +13,7 @@ type Claims struct {
 	jwt.RegisteredClaims
 }
 
-func GetClaimsFromToken(token, secret string) (*Claims, error) {
+func GetClaimsFromToken(token string, secret []byte) (*Claims, error) {
 	jwtToken, err := jwt.ParseWithClaims(token, &Claims{}, func(t *jwt.Token) (interface{}, error) {
 		return secret, nil
 	})
@@ -30,7 +30,7 @@ func GetClaimsFromToken(token, secret string) (*Claims, error) {
 	return claims, nil
 }
 
-func GenerateJWTToken(secret, groupID string, year int) (string, error) {
+func GenerateJWTToken(secret []byte, groupID string, year int) (string, error) {
 	jwtToken := jwt.NewWithClaims(jwt.SigningMethodHS256, Claims{
 		GroupID: groupID,
 		Year:    year,

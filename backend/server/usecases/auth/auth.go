@@ -12,11 +12,11 @@ import (
 )
 
 type AuthInteractor struct {
-	secret    string
+	secret    []byte
 	entClient *ent.Client
 }
 
-func NewInteractor(secret string, entClient *ent.Client) *AuthInteractor {
+func NewInteractor(secret []byte, entClient *ent.Client) *AuthInteractor {
 	return &AuthInteractor{secret, entClient}
 }
 
