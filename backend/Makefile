@@ -16,3 +16,12 @@ e2e_test: mysql/start
 	MYSQL_ROOT_PASSWORD=ohkilab \
 	MYSQL_DATABASE=su-exp-a \
 		go test ./server/test/e2e -v
+
+.PHONY: seed
+seed:
+	@DB_USER=root \
+	DB_PASS=root \
+	DB_HOST=localhost \
+	DB_PORT=3306 \
+	DB_NAME=exp-a \
+	go run ./cmd/seed
