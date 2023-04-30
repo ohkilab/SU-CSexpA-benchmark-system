@@ -37,9 +37,10 @@ func (i *AuthInteractor) PostLogin(ctx context.Context, id, password string) (*b
 	}
 	return &backend.PostLoginResponse{
 		Group: &backend.Group{
-			Id:   group.ID,
-			Year: int32(group.Year),
-			Role: backend.Role(backend.Role_value[group.Role.String()]),
+			Id:    group.ID,
+			Year:  int32(group.Year),
+			Role:  backend.Role(backend.Role_value[group.Role.String()]),
+			Score: int32(group.Score),
 		},
 		Token: jwtToken,
 	}, nil
