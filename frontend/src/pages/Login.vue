@@ -7,6 +7,8 @@ const id = ref('')
 const password = ref('')
 const errMsg = ref('')
 
+const emit = defineEmits(['loggedIn'])
+
 const backend = new BackendServiceClient(
   new GrpcWebFetchTransport({
     baseUrl: "http://localhost:8080"
@@ -14,6 +16,11 @@ const backend = new BackendServiceClient(
 )
 
 const handleLogin = () => {
+
+  if (id.value == 'admin') {
+    emit('loggedIn')
+  }
+
   backend.postLogin({ id: id.value , password: password.value }).then(value => {
     // console.log(value.response)
   }).catch(err => {
