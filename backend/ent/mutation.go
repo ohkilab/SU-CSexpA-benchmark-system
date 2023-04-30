@@ -788,6 +788,8 @@ type GroupMutation struct {
 	id                 *string
 	year               *int
 	addyear            *int
+	score              *int
+	addscore           *int
 	role               *group.Role
 	encrypted_password *string
 	clearedFields      map[string]struct{}
@@ -959,6 +961,62 @@ func (m *GroupMutation) ResetYear() {
 	m.addyear = nil
 }
 
+// SetScore sets the "score" field.
+func (m *GroupMutation) SetScore(i int) {
+	m.score = &i
+	m.addscore = nil
+}
+
+// Score returns the value of the "score" field in the mutation.
+func (m *GroupMutation) Score() (r int, exists bool) {
+	v := m.score
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldScore returns the old "score" field's value of the Group entity.
+// If the Group object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *GroupMutation) OldScore(ctx context.Context) (v int, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldScore is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldScore requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldScore: %w", err)
+	}
+	return oldValue.Score, nil
+}
+
+// AddScore adds i to the "score" field.
+func (m *GroupMutation) AddScore(i int) {
+	if m.addscore != nil {
+		*m.addscore += i
+	} else {
+		m.addscore = &i
+	}
+}
+
+// AddedScore returns the value that was added to the "score" field in this mutation.
+func (m *GroupMutation) AddedScore() (r int, exists bool) {
+	v := m.addscore
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetScore resets all changes to the "score" field.
+func (m *GroupMutation) ResetScore() {
+	m.score = nil
+	m.addscore = nil
+}
+
 // SetRole sets the "role" field.
 func (m *GroupMutation) SetRole(gr group.Role) {
 	m.role = &gr
@@ -1119,9 +1177,12 @@ func (m *GroupMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *GroupMutation) Fields() []string {
-	fields := make([]string, 0, 3)
+	fields := make([]string, 0, 4)
 	if m.year != nil {
 		fields = append(fields, group.FieldYear)
+	}
+	if m.score != nil {
+		fields = append(fields, group.FieldScore)
 	}
 	if m.role != nil {
 		fields = append(fields, group.FieldRole)
@@ -1139,6 +1200,8 @@ func (m *GroupMutation) Field(name string) (ent.Value, bool) {
 	switch name {
 	case group.FieldYear:
 		return m.Year()
+	case group.FieldScore:
+		return m.Score()
 	case group.FieldRole:
 		return m.Role()
 	case group.FieldEncryptedPassword:
@@ -1154,6 +1217,8 @@ func (m *GroupMutation) OldField(ctx context.Context, name string) (ent.Value, e
 	switch name {
 	case group.FieldYear:
 		return m.OldYear(ctx)
+	case group.FieldScore:
+		return m.OldScore(ctx)
 	case group.FieldRole:
 		return m.OldRole(ctx)
 	case group.FieldEncryptedPassword:
@@ -1173,6 +1238,13 @@ func (m *GroupMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetYear(v)
+		return nil
+	case group.FieldScore:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetScore(v)
 		return nil
 	case group.FieldRole:
 		v, ok := value.(group.Role)
@@ -1199,6 +1271,9 @@ func (m *GroupMutation) AddedFields() []string {
 	if m.addyear != nil {
 		fields = append(fields, group.FieldYear)
 	}
+	if m.addscore != nil {
+		fields = append(fields, group.FieldScore)
+	}
 	return fields
 }
 
@@ -1209,6 +1284,8 @@ func (m *GroupMutation) AddedField(name string) (ent.Value, bool) {
 	switch name {
 	case group.FieldYear:
 		return m.AddedYear()
+	case group.FieldScore:
+		return m.AddedScore()
 	}
 	return nil, false
 }
@@ -1224,6 +1301,13 @@ func (m *GroupMutation) AddField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.AddYear(v)
+		return nil
+	case group.FieldScore:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddScore(v)
 		return nil
 	}
 	return fmt.Errorf("unknown Group numeric field %s", name)
@@ -1254,6 +1338,9 @@ func (m *GroupMutation) ResetField(name string) error {
 	switch name {
 	case group.FieldYear:
 		m.ResetYear()
+		return nil
+	case group.FieldScore:
+		m.ResetScore()
 		return nil
 	case group.FieldRole:
 		m.ResetRole()

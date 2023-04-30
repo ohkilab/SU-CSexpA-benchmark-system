@@ -26,6 +26,12 @@ func (gc *GroupCreate) SetYear(i int) *GroupCreate {
 	return gc
 }
 
+// SetScore sets the "score" field.
+func (gc *GroupCreate) SetScore(i int) *GroupCreate {
+	gc.mutation.SetScore(i)
+	return gc
+}
+
 // SetRole sets the "role" field.
 func (gc *GroupCreate) SetRole(gr group.Role) *GroupCreate {
 	gc.mutation.SetRole(gr)
@@ -101,6 +107,14 @@ func (gc *GroupCreate) check() error {
 			return &ValidationError{Name: "year", err: fmt.Errorf(`ent: validator failed for field "Group.year": %w`, err)}
 		}
 	}
+	if _, ok := gc.mutation.Score(); !ok {
+		return &ValidationError{Name: "score", err: errors.New(`ent: missing required field "Group.score"`)}
+	}
+	if v, ok := gc.mutation.Score(); ok {
+		if err := group.ScoreValidator(v); err != nil {
+			return &ValidationError{Name: "score", err: fmt.Errorf(`ent: validator failed for field "Group.score": %w`, err)}
+		}
+	}
 	if _, ok := gc.mutation.Role(); !ok {
 		return &ValidationError{Name: "role", err: errors.New(`ent: missing required field "Group.role"`)}
 	}
@@ -150,6 +164,10 @@ func (gc *GroupCreate) createSpec() (*Group, *sqlgraph.CreateSpec) {
 	if value, ok := gc.mutation.Year(); ok {
 		_spec.SetField(group.FieldYear, field.TypeInt, value)
 		_node.Year = value
+	}
+	if value, ok := gc.mutation.Score(); ok {
+		_spec.SetField(group.FieldScore, field.TypeInt, value)
+		_node.Score = value
 	}
 	if value, ok := gc.mutation.Role(); ok {
 		_spec.SetField(group.FieldRole, field.TypeEnum, value)

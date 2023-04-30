@@ -9,15 +9,15 @@ type option struct {
 	jwtSecret string
 }
 
-type optionFunc func(*option)
+type OptionFunc func(*option)
 
-func WithEntClient(entClient *ent.Client) optionFunc {
+func WithEntClient(entClient *ent.Client) OptionFunc {
 	return func(o *option) {
 		o.entClient = entClient
 	}
 }
 
-func WithJwtSecret(jwtSecret string) optionFunc {
+func WithJwtSecret(jwtSecret string) OptionFunc {
 	return func(o *option) {
 		o.jwtSecret = jwtSecret
 	}

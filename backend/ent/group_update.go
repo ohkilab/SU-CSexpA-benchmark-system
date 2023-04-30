@@ -41,6 +41,19 @@ func (gu *GroupUpdate) AddYear(i int) *GroupUpdate {
 	return gu
 }
 
+// SetScore sets the "score" field.
+func (gu *GroupUpdate) SetScore(i int) *GroupUpdate {
+	gu.mutation.ResetScore()
+	gu.mutation.SetScore(i)
+	return gu
+}
+
+// AddScore adds i to the "score" field.
+func (gu *GroupUpdate) AddScore(i int) *GroupUpdate {
+	gu.mutation.AddScore(i)
+	return gu
+}
+
 // SetRole sets the "role" field.
 func (gu *GroupUpdate) SetRole(gr group.Role) *GroupUpdate {
 	gu.mutation.SetRole(gr)
@@ -128,6 +141,11 @@ func (gu *GroupUpdate) check() error {
 			return &ValidationError{Name: "year", err: fmt.Errorf(`ent: validator failed for field "Group.year": %w`, err)}
 		}
 	}
+	if v, ok := gu.mutation.Score(); ok {
+		if err := group.ScoreValidator(v); err != nil {
+			return &ValidationError{Name: "score", err: fmt.Errorf(`ent: validator failed for field "Group.score": %w`, err)}
+		}
+	}
 	if v, ok := gu.mutation.Role(); ok {
 		if err := group.RoleValidator(v); err != nil {
 			return &ValidationError{Name: "role", err: fmt.Errorf(`ent: validator failed for field "Group.role": %w`, err)}
@@ -153,6 +171,12 @@ func (gu *GroupUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if value, ok := gu.mutation.AddedYear(); ok {
 		_spec.AddField(group.FieldYear, field.TypeInt, value)
+	}
+	if value, ok := gu.mutation.Score(); ok {
+		_spec.SetField(group.FieldScore, field.TypeInt, value)
+	}
+	if value, ok := gu.mutation.AddedScore(); ok {
+		_spec.AddField(group.FieldScore, field.TypeInt, value)
 	}
 	if value, ok := gu.mutation.Role(); ok {
 		_spec.SetField(group.FieldRole, field.TypeEnum, value)
@@ -235,6 +259,19 @@ func (guo *GroupUpdateOne) SetYear(i int) *GroupUpdateOne {
 // AddYear adds i to the "year" field.
 func (guo *GroupUpdateOne) AddYear(i int) *GroupUpdateOne {
 	guo.mutation.AddYear(i)
+	return guo
+}
+
+// SetScore sets the "score" field.
+func (guo *GroupUpdateOne) SetScore(i int) *GroupUpdateOne {
+	guo.mutation.ResetScore()
+	guo.mutation.SetScore(i)
+	return guo
+}
+
+// AddScore adds i to the "score" field.
+func (guo *GroupUpdateOne) AddScore(i int) *GroupUpdateOne {
+	guo.mutation.AddScore(i)
 	return guo
 }
 
@@ -338,6 +375,11 @@ func (guo *GroupUpdateOne) check() error {
 			return &ValidationError{Name: "year", err: fmt.Errorf(`ent: validator failed for field "Group.year": %w`, err)}
 		}
 	}
+	if v, ok := guo.mutation.Score(); ok {
+		if err := group.ScoreValidator(v); err != nil {
+			return &ValidationError{Name: "score", err: fmt.Errorf(`ent: validator failed for field "Group.score": %w`, err)}
+		}
+	}
 	if v, ok := guo.mutation.Role(); ok {
 		if err := group.RoleValidator(v); err != nil {
 			return &ValidationError{Name: "role", err: fmt.Errorf(`ent: validator failed for field "Group.role": %w`, err)}
@@ -380,6 +422,12 @@ func (guo *GroupUpdateOne) sqlSave(ctx context.Context) (_node *Group, err error
 	}
 	if value, ok := guo.mutation.AddedYear(); ok {
 		_spec.AddField(group.FieldYear, field.TypeInt, value)
+	}
+	if value, ok := guo.mutation.Score(); ok {
+		_spec.SetField(group.FieldScore, field.TypeInt, value)
+	}
+	if value, ok := guo.mutation.AddedScore(); ok {
+		_spec.AddField(group.FieldScore, field.TypeInt, value)
 	}
 	if value, ok := guo.mutation.Role(); ok {
 		_spec.SetField(group.FieldRole, field.TypeEnum, value)
