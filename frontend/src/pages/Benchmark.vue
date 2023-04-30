@@ -10,13 +10,12 @@ interface Status {
 }
 
 const status: Status = reactive({
-  benchmarking: true,
+  benchmarking: false,
   current: 0,
   size: 20
 })
 
 const tags: Ref<Array<{tag: string, idx: number}>> = ref([])
-
 
 onMounted(() => {
   tags.value = Array.from(new Array(status.size)).map((_, idx) => {
@@ -58,7 +57,9 @@ const filteredTags = computed(() => tags.value.slice(status.current - 2, status.
           <div
             class="transition-all ease-out duration-200 p-3 bg-gray-700 rounded shadow-md shadow-black"
             :class="status.current > i ? 'bg-green-700' :
-                    status.current == i ? 'bg-gray-700 p-5' : 'opacity-70'"
+                    status.current == i ? 'bg-gray-700 p-5' :
+                    'opacity-70'
+                   "
           >
           <font-awesome-icon v-if="status.current > i" :icon="['fas', 'check']"></font-awesome-icon>
             <font-awesome-icon v-else-if="status.current == i" class="animate-spin" :icon="['fas', 'spinner']"></font-awesome-icon>

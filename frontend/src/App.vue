@@ -1,8 +1,10 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { Ref, ref } from 'vue';
 import Login from './pages/Login.vue'
-const loggedIn = ref(true)
-const msg = ref('')
+
+const loggedIn = ref(false)
+const token:Ref<string> = ref('')
+const msg:Ref<string> = ref('')
 </script>
 <template>
   <div
@@ -32,7 +34,7 @@ const msg = ref('')
         >
       </div>
       <router-view v-if="loggedIn"></router-view>
-      <Login class="mt-auto" @logged-in="loggedIn = true" v-else></Login>
+      <Login class="mt-auto" @logged-in="t => {token = t; loggedIn = true}" v-else></Login>
     <!-- footer -->
     <div class="flex items-center justify-center bg-gray-700 w-full mt-auto">© 2023 Ohkilab. All rights reserved.</div>
   </div>

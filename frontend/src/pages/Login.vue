@@ -16,13 +16,9 @@ const backend = new BackendServiceClient(
 )
 
 const handleLogin = () => {
-
-  if (id.value == 'admin') {
-    emit('loggedIn')
-  }
-
   backend.postLogin({ id: id.value , password: password.value }).then(value => {
-    // console.log(value.response)
+    console.log(value.response)
+    emit('loggedIn', value.response.token)
   }).catch(err => {
     console.log(err.message)
     errMsg.value = err.message
