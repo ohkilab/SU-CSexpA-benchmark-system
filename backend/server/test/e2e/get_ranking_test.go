@@ -42,9 +42,6 @@ func Test_GetRanking(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	for _, record := range resp.Records {
-		t.Log(record.Group.Id, record.Group.Score)
-	}
 	assert.Equal(t, int32(1), resp.Records[0].Rank)
 	assert.Equal(t, newPbGroup(a02.ID, a02.Score, a02.Year, string(a02.Role)), resp.Records[0].Group)
 	assert.Equal(t, int32(2), resp.Records[1].Rank)
