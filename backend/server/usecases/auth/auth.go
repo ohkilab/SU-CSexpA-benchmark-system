@@ -12,11 +12,11 @@ import (
 )
 
 type AuthInteractor struct {
-	secret    string
+	secret    []byte
 	entClient *ent.Client
 }
 
-func NewInteractor(secret string, entClient *ent.Client) *AuthInteractor {
+func NewInteractor(secret []byte, entClient *ent.Client) *AuthInteractor {
 	return &AuthInteractor{secret, entClient}
 }
 
@@ -37,9 +37,10 @@ func (i *AuthInteractor) PostLogin(ctx context.Context, id, password string) (*b
 	}
 	return &backend.PostLoginResponse{
 		Group: &backend.Group{
-			Id:   group.ID,
-			Year: int32(group.Year),
-			Role: backend.Role(backend.Role_value[group.Role.String()]),
+			Id:    group.ID,
+			Year:  int32(group.Year),
+			Role:  backend.Role(backend.Role_value[group.Role.String()]),
+			Score: int32(group.Score),
 		},
 		Token: jwtToken,
 	}, nil

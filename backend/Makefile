@@ -16,6 +16,7 @@ e2e_test: mysql/start
 	MYSQL_ROOT_PASSWORD=ohkilab \
 	MYSQL_DATABASE=su-exp-a \
 		go test ./server/test/e2e -v
+	@docker rm -f $(CONTAINER_ID)
 
 .PHONY: seed
 seed:
