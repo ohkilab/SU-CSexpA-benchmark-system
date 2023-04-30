@@ -1,7 +1,34 @@
+<script setup lang="ts">
+import { GrpcWebFetchTransport } from '@protobuf-ts/grpcweb-transport';
+import { BackendServiceClient } from 'proto-gen-web/src/backend/services.client';
+import { ref } from 'vue';
+
+const id = ref('')
+const password = ref('')
+const errMsg = ref('')
+
+const backend = new BackendServiceClient(
+  new GrpcWebFetchTransport({
+    baseUrl: "http://localhost:8080"
+  })
+)
+
+const handleLogin = () => {
+  backend.postLogin({ id: id.value , password: password.value }).then(value => {
+    // console.log(value.response)
+  }).catch(err => {
+    console.log(err.message)
+    errMsg.value = err.message
+  })
+}
+</script>
 <template>
-  <div class="flex flex-col items-center justify-center h-full w-full px-5 md:w-96 gap-5 text-xl">
-    <input class="w-full rounded bg-gray-700 p-2 hover:bg-gray-600 transition" placeholder="グループ名" type="text">
-    <input class="w-full rounded bg-gray-700 p-2 hover:bg-gray-600 transition" placeholder="パスワード" type="password">
+  <form class="flex flex-col items-center justify-center h-full w-full px-5 md:w-96 gap-5 text-xl" @submit.prevent="handleLogin">
+    <div class="text-red-500">
+      {{errMsg}}
+    </div>
+    <input class="w-full rounded bg-gray-700 p-2 hover:bg-gray-600 transition" placeholder="グループ名" type="text" v-model="id">
+    <input class="w-full rounded bg-gray-700 p-2 hover:bg-gray-600 transition" placeholder="パスワード" type="password" v-model="password">
     <button class="w-full md:w-2/3 border rounded py-2 hover:bg-gray-700 transition">ログイン</button>
-  </div>
+  </form>
 </template>
