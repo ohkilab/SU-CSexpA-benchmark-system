@@ -18,8 +18,6 @@ services:
       dockerfile: Dockerfile
     environment:
       - REDIS_ADDR=redis
-    depends_on:
-      - redis
 
   db:
     image: mysql:8.0
@@ -28,6 +26,8 @@ services:
       - .env
     volumes:
       - ./data:/var/lib/mysql
+    ports:
+      - "3306:3306"
 
   frontend:
     build:
@@ -48,9 +48,3 @@ services:
       - "9901:9901"
     volumes:
       - ./frontend/envoy_docker.yaml:/etc/envoy/envoy.yaml
-
-  redis:
-    image: redis/redis-stack:latest
-    ports:
-      - "6379:6379"
-      - "8001:8001"
