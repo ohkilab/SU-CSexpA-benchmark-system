@@ -15,13 +15,10 @@ import (
 
 func Test_GetRanking(t *testing.T) {
 	ctx := context.Background()
-	entClient := enttestOpen(t)
+	entClient := enttestOpen(ctx, t)
 	defer entClient.Close()
-	t.Log("check")
-	conn, err := launchGrpcServer(grpc.WithJwtSecret("secret"), grpc.WithEntClient(entClient))
-	if err != nil {
-		t.Fatal(err)
-	}
+	server, conn := launchGrpcServer(t, grpc.WithJwtSecret("secret"), grpc.WithEntClient(entClient))
+	defer server.GracefulStop()
 	defer conn.Close()
 	client := pb.NewBackendServiceClient(conn)
 
