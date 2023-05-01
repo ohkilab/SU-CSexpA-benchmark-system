@@ -30,8 +30,8 @@ const handleLogin = () => {
     <div class="text-red-500">
       {{errMsg}}
     </div>
-    <input class="w-full rounded bg-gray-700 p-2 hover:bg-gray-600 transition" placeholder="グループ名" type="text" v-model="id">
-    <input class="w-full rounded bg-gray-700 p-2 hover:bg-gray-600 transition" placeholder="パスワード" type="password" v-model="password">
+    <input class="w-full rounded bg-gray-700 p-2 hover:bg-gray-600 transition focus:outline-none" placeholder="グループ名" type="text" v-model="id">
+    <input class="w-full rounded bg-gray-700 p-2 hover:bg-gray-600 transition focus:outline-none" placeholder="パスワード" type="password" v-model="password">
     <button class="w-full md:w-2/3 border rounded py-2 hover:bg-gray-700 transition">ログイン</button>
   </form>
 </template>
