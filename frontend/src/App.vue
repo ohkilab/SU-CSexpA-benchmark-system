@@ -1,10 +1,18 @@
 <script setup lang="ts">
-import { Ref, ref } from 'vue';
+import { reactive, Ref, ref } from 'vue';
 import Login from './pages/Login.vue'
+import { useCredStore } from './stores/cred';
 
 const loggedIn = ref(false)
 const token:Ref<string> = ref('')
 const msg:Ref<string> = ref('')
+const cred = useCredStore()
+
+const handleLoggedIn = (t:string) => {
+  token.value = t
+  loggedIn.value = true
+  cred.token = t
+}
 </script>
 <template>
   <div
@@ -34,7 +42,7 @@ const msg:Ref<string> = ref('')
         >
       </div>
       <router-view v-if="loggedIn"></router-view>
-      <Login class="mt-auto" @logged-in="t => {token = t; loggedIn = true}" v-else></Login>
+      <Login class="mt-auto" @logged-in="t => {handleLoggedIn(t)}" v-else></Login>
     <!-- footer -->
     <div class="flex items-center justify-center bg-gray-700 w-full mt-auto">© 2023 Ohkilab. All rights reserved.</div>
   </div>

@@ -1,7 +1,24 @@
 <script setup lang="ts">
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { computed, onMounted, reactive, ref } from 'vue'
+import { useCredStore } from '../stores/cred'
+
 import type { Ref } from 'vue'
+
+import { GrpcWebFetchTransport } from '@protobuf-ts/grpcweb-transport'
+import { BackendServiceClient } from 'proto-gen-web/src/backend/services.client'
+
+import type { GetRankingRequest, GetSubmitRequest } from 'proto-gen-web/src/backend/messages'
+import type { Group } from 'proto-gen-web/src/backend/resources'
+import { Role } from 'proto-gen-web/src/backend/resources'
+
+const cred = useCredStore()
+
+const backend = new BackendServiceClient(
+  new GrpcWebFetchTransport({
+    baseUrl: "http://localhost:8080"
+  })
+)
 
 interface Status {
   benchmarking: boolean,
@@ -39,11 +56,31 @@ const benchmark = () => {
 }
 onMounted(() => {
   tags.value = Array.from(new Array(status.size)).map((_, idx) => {
+
   return {
     tag: 'tag_string ' + idx,
     idx
   }
 })
+
+  const group: Group = {
+    id: 'a01',
+    year: 2023,
+    role: Role.CONTESTANT
+  }
+
+  let opt = {meta: {'authorization' : 'Bearer ' + cred.token}}
+
+  backend.getSubmit({
+    submitId: 'test'
+  },opt).then(res => {
+    console.log(res)
+  })
+
+  backend.getRanking({
+    year: 2023,
+    containGuest: false
+  },opt).then(res => {console.log(res)})
 
   // setInterval(() => {
   //   status.current++
