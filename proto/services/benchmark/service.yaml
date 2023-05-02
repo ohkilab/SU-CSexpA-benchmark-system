@@ -3,14 +3,10 @@ grpc_server:
     dist: ../proto-gen/go
     opts:
       - paths=source_relative
+      - require_unimplemented_servers=false
 
 client:
   go:
     dist: ../proto-gen/go
     opts:
       - paths=source_relative
-  ts:
-    plugin:
-      name: protoc-gen-ts
-      path: protoc-gen-ts
-    dist: ../proto-gen/ts

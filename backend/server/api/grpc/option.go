@@ -6,19 +6,19 @@ import (
 
 type option struct {
 	entClient *ent.Client
-	jwtSecret string
+	jwtSecret []byte
 }
 
-type optionFunc func(*option)
+type OptionFunc func(*option)
 
-func WithEntClient(entClient *ent.Client) optionFunc {
+func WithEntClient(entClient *ent.Client) OptionFunc {
 	return func(o *option) {
 		o.entClient = entClient
 	}
 }
 
-func WithJwtSecret(jwtSecret string) optionFunc {
+func WithJwtSecret(jwtSecret string) OptionFunc {
 	return func(o *option) {
-		o.jwtSecret = jwtSecret
+		o.jwtSecret = []byte(jwtSecret)
 	}
 }

@@ -149,10 +149,6 @@ export interface GetRankingResponse_Record {
      * @generated from protobuf field: Group group = 2;
      */
     group?: Group;
-    /**
-     * @generated from protobuf field: int32 score = 3;
-     */
-    score: number;
 }
 /**
  * @generated from protobuf message GetGroupRequest
@@ -711,12 +707,11 @@ class GetRankingResponse_Record$Type extends MessageType<GetRankingResponse_Reco
     constructor() {
         super("GetRankingResponse.Record", [
             { no: 1, name: "rank", kind: "scalar", T: 5 /*ScalarType.INT32*/ },
-            { no: 2, name: "group", kind: "message", T: () => Group },
-            { no: 3, name: "score", kind: "scalar", T: 5 /*ScalarType.INT32*/ }
+            { no: 2, name: "group", kind: "message", T: () => Group }
         ]);
     }
     create(value?: PartialMessage<GetRankingResponse_Record>): GetRankingResponse_Record {
-        const message = { rank: 0, score: 0 };
+        const message = { rank: 0 };
         globalThis.Object.defineProperty(message, MESSAGE_TYPE, { enumerable: false, value: this });
         if (value !== undefined)
             reflectionMergePartial<GetRankingResponse_Record>(this, message, value);
@@ -732,9 +727,6 @@ class GetRankingResponse_Record$Type extends MessageType<GetRankingResponse_Reco
                     break;
                 case /* Group group */ 2:
                     message.group = Group.internalBinaryRead(reader, reader.uint32(), options, message.group);
-                    break;
-                case /* int32 score */ 3:
-                    message.score = reader.int32();
                     break;
                 default:
                     let u = options.readUnknownField;
@@ -754,9 +746,6 @@ class GetRankingResponse_Record$Type extends MessageType<GetRankingResponse_Reco
         /* Group group = 2; */
         if (message.group)
             Group.internalBinaryWrite(message.group, writer.tag(2, WireType.LengthDelimited).fork(), options).join();
-        /* int32 score = 3; */
-        if (message.score !== 0)
-            writer.tag(3, WireType.Varint).int32(message.score);
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);

@@ -16,6 +16,8 @@ const (
 	FieldID = "id"
 	// FieldYear holds the string denoting the year field in the database.
 	FieldYear = "year"
+	// FieldScore holds the string denoting the score field in the database.
+	FieldScore = "score"
 	// FieldRole holds the string denoting the role field in the database.
 	FieldRole = "role"
 	// FieldEncryptedPassword holds the string denoting the encrypted_password field in the database.
@@ -35,6 +37,7 @@ const (
 var Columns = []string{
 	FieldID,
 	FieldYear,
+	FieldScore,
 	FieldRole,
 	FieldEncryptedPassword,
 }
@@ -58,6 +61,8 @@ func ValidColumn(column string) bool {
 var (
 	// YearValidator is a validator for the "year" field. It is called by the builders before save.
 	YearValidator func(int) error
+	// ScoreValidator is a validator for the "score" field. It is called by the builders before save.
+	ScoreValidator func(int) error
 )
 
 // Role defines the type for the "role" enum field.
@@ -94,6 +99,11 @@ func ByID(opts ...sql.OrderTermOption) OrderOption {
 // ByYear orders the results by the year field.
 func ByYear(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldYear, opts...).ToFunc()
+}
+
+// ByScore orders the results by the score field.
+func ByScore(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldScore, opts...).ToFunc()
 }
 
 // ByRole orders the results by the role field.

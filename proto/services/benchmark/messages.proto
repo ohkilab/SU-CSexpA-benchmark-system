@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+import "google/protobuf/timestamp.proto";
+
+option go_package = "./benchmark";
+
+message ExecuteRequest {
+  string ip_addr = 1;
+  string group_id = 2; // for logging
+}
+
+message ExecuteResponse {
+  HttpResponse response = 2;
+}
+
+message HttpResponse {
+  // TODO
+}
