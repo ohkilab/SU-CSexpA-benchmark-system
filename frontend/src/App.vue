@@ -1,17 +1,17 @@
 <script setup lang="ts">
 import { reactive, Ref, ref } from 'vue';
 import Login from './pages/Login.vue'
-import { useCredStore } from './stores/cred';
+import {useStateStore} from './stores/state'
 
 const loggedIn = ref(false)
 const token:Ref<string> = ref('')
 const msg:Ref<string> = ref('')
-const cred = useCredStore()
+const state = useStateStore()
 
 const handleLoggedIn = (t:string) => {
   token.value = t
   loggedIn.value = true
-  cred.token = t
+  state.token = t
 }
 </script>
 <template>
@@ -29,14 +29,14 @@ const handleLoggedIn = (t:string) => {
     <div v-if="loggedIn" class="flex gap-5 text-lg">
         <!-- TODO: fix active class -->
         <router-link
-          class="p-2 rounded bg-gray-500 shadow-md shadow-black hover:scale-105 transition"
-          active-class="bg-blue-500 underline"
+          class="p-2 rounded shadow-md shadow-black hover:scale-105 transition border border-gray-500"
+          active-class="bg-blue-500"
           to="/benchmark"
           >ベンチマーク</router-link
         >
         <router-link
-          class="p-2 rounded bg-gray-500 shadow-md shadow-black hover:scale-105 transition"
-          active-class="bg-blue-500 underline"
+          class="p-2 rounded shadow-md shadow-black hover:scale-105 transition border border-gray-500"
+          active-class="bg-blue-500"
           to="/ranking"
           >ランキング</router-link
         >
