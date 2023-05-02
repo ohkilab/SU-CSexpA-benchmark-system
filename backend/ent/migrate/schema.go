@@ -29,6 +29,7 @@ var (
 	GroupsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeString},
 		{Name: "year", Type: field.TypeInt},
+		{Name: "score", Type: field.TypeInt},
 		{Name: "role", Type: field.TypeEnum, Enums: []string{"contestant", "guest"}},
 		{Name: "encrypted_password", Type: field.TypeString},
 	}
@@ -37,6 +38,13 @@ var (
 		Name:       "groups",
 		Columns:    GroupsColumns,
 		PrimaryKey: []*schema.Column{GroupsColumns[0]},
+		Indexes: []*schema.Index{
+			{
+				Name:    "group_score",
+				Unique:  false,
+				Columns: []*schema.Column{GroupsColumns[2]},
+			},
+		},
 	}
 	// SubmitsColumns holds the columns for the "submits" table.
 	SubmitsColumns = []*schema.Column{

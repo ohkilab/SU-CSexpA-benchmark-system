@@ -8,7 +8,7 @@ import (
 	"google.golang.org/grpc/reflection"
 )
 
-func NewServer(optionFuncs ...optionFunc) *grpc.Server {
+func NewServer(optionFuncs ...OptionFunc) *grpc.Server {
 	opt := &option{}
 	for _, optionFunc := range optionFuncs {
 		optionFunc(opt)

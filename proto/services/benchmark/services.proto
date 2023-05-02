@@ -1,0 +1,9 @@
+syntax = "proto3";
+
+import "benchmark/messages.proto";
+
+option go_package = "./benchmark";
+
+service BenchmarkService {
+  rpc Execute(ExecuteRequest) returns (stream ExecuteResponse);
+}

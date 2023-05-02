@@ -10,14 +10,14 @@ services:
       - "50051:50051"
     depends_on:
       - db
-      # - benchmark-service
+      - benchmark-service
 
-  # benchmark-service:
-  #   build:
-  #     context: benchmark-service
-  #     dockerfile: Dockerfile
-  #   env_file:
-  #     - benchmark-service/.env
+  benchmark-service:
+    build:
+      context: benchmark-service
+      dockerfile: Dockerfile
+    environment:
+      - REDIS_ADDR=redis
 
   db:
     image: mysql:8.0
@@ -26,6 +26,8 @@ services:
       - .env
     volumes:
       - ./data:/var/lib/mysql
+    ports:
+      - "3306:3306"
 
   frontend:
     build:
