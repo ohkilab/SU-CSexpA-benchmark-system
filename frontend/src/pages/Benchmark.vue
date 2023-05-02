@@ -31,7 +31,7 @@ setInterval(() => {
   } else {
     status.current = 0
   }
-}, 500)
+}, 100)
   // setInterval(() => {
   //   status.current++
   //   if (status.current >= status.size) status.current = 0
@@ -50,23 +50,25 @@ const filteredTags = computed(() => tags.value.slice(status.current - 2, status.
           <font-awesome-icon class="animate-spin" :icon="['fas', 'spinner']" />
         </div>
 
-        <div
-          v-for="(t, i) in tags"
-          :key="i"
-        >
+        <div class="flex flex-wrap gap-5 self-center max-w-[600px]">
+
           <div
-            class="transition-all ease-out duration-200 p-3 bg-gray-700 rounded shadow-md shadow-black"
-            :class="status.current > i ? 'bg-green-700' :
-                    status.current == i ? 'bg-gray-700 p-5' :
-                    'opacity-70'
-                   "
+            v-for="(t, i) in tags"
+            :key="i"
+              class="transition-all ease-out duration-200 w-32 p-3 text-center bg-gray-700 rounded shadow-md shadow-black"
+              :class="status.current > i ? 'bg-green-700' :
+                      status.current == i ? 'bg-gray-700' :
+                      'opacity-70'
+                     "
           >
-          <font-awesome-icon v-if="status.current > i" :icon="['fas', 'check']"></font-awesome-icon>
+            <font-awesome-icon v-if="status.current > i" :icon="['fas', 'check']"></font-awesome-icon>
             <font-awesome-icon v-else-if="status.current == i" class="animate-spin" :icon="['fas', 'spinner']"></font-awesome-icon>
             <font-awesome-icon v-else :icon="['fas', 'minus']"></font-awesome-icon>
-            {{ i+1 }}: {{ t.tag }}
+            {{ i+1 }}
           </div>
+
         </div>
+
       </div>
     </div>
     <div v-else>

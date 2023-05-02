@@ -12,7 +12,7 @@ const msg:Ref<string> = ref('')
   >
     <!-- app bar -->
     <div
-      class="w-screen h-16 items-center bg-gray-700 flex shadow-md shadow-gray-950"
+      class="w-full h-16 items-center bg-gray-700 flex shadow-md shadow-gray-950"
     >
       <div class="mx-auto text-lg sm:text-xl">
         情報科学実験A：ベンチマークサーバランキング
