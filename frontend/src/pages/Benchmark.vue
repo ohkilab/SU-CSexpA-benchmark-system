@@ -5,18 +5,38 @@ import type { Ref } from 'vue'
 
 interface Status {
   benchmarking: boolean,
-  current: number
-  size: number
+  showResult: boolean,
+  result: number,
+  current: number,
+  size: number,
 }
 
 const status: Status = reactive({
   benchmarking: false,
+  showResult: false,
+  result: 0,
   current: 0,
   size: 20
 })
 
 const tags: Ref<Array<{tag: string, idx: number}>> = ref([])
 
+const benchmark = () => {
+  status.benchmarking = true
+
+  const interval = setInterval(() => {
+    if(status.current < status.size) {
+      status.current++
+    } else {
+      status.current = 0
+      status.benchmarking = false
+      status.showResult = true
+      status.result = Math.floor(Math.random() * (20000 - 200) + 200)
+
+      clearInterval(interval)
+    }
+  }, 100)
+}
 onMounted(() => {
   tags.value = Array.from(new Array(status.size)).map((_, idx) => {
   return {
@@ -25,13 +45,6 @@ onMounted(() => {
   }
 })
 
-setInterval(() => {
-  if(status.current < status.size) {
-    status.current++
-  } else {
-    status.current = 0
-  }
-}, 100)
   // setInterval(() => {
   //   status.current++
   //   if (status.current >= status.size) status.current = 0
@@ -41,7 +54,14 @@ setInterval(() => {
 const filteredTags = computed(() => tags.value.slice(status.current - 2, status.current + 2))
 </script>
 <template>
-  <div class="flex flex-col mt-auto">
+  <div  class="flex flex-col mt-auto">
+    <div v-if="!status.benchmarking && status.showResult" class="border flex flex-col border-gray-500 text-center p-5 rounded mb-5">
+      <div class="mb-2">最新結果</div>
+      <div class="flex self-center">
+        <div class="rounded bg-gray-500 px-2">{{status.result}}</div>
+        &nbsp;req/s
+      </div>
+    </div>
     <div v-if="status.benchmarking">
       <div class="flex flex-col gap-8 my-auto text-xl items-center justify-center">
         <div class="p-4 border-2 rounded border-gray-600 flex flex-col items-center gap-3">
@@ -51,7 +71,6 @@ const filteredTags = computed(() => tags.value.slice(status.current - 2, status.
         </div>
 
         <div class="flex flex-wrap gap-5 self-center max-w-[600px]">
-
           <div
             v-for="(t, i) in tags"
             :key="i"
@@ -66,13 +85,11 @@ const filteredTags = computed(() => tags.value.slice(status.current - 2, status.
             <font-awesome-icon v-else :icon="['fas', 'minus']"></font-awesome-icon>
             {{ i+1 }}
           </div>
-
         </div>
-
       </div>
     </div>
     <div v-else>
-      <button class="p-5 bg-blue-500 rounded text-xl shadow-md shadow-black hover:scale-105 transition" @click="status.benchmarking = true">ベンチマーク開始</button>
+      <button class="p-5 bg-blue-500 rounded text-xl shadow-md shadow-black hover:scale-105 transition" @click="benchmark">ベンチマーク開始</button>
     </div>
   </div>
 </template>
