@@ -23,10 +23,10 @@ const handleLoggedIn = (t:string) => {
       class="w-full h-16 items-center bg-gray-700 flex shadow-md shadow-gray-950"
     >
       <div class="mx-auto text-lg sm:text-xl">
-        情報科学実験A：ベンチマークサーバランキング
+        情報科学実験A：ベンチマークサーバ
       </div>
     </div>
-    <div v-if="loggedIn" class="flex gap-5 text-lg">
+    <div v-if="loggedIn && !state.benchmarking" class="flex gap-5 text-lg">
         <!-- TODO: fix active class -->
         <router-link
           class="p-2 rounded shadow-md shadow-black hover:scale-105 transition border border-gray-500"
