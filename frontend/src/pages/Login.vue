@@ -3,9 +3,13 @@ import { GrpcWebFetchTransport } from '@protobuf-ts/grpcweb-transport';
 import { BackendServiceClient } from 'proto-gen-web/src/backend/services.client';
 import { ref } from 'vue';
 
+import { useStateStore } from '../stores/state';
+
 const id = ref('')
 const password = ref('')
 const errMsg = ref('')
+
+const state = useStateStore()
 
 const emit = defineEmits(['loggedIn'])
 
@@ -18,6 +22,7 @@ const backend = new BackendServiceClient(
 const handleLogin = () => {
   backend.postLogin({ id: id.value , password: password.value }).then(value => {
     console.log(value.response)
+    state.id = id
     emit('loggedIn', value.response.token)
   }).catch(err => {
     console.log(err.message)
@@ -30,8 +35,8 @@ const handleLogin = () => {
     <div class="text-red-500">
       {{errMsg}}
     </div>
-    <input class="w-full rounded bg-gray-700 p-2 hover:bg-gray-600 transition focus:outline-none" placeholder="グループ名" type="text" v-model="id">
-    <input class="w-full rounded bg-gray-700 p-2 hover:bg-gray-600 transition focus:outline-none" placeholder="パスワード" type="password" v-model="password">
+    <input class="w-full rounded bg-gray-700 p-2 hover:bg-gray-600 transition focus:outline-none focus:bg-gray-600" placeholder="グループ名" type="text" v-model="id">
+    <input class="w-full rounded bg-gray-700 p-2 hover:bg-gray-600 transition focus:outline-none focus:bg-gray-600" placeholder="パスワード" type="password" v-model="password">
     <button class="w-full md:w-2/3 border rounded py-2 hover:bg-gray-700 transition">ログイン</button>
   </form>
 </template>

@@ -13,6 +13,11 @@ const handleLoggedIn = (t:string) => {
   loggedIn.value = true
   state.token = t
 }
+
+const handleLogout = () => {
+  loggedIn.value = false
+  state.token = ''
+}
 </script>
 <template>
   <div
@@ -20,11 +25,13 @@ const handleLoggedIn = (t:string) => {
   >
     <!-- app bar -->
     <div
-      class="w-full h-16 items-center bg-gray-700 flex shadow-md shadow-gray-950"
+      class="w-full h-16 items-center bg-gray-700 flex shadow-md shadow-gray-950 px-5"
     >
+    <div v-if="loggedIn" class="w-32 p-2 border border-gray-500">グループ：{{state.id}}</div>
       <div class="mx-auto text-lg sm:text-xl">
         情報科学実験A：ベンチマークサーバ
       </div>
+      <button @click="handleLogout" v-if="loggedIn" class="p-2 w-32 rounded border border-red-500">ログアウト</button>
     </div>
     <div v-if="loggedIn && !state.benchmarking" class="flex gap-5 text-lg">
         <!-- TODO: fix active class -->

@@ -1,5 +1,7 @@
 import { defineStore } from "pinia";
 
+// TODO: add logout action
+
 export const useStateStore = defineStore('state', {
   state: () => ({
     token: '',
