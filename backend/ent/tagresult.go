@@ -25,7 +25,7 @@ type TagResult struct {
 	CreatedAt time.Time `json:"created_at,omitempty"`
 	// DeletedAt holds the value of the "deleted_at" field.
 	DeletedAt          time.Time `json:"deleted_at,omitempty"`
-	submit_tag_results *string
+	submit_tag_results *int
 	selectValues       sql.SelectValues
 }
 
@@ -41,7 +41,7 @@ func (*TagResult) scanValues(columns []string) ([]any, error) {
 		case tagresult.FieldCreatedAt, tagresult.FieldDeletedAt:
 			values[i] = new(sql.NullTime)
 		case tagresult.ForeignKeys[0]: // submit_tag_results
-			values[i] = new(sql.NullString)
+			values[i] = new(sql.NullInt64)
 		default:
 			values[i] = new(sql.UnknownType)
 		}
@@ -88,11 +88,11 @@ func (tr *TagResult) assignValues(columns []string, values []any) error {
 				tr.DeletedAt = value.Time
 			}
 		case tagresult.ForeignKeys[0]:
-			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field submit_tag_results", values[i])
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for edge-field submit_tag_results", value)
 			} else if value.Valid {
-				tr.submit_tag_results = new(string)
-				*tr.submit_tag_results = value.String
+				tr.submit_tag_results = new(int)
+				*tr.submit_tag_results = int(value.Int64)
 			}
 		default:
 			tr.selectValues.Set(columns[i], values[i])

@@ -67,14 +67,14 @@ func (gu *GroupUpdate) SetEncryptedPassword(s string) *GroupUpdate {
 }
 
 // AddSubmitIDs adds the "submits" edge to the Submit entity by IDs.
-func (gu *GroupUpdate) AddSubmitIDs(ids ...string) *GroupUpdate {
+func (gu *GroupUpdate) AddSubmitIDs(ids ...int) *GroupUpdate {
 	gu.mutation.AddSubmitIDs(ids...)
 	return gu
 }
 
 // AddSubmits adds the "submits" edges to the Submit entity.
 func (gu *GroupUpdate) AddSubmits(s ...*Submit) *GroupUpdate {
-	ids := make([]string, len(s))
+	ids := make([]int, len(s))
 	for i := range s {
 		ids[i] = s[i].ID
 	}
@@ -93,14 +93,14 @@ func (gu *GroupUpdate) ClearSubmits() *GroupUpdate {
 }
 
 // RemoveSubmitIDs removes the "submits" edge to Submit entities by IDs.
-func (gu *GroupUpdate) RemoveSubmitIDs(ids ...string) *GroupUpdate {
+func (gu *GroupUpdate) RemoveSubmitIDs(ids ...int) *GroupUpdate {
 	gu.mutation.RemoveSubmitIDs(ids...)
 	return gu
 }
 
 // RemoveSubmits removes "submits" edges to Submit entities.
 func (gu *GroupUpdate) RemoveSubmits(s ...*Submit) *GroupUpdate {
-	ids := make([]string, len(s))
+	ids := make([]int, len(s))
 	for i := range s {
 		ids[i] = s[i].ID
 	}
@@ -192,7 +192,7 @@ func (gu *GroupUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Columns: group.SubmitsPrimaryKey,
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(submit.FieldID, field.TypeString),
+				IDSpec: sqlgraph.NewFieldSpec(submit.FieldID, field.TypeInt),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -205,7 +205,7 @@ func (gu *GroupUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Columns: group.SubmitsPrimaryKey,
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(submit.FieldID, field.TypeString),
+				IDSpec: sqlgraph.NewFieldSpec(submit.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {
@@ -221,7 +221,7 @@ func (gu *GroupUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Columns: group.SubmitsPrimaryKey,
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(submit.FieldID, field.TypeString),
+				IDSpec: sqlgraph.NewFieldSpec(submit.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {
@@ -288,14 +288,14 @@ func (guo *GroupUpdateOne) SetEncryptedPassword(s string) *GroupUpdateOne {
 }
 
 // AddSubmitIDs adds the "submits" edge to the Submit entity by IDs.
-func (guo *GroupUpdateOne) AddSubmitIDs(ids ...string) *GroupUpdateOne {
+func (guo *GroupUpdateOne) AddSubmitIDs(ids ...int) *GroupUpdateOne {
 	guo.mutation.AddSubmitIDs(ids...)
 	return guo
 }
 
 // AddSubmits adds the "submits" edges to the Submit entity.
 func (guo *GroupUpdateOne) AddSubmits(s ...*Submit) *GroupUpdateOne {
-	ids := make([]string, len(s))
+	ids := make([]int, len(s))
 	for i := range s {
 		ids[i] = s[i].ID
 	}
@@ -314,14 +314,14 @@ func (guo *GroupUpdateOne) ClearSubmits() *GroupUpdateOne {
 }
 
 // RemoveSubmitIDs removes the "submits" edge to Submit entities by IDs.
-func (guo *GroupUpdateOne) RemoveSubmitIDs(ids ...string) *GroupUpdateOne {
+func (guo *GroupUpdateOne) RemoveSubmitIDs(ids ...int) *GroupUpdateOne {
 	guo.mutation.RemoveSubmitIDs(ids...)
 	return guo
 }
 
 // RemoveSubmits removes "submits" edges to Submit entities.
 func (guo *GroupUpdateOne) RemoveSubmits(s ...*Submit) *GroupUpdateOne {
-	ids := make([]string, len(s))
+	ids := make([]int, len(s))
 	for i := range s {
 		ids[i] = s[i].ID
 	}
@@ -443,7 +443,7 @@ func (guo *GroupUpdateOne) sqlSave(ctx context.Context) (_node *Group, err error
 			Columns: group.SubmitsPrimaryKey,
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(submit.FieldID, field.TypeString),
+				IDSpec: sqlgraph.NewFieldSpec(submit.FieldID, field.TypeInt),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -456,7 +456,7 @@ func (guo *GroupUpdateOne) sqlSave(ctx context.Context) (_node *Group, err error
 			Columns: group.SubmitsPrimaryKey,
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(submit.FieldID, field.TypeString),
+				IDSpec: sqlgraph.NewFieldSpec(submit.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {
@@ -472,7 +472,7 @@ func (guo *GroupUpdateOne) sqlSave(ctx context.Context) (_node *Group, err error
 			Columns: group.SubmitsPrimaryKey,
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(submit.FieldID, field.TypeString),
+				IDSpec: sqlgraph.NewFieldSpec(submit.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {

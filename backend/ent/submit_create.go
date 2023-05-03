@@ -81,8 +81,8 @@ func (sc *SubmitCreate) SetNillableUpdatedAt(t *time.Time) *SubmitCreate {
 }
 
 // SetID sets the "id" field.
-func (sc *SubmitCreate) SetID(s string) *SubmitCreate {
-	sc.mutation.SetID(s)
+func (sc *SubmitCreate) SetID(i int) *SubmitCreate {
+	sc.mutation.SetID(i)
 	return sc
 }
 
@@ -194,12 +194,9 @@ func (sc *SubmitCreate) sqlSave(ctx context.Context) (*Submit, error) {
 		}
 		return nil, err
 	}
-	if _spec.ID.Value != nil {
-		if id, ok := _spec.ID.Value.(string); ok {
-			_node.ID = id
-		} else {
-			return nil, fmt.Errorf("unexpected Submit.ID type: %T", _spec.ID.Value)
-		}
+	if _spec.ID.Value != _node.ID {
+		id := _spec.ID.Value.(int64)
+		_node.ID = int(id)
 	}
 	sc.mutation.id = &_node.ID
 	sc.mutation.done = true
@@ -209,7 +206,7 @@ func (sc *SubmitCreate) sqlSave(ctx context.Context) (*Submit, error) {
 func (sc *SubmitCreate) createSpec() (*Submit, *sqlgraph.CreateSpec) {
 	var (
 		_node = &Submit{config: sc.config}
-		_spec = sqlgraph.NewCreateSpec(submit.Table, sqlgraph.NewFieldSpec(submit.FieldID, field.TypeString))
+		_spec = sqlgraph.NewCreateSpec(submit.Table, sqlgraph.NewFieldSpec(submit.FieldID, field.TypeInt))
 	)
 	if id, ok := sc.mutation.ID(); ok {
 		_node.ID = id
@@ -318,6 +315,10 @@ func (scb *SubmitCreateBulk) Save(ctx context.Context) ([]*Submit, error) {
 					return nil, err
 				}
 				mutation.id = &nodes[i].ID
+				if specs[i].ID.Value != nil && nodes[i].ID == 0 {
+					id := specs[i].ID.Value.(int64)
+					nodes[i].ID = int(id)
+				}
 				mutation.done = true
 				return nodes[i], nil
 			})

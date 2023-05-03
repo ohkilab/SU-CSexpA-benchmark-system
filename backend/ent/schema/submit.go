@@ -16,7 +16,7 @@ var languages = []string{"php", "go", "rust", "javascript", "csharp", "cpp", "ru
 // Fields of the Submit.
 func (Submit) Fields() []ent.Field {
 	return []ent.Field{
-		field.String("id"),
+		field.Int("id"),
 		field.String("ip_addr"),
 		field.Int("year").Positive(),
 		field.Int("score").Positive(),

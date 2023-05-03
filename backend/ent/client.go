@@ -516,7 +516,7 @@ func (c *SubmitClient) UpdateOne(s *Submit) *SubmitUpdateOne {
 }
 
 // UpdateOneID returns an update builder for the given id.
-func (c *SubmitClient) UpdateOneID(id string) *SubmitUpdateOne {
+func (c *SubmitClient) UpdateOneID(id int) *SubmitUpdateOne {
 	mutation := newSubmitMutation(c.config, OpUpdateOne, withSubmitID(id))
 	return &SubmitUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
@@ -533,7 +533,7 @@ func (c *SubmitClient) DeleteOne(s *Submit) *SubmitDeleteOne {
 }
 
 // DeleteOneID returns a builder for deleting the given entity by its id.
-func (c *SubmitClient) DeleteOneID(id string) *SubmitDeleteOne {
+func (c *SubmitClient) DeleteOneID(id int) *SubmitDeleteOne {
 	builder := c.Delete().Where(submit.ID(id))
 	builder.mutation.id = &id
 	builder.mutation.op = OpDeleteOne
@@ -550,12 +550,12 @@ func (c *SubmitClient) Query() *SubmitQuery {
 }
 
 // Get returns a Submit entity by its id.
-func (c *SubmitClient) Get(ctx context.Context, id string) (*Submit, error) {
+func (c *SubmitClient) Get(ctx context.Context, id int) (*Submit, error) {
 	return c.Query().Where(submit.ID(id)).Only(ctx)
 }
 
 // GetX is like Get, but panics if an error occurs.
-func (c *SubmitClient) GetX(ctx context.Context, id string) *Submit {
+func (c *SubmitClient) GetX(ctx context.Context, id int) *Submit {
 	obj, err := c.Get(ctx, id)
 	if err != nil {
 		panic(err)

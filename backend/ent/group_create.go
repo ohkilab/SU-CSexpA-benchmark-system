@@ -51,14 +51,14 @@ func (gc *GroupCreate) SetID(s string) *GroupCreate {
 }
 
 // AddSubmitIDs adds the "submits" edge to the Submit entity by IDs.
-func (gc *GroupCreate) AddSubmitIDs(ids ...string) *GroupCreate {
+func (gc *GroupCreate) AddSubmitIDs(ids ...int) *GroupCreate {
 	gc.mutation.AddSubmitIDs(ids...)
 	return gc
 }
 
 // AddSubmits adds the "submits" edges to the Submit entity.
 func (gc *GroupCreate) AddSubmits(s ...*Submit) *GroupCreate {
-	ids := make([]string, len(s))
+	ids := make([]int, len(s))
 	for i := range s {
 		ids[i] = s[i].ID
 	}
@@ -185,7 +185,7 @@ func (gc *GroupCreate) createSpec() (*Group, *sqlgraph.CreateSpec) {
 			Columns: group.SubmitsPrimaryKey,
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(submit.FieldID, field.TypeString),
+				IDSpec: sqlgraph.NewFieldSpec(submit.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {

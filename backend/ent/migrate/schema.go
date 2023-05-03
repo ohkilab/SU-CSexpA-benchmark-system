@@ -48,7 +48,7 @@ var (
 	}
 	// SubmitsColumns holds the columns for the "submits" table.
 	SubmitsColumns = []*schema.Column{
-		{Name: "id", Type: field.TypeString},
+		{Name: "id", Type: field.TypeInt, Increment: true},
 		{Name: "ip_addr", Type: field.TypeString},
 		{Name: "year", Type: field.TypeInt},
 		{Name: "score", Type: field.TypeInt},
@@ -70,7 +70,7 @@ var (
 		{Name: "score", Type: field.TypeInt},
 		{Name: "created_at", Type: field.TypeTime},
 		{Name: "deleted_at", Type: field.TypeTime, Nullable: true},
-		{Name: "submit_tag_results", Type: field.TypeString, Nullable: true},
+		{Name: "submit_tag_results", Type: field.TypeInt, Nullable: true},
 	}
 	// TagResultsTable holds the schema information for the "tag_results" table.
 	TagResultsTable = &schema.Table{
@@ -89,7 +89,7 @@ var (
 	// GroupSubmitsColumns holds the columns for the "group_submits" table.
 	GroupSubmitsColumns = []*schema.Column{
 		{Name: "group_id", Type: field.TypeString},
-		{Name: "submit_id", Type: field.TypeString},
+		{Name: "submit_id", Type: field.TypeInt},
 	}
 	// GroupSubmitsTable holds the schema information for the "group_submits" table.
 	GroupSubmitsTable = &schema.Table{

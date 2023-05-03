@@ -793,8 +793,8 @@ type GroupMutation struct {
 	role               *group.Role
 	encrypted_password *string
 	clearedFields      map[string]struct{}
-	submits            map[string]struct{}
-	removedsubmits     map[string]struct{}
+	submits            map[int]struct{}
+	removedsubmits     map[int]struct{}
 	clearedsubmits     bool
 	done               bool
 	oldValue           func(context.Context) (*Group, error)
@@ -1090,9 +1090,9 @@ func (m *GroupMutation) ResetEncryptedPassword() {
 }
 
 // AddSubmitIDs adds the "submits" edge to the Submit entity by ids.
-func (m *GroupMutation) AddSubmitIDs(ids ...string) {
+func (m *GroupMutation) AddSubmitIDs(ids ...int) {
 	if m.submits == nil {
-		m.submits = make(map[string]struct{})
+		m.submits = make(map[int]struct{})
 	}
 	for i := range ids {
 		m.submits[ids[i]] = struct{}{}
@@ -1110,9 +1110,9 @@ func (m *GroupMutation) SubmitsCleared() bool {
 }
 
 // RemoveSubmitIDs removes the "submits" edge to the Submit entity by IDs.
-func (m *GroupMutation) RemoveSubmitIDs(ids ...string) {
+func (m *GroupMutation) RemoveSubmitIDs(ids ...int) {
 	if m.removedsubmits == nil {
-		m.removedsubmits = make(map[string]struct{})
+		m.removedsubmits = make(map[int]struct{})
 	}
 	for i := range ids {
 		delete(m.submits, ids[i])
@@ -1121,7 +1121,7 @@ func (m *GroupMutation) RemoveSubmitIDs(ids ...string) {
 }
 
 // RemovedSubmits returns the removed IDs of the "submits" edge to the Submit entity.
-func (m *GroupMutation) RemovedSubmitsIDs() (ids []string) {
+func (m *GroupMutation) RemovedSubmitsIDs() (ids []int) {
 	for id := range m.removedsubmits {
 		ids = append(ids, id)
 	}
@@ -1129,7 +1129,7 @@ func (m *GroupMutation) RemovedSubmitsIDs() (ids []string) {
 }
 
 // SubmitsIDs returns the "submits" edge IDs in the mutation.
-func (m *GroupMutation) SubmitsIDs() (ids []string) {
+func (m *GroupMutation) SubmitsIDs() (ids []int) {
 	for id := range m.submits {
 		ids = append(ids, id)
 	}
@@ -1441,7 +1441,7 @@ type SubmitMutation struct {
 	config
 	op                Op
 	typ               string
-	id                *string
+	id                *int
 	ip_addr           *string
 	year              *int
 	addyear           *int
@@ -1483,7 +1483,7 @@ func newSubmitMutation(c config, op Op, opts ...submitOption) *SubmitMutation {
 }
 
 // withSubmitID sets the ID field of the mutation.
-func withSubmitID(id string) submitOption {
+func withSubmitID(id int) submitOption {
 	return func(m *SubmitMutation) {
 		var (
 			err   error
@@ -1535,13 +1535,13 @@ func (m SubmitMutation) Tx() (*Tx, error) {
 
 // SetID sets the value of the id field. Note that this
 // operation is only accepted on creation of Submit entities.
-func (m *SubmitMutation) SetID(id string) {
+func (m *SubmitMutation) SetID(id int) {
 	m.id = &id
 }
 
 // ID returns the ID value in the mutation. Note that the ID is only available
 // if it was provided to the builder or after it was returned from the database.
-func (m *SubmitMutation) ID() (id string, exists bool) {
+func (m *SubmitMutation) ID() (id int, exists bool) {
 	if m.id == nil {
 		return
 	}
@@ -1552,12 +1552,12 @@ func (m *SubmitMutation) ID() (id string, exists bool) {
 // That means, if the mutation is applied within a transaction with an isolation level such
 // as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
 // or updated by the mutation.
-func (m *SubmitMutation) IDs(ctx context.Context) ([]string, error) {
+func (m *SubmitMutation) IDs(ctx context.Context) ([]int, error) {
 	switch {
 	case m.op.Is(OpUpdateOne | OpDeleteOne):
 		id, exists := m.ID()
 		if exists {
-			return []string{id}, nil
+			return []int{id}, nil
 		}
 		fallthrough
 	case m.op.Is(OpUpdate | OpDelete):

@@ -405,7 +405,7 @@ func (gq *GroupQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Group,
 func (gq *GroupQuery) loadSubmits(ctx context.Context, query *SubmitQuery, nodes []*Group, init func(*Group), assign func(*Group, *Submit)) error {
 	edgeIDs := make([]driver.Value, len(nodes))
 	byID := make(map[string]*Group)
-	nids := make(map[string]map[*Group]struct{})
+	nids := make(map[int]map[*Group]struct{})
 	for i, node := range nodes {
 		edgeIDs[i] = node.ID
 		byID[node.ID] = node
@@ -438,7 +438,7 @@ func (gq *GroupQuery) loadSubmits(ctx context.Context, query *SubmitQuery, nodes
 			}
 			spec.Assign = func(columns []string, values []any) error {
 				outValue := values[0].(*sql.NullString).String
-				inValue := values[1].(*sql.NullString).String
+				inValue := int(values[1].(*sql.NullInt64).Int64)
 				if nids[inValue] == nil {
 					nids[inValue] = map[*Group]struct{}{byID[outValue]: {}}
 					return assign(columns[1:], values[1:])

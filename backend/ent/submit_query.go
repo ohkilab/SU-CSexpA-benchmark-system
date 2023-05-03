@@ -130,8 +130,8 @@ func (sq *SubmitQuery) FirstX(ctx context.Context) *Submit {
 
 // FirstID returns the first Submit ID from the query.
 // Returns a *NotFoundError when no Submit ID was found.
-func (sq *SubmitQuery) FirstID(ctx context.Context) (id string, err error) {
-	var ids []string
+func (sq *SubmitQuery) FirstID(ctx context.Context) (id int, err error) {
+	var ids []int
 	if ids, err = sq.Limit(1).IDs(setContextOp(ctx, sq.ctx, "FirstID")); err != nil {
 		return
 	}
@@ -143,7 +143,7 @@ func (sq *SubmitQuery) FirstID(ctx context.Context) (id string, err error) {
 }
 
 // FirstIDX is like FirstID, but panics if an error occurs.
-func (sq *SubmitQuery) FirstIDX(ctx context.Context) string {
+func (sq *SubmitQuery) FirstIDX(ctx context.Context) int {
 	id, err := sq.FirstID(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
@@ -181,8 +181,8 @@ func (sq *SubmitQuery) OnlyX(ctx context.Context) *Submit {
 // OnlyID is like Only, but returns the only Submit ID in the query.
 // Returns a *NotSingularError when more than one Submit ID is found.
 // Returns a *NotFoundError when no entities are found.
-func (sq *SubmitQuery) OnlyID(ctx context.Context) (id string, err error) {
-	var ids []string
+func (sq *SubmitQuery) OnlyID(ctx context.Context) (id int, err error) {
+	var ids []int
 	if ids, err = sq.Limit(2).IDs(setContextOp(ctx, sq.ctx, "OnlyID")); err != nil {
 		return
 	}
@@ -198,7 +198,7 @@ func (sq *SubmitQuery) OnlyID(ctx context.Context) (id string, err error) {
 }
 
 // OnlyIDX is like OnlyID, but panics if an error occurs.
-func (sq *SubmitQuery) OnlyIDX(ctx context.Context) string {
+func (sq *SubmitQuery) OnlyIDX(ctx context.Context) int {
 	id, err := sq.OnlyID(ctx)
 	if err != nil {
 		panic(err)
@@ -226,7 +226,7 @@ func (sq *SubmitQuery) AllX(ctx context.Context) []*Submit {
 }
 
 // IDs executes the query and returns a list of Submit IDs.
-func (sq *SubmitQuery) IDs(ctx context.Context) (ids []string, err error) {
+func (sq *SubmitQuery) IDs(ctx context.Context) (ids []int, err error) {
 	if sq.ctx.Unique == nil && sq.path != nil {
 		sq.Unique(true)
 	}
@@ -238,7 +238,7 @@ func (sq *SubmitQuery) IDs(ctx context.Context) (ids []string, err error) {
 }
 
 // IDsX is like IDs, but panics if an error occurs.
-func (sq *SubmitQuery) IDsX(ctx context.Context) []string {
+func (sq *SubmitQuery) IDsX(ctx context.Context) []int {
 	ids, err := sq.IDs(ctx)
 	if err != nil {
 		panic(err)
@@ -448,7 +448,7 @@ func (sq *SubmitQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Submi
 
 func (sq *SubmitQuery) loadTagResults(ctx context.Context, query *TagResultQuery, nodes []*Submit, init func(*Submit), assign func(*Submit, *TagResult)) error {
 	fks := make([]driver.Value, 0, len(nodes))
-	nodeids := make(map[string]*Submit)
+	nodeids := make(map[int]*Submit)
 	for i := range nodes {
 		fks = append(fks, nodes[i].ID)
 		nodeids[nodes[i].ID] = nodes[i]
@@ -479,7 +479,7 @@ func (sq *SubmitQuery) loadTagResults(ctx context.Context, query *TagResultQuery
 }
 func (sq *SubmitQuery) loadGroup(ctx context.Context, query *GroupQuery, nodes []*Submit, init func(*Submit), assign func(*Submit, *Group)) error {
 	edgeIDs := make([]driver.Value, len(nodes))
-	byID := make(map[string]*Submit)
+	byID := make(map[int]*Submit)
 	nids := make(map[string]map[*Submit]struct{})
 	for i, node := range nodes {
 		edgeIDs[i] = node.ID
@@ -509,10 +509,10 @@ func (sq *SubmitQuery) loadGroup(ctx context.Context, query *GroupQuery, nodes [
 				if err != nil {
 					return nil, err
 				}
-				return append([]any{new(sql.NullString)}, values...), nil
+				return append([]any{new(sql.NullInt64)}, values...), nil
 			}
 			spec.Assign = func(columns []string, values []any) error {
-				outValue := values[0].(*sql.NullString).String
+				outValue := int(values[0].(*sql.NullInt64).Int64)
 				inValue := values[1].(*sql.NullString).String
 				if nids[inValue] == nil {
 					nids[inValue] = map[*Submit]struct{}{byID[outValue]: {}}
@@ -549,7 +549,7 @@ func (sq *SubmitQuery) sqlCount(ctx context.Context) (int, error) {
 }
 
 func (sq *SubmitQuery) querySpec() *sqlgraph.QuerySpec {
-	_spec := sqlgraph.NewQuerySpec(submit.Table, submit.Columns, sqlgraph.NewFieldSpec(submit.FieldID, field.TypeString))
+	_spec := sqlgraph.NewQuerySpec(submit.Table, submit.Columns, sqlgraph.NewFieldSpec(submit.FieldID, field.TypeInt))
 	_spec.From = sq.sql
 	if unique := sq.ctx.Unique; unique != nil {
 		_spec.Unique = *unique

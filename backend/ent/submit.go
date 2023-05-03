@@ -16,7 +16,7 @@ import (
 type Submit struct {
 	config `json:"-"`
 	// ID of the ent.
-	ID string `json:"id,omitempty"`
+	ID int `json:"id,omitempty"`
 	// IPAddr holds the value of the "ip_addr" field.
 	IPAddr string `json:"ip_addr,omitempty"`
 	// Year holds the value of the "year" field.
@@ -71,9 +71,9 @@ func (*Submit) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case submit.FieldYear, submit.FieldScore:
+		case submit.FieldID, submit.FieldYear, submit.FieldScore:
 			values[i] = new(sql.NullInt64)
-		case submit.FieldID, submit.FieldIPAddr, submit.FieldLanguage:
+		case submit.FieldIPAddr, submit.FieldLanguage:
 			values[i] = new(sql.NullString)
 		case submit.FieldSubmitedAt, submit.FieldCompletedAt, submit.FieldUpdatedAt:
 			values[i] = new(sql.NullTime)
@@ -93,11 +93,11 @@ func (s *Submit) assignValues(columns []string, values []any) error {
 	for i := range columns {
 		switch columns[i] {
 		case submit.FieldID:
-			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field id", values[i])
-			} else if value.Valid {
-				s.ID = value.String
+			value, ok := values[i].(*sql.NullInt64)
+			if !ok {
+				return fmt.Errorf("unexpected type %T for field id", value)
 			}
+			s.ID = int(value.Int64)
 		case submit.FieldIPAddr:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field ip_addr", values[i])
