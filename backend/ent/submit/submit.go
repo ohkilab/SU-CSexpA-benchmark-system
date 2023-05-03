@@ -30,8 +30,10 @@ const (
 	FieldUpdatedAt = "updated_at"
 	// EdgeTagResults holds the string denoting the tagresults edge name in mutations.
 	EdgeTagResults = "tagResults"
-	// EdgeGroup holds the string denoting the group edge name in mutations.
-	EdgeGroup = "group"
+	// EdgeGroups holds the string denoting the groups edge name in mutations.
+	EdgeGroups = "groups"
+	// EdgeContests holds the string denoting the contests edge name in mutations.
+	EdgeContests = "contests"
 	// Table holds the table name of the submit in the database.
 	Table = "submits"
 	// TagResultsTable is the table that holds the tagResults relation/edge.
@@ -41,11 +43,16 @@ const (
 	TagResultsInverseTable = "tag_results"
 	// TagResultsColumn is the table column denoting the tagResults relation/edge.
 	TagResultsColumn = "submit_tag_results"
-	// GroupTable is the table that holds the group relation/edge. The primary key declared below.
-	GroupTable = "group_submits"
-	// GroupInverseTable is the table name for the Group entity.
+	// GroupsTable is the table that holds the groups relation/edge. The primary key declared below.
+	GroupsTable = "group_submits"
+	// GroupsInverseTable is the table name for the Group entity.
 	// It exists in this package in order to avoid circular dependency with the "group" package.
-	GroupInverseTable = "groups"
+	GroupsInverseTable = "groups"
+	// ContestsTable is the table that holds the contests relation/edge. The primary key declared below.
+	ContestsTable = "contest_submits"
+	// ContestsInverseTable is the table name for the Contest entity.
+	// It exists in this package in order to avoid circular dependency with the "contest" package.
+	ContestsInverseTable = "contests"
 )
 
 // Columns holds all SQL columns for submit fields.
@@ -61,9 +68,12 @@ var Columns = []string{
 }
 
 var (
-	// GroupPrimaryKey and GroupColumn2 are the table columns denoting the
-	// primary key for the group relation (M2M).
-	GroupPrimaryKey = []string{"group_id", "submit_id"}
+	// GroupsPrimaryKey and GroupsColumn2 are the table columns denoting the
+	// primary key for the groups relation (M2M).
+	GroupsPrimaryKey = []string{"group_id", "submit_id"}
+	// ContestsPrimaryKey and ContestsColumn2 are the table columns denoting the
+	// primary key for the contests relation (M2M).
+	ContestsPrimaryKey = []string{"contest_id", "submit_id"}
 )
 
 // ValidColumn reports if the column name is valid (part of the table columns).
@@ -169,17 +179,31 @@ func ByTagResults(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
 	}
 }
 
-// ByGroupCount orders the results by group count.
-func ByGroupCount(opts ...sql.OrderTermOption) OrderOption {
+// ByGroupsCount orders the results by groups count.
+func ByGroupsCount(opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborsCount(s, newGroupStep(), opts...)
+		sqlgraph.OrderByNeighborsCount(s, newGroupsStep(), opts...)
 	}
 }
 
-// ByGroup orders the results by group terms.
-func ByGroup(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+// ByGroups orders the results by groups terms.
+func ByGroups(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
 	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborTerms(s, newGroupStep(), append([]sql.OrderTerm{term}, terms...)...)
+		sqlgraph.OrderByNeighborTerms(s, newGroupsStep(), append([]sql.OrderTerm{term}, terms...)...)
+	}
+}
+
+// ByContestsCount orders the results by contests count.
+func ByContestsCount(opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborsCount(s, newContestsStep(), opts...)
+	}
+}
+
+// ByContests orders the results by contests terms.
+func ByContests(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newContestsStep(), append([]sql.OrderTerm{term}, terms...)...)
 	}
 }
 func newTagResultsStep() *sqlgraph.Step {
@@ -189,10 +213,17 @@ func newTagResultsStep() *sqlgraph.Step {
 		sqlgraph.Edge(sqlgraph.O2M, false, TagResultsTable, TagResultsColumn),
 	)
 }
-func newGroupStep() *sqlgraph.Step {
+func newGroupsStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
-		sqlgraph.To(GroupInverseTable, FieldID),
-		sqlgraph.Edge(sqlgraph.M2M, true, GroupTable, GroupPrimaryKey...),
+		sqlgraph.To(GroupsInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.M2M, true, GroupsTable, GroupsPrimaryKey...),
+	)
+}
+func newContestsStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(ContestsInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.M2M, true, ContestsTable, ContestsPrimaryKey...),
 	)
 }

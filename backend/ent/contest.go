@@ -17,21 +17,42 @@ type Contest struct {
 	config `json:"-"`
 	// ID of the ent.
 	ID int `json:"id,omitempty"`
-	// QualifierStartAt holds the value of the "qualifier_start_at" field.
-	QualifierStartAt time.Time `json:"qualifier_start_at,omitempty"`
-	// QualifierEndAt holds the value of the "qualifier_end_at" field.
-	QualifierEndAt time.Time `json:"qualifier_end_at,omitempty"`
-	// QualifierSubmitLimit holds the value of the "qualifier_submit_limit" field.
-	QualifierSubmitLimit int `json:"qualifier_submit_limit,omitempty"`
-	// FinalStartAt holds the value of the "final_start_at" field.
-	FinalStartAt time.Time `json:"final_start_at,omitempty"`
-	// FinalEndAt holds the value of the "final_end_at" field.
-	FinalEndAt time.Time `json:"final_end_at,omitempty"`
-	// FinalSubmitLimit holds the value of the "final_submit_limit" field.
-	FinalSubmitLimit int `json:"final_submit_limit,omitempty"`
+	// Title holds the value of the "title" field.
+	Title string `json:"title,omitempty"`
+	// StartAt holds the value of the "start_at" field.
+	StartAt time.Time `json:"start_at,omitempty"`
+	// EndAt holds the value of the "end_at" field.
+	EndAt time.Time `json:"end_at,omitempty"`
+	// SubmitLimit holds the value of the "submit_limit" field.
+	SubmitLimit int `json:"submit_limit,omitempty"`
+	// Year holds the value of the "year" field.
+	Year int `json:"year,omitempty"`
+	// CreatedAt holds the value of the "created_at" field.
+	CreatedAt time.Time `json:"created_at,omitempty"`
 	// UpdatedAt holds the value of the "updated_at" field.
-	UpdatedAt    time.Time `json:"updated_at,omitempty"`
+	UpdatedAt time.Time `json:"updated_at,omitempty"`
+	// Edges holds the relations/edges for other nodes in the graph.
+	// The values are being populated by the ContestQuery when eager-loading is set.
+	Edges        ContestEdges `json:"edges"`
 	selectValues sql.SelectValues
+}
+
+// ContestEdges holds the relations/edges for other nodes in the graph.
+type ContestEdges struct {
+	// Submits holds the value of the submits edge.
+	Submits []*Submit `json:"submits,omitempty"`
+	// loadedTypes holds the information for reporting if a
+	// type was loaded (or requested) in eager-loading or not.
+	loadedTypes [1]bool
+}
+
+// SubmitsOrErr returns the Submits value or an error if the edge
+// was not loaded in eager-loading.
+func (e ContestEdges) SubmitsOrErr() ([]*Submit, error) {
+	if e.loadedTypes[0] {
+		return e.Submits, nil
+	}
+	return nil, &NotLoadedError{edge: "submits"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -39,9 +60,11 @@ func (*Contest) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case contest.FieldID, contest.FieldQualifierSubmitLimit, contest.FieldFinalSubmitLimit:
+		case contest.FieldID, contest.FieldSubmitLimit, contest.FieldYear:
 			values[i] = new(sql.NullInt64)
-		case contest.FieldQualifierStartAt, contest.FieldQualifierEndAt, contest.FieldFinalStartAt, contest.FieldFinalEndAt, contest.FieldUpdatedAt:
+		case contest.FieldTitle:
+			values[i] = new(sql.NullString)
+		case contest.FieldStartAt, contest.FieldEndAt, contest.FieldCreatedAt, contest.FieldUpdatedAt:
 			values[i] = new(sql.NullTime)
 		default:
 			values[i] = new(sql.UnknownType)
@@ -64,41 +87,41 @@ func (c *Contest) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
 			c.ID = int(value.Int64)
-		case contest.FieldQualifierStartAt:
-			if value, ok := values[i].(*sql.NullTime); !ok {
-				return fmt.Errorf("unexpected type %T for field qualifier_start_at", values[i])
+		case contest.FieldTitle:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field title", values[i])
 			} else if value.Valid {
-				c.QualifierStartAt = value.Time
+				c.Title = value.String
 			}
-		case contest.FieldQualifierEndAt:
+		case contest.FieldStartAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
-				return fmt.Errorf("unexpected type %T for field qualifier_end_at", values[i])
+				return fmt.Errorf("unexpected type %T for field start_at", values[i])
 			} else if value.Valid {
-				c.QualifierEndAt = value.Time
+				c.StartAt = value.Time
 			}
-		case contest.FieldQualifierSubmitLimit:
+		case contest.FieldEndAt:
+			if value, ok := values[i].(*sql.NullTime); !ok {
+				return fmt.Errorf("unexpected type %T for field end_at", values[i])
+			} else if value.Valid {
+				c.EndAt = value.Time
+			}
+		case contest.FieldSubmitLimit:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for field qualifier_submit_limit", values[i])
+				return fmt.Errorf("unexpected type %T for field submit_limit", values[i])
 			} else if value.Valid {
-				c.QualifierSubmitLimit = int(value.Int64)
+				c.SubmitLimit = int(value.Int64)
 			}
-		case contest.FieldFinalStartAt:
-			if value, ok := values[i].(*sql.NullTime); !ok {
-				return fmt.Errorf("unexpected type %T for field final_start_at", values[i])
-			} else if value.Valid {
-				c.FinalStartAt = value.Time
-			}
-		case contest.FieldFinalEndAt:
-			if value, ok := values[i].(*sql.NullTime); !ok {
-				return fmt.Errorf("unexpected type %T for field final_end_at", values[i])
-			} else if value.Valid {
-				c.FinalEndAt = value.Time
-			}
-		case contest.FieldFinalSubmitLimit:
+		case contest.FieldYear:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for field final_submit_limit", values[i])
+				return fmt.Errorf("unexpected type %T for field year", values[i])
 			} else if value.Valid {
-				c.FinalSubmitLimit = int(value.Int64)
+				c.Year = int(value.Int64)
+			}
+		case contest.FieldCreatedAt:
+			if value, ok := values[i].(*sql.NullTime); !ok {
+				return fmt.Errorf("unexpected type %T for field created_at", values[i])
+			} else if value.Valid {
+				c.CreatedAt = value.Time
 			}
 		case contest.FieldUpdatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
@@ -117,6 +140,11 @@ func (c *Contest) assignValues(columns []string, values []any) error {
 // This includes values selected through modifiers, order, etc.
 func (c *Contest) Value(name string) (ent.Value, error) {
 	return c.selectValues.Get(name)
+}
+
+// QuerySubmits queries the "submits" edge of the Contest entity.
+func (c *Contest) QuerySubmits() *SubmitQuery {
+	return NewContestClient(c.config).QuerySubmits(c)
 }
 
 // Update returns a builder for updating this Contest.
@@ -142,23 +170,23 @@ func (c *Contest) String() string {
 	var builder strings.Builder
 	builder.WriteString("Contest(")
 	builder.WriteString(fmt.Sprintf("id=%v, ", c.ID))
-	builder.WriteString("qualifier_start_at=")
-	builder.WriteString(c.QualifierStartAt.Format(time.ANSIC))
+	builder.WriteString("title=")
+	builder.WriteString(c.Title)
 	builder.WriteString(", ")
-	builder.WriteString("qualifier_end_at=")
-	builder.WriteString(c.QualifierEndAt.Format(time.ANSIC))
+	builder.WriteString("start_at=")
+	builder.WriteString(c.StartAt.Format(time.ANSIC))
 	builder.WriteString(", ")
-	builder.WriteString("qualifier_submit_limit=")
-	builder.WriteString(fmt.Sprintf("%v", c.QualifierSubmitLimit))
+	builder.WriteString("end_at=")
+	builder.WriteString(c.EndAt.Format(time.ANSIC))
 	builder.WriteString(", ")
-	builder.WriteString("final_start_at=")
-	builder.WriteString(c.FinalStartAt.Format(time.ANSIC))
+	builder.WriteString("submit_limit=")
+	builder.WriteString(fmt.Sprintf("%v", c.SubmitLimit))
 	builder.WriteString(", ")
-	builder.WriteString("final_end_at=")
-	builder.WriteString(c.FinalEndAt.Format(time.ANSIC))
+	builder.WriteString("year=")
+	builder.WriteString(fmt.Sprintf("%v", c.Year))
 	builder.WriteString(", ")
-	builder.WriteString("final_submit_limit=")
-	builder.WriteString(fmt.Sprintf("%v", c.FinalSubmitLimit))
+	builder.WriteString("created_at=")
+	builder.WriteString(c.CreatedAt.Format(time.ANSIC))
 	builder.WriteString(", ")
 	builder.WriteString("updated_at=")
 	builder.WriteString(c.UpdatedAt.Format(time.ANSIC))

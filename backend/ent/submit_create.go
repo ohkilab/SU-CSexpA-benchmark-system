@@ -10,6 +10,7 @@ import (
 
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/ent/contest"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/ent/group"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/ent/submit"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/ent/tagresult"
@@ -117,19 +118,34 @@ func (sc *SubmitCreate) AddTagResults(t ...*TagResult) *SubmitCreate {
 	return sc.AddTagResultIDs(ids...)
 }
 
-// AddGroupIDs adds the "group" edge to the Group entity by IDs.
+// AddGroupIDs adds the "groups" edge to the Group entity by IDs.
 func (sc *SubmitCreate) AddGroupIDs(ids ...string) *SubmitCreate {
 	sc.mutation.AddGroupIDs(ids...)
 	return sc
 }
 
-// AddGroup adds the "group" edges to the Group entity.
-func (sc *SubmitCreate) AddGroup(g ...*Group) *SubmitCreate {
+// AddGroups adds the "groups" edges to the Group entity.
+func (sc *SubmitCreate) AddGroups(g ...*Group) *SubmitCreate {
 	ids := make([]string, len(g))
 	for i := range g {
 		ids[i] = g[i].ID
 	}
 	return sc.AddGroupIDs(ids...)
+}
+
+// AddContestIDs adds the "contests" edge to the Contest entity by IDs.
+func (sc *SubmitCreate) AddContestIDs(ids ...int) *SubmitCreate {
+	sc.mutation.AddContestIDs(ids...)
+	return sc
+}
+
+// AddContests adds the "contests" edges to the Contest entity.
+func (sc *SubmitCreate) AddContests(c ...*Contest) *SubmitCreate {
+	ids := make([]int, len(c))
+	for i := range c {
+		ids[i] = c[i].ID
+	}
+	return sc.AddContestIDs(ids...)
 }
 
 // Mutation returns the SubmitMutation object of the builder.
@@ -266,15 +282,31 @@ func (sc *SubmitCreate) createSpec() (*Submit, *sqlgraph.CreateSpec) {
 		}
 		_spec.Edges = append(_spec.Edges, edge)
 	}
-	if nodes := sc.mutation.GroupIDs(); len(nodes) > 0 {
+	if nodes := sc.mutation.GroupsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2M,
 			Inverse: true,
-			Table:   submit.GroupTable,
-			Columns: submit.GroupPrimaryKey,
+			Table:   submit.GroupsTable,
+			Columns: submit.GroupsPrimaryKey,
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(group.FieldID, field.TypeString),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := sc.mutation.ContestsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2M,
+			Inverse: true,
+			Table:   submit.ContestsTable,
+			Columns: submit.ContestsPrimaryKey,
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(contest.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {

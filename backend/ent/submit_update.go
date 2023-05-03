@@ -11,6 +11,7 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/ent/contest"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/ent/group"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/ent/predicate"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/ent/submit"
@@ -157,19 +158,34 @@ func (su *SubmitUpdate) AddTagResults(t ...*TagResult) *SubmitUpdate {
 	return su.AddTagResultIDs(ids...)
 }
 
-// AddGroupIDs adds the "group" edge to the Group entity by IDs.
+// AddGroupIDs adds the "groups" edge to the Group entity by IDs.
 func (su *SubmitUpdate) AddGroupIDs(ids ...string) *SubmitUpdate {
 	su.mutation.AddGroupIDs(ids...)
 	return su
 }
 
-// AddGroup adds the "group" edges to the Group entity.
-func (su *SubmitUpdate) AddGroup(g ...*Group) *SubmitUpdate {
+// AddGroups adds the "groups" edges to the Group entity.
+func (su *SubmitUpdate) AddGroups(g ...*Group) *SubmitUpdate {
 	ids := make([]string, len(g))
 	for i := range g {
 		ids[i] = g[i].ID
 	}
 	return su.AddGroupIDs(ids...)
+}
+
+// AddContestIDs adds the "contests" edge to the Contest entity by IDs.
+func (su *SubmitUpdate) AddContestIDs(ids ...int) *SubmitUpdate {
+	su.mutation.AddContestIDs(ids...)
+	return su
+}
+
+// AddContests adds the "contests" edges to the Contest entity.
+func (su *SubmitUpdate) AddContests(c ...*Contest) *SubmitUpdate {
+	ids := make([]int, len(c))
+	for i := range c {
+		ids[i] = c[i].ID
+	}
+	return su.AddContestIDs(ids...)
 }
 
 // Mutation returns the SubmitMutation object of the builder.
@@ -198,25 +214,46 @@ func (su *SubmitUpdate) RemoveTagResults(t ...*TagResult) *SubmitUpdate {
 	return su.RemoveTagResultIDs(ids...)
 }
 
-// ClearGroup clears all "group" edges to the Group entity.
-func (su *SubmitUpdate) ClearGroup() *SubmitUpdate {
-	su.mutation.ClearGroup()
+// ClearGroups clears all "groups" edges to the Group entity.
+func (su *SubmitUpdate) ClearGroups() *SubmitUpdate {
+	su.mutation.ClearGroups()
 	return su
 }
 
-// RemoveGroupIDs removes the "group" edge to Group entities by IDs.
+// RemoveGroupIDs removes the "groups" edge to Group entities by IDs.
 func (su *SubmitUpdate) RemoveGroupIDs(ids ...string) *SubmitUpdate {
 	su.mutation.RemoveGroupIDs(ids...)
 	return su
 }
 
-// RemoveGroup removes "group" edges to Group entities.
-func (su *SubmitUpdate) RemoveGroup(g ...*Group) *SubmitUpdate {
+// RemoveGroups removes "groups" edges to Group entities.
+func (su *SubmitUpdate) RemoveGroups(g ...*Group) *SubmitUpdate {
 	ids := make([]string, len(g))
 	for i := range g {
 		ids[i] = g[i].ID
 	}
 	return su.RemoveGroupIDs(ids...)
+}
+
+// ClearContests clears all "contests" edges to the Contest entity.
+func (su *SubmitUpdate) ClearContests() *SubmitUpdate {
+	su.mutation.ClearContests()
+	return su
+}
+
+// RemoveContestIDs removes the "contests" edge to Contest entities by IDs.
+func (su *SubmitUpdate) RemoveContestIDs(ids ...int) *SubmitUpdate {
+	su.mutation.RemoveContestIDs(ids...)
+	return su
+}
+
+// RemoveContests removes "contests" edges to Contest entities.
+func (su *SubmitUpdate) RemoveContests(c ...*Contest) *SubmitUpdate {
+	ids := make([]int, len(c))
+	for i := range c {
+		ids[i] = c[i].ID
+	}
+	return su.RemoveContestIDs(ids...)
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
@@ -362,12 +399,12 @@ func (su *SubmitUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if su.mutation.GroupCleared() {
+	if su.mutation.GroupsCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2M,
 			Inverse: true,
-			Table:   submit.GroupTable,
-			Columns: submit.GroupPrimaryKey,
+			Table:   submit.GroupsTable,
+			Columns: submit.GroupsPrimaryKey,
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(group.FieldID, field.TypeString),
@@ -375,12 +412,12 @@ func (su *SubmitUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := su.mutation.RemovedGroupIDs(); len(nodes) > 0 && !su.mutation.GroupCleared() {
+	if nodes := su.mutation.RemovedGroupsIDs(); len(nodes) > 0 && !su.mutation.GroupsCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2M,
 			Inverse: true,
-			Table:   submit.GroupTable,
-			Columns: submit.GroupPrimaryKey,
+			Table:   submit.GroupsTable,
+			Columns: submit.GroupsPrimaryKey,
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(group.FieldID, field.TypeString),
@@ -391,15 +428,60 @@ func (su *SubmitUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := su.mutation.GroupIDs(); len(nodes) > 0 {
+	if nodes := su.mutation.GroupsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2M,
 			Inverse: true,
-			Table:   submit.GroupTable,
-			Columns: submit.GroupPrimaryKey,
+			Table:   submit.GroupsTable,
+			Columns: submit.GroupsPrimaryKey,
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(group.FieldID, field.TypeString),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if su.mutation.ContestsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2M,
+			Inverse: true,
+			Table:   submit.ContestsTable,
+			Columns: submit.ContestsPrimaryKey,
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(contest.FieldID, field.TypeInt),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := su.mutation.RemovedContestsIDs(); len(nodes) > 0 && !su.mutation.ContestsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2M,
+			Inverse: true,
+			Table:   submit.ContestsTable,
+			Columns: submit.ContestsPrimaryKey,
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(contest.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := su.mutation.ContestsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2M,
+			Inverse: true,
+			Table:   submit.ContestsTable,
+			Columns: submit.ContestsPrimaryKey,
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(contest.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {
@@ -554,19 +636,34 @@ func (suo *SubmitUpdateOne) AddTagResults(t ...*TagResult) *SubmitUpdateOne {
 	return suo.AddTagResultIDs(ids...)
 }
 
-// AddGroupIDs adds the "group" edge to the Group entity by IDs.
+// AddGroupIDs adds the "groups" edge to the Group entity by IDs.
 func (suo *SubmitUpdateOne) AddGroupIDs(ids ...string) *SubmitUpdateOne {
 	suo.mutation.AddGroupIDs(ids...)
 	return suo
 }
 
-// AddGroup adds the "group" edges to the Group entity.
-func (suo *SubmitUpdateOne) AddGroup(g ...*Group) *SubmitUpdateOne {
+// AddGroups adds the "groups" edges to the Group entity.
+func (suo *SubmitUpdateOne) AddGroups(g ...*Group) *SubmitUpdateOne {
 	ids := make([]string, len(g))
 	for i := range g {
 		ids[i] = g[i].ID
 	}
 	return suo.AddGroupIDs(ids...)
+}
+
+// AddContestIDs adds the "contests" edge to the Contest entity by IDs.
+func (suo *SubmitUpdateOne) AddContestIDs(ids ...int) *SubmitUpdateOne {
+	suo.mutation.AddContestIDs(ids...)
+	return suo
+}
+
+// AddContests adds the "contests" edges to the Contest entity.
+func (suo *SubmitUpdateOne) AddContests(c ...*Contest) *SubmitUpdateOne {
+	ids := make([]int, len(c))
+	for i := range c {
+		ids[i] = c[i].ID
+	}
+	return suo.AddContestIDs(ids...)
 }
 
 // Mutation returns the SubmitMutation object of the builder.
@@ -595,25 +692,46 @@ func (suo *SubmitUpdateOne) RemoveTagResults(t ...*TagResult) *SubmitUpdateOne {
 	return suo.RemoveTagResultIDs(ids...)
 }
 
-// ClearGroup clears all "group" edges to the Group entity.
-func (suo *SubmitUpdateOne) ClearGroup() *SubmitUpdateOne {
-	suo.mutation.ClearGroup()
+// ClearGroups clears all "groups" edges to the Group entity.
+func (suo *SubmitUpdateOne) ClearGroups() *SubmitUpdateOne {
+	suo.mutation.ClearGroups()
 	return suo
 }
 
-// RemoveGroupIDs removes the "group" edge to Group entities by IDs.
+// RemoveGroupIDs removes the "groups" edge to Group entities by IDs.
 func (suo *SubmitUpdateOne) RemoveGroupIDs(ids ...string) *SubmitUpdateOne {
 	suo.mutation.RemoveGroupIDs(ids...)
 	return suo
 }
 
-// RemoveGroup removes "group" edges to Group entities.
-func (suo *SubmitUpdateOne) RemoveGroup(g ...*Group) *SubmitUpdateOne {
+// RemoveGroups removes "groups" edges to Group entities.
+func (suo *SubmitUpdateOne) RemoveGroups(g ...*Group) *SubmitUpdateOne {
 	ids := make([]string, len(g))
 	for i := range g {
 		ids[i] = g[i].ID
 	}
 	return suo.RemoveGroupIDs(ids...)
+}
+
+// ClearContests clears all "contests" edges to the Contest entity.
+func (suo *SubmitUpdateOne) ClearContests() *SubmitUpdateOne {
+	suo.mutation.ClearContests()
+	return suo
+}
+
+// RemoveContestIDs removes the "contests" edge to Contest entities by IDs.
+func (suo *SubmitUpdateOne) RemoveContestIDs(ids ...int) *SubmitUpdateOne {
+	suo.mutation.RemoveContestIDs(ids...)
+	return suo
+}
+
+// RemoveContests removes "contests" edges to Contest entities.
+func (suo *SubmitUpdateOne) RemoveContests(c ...*Contest) *SubmitUpdateOne {
+	ids := make([]int, len(c))
+	for i := range c {
+		ids[i] = c[i].ID
+	}
+	return suo.RemoveContestIDs(ids...)
 }
 
 // Where appends a list predicates to the SubmitUpdate builder.
@@ -789,12 +907,12 @@ func (suo *SubmitUpdateOne) sqlSave(ctx context.Context) (_node *Submit, err err
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if suo.mutation.GroupCleared() {
+	if suo.mutation.GroupsCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2M,
 			Inverse: true,
-			Table:   submit.GroupTable,
-			Columns: submit.GroupPrimaryKey,
+			Table:   submit.GroupsTable,
+			Columns: submit.GroupsPrimaryKey,
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(group.FieldID, field.TypeString),
@@ -802,12 +920,12 @@ func (suo *SubmitUpdateOne) sqlSave(ctx context.Context) (_node *Submit, err err
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := suo.mutation.RemovedGroupIDs(); len(nodes) > 0 && !suo.mutation.GroupCleared() {
+	if nodes := suo.mutation.RemovedGroupsIDs(); len(nodes) > 0 && !suo.mutation.GroupsCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2M,
 			Inverse: true,
-			Table:   submit.GroupTable,
-			Columns: submit.GroupPrimaryKey,
+			Table:   submit.GroupsTable,
+			Columns: submit.GroupsPrimaryKey,
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(group.FieldID, field.TypeString),
@@ -818,15 +936,60 @@ func (suo *SubmitUpdateOne) sqlSave(ctx context.Context) (_node *Submit, err err
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := suo.mutation.GroupIDs(); len(nodes) > 0 {
+	if nodes := suo.mutation.GroupsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2M,
 			Inverse: true,
-			Table:   submit.GroupTable,
-			Columns: submit.GroupPrimaryKey,
+			Table:   submit.GroupsTable,
+			Columns: submit.GroupsPrimaryKey,
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(group.FieldID, field.TypeString),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if suo.mutation.ContestsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2M,
+			Inverse: true,
+			Table:   submit.ContestsTable,
+			Columns: submit.ContestsPrimaryKey,
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(contest.FieldID, field.TypeInt),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := suo.mutation.RemovedContestsIDs(); len(nodes) > 0 && !suo.mutation.ContestsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2M,
+			Inverse: true,
+			Table:   submit.ContestsTable,
+			Columns: submit.ContestsPrimaryKey,
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(contest.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := suo.mutation.ContestsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2M,
+			Inverse: true,
+			Table:   submit.ContestsTable,
+			Columns: submit.ContestsPrimaryKey,
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(contest.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {

@@ -15,10 +15,10 @@ import (
 func init() {
 	contestFields := schema.Contest{}.Fields()
 	_ = contestFields
-	// contestDescID is the schema descriptor for id field.
-	contestDescID := contestFields[0].Descriptor()
-	// contest.IDValidator is a validator for the "id" field. It is called by the builders before save.
-	contest.IDValidator = contestDescID.Validators[0].(func(int) error)
+	// contestDescYear is the schema descriptor for year field.
+	contestDescYear := contestFields[5].Descriptor()
+	// contest.YearValidator is a validator for the "year" field. It is called by the builders before save.
+	contest.YearValidator = contestDescYear.Validators[0].(func(int) error)
 	groupFields := schema.Group{}.Fields()
 	_ = groupFields
 	// groupDescYear is the schema descriptor for year field.

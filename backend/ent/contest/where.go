@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"entgo.io/ent/dialect/sql"
+	"entgo.io/ent/dialect/sql/sqlgraph"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/ent/predicate"
 )
 
@@ -54,34 +55,34 @@ func IDLTE(id int) predicate.Contest {
 	return predicate.Contest(sql.FieldLTE(FieldID, id))
 }
 
-// QualifierStartAt applies equality check predicate on the "qualifier_start_at" field. It's identical to QualifierStartAtEQ.
-func QualifierStartAt(v time.Time) predicate.Contest {
-	return predicate.Contest(sql.FieldEQ(FieldQualifierStartAt, v))
+// Title applies equality check predicate on the "title" field. It's identical to TitleEQ.
+func Title(v string) predicate.Contest {
+	return predicate.Contest(sql.FieldEQ(FieldTitle, v))
 }
 
-// QualifierEndAt applies equality check predicate on the "qualifier_end_at" field. It's identical to QualifierEndAtEQ.
-func QualifierEndAt(v time.Time) predicate.Contest {
-	return predicate.Contest(sql.FieldEQ(FieldQualifierEndAt, v))
+// StartAt applies equality check predicate on the "start_at" field. It's identical to StartAtEQ.
+func StartAt(v time.Time) predicate.Contest {
+	return predicate.Contest(sql.FieldEQ(FieldStartAt, v))
 }
 
-// QualifierSubmitLimit applies equality check predicate on the "qualifier_submit_limit" field. It's identical to QualifierSubmitLimitEQ.
-func QualifierSubmitLimit(v int) predicate.Contest {
-	return predicate.Contest(sql.FieldEQ(FieldQualifierSubmitLimit, v))
+// EndAt applies equality check predicate on the "end_at" field. It's identical to EndAtEQ.
+func EndAt(v time.Time) predicate.Contest {
+	return predicate.Contest(sql.FieldEQ(FieldEndAt, v))
 }
 
-// FinalStartAt applies equality check predicate on the "final_start_at" field. It's identical to FinalStartAtEQ.
-func FinalStartAt(v time.Time) predicate.Contest {
-	return predicate.Contest(sql.FieldEQ(FieldFinalStartAt, v))
+// SubmitLimit applies equality check predicate on the "submit_limit" field. It's identical to SubmitLimitEQ.
+func SubmitLimit(v int) predicate.Contest {
+	return predicate.Contest(sql.FieldEQ(FieldSubmitLimit, v))
 }
 
-// FinalEndAt applies equality check predicate on the "final_end_at" field. It's identical to FinalEndAtEQ.
-func FinalEndAt(v time.Time) predicate.Contest {
-	return predicate.Contest(sql.FieldEQ(FieldFinalEndAt, v))
+// Year applies equality check predicate on the "year" field. It's identical to YearEQ.
+func Year(v int) predicate.Contest {
+	return predicate.Contest(sql.FieldEQ(FieldYear, v))
 }
 
-// FinalSubmitLimit applies equality check predicate on the "final_submit_limit" field. It's identical to FinalSubmitLimitEQ.
-func FinalSubmitLimit(v int) predicate.Contest {
-	return predicate.Contest(sql.FieldEQ(FieldFinalSubmitLimit, v))
+// CreatedAt applies equality check predicate on the "created_at" field. It's identical to CreatedAtEQ.
+func CreatedAt(v time.Time) predicate.Contest {
+	return predicate.Contest(sql.FieldEQ(FieldCreatedAt, v))
 }
 
 // UpdatedAt applies equality check predicate on the "updated_at" field. It's identical to UpdatedAtEQ.
@@ -89,244 +90,269 @@ func UpdatedAt(v time.Time) predicate.Contest {
 	return predicate.Contest(sql.FieldEQ(FieldUpdatedAt, v))
 }
 
-// QualifierStartAtEQ applies the EQ predicate on the "qualifier_start_at" field.
-func QualifierStartAtEQ(v time.Time) predicate.Contest {
-	return predicate.Contest(sql.FieldEQ(FieldQualifierStartAt, v))
+// TitleEQ applies the EQ predicate on the "title" field.
+func TitleEQ(v string) predicate.Contest {
+	return predicate.Contest(sql.FieldEQ(FieldTitle, v))
 }
 
-// QualifierStartAtNEQ applies the NEQ predicate on the "qualifier_start_at" field.
-func QualifierStartAtNEQ(v time.Time) predicate.Contest {
-	return predicate.Contest(sql.FieldNEQ(FieldQualifierStartAt, v))
+// TitleNEQ applies the NEQ predicate on the "title" field.
+func TitleNEQ(v string) predicate.Contest {
+	return predicate.Contest(sql.FieldNEQ(FieldTitle, v))
 }
 
-// QualifierStartAtIn applies the In predicate on the "qualifier_start_at" field.
-func QualifierStartAtIn(vs ...time.Time) predicate.Contest {
-	return predicate.Contest(sql.FieldIn(FieldQualifierStartAt, vs...))
+// TitleIn applies the In predicate on the "title" field.
+func TitleIn(vs ...string) predicate.Contest {
+	return predicate.Contest(sql.FieldIn(FieldTitle, vs...))
 }
 
-// QualifierStartAtNotIn applies the NotIn predicate on the "qualifier_start_at" field.
-func QualifierStartAtNotIn(vs ...time.Time) predicate.Contest {
-	return predicate.Contest(sql.FieldNotIn(FieldQualifierStartAt, vs...))
+// TitleNotIn applies the NotIn predicate on the "title" field.
+func TitleNotIn(vs ...string) predicate.Contest {
+	return predicate.Contest(sql.FieldNotIn(FieldTitle, vs...))
 }
 
-// QualifierStartAtGT applies the GT predicate on the "qualifier_start_at" field.
-func QualifierStartAtGT(v time.Time) predicate.Contest {
-	return predicate.Contest(sql.FieldGT(FieldQualifierStartAt, v))
+// TitleGT applies the GT predicate on the "title" field.
+func TitleGT(v string) predicate.Contest {
+	return predicate.Contest(sql.FieldGT(FieldTitle, v))
 }
 
-// QualifierStartAtGTE applies the GTE predicate on the "qualifier_start_at" field.
-func QualifierStartAtGTE(v time.Time) predicate.Contest {
-	return predicate.Contest(sql.FieldGTE(FieldQualifierStartAt, v))
+// TitleGTE applies the GTE predicate on the "title" field.
+func TitleGTE(v string) predicate.Contest {
+	return predicate.Contest(sql.FieldGTE(FieldTitle, v))
 }
 
-// QualifierStartAtLT applies the LT predicate on the "qualifier_start_at" field.
-func QualifierStartAtLT(v time.Time) predicate.Contest {
-	return predicate.Contest(sql.FieldLT(FieldQualifierStartAt, v))
+// TitleLT applies the LT predicate on the "title" field.
+func TitleLT(v string) predicate.Contest {
+	return predicate.Contest(sql.FieldLT(FieldTitle, v))
 }
 
-// QualifierStartAtLTE applies the LTE predicate on the "qualifier_start_at" field.
-func QualifierStartAtLTE(v time.Time) predicate.Contest {
-	return predicate.Contest(sql.FieldLTE(FieldQualifierStartAt, v))
+// TitleLTE applies the LTE predicate on the "title" field.
+func TitleLTE(v string) predicate.Contest {
+	return predicate.Contest(sql.FieldLTE(FieldTitle, v))
 }
 
-// QualifierEndAtEQ applies the EQ predicate on the "qualifier_end_at" field.
-func QualifierEndAtEQ(v time.Time) predicate.Contest {
-	return predicate.Contest(sql.FieldEQ(FieldQualifierEndAt, v))
+// TitleContains applies the Contains predicate on the "title" field.
+func TitleContains(v string) predicate.Contest {
+	return predicate.Contest(sql.FieldContains(FieldTitle, v))
 }
 
-// QualifierEndAtNEQ applies the NEQ predicate on the "qualifier_end_at" field.
-func QualifierEndAtNEQ(v time.Time) predicate.Contest {
-	return predicate.Contest(sql.FieldNEQ(FieldQualifierEndAt, v))
+// TitleHasPrefix applies the HasPrefix predicate on the "title" field.
+func TitleHasPrefix(v string) predicate.Contest {
+	return predicate.Contest(sql.FieldHasPrefix(FieldTitle, v))
 }
 
-// QualifierEndAtIn applies the In predicate on the "qualifier_end_at" field.
-func QualifierEndAtIn(vs ...time.Time) predicate.Contest {
-	return predicate.Contest(sql.FieldIn(FieldQualifierEndAt, vs...))
+// TitleHasSuffix applies the HasSuffix predicate on the "title" field.
+func TitleHasSuffix(v string) predicate.Contest {
+	return predicate.Contest(sql.FieldHasSuffix(FieldTitle, v))
 }
 
-// QualifierEndAtNotIn applies the NotIn predicate on the "qualifier_end_at" field.
-func QualifierEndAtNotIn(vs ...time.Time) predicate.Contest {
-	return predicate.Contest(sql.FieldNotIn(FieldQualifierEndAt, vs...))
+// TitleEqualFold applies the EqualFold predicate on the "title" field.
+func TitleEqualFold(v string) predicate.Contest {
+	return predicate.Contest(sql.FieldEqualFold(FieldTitle, v))
 }
 
-// QualifierEndAtGT applies the GT predicate on the "qualifier_end_at" field.
-func QualifierEndAtGT(v time.Time) predicate.Contest {
-	return predicate.Contest(sql.FieldGT(FieldQualifierEndAt, v))
+// TitleContainsFold applies the ContainsFold predicate on the "title" field.
+func TitleContainsFold(v string) predicate.Contest {
+	return predicate.Contest(sql.FieldContainsFold(FieldTitle, v))
 }
 
-// QualifierEndAtGTE applies the GTE predicate on the "qualifier_end_at" field.
-func QualifierEndAtGTE(v time.Time) predicate.Contest {
-	return predicate.Contest(sql.FieldGTE(FieldQualifierEndAt, v))
+// StartAtEQ applies the EQ predicate on the "start_at" field.
+func StartAtEQ(v time.Time) predicate.Contest {
+	return predicate.Contest(sql.FieldEQ(FieldStartAt, v))
 }
 
-// QualifierEndAtLT applies the LT predicate on the "qualifier_end_at" field.
-func QualifierEndAtLT(v time.Time) predicate.Contest {
-	return predicate.Contest(sql.FieldLT(FieldQualifierEndAt, v))
+// StartAtNEQ applies the NEQ predicate on the "start_at" field.
+func StartAtNEQ(v time.Time) predicate.Contest {
+	return predicate.Contest(sql.FieldNEQ(FieldStartAt, v))
 }
 
-// QualifierEndAtLTE applies the LTE predicate on the "qualifier_end_at" field.
-func QualifierEndAtLTE(v time.Time) predicate.Contest {
-	return predicate.Contest(sql.FieldLTE(FieldQualifierEndAt, v))
+// StartAtIn applies the In predicate on the "start_at" field.
+func StartAtIn(vs ...time.Time) predicate.Contest {
+	return predicate.Contest(sql.FieldIn(FieldStartAt, vs...))
 }
 
-// QualifierSubmitLimitEQ applies the EQ predicate on the "qualifier_submit_limit" field.
-func QualifierSubmitLimitEQ(v int) predicate.Contest {
-	return predicate.Contest(sql.FieldEQ(FieldQualifierSubmitLimit, v))
+// StartAtNotIn applies the NotIn predicate on the "start_at" field.
+func StartAtNotIn(vs ...time.Time) predicate.Contest {
+	return predicate.Contest(sql.FieldNotIn(FieldStartAt, vs...))
 }
 
-// QualifierSubmitLimitNEQ applies the NEQ predicate on the "qualifier_submit_limit" field.
-func QualifierSubmitLimitNEQ(v int) predicate.Contest {
-	return predicate.Contest(sql.FieldNEQ(FieldQualifierSubmitLimit, v))
+// StartAtGT applies the GT predicate on the "start_at" field.
+func StartAtGT(v time.Time) predicate.Contest {
+	return predicate.Contest(sql.FieldGT(FieldStartAt, v))
 }
 
-// QualifierSubmitLimitIn applies the In predicate on the "qualifier_submit_limit" field.
-func QualifierSubmitLimitIn(vs ...int) predicate.Contest {
-	return predicate.Contest(sql.FieldIn(FieldQualifierSubmitLimit, vs...))
+// StartAtGTE applies the GTE predicate on the "start_at" field.
+func StartAtGTE(v time.Time) predicate.Contest {
+	return predicate.Contest(sql.FieldGTE(FieldStartAt, v))
 }
 
-// QualifierSubmitLimitNotIn applies the NotIn predicate on the "qualifier_submit_limit" field.
-func QualifierSubmitLimitNotIn(vs ...int) predicate.Contest {
-	return predicate.Contest(sql.FieldNotIn(FieldQualifierSubmitLimit, vs...))
+// StartAtLT applies the LT predicate on the "start_at" field.
+func StartAtLT(v time.Time) predicate.Contest {
+	return predicate.Contest(sql.FieldLT(FieldStartAt, v))
 }
 
-// QualifierSubmitLimitGT applies the GT predicate on the "qualifier_submit_limit" field.
-func QualifierSubmitLimitGT(v int) predicate.Contest {
-	return predicate.Contest(sql.FieldGT(FieldQualifierSubmitLimit, v))
+// StartAtLTE applies the LTE predicate on the "start_at" field.
+func StartAtLTE(v time.Time) predicate.Contest {
+	return predicate.Contest(sql.FieldLTE(FieldStartAt, v))
 }
 
-// QualifierSubmitLimitGTE applies the GTE predicate on the "qualifier_submit_limit" field.
-func QualifierSubmitLimitGTE(v int) predicate.Contest {
-	return predicate.Contest(sql.FieldGTE(FieldQualifierSubmitLimit, v))
+// EndAtEQ applies the EQ predicate on the "end_at" field.
+func EndAtEQ(v time.Time) predicate.Contest {
+	return predicate.Contest(sql.FieldEQ(FieldEndAt, v))
 }
 
-// QualifierSubmitLimitLT applies the LT predicate on the "qualifier_submit_limit" field.
-func QualifierSubmitLimitLT(v int) predicate.Contest {
-	return predicate.Contest(sql.FieldLT(FieldQualifierSubmitLimit, v))
+// EndAtNEQ applies the NEQ predicate on the "end_at" field.
+func EndAtNEQ(v time.Time) predicate.Contest {
+	return predicate.Contest(sql.FieldNEQ(FieldEndAt, v))
 }
 
-// QualifierSubmitLimitLTE applies the LTE predicate on the "qualifier_submit_limit" field.
-func QualifierSubmitLimitLTE(v int) predicate.Contest {
-	return predicate.Contest(sql.FieldLTE(FieldQualifierSubmitLimit, v))
+// EndAtIn applies the In predicate on the "end_at" field.
+func EndAtIn(vs ...time.Time) predicate.Contest {
+	return predicate.Contest(sql.FieldIn(FieldEndAt, vs...))
 }
 
-// FinalStartAtEQ applies the EQ predicate on the "final_start_at" field.
-func FinalStartAtEQ(v time.Time) predicate.Contest {
-	return predicate.Contest(sql.FieldEQ(FieldFinalStartAt, v))
+// EndAtNotIn applies the NotIn predicate on the "end_at" field.
+func EndAtNotIn(vs ...time.Time) predicate.Contest {
+	return predicate.Contest(sql.FieldNotIn(FieldEndAt, vs...))
 }
 
-// FinalStartAtNEQ applies the NEQ predicate on the "final_start_at" field.
-func FinalStartAtNEQ(v time.Time) predicate.Contest {
-	return predicate.Contest(sql.FieldNEQ(FieldFinalStartAt, v))
+// EndAtGT applies the GT predicate on the "end_at" field.
+func EndAtGT(v time.Time) predicate.Contest {
+	return predicate.Contest(sql.FieldGT(FieldEndAt, v))
 }
 
-// FinalStartAtIn applies the In predicate on the "final_start_at" field.
-func FinalStartAtIn(vs ...time.Time) predicate.Contest {
-	return predicate.Contest(sql.FieldIn(FieldFinalStartAt, vs...))
+// EndAtGTE applies the GTE predicate on the "end_at" field.
+func EndAtGTE(v time.Time) predicate.Contest {
+	return predicate.Contest(sql.FieldGTE(FieldEndAt, v))
 }
 
-// FinalStartAtNotIn applies the NotIn predicate on the "final_start_at" field.
-func FinalStartAtNotIn(vs ...time.Time) predicate.Contest {
-	return predicate.Contest(sql.FieldNotIn(FieldFinalStartAt, vs...))
+// EndAtLT applies the LT predicate on the "end_at" field.
+func EndAtLT(v time.Time) predicate.Contest {
+	return predicate.Contest(sql.FieldLT(FieldEndAt, v))
 }
 
-// FinalStartAtGT applies the GT predicate on the "final_start_at" field.
-func FinalStartAtGT(v time.Time) predicate.Contest {
-	return predicate.Contest(sql.FieldGT(FieldFinalStartAt, v))
+// EndAtLTE applies the LTE predicate on the "end_at" field.
+func EndAtLTE(v time.Time) predicate.Contest {
+	return predicate.Contest(sql.FieldLTE(FieldEndAt, v))
 }
 
-// FinalStartAtGTE applies the GTE predicate on the "final_start_at" field.
-func FinalStartAtGTE(v time.Time) predicate.Contest {
-	return predicate.Contest(sql.FieldGTE(FieldFinalStartAt, v))
+// SubmitLimitEQ applies the EQ predicate on the "submit_limit" field.
+func SubmitLimitEQ(v int) predicate.Contest {
+	return predicate.Contest(sql.FieldEQ(FieldSubmitLimit, v))
 }
 
-// FinalStartAtLT applies the LT predicate on the "final_start_at" field.
-func FinalStartAtLT(v time.Time) predicate.Contest {
-	return predicate.Contest(sql.FieldLT(FieldFinalStartAt, v))
+// SubmitLimitNEQ applies the NEQ predicate on the "submit_limit" field.
+func SubmitLimitNEQ(v int) predicate.Contest {
+	return predicate.Contest(sql.FieldNEQ(FieldSubmitLimit, v))
 }
 
-// FinalStartAtLTE applies the LTE predicate on the "final_start_at" field.
-func FinalStartAtLTE(v time.Time) predicate.Contest {
-	return predicate.Contest(sql.FieldLTE(FieldFinalStartAt, v))
+// SubmitLimitIn applies the In predicate on the "submit_limit" field.
+func SubmitLimitIn(vs ...int) predicate.Contest {
+	return predicate.Contest(sql.FieldIn(FieldSubmitLimit, vs...))
 }
 
-// FinalEndAtEQ applies the EQ predicate on the "final_end_at" field.
-func FinalEndAtEQ(v time.Time) predicate.Contest {
-	return predicate.Contest(sql.FieldEQ(FieldFinalEndAt, v))
+// SubmitLimitNotIn applies the NotIn predicate on the "submit_limit" field.
+func SubmitLimitNotIn(vs ...int) predicate.Contest {
+	return predicate.Contest(sql.FieldNotIn(FieldSubmitLimit, vs...))
 }
 
-// FinalEndAtNEQ applies the NEQ predicate on the "final_end_at" field.
-func FinalEndAtNEQ(v time.Time) predicate.Contest {
-	return predicate.Contest(sql.FieldNEQ(FieldFinalEndAt, v))
+// SubmitLimitGT applies the GT predicate on the "submit_limit" field.
+func SubmitLimitGT(v int) predicate.Contest {
+	return predicate.Contest(sql.FieldGT(FieldSubmitLimit, v))
 }
 
-// FinalEndAtIn applies the In predicate on the "final_end_at" field.
-func FinalEndAtIn(vs ...time.Time) predicate.Contest {
-	return predicate.Contest(sql.FieldIn(FieldFinalEndAt, vs...))
+// SubmitLimitGTE applies the GTE predicate on the "submit_limit" field.
+func SubmitLimitGTE(v int) predicate.Contest {
+	return predicate.Contest(sql.FieldGTE(FieldSubmitLimit, v))
 }
 
-// FinalEndAtNotIn applies the NotIn predicate on the "final_end_at" field.
-func FinalEndAtNotIn(vs ...time.Time) predicate.Contest {
-	return predicate.Contest(sql.FieldNotIn(FieldFinalEndAt, vs...))
+// SubmitLimitLT applies the LT predicate on the "submit_limit" field.
+func SubmitLimitLT(v int) predicate.Contest {
+	return predicate.Contest(sql.FieldLT(FieldSubmitLimit, v))
 }
 
-// FinalEndAtGT applies the GT predicate on the "final_end_at" field.
-func FinalEndAtGT(v time.Time) predicate.Contest {
-	return predicate.Contest(sql.FieldGT(FieldFinalEndAt, v))
+// SubmitLimitLTE applies the LTE predicate on the "submit_limit" field.
+func SubmitLimitLTE(v int) predicate.Contest {
+	return predicate.Contest(sql.FieldLTE(FieldSubmitLimit, v))
 }
 
-// FinalEndAtGTE applies the GTE predicate on the "final_end_at" field.
-func FinalEndAtGTE(v time.Time) predicate.Contest {
-	return predicate.Contest(sql.FieldGTE(FieldFinalEndAt, v))
+// YearEQ applies the EQ predicate on the "year" field.
+func YearEQ(v int) predicate.Contest {
+	return predicate.Contest(sql.FieldEQ(FieldYear, v))
 }
 
-// FinalEndAtLT applies the LT predicate on the "final_end_at" field.
-func FinalEndAtLT(v time.Time) predicate.Contest {
-	return predicate.Contest(sql.FieldLT(FieldFinalEndAt, v))
+// YearNEQ applies the NEQ predicate on the "year" field.
+func YearNEQ(v int) predicate.Contest {
+	return predicate.Contest(sql.FieldNEQ(FieldYear, v))
 }
 
-// FinalEndAtLTE applies the LTE predicate on the "final_end_at" field.
-func FinalEndAtLTE(v time.Time) predicate.Contest {
-	return predicate.Contest(sql.FieldLTE(FieldFinalEndAt, v))
+// YearIn applies the In predicate on the "year" field.
+func YearIn(vs ...int) predicate.Contest {
+	return predicate.Contest(sql.FieldIn(FieldYear, vs...))
 }
 
-// FinalSubmitLimitEQ applies the EQ predicate on the "final_submit_limit" field.
-func FinalSubmitLimitEQ(v int) predicate.Contest {
-	return predicate.Contest(sql.FieldEQ(FieldFinalSubmitLimit, v))
+// YearNotIn applies the NotIn predicate on the "year" field.
+func YearNotIn(vs ...int) predicate.Contest {
+	return predicate.Contest(sql.FieldNotIn(FieldYear, vs...))
 }
 
-// FinalSubmitLimitNEQ applies the NEQ predicate on the "final_submit_limit" field.
-func FinalSubmitLimitNEQ(v int) predicate.Contest {
-	return predicate.Contest(sql.FieldNEQ(FieldFinalSubmitLimit, v))
+// YearGT applies the GT predicate on the "year" field.
+func YearGT(v int) predicate.Contest {
+	return predicate.Contest(sql.FieldGT(FieldYear, v))
 }
 
-// FinalSubmitLimitIn applies the In predicate on the "final_submit_limit" field.
-func FinalSubmitLimitIn(vs ...int) predicate.Contest {
-	return predicate.Contest(sql.FieldIn(FieldFinalSubmitLimit, vs...))
+// YearGTE applies the GTE predicate on the "year" field.
+func YearGTE(v int) predicate.Contest {
+	return predicate.Contest(sql.FieldGTE(FieldYear, v))
 }
 
-// FinalSubmitLimitNotIn applies the NotIn predicate on the "final_submit_limit" field.
-func FinalSubmitLimitNotIn(vs ...int) predicate.Contest {
-	return predicate.Contest(sql.FieldNotIn(FieldFinalSubmitLimit, vs...))
+// YearLT applies the LT predicate on the "year" field.
+func YearLT(v int) predicate.Contest {
+	return predicate.Contest(sql.FieldLT(FieldYear, v))
 }
 
-// FinalSubmitLimitGT applies the GT predicate on the "final_submit_limit" field.
-func FinalSubmitLimitGT(v int) predicate.Contest {
-	return predicate.Contest(sql.FieldGT(FieldFinalSubmitLimit, v))
+// YearLTE applies the LTE predicate on the "year" field.
+func YearLTE(v int) predicate.Contest {
+	return predicate.Contest(sql.FieldLTE(FieldYear, v))
 }
 
-// FinalSubmitLimitGTE applies the GTE predicate on the "final_submit_limit" field.
-func FinalSubmitLimitGTE(v int) predicate.Contest {
-	return predicate.Contest(sql.FieldGTE(FieldFinalSubmitLimit, v))
+// CreatedAtEQ applies the EQ predicate on the "created_at" field.
+func CreatedAtEQ(v time.Time) predicate.Contest {
+	return predicate.Contest(sql.FieldEQ(FieldCreatedAt, v))
 }
 
-// FinalSubmitLimitLT applies the LT predicate on the "final_submit_limit" field.
-func FinalSubmitLimitLT(v int) predicate.Contest {
-	return predicate.Contest(sql.FieldLT(FieldFinalSubmitLimit, v))
+// CreatedAtNEQ applies the NEQ predicate on the "created_at" field.
+func CreatedAtNEQ(v time.Time) predicate.Contest {
+	return predicate.Contest(sql.FieldNEQ(FieldCreatedAt, v))
 }
 
-// FinalSubmitLimitLTE applies the LTE predicate on the "final_submit_limit" field.
-func FinalSubmitLimitLTE(v int) predicate.Contest {
-	return predicate.Contest(sql.FieldLTE(FieldFinalSubmitLimit, v))
+// CreatedAtIn applies the In predicate on the "created_at" field.
+func CreatedAtIn(vs ...time.Time) predicate.Contest {
+	return predicate.Contest(sql.FieldIn(FieldCreatedAt, vs...))
+}
+
+// CreatedAtNotIn applies the NotIn predicate on the "created_at" field.
+func CreatedAtNotIn(vs ...time.Time) predicate.Contest {
+	return predicate.Contest(sql.FieldNotIn(FieldCreatedAt, vs...))
+}
+
+// CreatedAtGT applies the GT predicate on the "created_at" field.
+func CreatedAtGT(v time.Time) predicate.Contest {
+	return predicate.Contest(sql.FieldGT(FieldCreatedAt, v))
+}
+
+// CreatedAtGTE applies the GTE predicate on the "created_at" field.
+func CreatedAtGTE(v time.Time) predicate.Contest {
+	return predicate.Contest(sql.FieldGTE(FieldCreatedAt, v))
+}
+
+// CreatedAtLT applies the LT predicate on the "created_at" field.
+func CreatedAtLT(v time.Time) predicate.Contest {
+	return predicate.Contest(sql.FieldLT(FieldCreatedAt, v))
+}
+
+// CreatedAtLTE applies the LTE predicate on the "created_at" field.
+func CreatedAtLTE(v time.Time) predicate.Contest {
+	return predicate.Contest(sql.FieldLTE(FieldCreatedAt, v))
 }
 
 // UpdatedAtEQ applies the EQ predicate on the "updated_at" field.
@@ -377,6 +403,29 @@ func UpdatedAtIsNil() predicate.Contest {
 // UpdatedAtNotNil applies the NotNil predicate on the "updated_at" field.
 func UpdatedAtNotNil() predicate.Contest {
 	return predicate.Contest(sql.FieldNotNull(FieldUpdatedAt))
+}
+
+// HasSubmits applies the HasEdge predicate on the "submits" edge.
+func HasSubmits() predicate.Contest {
+	return predicate.Contest(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.Edge(sqlgraph.M2M, false, SubmitsTable, SubmitsPrimaryKey...),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasSubmitsWith applies the HasEdge predicate on the "submits" edge with a given conditions (other predicates).
+func HasSubmitsWith(preds ...predicate.Submit) predicate.Contest {
+	return predicate.Contest(func(s *sql.Selector) {
+		step := newSubmitsStep()
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
 }
 
 // And groups predicates with the AND operator between them.

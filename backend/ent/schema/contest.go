@@ -2,6 +2,7 @@ package schema
 
 import (
 	"entgo.io/ent"
+	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
 )
 
@@ -13,18 +14,20 @@ type Contest struct {
 // Fields of the Contest.
 func (Contest) Fields() []ent.Field {
 	return []ent.Field{
-		field.Int("id").StorageKey("year").Positive(),
-		field.Time("qualifier_start_at"),
-		field.Time("qualifier_end_at"),
-		field.Int("qualifier_submit_limit"),
-		field.Time("final_start_at"),
-		field.Time("final_end_at"),
-		field.Int("final_submit_limit"),
+		field.Int("id"),
+		field.String("title"),
+		field.Time("start_at"),
+		field.Time("end_at"),
+		field.Int("submit_limit"),
+		field.Int("year").Positive(),
+		field.Time("created_at"),
 		field.Time("updated_at").Optional(),
 	}
 }
 
 // Edges of the Contest.
 func (Contest) Edges() []ent.Edge {
-	return nil
+	return []ent.Edge{
+		edge.To("submits", Submit.Type),
+	}
 }

@@ -31,6 +31,7 @@ func (Submit) Fields() []ent.Field {
 func (Submit) Edges() []ent.Edge {
 	return []ent.Edge{
 		edge.To("tagResults", TagResult.Type),
-		edge.From("group", Group.Type).Ref("submits"),
+		edge.From("groups", Group.Type).Ref("submits"),
+		edge.From("contests", Contest.Type).Ref("submits"),
 	}
 }

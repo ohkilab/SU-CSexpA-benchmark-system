@@ -13,6 +13,7 @@ import (
 	"entgo.io/ent/schema/field"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/ent/contest"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/ent/predicate"
+	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/ent/submit"
 )
 
 // ContestUpdate is the builder for updating Contest entities.
@@ -28,53 +29,53 @@ func (cu *ContestUpdate) Where(ps ...predicate.Contest) *ContestUpdate {
 	return cu
 }
 
-// SetQualifierStartAt sets the "qualifier_start_at" field.
-func (cu *ContestUpdate) SetQualifierStartAt(t time.Time) *ContestUpdate {
-	cu.mutation.SetQualifierStartAt(t)
+// SetTitle sets the "title" field.
+func (cu *ContestUpdate) SetTitle(s string) *ContestUpdate {
+	cu.mutation.SetTitle(s)
 	return cu
 }
 
-// SetQualifierEndAt sets the "qualifier_end_at" field.
-func (cu *ContestUpdate) SetQualifierEndAt(t time.Time) *ContestUpdate {
-	cu.mutation.SetQualifierEndAt(t)
+// SetStartAt sets the "start_at" field.
+func (cu *ContestUpdate) SetStartAt(t time.Time) *ContestUpdate {
+	cu.mutation.SetStartAt(t)
 	return cu
 }
 
-// SetQualifierSubmitLimit sets the "qualifier_submit_limit" field.
-func (cu *ContestUpdate) SetQualifierSubmitLimit(i int) *ContestUpdate {
-	cu.mutation.ResetQualifierSubmitLimit()
-	cu.mutation.SetQualifierSubmitLimit(i)
+// SetEndAt sets the "end_at" field.
+func (cu *ContestUpdate) SetEndAt(t time.Time) *ContestUpdate {
+	cu.mutation.SetEndAt(t)
 	return cu
 }
 
-// AddQualifierSubmitLimit adds i to the "qualifier_submit_limit" field.
-func (cu *ContestUpdate) AddQualifierSubmitLimit(i int) *ContestUpdate {
-	cu.mutation.AddQualifierSubmitLimit(i)
+// SetSubmitLimit sets the "submit_limit" field.
+func (cu *ContestUpdate) SetSubmitLimit(i int) *ContestUpdate {
+	cu.mutation.ResetSubmitLimit()
+	cu.mutation.SetSubmitLimit(i)
 	return cu
 }
 
-// SetFinalStartAt sets the "final_start_at" field.
-func (cu *ContestUpdate) SetFinalStartAt(t time.Time) *ContestUpdate {
-	cu.mutation.SetFinalStartAt(t)
+// AddSubmitLimit adds i to the "submit_limit" field.
+func (cu *ContestUpdate) AddSubmitLimit(i int) *ContestUpdate {
+	cu.mutation.AddSubmitLimit(i)
 	return cu
 }
 
-// SetFinalEndAt sets the "final_end_at" field.
-func (cu *ContestUpdate) SetFinalEndAt(t time.Time) *ContestUpdate {
-	cu.mutation.SetFinalEndAt(t)
+// SetYear sets the "year" field.
+func (cu *ContestUpdate) SetYear(i int) *ContestUpdate {
+	cu.mutation.ResetYear()
+	cu.mutation.SetYear(i)
 	return cu
 }
 
-// SetFinalSubmitLimit sets the "final_submit_limit" field.
-func (cu *ContestUpdate) SetFinalSubmitLimit(i int) *ContestUpdate {
-	cu.mutation.ResetFinalSubmitLimit()
-	cu.mutation.SetFinalSubmitLimit(i)
+// AddYear adds i to the "year" field.
+func (cu *ContestUpdate) AddYear(i int) *ContestUpdate {
+	cu.mutation.AddYear(i)
 	return cu
 }
 
-// AddFinalSubmitLimit adds i to the "final_submit_limit" field.
-func (cu *ContestUpdate) AddFinalSubmitLimit(i int) *ContestUpdate {
-	cu.mutation.AddFinalSubmitLimit(i)
+// SetCreatedAt sets the "created_at" field.
+func (cu *ContestUpdate) SetCreatedAt(t time.Time) *ContestUpdate {
+	cu.mutation.SetCreatedAt(t)
 	return cu
 }
 
@@ -98,9 +99,45 @@ func (cu *ContestUpdate) ClearUpdatedAt() *ContestUpdate {
 	return cu
 }
 
+// AddSubmitIDs adds the "submits" edge to the Submit entity by IDs.
+func (cu *ContestUpdate) AddSubmitIDs(ids ...int) *ContestUpdate {
+	cu.mutation.AddSubmitIDs(ids...)
+	return cu
+}
+
+// AddSubmits adds the "submits" edges to the Submit entity.
+func (cu *ContestUpdate) AddSubmits(s ...*Submit) *ContestUpdate {
+	ids := make([]int, len(s))
+	for i := range s {
+		ids[i] = s[i].ID
+	}
+	return cu.AddSubmitIDs(ids...)
+}
+
 // Mutation returns the ContestMutation object of the builder.
 func (cu *ContestUpdate) Mutation() *ContestMutation {
 	return cu.mutation
+}
+
+// ClearSubmits clears all "submits" edges to the Submit entity.
+func (cu *ContestUpdate) ClearSubmits() *ContestUpdate {
+	cu.mutation.ClearSubmits()
+	return cu
+}
+
+// RemoveSubmitIDs removes the "submits" edge to Submit entities by IDs.
+func (cu *ContestUpdate) RemoveSubmitIDs(ids ...int) *ContestUpdate {
+	cu.mutation.RemoveSubmitIDs(ids...)
+	return cu
+}
+
+// RemoveSubmits removes "submits" edges to Submit entities.
+func (cu *ContestUpdate) RemoveSubmits(s ...*Submit) *ContestUpdate {
+	ids := make([]int, len(s))
+	for i := range s {
+		ids[i] = s[i].ID
+	}
+	return cu.RemoveSubmitIDs(ids...)
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
@@ -130,7 +167,20 @@ func (cu *ContestUpdate) ExecX(ctx context.Context) {
 	}
 }
 
+// check runs all checks and user-defined validators on the builder.
+func (cu *ContestUpdate) check() error {
+	if v, ok := cu.mutation.Year(); ok {
+		if err := contest.YearValidator(v); err != nil {
+			return &ValidationError{Name: "year", err: fmt.Errorf(`ent: validator failed for field "Contest.year": %w`, err)}
+		}
+	}
+	return nil
+}
+
 func (cu *ContestUpdate) sqlSave(ctx context.Context) (n int, err error) {
+	if err := cu.check(); err != nil {
+		return n, err
+	}
 	_spec := sqlgraph.NewUpdateSpec(contest.Table, contest.Columns, sqlgraph.NewFieldSpec(contest.FieldID, field.TypeInt))
 	if ps := cu.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
@@ -139,35 +189,80 @@ func (cu *ContestUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			}
 		}
 	}
-	if value, ok := cu.mutation.QualifierStartAt(); ok {
-		_spec.SetField(contest.FieldQualifierStartAt, field.TypeTime, value)
+	if value, ok := cu.mutation.Title(); ok {
+		_spec.SetField(contest.FieldTitle, field.TypeString, value)
 	}
-	if value, ok := cu.mutation.QualifierEndAt(); ok {
-		_spec.SetField(contest.FieldQualifierEndAt, field.TypeTime, value)
+	if value, ok := cu.mutation.StartAt(); ok {
+		_spec.SetField(contest.FieldStartAt, field.TypeTime, value)
 	}
-	if value, ok := cu.mutation.QualifierSubmitLimit(); ok {
-		_spec.SetField(contest.FieldQualifierSubmitLimit, field.TypeInt, value)
+	if value, ok := cu.mutation.EndAt(); ok {
+		_spec.SetField(contest.FieldEndAt, field.TypeTime, value)
 	}
-	if value, ok := cu.mutation.AddedQualifierSubmitLimit(); ok {
-		_spec.AddField(contest.FieldQualifierSubmitLimit, field.TypeInt, value)
+	if value, ok := cu.mutation.SubmitLimit(); ok {
+		_spec.SetField(contest.FieldSubmitLimit, field.TypeInt, value)
 	}
-	if value, ok := cu.mutation.FinalStartAt(); ok {
-		_spec.SetField(contest.FieldFinalStartAt, field.TypeTime, value)
+	if value, ok := cu.mutation.AddedSubmitLimit(); ok {
+		_spec.AddField(contest.FieldSubmitLimit, field.TypeInt, value)
 	}
-	if value, ok := cu.mutation.FinalEndAt(); ok {
-		_spec.SetField(contest.FieldFinalEndAt, field.TypeTime, value)
+	if value, ok := cu.mutation.Year(); ok {
+		_spec.SetField(contest.FieldYear, field.TypeInt, value)
 	}
-	if value, ok := cu.mutation.FinalSubmitLimit(); ok {
-		_spec.SetField(contest.FieldFinalSubmitLimit, field.TypeInt, value)
+	if value, ok := cu.mutation.AddedYear(); ok {
+		_spec.AddField(contest.FieldYear, field.TypeInt, value)
 	}
-	if value, ok := cu.mutation.AddedFinalSubmitLimit(); ok {
-		_spec.AddField(contest.FieldFinalSubmitLimit, field.TypeInt, value)
+	if value, ok := cu.mutation.CreatedAt(); ok {
+		_spec.SetField(contest.FieldCreatedAt, field.TypeTime, value)
 	}
 	if value, ok := cu.mutation.UpdatedAt(); ok {
 		_spec.SetField(contest.FieldUpdatedAt, field.TypeTime, value)
 	}
 	if cu.mutation.UpdatedAtCleared() {
 		_spec.ClearField(contest.FieldUpdatedAt, field.TypeTime)
+	}
+	if cu.mutation.SubmitsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2M,
+			Inverse: false,
+			Table:   contest.SubmitsTable,
+			Columns: contest.SubmitsPrimaryKey,
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(submit.FieldID, field.TypeInt),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := cu.mutation.RemovedSubmitsIDs(); len(nodes) > 0 && !cu.mutation.SubmitsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2M,
+			Inverse: false,
+			Table:   contest.SubmitsTable,
+			Columns: contest.SubmitsPrimaryKey,
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(submit.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := cu.mutation.SubmitsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2M,
+			Inverse: false,
+			Table:   contest.SubmitsTable,
+			Columns: contest.SubmitsPrimaryKey,
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(submit.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
 	if n, err = sqlgraph.UpdateNodes(ctx, cu.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
@@ -189,53 +284,53 @@ type ContestUpdateOne struct {
 	mutation *ContestMutation
 }
 
-// SetQualifierStartAt sets the "qualifier_start_at" field.
-func (cuo *ContestUpdateOne) SetQualifierStartAt(t time.Time) *ContestUpdateOne {
-	cuo.mutation.SetQualifierStartAt(t)
+// SetTitle sets the "title" field.
+func (cuo *ContestUpdateOne) SetTitle(s string) *ContestUpdateOne {
+	cuo.mutation.SetTitle(s)
 	return cuo
 }
 
-// SetQualifierEndAt sets the "qualifier_end_at" field.
-func (cuo *ContestUpdateOne) SetQualifierEndAt(t time.Time) *ContestUpdateOne {
-	cuo.mutation.SetQualifierEndAt(t)
+// SetStartAt sets the "start_at" field.
+func (cuo *ContestUpdateOne) SetStartAt(t time.Time) *ContestUpdateOne {
+	cuo.mutation.SetStartAt(t)
 	return cuo
 }
 
-// SetQualifierSubmitLimit sets the "qualifier_submit_limit" field.
-func (cuo *ContestUpdateOne) SetQualifierSubmitLimit(i int) *ContestUpdateOne {
-	cuo.mutation.ResetQualifierSubmitLimit()
-	cuo.mutation.SetQualifierSubmitLimit(i)
+// SetEndAt sets the "end_at" field.
+func (cuo *ContestUpdateOne) SetEndAt(t time.Time) *ContestUpdateOne {
+	cuo.mutation.SetEndAt(t)
 	return cuo
 }
 
-// AddQualifierSubmitLimit adds i to the "qualifier_submit_limit" field.
-func (cuo *ContestUpdateOne) AddQualifierSubmitLimit(i int) *ContestUpdateOne {
-	cuo.mutation.AddQualifierSubmitLimit(i)
+// SetSubmitLimit sets the "submit_limit" field.
+func (cuo *ContestUpdateOne) SetSubmitLimit(i int) *ContestUpdateOne {
+	cuo.mutation.ResetSubmitLimit()
+	cuo.mutation.SetSubmitLimit(i)
 	return cuo
 }
 
-// SetFinalStartAt sets the "final_start_at" field.
-func (cuo *ContestUpdateOne) SetFinalStartAt(t time.Time) *ContestUpdateOne {
-	cuo.mutation.SetFinalStartAt(t)
+// AddSubmitLimit adds i to the "submit_limit" field.
+func (cuo *ContestUpdateOne) AddSubmitLimit(i int) *ContestUpdateOne {
+	cuo.mutation.AddSubmitLimit(i)
 	return cuo
 }
 
-// SetFinalEndAt sets the "final_end_at" field.
-func (cuo *ContestUpdateOne) SetFinalEndAt(t time.Time) *ContestUpdateOne {
-	cuo.mutation.SetFinalEndAt(t)
+// SetYear sets the "year" field.
+func (cuo *ContestUpdateOne) SetYear(i int) *ContestUpdateOne {
+	cuo.mutation.ResetYear()
+	cuo.mutation.SetYear(i)
 	return cuo
 }
 
-// SetFinalSubmitLimit sets the "final_submit_limit" field.
-func (cuo *ContestUpdateOne) SetFinalSubmitLimit(i int) *ContestUpdateOne {
-	cuo.mutation.ResetFinalSubmitLimit()
-	cuo.mutation.SetFinalSubmitLimit(i)
+// AddYear adds i to the "year" field.
+func (cuo *ContestUpdateOne) AddYear(i int) *ContestUpdateOne {
+	cuo.mutation.AddYear(i)
 	return cuo
 }
 
-// AddFinalSubmitLimit adds i to the "final_submit_limit" field.
-func (cuo *ContestUpdateOne) AddFinalSubmitLimit(i int) *ContestUpdateOne {
-	cuo.mutation.AddFinalSubmitLimit(i)
+// SetCreatedAt sets the "created_at" field.
+func (cuo *ContestUpdateOne) SetCreatedAt(t time.Time) *ContestUpdateOne {
+	cuo.mutation.SetCreatedAt(t)
 	return cuo
 }
 
@@ -259,9 +354,45 @@ func (cuo *ContestUpdateOne) ClearUpdatedAt() *ContestUpdateOne {
 	return cuo
 }
 
+// AddSubmitIDs adds the "submits" edge to the Submit entity by IDs.
+func (cuo *ContestUpdateOne) AddSubmitIDs(ids ...int) *ContestUpdateOne {
+	cuo.mutation.AddSubmitIDs(ids...)
+	return cuo
+}
+
+// AddSubmits adds the "submits" edges to the Submit entity.
+func (cuo *ContestUpdateOne) AddSubmits(s ...*Submit) *ContestUpdateOne {
+	ids := make([]int, len(s))
+	for i := range s {
+		ids[i] = s[i].ID
+	}
+	return cuo.AddSubmitIDs(ids...)
+}
+
 // Mutation returns the ContestMutation object of the builder.
 func (cuo *ContestUpdateOne) Mutation() *ContestMutation {
 	return cuo.mutation
+}
+
+// ClearSubmits clears all "submits" edges to the Submit entity.
+func (cuo *ContestUpdateOne) ClearSubmits() *ContestUpdateOne {
+	cuo.mutation.ClearSubmits()
+	return cuo
+}
+
+// RemoveSubmitIDs removes the "submits" edge to Submit entities by IDs.
+func (cuo *ContestUpdateOne) RemoveSubmitIDs(ids ...int) *ContestUpdateOne {
+	cuo.mutation.RemoveSubmitIDs(ids...)
+	return cuo
+}
+
+// RemoveSubmits removes "submits" edges to Submit entities.
+func (cuo *ContestUpdateOne) RemoveSubmits(s ...*Submit) *ContestUpdateOne {
+	ids := make([]int, len(s))
+	for i := range s {
+		ids[i] = s[i].ID
+	}
+	return cuo.RemoveSubmitIDs(ids...)
 }
 
 // Where appends a list predicates to the ContestUpdate builder.
@@ -304,7 +435,20 @@ func (cuo *ContestUpdateOne) ExecX(ctx context.Context) {
 	}
 }
 
+// check runs all checks and user-defined validators on the builder.
+func (cuo *ContestUpdateOne) check() error {
+	if v, ok := cuo.mutation.Year(); ok {
+		if err := contest.YearValidator(v); err != nil {
+			return &ValidationError{Name: "year", err: fmt.Errorf(`ent: validator failed for field "Contest.year": %w`, err)}
+		}
+	}
+	return nil
+}
+
 func (cuo *ContestUpdateOne) sqlSave(ctx context.Context) (_node *Contest, err error) {
+	if err := cuo.check(); err != nil {
+		return _node, err
+	}
 	_spec := sqlgraph.NewUpdateSpec(contest.Table, contest.Columns, sqlgraph.NewFieldSpec(contest.FieldID, field.TypeInt))
 	id, ok := cuo.mutation.ID()
 	if !ok {
@@ -330,35 +474,80 @@ func (cuo *ContestUpdateOne) sqlSave(ctx context.Context) (_node *Contest, err e
 			}
 		}
 	}
-	if value, ok := cuo.mutation.QualifierStartAt(); ok {
-		_spec.SetField(contest.FieldQualifierStartAt, field.TypeTime, value)
+	if value, ok := cuo.mutation.Title(); ok {
+		_spec.SetField(contest.FieldTitle, field.TypeString, value)
 	}
-	if value, ok := cuo.mutation.QualifierEndAt(); ok {
-		_spec.SetField(contest.FieldQualifierEndAt, field.TypeTime, value)
+	if value, ok := cuo.mutation.StartAt(); ok {
+		_spec.SetField(contest.FieldStartAt, field.TypeTime, value)
 	}
-	if value, ok := cuo.mutation.QualifierSubmitLimit(); ok {
-		_spec.SetField(contest.FieldQualifierSubmitLimit, field.TypeInt, value)
+	if value, ok := cuo.mutation.EndAt(); ok {
+		_spec.SetField(contest.FieldEndAt, field.TypeTime, value)
 	}
-	if value, ok := cuo.mutation.AddedQualifierSubmitLimit(); ok {
-		_spec.AddField(contest.FieldQualifierSubmitLimit, field.TypeInt, value)
+	if value, ok := cuo.mutation.SubmitLimit(); ok {
+		_spec.SetField(contest.FieldSubmitLimit, field.TypeInt, value)
 	}
-	if value, ok := cuo.mutation.FinalStartAt(); ok {
-		_spec.SetField(contest.FieldFinalStartAt, field.TypeTime, value)
+	if value, ok := cuo.mutation.AddedSubmitLimit(); ok {
+		_spec.AddField(contest.FieldSubmitLimit, field.TypeInt, value)
 	}
-	if value, ok := cuo.mutation.FinalEndAt(); ok {
-		_spec.SetField(contest.FieldFinalEndAt, field.TypeTime, value)
+	if value, ok := cuo.mutation.Year(); ok {
+		_spec.SetField(contest.FieldYear, field.TypeInt, value)
 	}
-	if value, ok := cuo.mutation.FinalSubmitLimit(); ok {
-		_spec.SetField(contest.FieldFinalSubmitLimit, field.TypeInt, value)
+	if value, ok := cuo.mutation.AddedYear(); ok {
+		_spec.AddField(contest.FieldYear, field.TypeInt, value)
 	}
-	if value, ok := cuo.mutation.AddedFinalSubmitLimit(); ok {
-		_spec.AddField(contest.FieldFinalSubmitLimit, field.TypeInt, value)
+	if value, ok := cuo.mutation.CreatedAt(); ok {
+		_spec.SetField(contest.FieldCreatedAt, field.TypeTime, value)
 	}
 	if value, ok := cuo.mutation.UpdatedAt(); ok {
 		_spec.SetField(contest.FieldUpdatedAt, field.TypeTime, value)
 	}
 	if cuo.mutation.UpdatedAtCleared() {
 		_spec.ClearField(contest.FieldUpdatedAt, field.TypeTime)
+	}
+	if cuo.mutation.SubmitsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2M,
+			Inverse: false,
+			Table:   contest.SubmitsTable,
+			Columns: contest.SubmitsPrimaryKey,
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(submit.FieldID, field.TypeInt),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := cuo.mutation.RemovedSubmitsIDs(); len(nodes) > 0 && !cuo.mutation.SubmitsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2M,
+			Inverse: false,
+			Table:   contest.SubmitsTable,
+			Columns: contest.SubmitsPrimaryKey,
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(submit.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := cuo.mutation.SubmitsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2M,
+			Inverse: false,
+			Table:   contest.SubmitsTable,
+			Columns: contest.SubmitsPrimaryKey,
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(submit.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
 	_node = &Contest{config: cuo.config}
 	_spec.Assign = _node.assignValues

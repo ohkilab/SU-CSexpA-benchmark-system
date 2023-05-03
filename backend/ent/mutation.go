@@ -36,22 +36,25 @@ const (
 // ContestMutation represents an operation that mutates the Contest nodes in the graph.
 type ContestMutation struct {
 	config
-	op                        Op
-	typ                       string
-	id                        *int
-	qualifier_start_at        *time.Time
-	qualifier_end_at          *time.Time
-	qualifier_submit_limit    *int
-	addqualifier_submit_limit *int
-	final_start_at            *time.Time
-	final_end_at              *time.Time
-	final_submit_limit        *int
-	addfinal_submit_limit     *int
-	updated_at                *time.Time
-	clearedFields             map[string]struct{}
-	done                      bool
-	oldValue                  func(context.Context) (*Contest, error)
-	predicates                []predicate.Contest
+	op              Op
+	typ             string
+	id              *int
+	title           *string
+	start_at        *time.Time
+	end_at          *time.Time
+	submit_limit    *int
+	addsubmit_limit *int
+	year            *int
+	addyear         *int
+	created_at      *time.Time
+	updated_at      *time.Time
+	clearedFields   map[string]struct{}
+	submits         map[int]struct{}
+	removedsubmits  map[int]struct{}
+	clearedsubmits  bool
+	done            bool
+	oldValue        func(context.Context) (*Contest, error)
+	predicates      []predicate.Contest
 }
 
 var _ ent.Mutation = (*ContestMutation)(nil)
@@ -158,260 +161,260 @@ func (m *ContestMutation) IDs(ctx context.Context) ([]int, error) {
 	}
 }
 
-// SetQualifierStartAt sets the "qualifier_start_at" field.
-func (m *ContestMutation) SetQualifierStartAt(t time.Time) {
-	m.qualifier_start_at = &t
+// SetTitle sets the "title" field.
+func (m *ContestMutation) SetTitle(s string) {
+	m.title = &s
 }
 
-// QualifierStartAt returns the value of the "qualifier_start_at" field in the mutation.
-func (m *ContestMutation) QualifierStartAt() (r time.Time, exists bool) {
-	v := m.qualifier_start_at
+// Title returns the value of the "title" field in the mutation.
+func (m *ContestMutation) Title() (r string, exists bool) {
+	v := m.title
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldQualifierStartAt returns the old "qualifier_start_at" field's value of the Contest entity.
+// OldTitle returns the old "title" field's value of the Contest entity.
 // If the Contest object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *ContestMutation) OldQualifierStartAt(ctx context.Context) (v time.Time, err error) {
+func (m *ContestMutation) OldTitle(ctx context.Context) (v string, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldQualifierStartAt is only allowed on UpdateOne operations")
+		return v, errors.New("OldTitle is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldQualifierStartAt requires an ID field in the mutation")
+		return v, errors.New("OldTitle requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldQualifierStartAt: %w", err)
+		return v, fmt.Errorf("querying old value for OldTitle: %w", err)
 	}
-	return oldValue.QualifierStartAt, nil
+	return oldValue.Title, nil
 }
 
-// ResetQualifierStartAt resets all changes to the "qualifier_start_at" field.
-func (m *ContestMutation) ResetQualifierStartAt() {
-	m.qualifier_start_at = nil
+// ResetTitle resets all changes to the "title" field.
+func (m *ContestMutation) ResetTitle() {
+	m.title = nil
 }
 
-// SetQualifierEndAt sets the "qualifier_end_at" field.
-func (m *ContestMutation) SetQualifierEndAt(t time.Time) {
-	m.qualifier_end_at = &t
+// SetStartAt sets the "start_at" field.
+func (m *ContestMutation) SetStartAt(t time.Time) {
+	m.start_at = &t
 }
 
-// QualifierEndAt returns the value of the "qualifier_end_at" field in the mutation.
-func (m *ContestMutation) QualifierEndAt() (r time.Time, exists bool) {
-	v := m.qualifier_end_at
+// StartAt returns the value of the "start_at" field in the mutation.
+func (m *ContestMutation) StartAt() (r time.Time, exists bool) {
+	v := m.start_at
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldQualifierEndAt returns the old "qualifier_end_at" field's value of the Contest entity.
+// OldStartAt returns the old "start_at" field's value of the Contest entity.
 // If the Contest object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *ContestMutation) OldQualifierEndAt(ctx context.Context) (v time.Time, err error) {
+func (m *ContestMutation) OldStartAt(ctx context.Context) (v time.Time, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldQualifierEndAt is only allowed on UpdateOne operations")
+		return v, errors.New("OldStartAt is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldQualifierEndAt requires an ID field in the mutation")
+		return v, errors.New("OldStartAt requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldQualifierEndAt: %w", err)
+		return v, fmt.Errorf("querying old value for OldStartAt: %w", err)
 	}
-	return oldValue.QualifierEndAt, nil
+	return oldValue.StartAt, nil
 }
 
-// ResetQualifierEndAt resets all changes to the "qualifier_end_at" field.
-func (m *ContestMutation) ResetQualifierEndAt() {
-	m.qualifier_end_at = nil
+// ResetStartAt resets all changes to the "start_at" field.
+func (m *ContestMutation) ResetStartAt() {
+	m.start_at = nil
 }
 
-// SetQualifierSubmitLimit sets the "qualifier_submit_limit" field.
-func (m *ContestMutation) SetQualifierSubmitLimit(i int) {
-	m.qualifier_submit_limit = &i
-	m.addqualifier_submit_limit = nil
+// SetEndAt sets the "end_at" field.
+func (m *ContestMutation) SetEndAt(t time.Time) {
+	m.end_at = &t
 }
 
-// QualifierSubmitLimit returns the value of the "qualifier_submit_limit" field in the mutation.
-func (m *ContestMutation) QualifierSubmitLimit() (r int, exists bool) {
-	v := m.qualifier_submit_limit
+// EndAt returns the value of the "end_at" field in the mutation.
+func (m *ContestMutation) EndAt() (r time.Time, exists bool) {
+	v := m.end_at
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldQualifierSubmitLimit returns the old "qualifier_submit_limit" field's value of the Contest entity.
+// OldEndAt returns the old "end_at" field's value of the Contest entity.
 // If the Contest object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *ContestMutation) OldQualifierSubmitLimit(ctx context.Context) (v int, err error) {
+func (m *ContestMutation) OldEndAt(ctx context.Context) (v time.Time, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldQualifierSubmitLimit is only allowed on UpdateOne operations")
+		return v, errors.New("OldEndAt is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldQualifierSubmitLimit requires an ID field in the mutation")
+		return v, errors.New("OldEndAt requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldQualifierSubmitLimit: %w", err)
+		return v, fmt.Errorf("querying old value for OldEndAt: %w", err)
 	}
-	return oldValue.QualifierSubmitLimit, nil
+	return oldValue.EndAt, nil
 }
 
-// AddQualifierSubmitLimit adds i to the "qualifier_submit_limit" field.
-func (m *ContestMutation) AddQualifierSubmitLimit(i int) {
-	if m.addqualifier_submit_limit != nil {
-		*m.addqualifier_submit_limit += i
+// ResetEndAt resets all changes to the "end_at" field.
+func (m *ContestMutation) ResetEndAt() {
+	m.end_at = nil
+}
+
+// SetSubmitLimit sets the "submit_limit" field.
+func (m *ContestMutation) SetSubmitLimit(i int) {
+	m.submit_limit = &i
+	m.addsubmit_limit = nil
+}
+
+// SubmitLimit returns the value of the "submit_limit" field in the mutation.
+func (m *ContestMutation) SubmitLimit() (r int, exists bool) {
+	v := m.submit_limit
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldSubmitLimit returns the old "submit_limit" field's value of the Contest entity.
+// If the Contest object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ContestMutation) OldSubmitLimit(ctx context.Context) (v int, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldSubmitLimit is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldSubmitLimit requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldSubmitLimit: %w", err)
+	}
+	return oldValue.SubmitLimit, nil
+}
+
+// AddSubmitLimit adds i to the "submit_limit" field.
+func (m *ContestMutation) AddSubmitLimit(i int) {
+	if m.addsubmit_limit != nil {
+		*m.addsubmit_limit += i
 	} else {
-		m.addqualifier_submit_limit = &i
+		m.addsubmit_limit = &i
 	}
 }
 
-// AddedQualifierSubmitLimit returns the value that was added to the "qualifier_submit_limit" field in this mutation.
-func (m *ContestMutation) AddedQualifierSubmitLimit() (r int, exists bool) {
-	v := m.addqualifier_submit_limit
+// AddedSubmitLimit returns the value that was added to the "submit_limit" field in this mutation.
+func (m *ContestMutation) AddedSubmitLimit() (r int, exists bool) {
+	v := m.addsubmit_limit
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// ResetQualifierSubmitLimit resets all changes to the "qualifier_submit_limit" field.
-func (m *ContestMutation) ResetQualifierSubmitLimit() {
-	m.qualifier_submit_limit = nil
-	m.addqualifier_submit_limit = nil
+// ResetSubmitLimit resets all changes to the "submit_limit" field.
+func (m *ContestMutation) ResetSubmitLimit() {
+	m.submit_limit = nil
+	m.addsubmit_limit = nil
 }
 
-// SetFinalStartAt sets the "final_start_at" field.
-func (m *ContestMutation) SetFinalStartAt(t time.Time) {
-	m.final_start_at = &t
+// SetYear sets the "year" field.
+func (m *ContestMutation) SetYear(i int) {
+	m.year = &i
+	m.addyear = nil
 }
 
-// FinalStartAt returns the value of the "final_start_at" field in the mutation.
-func (m *ContestMutation) FinalStartAt() (r time.Time, exists bool) {
-	v := m.final_start_at
+// Year returns the value of the "year" field in the mutation.
+func (m *ContestMutation) Year() (r int, exists bool) {
+	v := m.year
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldFinalStartAt returns the old "final_start_at" field's value of the Contest entity.
+// OldYear returns the old "year" field's value of the Contest entity.
 // If the Contest object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *ContestMutation) OldFinalStartAt(ctx context.Context) (v time.Time, err error) {
+func (m *ContestMutation) OldYear(ctx context.Context) (v int, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldFinalStartAt is only allowed on UpdateOne operations")
+		return v, errors.New("OldYear is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldFinalStartAt requires an ID field in the mutation")
+		return v, errors.New("OldYear requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldFinalStartAt: %w", err)
+		return v, fmt.Errorf("querying old value for OldYear: %w", err)
 	}
-	return oldValue.FinalStartAt, nil
+	return oldValue.Year, nil
 }
 
-// ResetFinalStartAt resets all changes to the "final_start_at" field.
-func (m *ContestMutation) ResetFinalStartAt() {
-	m.final_start_at = nil
-}
-
-// SetFinalEndAt sets the "final_end_at" field.
-func (m *ContestMutation) SetFinalEndAt(t time.Time) {
-	m.final_end_at = &t
-}
-
-// FinalEndAt returns the value of the "final_end_at" field in the mutation.
-func (m *ContestMutation) FinalEndAt() (r time.Time, exists bool) {
-	v := m.final_end_at
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldFinalEndAt returns the old "final_end_at" field's value of the Contest entity.
-// If the Contest object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *ContestMutation) OldFinalEndAt(ctx context.Context) (v time.Time, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldFinalEndAt is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldFinalEndAt requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldFinalEndAt: %w", err)
-	}
-	return oldValue.FinalEndAt, nil
-}
-
-// ResetFinalEndAt resets all changes to the "final_end_at" field.
-func (m *ContestMutation) ResetFinalEndAt() {
-	m.final_end_at = nil
-}
-
-// SetFinalSubmitLimit sets the "final_submit_limit" field.
-func (m *ContestMutation) SetFinalSubmitLimit(i int) {
-	m.final_submit_limit = &i
-	m.addfinal_submit_limit = nil
-}
-
-// FinalSubmitLimit returns the value of the "final_submit_limit" field in the mutation.
-func (m *ContestMutation) FinalSubmitLimit() (r int, exists bool) {
-	v := m.final_submit_limit
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldFinalSubmitLimit returns the old "final_submit_limit" field's value of the Contest entity.
-// If the Contest object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *ContestMutation) OldFinalSubmitLimit(ctx context.Context) (v int, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldFinalSubmitLimit is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldFinalSubmitLimit requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldFinalSubmitLimit: %w", err)
-	}
-	return oldValue.FinalSubmitLimit, nil
-}
-
-// AddFinalSubmitLimit adds i to the "final_submit_limit" field.
-func (m *ContestMutation) AddFinalSubmitLimit(i int) {
-	if m.addfinal_submit_limit != nil {
-		*m.addfinal_submit_limit += i
+// AddYear adds i to the "year" field.
+func (m *ContestMutation) AddYear(i int) {
+	if m.addyear != nil {
+		*m.addyear += i
 	} else {
-		m.addfinal_submit_limit = &i
+		m.addyear = &i
 	}
 }
 
-// AddedFinalSubmitLimit returns the value that was added to the "final_submit_limit" field in this mutation.
-func (m *ContestMutation) AddedFinalSubmitLimit() (r int, exists bool) {
-	v := m.addfinal_submit_limit
+// AddedYear returns the value that was added to the "year" field in this mutation.
+func (m *ContestMutation) AddedYear() (r int, exists bool) {
+	v := m.addyear
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// ResetFinalSubmitLimit resets all changes to the "final_submit_limit" field.
-func (m *ContestMutation) ResetFinalSubmitLimit() {
-	m.final_submit_limit = nil
-	m.addfinal_submit_limit = nil
+// ResetYear resets all changes to the "year" field.
+func (m *ContestMutation) ResetYear() {
+	m.year = nil
+	m.addyear = nil
+}
+
+// SetCreatedAt sets the "created_at" field.
+func (m *ContestMutation) SetCreatedAt(t time.Time) {
+	m.created_at = &t
+}
+
+// CreatedAt returns the value of the "created_at" field in the mutation.
+func (m *ContestMutation) CreatedAt() (r time.Time, exists bool) {
+	v := m.created_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldCreatedAt returns the old "created_at" field's value of the Contest entity.
+// If the Contest object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ContestMutation) OldCreatedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldCreatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldCreatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldCreatedAt: %w", err)
+	}
+	return oldValue.CreatedAt, nil
+}
+
+// ResetCreatedAt resets all changes to the "created_at" field.
+func (m *ContestMutation) ResetCreatedAt() {
+	m.created_at = nil
 }
 
 // SetUpdatedAt sets the "updated_at" field.
@@ -463,6 +466,60 @@ func (m *ContestMutation) ResetUpdatedAt() {
 	delete(m.clearedFields, contest.FieldUpdatedAt)
 }
 
+// AddSubmitIDs adds the "submits" edge to the Submit entity by ids.
+func (m *ContestMutation) AddSubmitIDs(ids ...int) {
+	if m.submits == nil {
+		m.submits = make(map[int]struct{})
+	}
+	for i := range ids {
+		m.submits[ids[i]] = struct{}{}
+	}
+}
+
+// ClearSubmits clears the "submits" edge to the Submit entity.
+func (m *ContestMutation) ClearSubmits() {
+	m.clearedsubmits = true
+}
+
+// SubmitsCleared reports if the "submits" edge to the Submit entity was cleared.
+func (m *ContestMutation) SubmitsCleared() bool {
+	return m.clearedsubmits
+}
+
+// RemoveSubmitIDs removes the "submits" edge to the Submit entity by IDs.
+func (m *ContestMutation) RemoveSubmitIDs(ids ...int) {
+	if m.removedsubmits == nil {
+		m.removedsubmits = make(map[int]struct{})
+	}
+	for i := range ids {
+		delete(m.submits, ids[i])
+		m.removedsubmits[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedSubmits returns the removed IDs of the "submits" edge to the Submit entity.
+func (m *ContestMutation) RemovedSubmitsIDs() (ids []int) {
+	for id := range m.removedsubmits {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// SubmitsIDs returns the "submits" edge IDs in the mutation.
+func (m *ContestMutation) SubmitsIDs() (ids []int) {
+	for id := range m.submits {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ResetSubmits resets all changes to the "submits" edge.
+func (m *ContestMutation) ResetSubmits() {
+	m.submits = nil
+	m.clearedsubmits = false
+	m.removedsubmits = nil
+}
+
 // Where appends a list predicates to the ContestMutation builder.
 func (m *ContestMutation) Where(ps ...predicate.Contest) {
 	m.predicates = append(m.predicates, ps...)
@@ -498,23 +555,23 @@ func (m *ContestMutation) Type() string {
 // AddedFields().
 func (m *ContestMutation) Fields() []string {
 	fields := make([]string, 0, 7)
-	if m.qualifier_start_at != nil {
-		fields = append(fields, contest.FieldQualifierStartAt)
+	if m.title != nil {
+		fields = append(fields, contest.FieldTitle)
 	}
-	if m.qualifier_end_at != nil {
-		fields = append(fields, contest.FieldQualifierEndAt)
+	if m.start_at != nil {
+		fields = append(fields, contest.FieldStartAt)
 	}
-	if m.qualifier_submit_limit != nil {
-		fields = append(fields, contest.FieldQualifierSubmitLimit)
+	if m.end_at != nil {
+		fields = append(fields, contest.FieldEndAt)
 	}
-	if m.final_start_at != nil {
-		fields = append(fields, contest.FieldFinalStartAt)
+	if m.submit_limit != nil {
+		fields = append(fields, contest.FieldSubmitLimit)
 	}
-	if m.final_end_at != nil {
-		fields = append(fields, contest.FieldFinalEndAt)
+	if m.year != nil {
+		fields = append(fields, contest.FieldYear)
 	}
-	if m.final_submit_limit != nil {
-		fields = append(fields, contest.FieldFinalSubmitLimit)
+	if m.created_at != nil {
+		fields = append(fields, contest.FieldCreatedAt)
 	}
 	if m.updated_at != nil {
 		fields = append(fields, contest.FieldUpdatedAt)
@@ -527,18 +584,18 @@ func (m *ContestMutation) Fields() []string {
 // schema.
 func (m *ContestMutation) Field(name string) (ent.Value, bool) {
 	switch name {
-	case contest.FieldQualifierStartAt:
-		return m.QualifierStartAt()
-	case contest.FieldQualifierEndAt:
-		return m.QualifierEndAt()
-	case contest.FieldQualifierSubmitLimit:
-		return m.QualifierSubmitLimit()
-	case contest.FieldFinalStartAt:
-		return m.FinalStartAt()
-	case contest.FieldFinalEndAt:
-		return m.FinalEndAt()
-	case contest.FieldFinalSubmitLimit:
-		return m.FinalSubmitLimit()
+	case contest.FieldTitle:
+		return m.Title()
+	case contest.FieldStartAt:
+		return m.StartAt()
+	case contest.FieldEndAt:
+		return m.EndAt()
+	case contest.FieldSubmitLimit:
+		return m.SubmitLimit()
+	case contest.FieldYear:
+		return m.Year()
+	case contest.FieldCreatedAt:
+		return m.CreatedAt()
 	case contest.FieldUpdatedAt:
 		return m.UpdatedAt()
 	}
@@ -550,18 +607,18 @@ func (m *ContestMutation) Field(name string) (ent.Value, bool) {
 // database failed.
 func (m *ContestMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
 	switch name {
-	case contest.FieldQualifierStartAt:
-		return m.OldQualifierStartAt(ctx)
-	case contest.FieldQualifierEndAt:
-		return m.OldQualifierEndAt(ctx)
-	case contest.FieldQualifierSubmitLimit:
-		return m.OldQualifierSubmitLimit(ctx)
-	case contest.FieldFinalStartAt:
-		return m.OldFinalStartAt(ctx)
-	case contest.FieldFinalEndAt:
-		return m.OldFinalEndAt(ctx)
-	case contest.FieldFinalSubmitLimit:
-		return m.OldFinalSubmitLimit(ctx)
+	case contest.FieldTitle:
+		return m.OldTitle(ctx)
+	case contest.FieldStartAt:
+		return m.OldStartAt(ctx)
+	case contest.FieldEndAt:
+		return m.OldEndAt(ctx)
+	case contest.FieldSubmitLimit:
+		return m.OldSubmitLimit(ctx)
+	case contest.FieldYear:
+		return m.OldYear(ctx)
+	case contest.FieldCreatedAt:
+		return m.OldCreatedAt(ctx)
 	case contest.FieldUpdatedAt:
 		return m.OldUpdatedAt(ctx)
 	}
@@ -573,47 +630,47 @@ func (m *ContestMutation) OldField(ctx context.Context, name string) (ent.Value,
 // type.
 func (m *ContestMutation) SetField(name string, value ent.Value) error {
 	switch name {
-	case contest.FieldQualifierStartAt:
+	case contest.FieldTitle:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetTitle(v)
+		return nil
+	case contest.FieldStartAt:
 		v, ok := value.(time.Time)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetQualifierStartAt(v)
+		m.SetStartAt(v)
 		return nil
-	case contest.FieldQualifierEndAt:
+	case contest.FieldEndAt:
 		v, ok := value.(time.Time)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetQualifierEndAt(v)
+		m.SetEndAt(v)
 		return nil
-	case contest.FieldQualifierSubmitLimit:
+	case contest.FieldSubmitLimit:
 		v, ok := value.(int)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetQualifierSubmitLimit(v)
+		m.SetSubmitLimit(v)
 		return nil
-	case contest.FieldFinalStartAt:
-		v, ok := value.(time.Time)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetFinalStartAt(v)
-		return nil
-	case contest.FieldFinalEndAt:
-		v, ok := value.(time.Time)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetFinalEndAt(v)
-		return nil
-	case contest.FieldFinalSubmitLimit:
+	case contest.FieldYear:
 		v, ok := value.(int)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetFinalSubmitLimit(v)
+		m.SetYear(v)
+		return nil
+	case contest.FieldCreatedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetCreatedAt(v)
 		return nil
 	case contest.FieldUpdatedAt:
 		v, ok := value.(time.Time)
@@ -630,11 +687,11 @@ func (m *ContestMutation) SetField(name string, value ent.Value) error {
 // this mutation.
 func (m *ContestMutation) AddedFields() []string {
 	var fields []string
-	if m.addqualifier_submit_limit != nil {
-		fields = append(fields, contest.FieldQualifierSubmitLimit)
+	if m.addsubmit_limit != nil {
+		fields = append(fields, contest.FieldSubmitLimit)
 	}
-	if m.addfinal_submit_limit != nil {
-		fields = append(fields, contest.FieldFinalSubmitLimit)
+	if m.addyear != nil {
+		fields = append(fields, contest.FieldYear)
 	}
 	return fields
 }
@@ -644,10 +701,10 @@ func (m *ContestMutation) AddedFields() []string {
 // was not set, or was not defined in the schema.
 func (m *ContestMutation) AddedField(name string) (ent.Value, bool) {
 	switch name {
-	case contest.FieldQualifierSubmitLimit:
-		return m.AddedQualifierSubmitLimit()
-	case contest.FieldFinalSubmitLimit:
-		return m.AddedFinalSubmitLimit()
+	case contest.FieldSubmitLimit:
+		return m.AddedSubmitLimit()
+	case contest.FieldYear:
+		return m.AddedYear()
 	}
 	return nil, false
 }
@@ -657,19 +714,19 @@ func (m *ContestMutation) AddedField(name string) (ent.Value, bool) {
 // type.
 func (m *ContestMutation) AddField(name string, value ent.Value) error {
 	switch name {
-	case contest.FieldQualifierSubmitLimit:
+	case contest.FieldSubmitLimit:
 		v, ok := value.(int)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.AddQualifierSubmitLimit(v)
+		m.AddSubmitLimit(v)
 		return nil
-	case contest.FieldFinalSubmitLimit:
+	case contest.FieldYear:
 		v, ok := value.(int)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.AddFinalSubmitLimit(v)
+		m.AddYear(v)
 		return nil
 	}
 	return fmt.Errorf("unknown Contest numeric field %s", name)
@@ -707,23 +764,23 @@ func (m *ContestMutation) ClearField(name string) error {
 // It returns an error if the field is not defined in the schema.
 func (m *ContestMutation) ResetField(name string) error {
 	switch name {
-	case contest.FieldQualifierStartAt:
-		m.ResetQualifierStartAt()
+	case contest.FieldTitle:
+		m.ResetTitle()
 		return nil
-	case contest.FieldQualifierEndAt:
-		m.ResetQualifierEndAt()
+	case contest.FieldStartAt:
+		m.ResetStartAt()
 		return nil
-	case contest.FieldQualifierSubmitLimit:
-		m.ResetQualifierSubmitLimit()
+	case contest.FieldEndAt:
+		m.ResetEndAt()
 		return nil
-	case contest.FieldFinalStartAt:
-		m.ResetFinalStartAt()
+	case contest.FieldSubmitLimit:
+		m.ResetSubmitLimit()
 		return nil
-	case contest.FieldFinalEndAt:
-		m.ResetFinalEndAt()
+	case contest.FieldYear:
+		m.ResetYear()
 		return nil
-	case contest.FieldFinalSubmitLimit:
-		m.ResetFinalSubmitLimit()
+	case contest.FieldCreatedAt:
+		m.ResetCreatedAt()
 		return nil
 	case contest.FieldUpdatedAt:
 		m.ResetUpdatedAt()
@@ -734,49 +791,85 @@ func (m *ContestMutation) ResetField(name string) error {
 
 // AddedEdges returns all edge names that were set/added in this mutation.
 func (m *ContestMutation) AddedEdges() []string {
-	edges := make([]string, 0, 0)
+	edges := make([]string, 0, 1)
+	if m.submits != nil {
+		edges = append(edges, contest.EdgeSubmits)
+	}
 	return edges
 }
 
 // AddedIDs returns all IDs (to other nodes) that were added for the given edge
 // name in this mutation.
 func (m *ContestMutation) AddedIDs(name string) []ent.Value {
+	switch name {
+	case contest.EdgeSubmits:
+		ids := make([]ent.Value, 0, len(m.submits))
+		for id := range m.submits {
+			ids = append(ids, id)
+		}
+		return ids
+	}
 	return nil
 }
 
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *ContestMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 0)
+	edges := make([]string, 0, 1)
+	if m.removedsubmits != nil {
+		edges = append(edges, contest.EdgeSubmits)
+	}
 	return edges
 }
 
 // RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
 // the given name in this mutation.
 func (m *ContestMutation) RemovedIDs(name string) []ent.Value {
+	switch name {
+	case contest.EdgeSubmits:
+		ids := make([]ent.Value, 0, len(m.removedsubmits))
+		for id := range m.removedsubmits {
+			ids = append(ids, id)
+		}
+		return ids
+	}
 	return nil
 }
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
 func (m *ContestMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 0)
+	edges := make([]string, 0, 1)
+	if m.clearedsubmits {
+		edges = append(edges, contest.EdgeSubmits)
+	}
 	return edges
 }
 
 // EdgeCleared returns a boolean which indicates if the edge with the given name
 // was cleared in this mutation.
 func (m *ContestMutation) EdgeCleared(name string) bool {
+	switch name {
+	case contest.EdgeSubmits:
+		return m.clearedsubmits
+	}
 	return false
 }
 
 // ClearEdge clears the value of the edge with the given name. It returns an error
 // if that edge is not defined in the schema.
 func (m *ContestMutation) ClearEdge(name string) error {
+	switch name {
+	}
 	return fmt.Errorf("unknown Contest unique edge %s", name)
 }
 
 // ResetEdge resets all changes to the edge with the given name in this mutation.
 // It returns an error if the edge is not defined in the schema.
 func (m *ContestMutation) ResetEdge(name string) error {
+	switch name {
+	case contest.EdgeSubmits:
+		m.ResetSubmits()
+		return nil
+	}
 	return fmt.Errorf("unknown Contest edge %s", name)
 }
 
@@ -1455,9 +1548,12 @@ type SubmitMutation struct {
 	tagResults        map[int]struct{}
 	removedtagResults map[int]struct{}
 	clearedtagResults bool
-	group             map[string]struct{}
-	removedgroup      map[string]struct{}
-	clearedgroup      bool
+	groups            map[string]struct{}
+	removedgroups     map[string]struct{}
+	clearedgroups     bool
+	contests          map[int]struct{}
+	removedcontests   map[int]struct{}
+	clearedcontests   bool
 	done              bool
 	oldValue          func(context.Context) (*Submit, error)
 	predicates        []predicate.Submit
@@ -1966,58 +2062,112 @@ func (m *SubmitMutation) ResetTagResults() {
 	m.removedtagResults = nil
 }
 
-// AddGroupIDs adds the "group" edge to the Group entity by ids.
+// AddGroupIDs adds the "groups" edge to the Group entity by ids.
 func (m *SubmitMutation) AddGroupIDs(ids ...string) {
-	if m.group == nil {
-		m.group = make(map[string]struct{})
+	if m.groups == nil {
+		m.groups = make(map[string]struct{})
 	}
 	for i := range ids {
-		m.group[ids[i]] = struct{}{}
+		m.groups[ids[i]] = struct{}{}
 	}
 }
 
-// ClearGroup clears the "group" edge to the Group entity.
-func (m *SubmitMutation) ClearGroup() {
-	m.clearedgroup = true
+// ClearGroups clears the "groups" edge to the Group entity.
+func (m *SubmitMutation) ClearGroups() {
+	m.clearedgroups = true
 }
 
-// GroupCleared reports if the "group" edge to the Group entity was cleared.
-func (m *SubmitMutation) GroupCleared() bool {
-	return m.clearedgroup
+// GroupsCleared reports if the "groups" edge to the Group entity was cleared.
+func (m *SubmitMutation) GroupsCleared() bool {
+	return m.clearedgroups
 }
 
-// RemoveGroupIDs removes the "group" edge to the Group entity by IDs.
+// RemoveGroupIDs removes the "groups" edge to the Group entity by IDs.
 func (m *SubmitMutation) RemoveGroupIDs(ids ...string) {
-	if m.removedgroup == nil {
-		m.removedgroup = make(map[string]struct{})
+	if m.removedgroups == nil {
+		m.removedgroups = make(map[string]struct{})
 	}
 	for i := range ids {
-		delete(m.group, ids[i])
-		m.removedgroup[ids[i]] = struct{}{}
+		delete(m.groups, ids[i])
+		m.removedgroups[ids[i]] = struct{}{}
 	}
 }
 
-// RemovedGroup returns the removed IDs of the "group" edge to the Group entity.
-func (m *SubmitMutation) RemovedGroupIDs() (ids []string) {
-	for id := range m.removedgroup {
+// RemovedGroups returns the removed IDs of the "groups" edge to the Group entity.
+func (m *SubmitMutation) RemovedGroupsIDs() (ids []string) {
+	for id := range m.removedgroups {
 		ids = append(ids, id)
 	}
 	return
 }
 
-// GroupIDs returns the "group" edge IDs in the mutation.
-func (m *SubmitMutation) GroupIDs() (ids []string) {
-	for id := range m.group {
+// GroupsIDs returns the "groups" edge IDs in the mutation.
+func (m *SubmitMutation) GroupsIDs() (ids []string) {
+	for id := range m.groups {
 		ids = append(ids, id)
 	}
 	return
 }
 
-// ResetGroup resets all changes to the "group" edge.
-func (m *SubmitMutation) ResetGroup() {
-	m.group = nil
-	m.clearedgroup = false
-	m.removedgroup = nil
+// ResetGroups resets all changes to the "groups" edge.
+func (m *SubmitMutation) ResetGroups() {
+	m.groups = nil
+	m.clearedgroups = false
+	m.removedgroups = nil
+}
+
+// AddContestIDs adds the "contests" edge to the Contest entity by ids.
+func (m *SubmitMutation) AddContestIDs(ids ...int) {
+	if m.contests == nil {
+		m.contests = make(map[int]struct{})
+	}
+	for i := range ids {
+		m.contests[ids[i]] = struct{}{}
+	}
+}
+
+// ClearContests clears the "contests" edge to the Contest entity.
+func (m *SubmitMutation) ClearContests() {
+	m.clearedcontests = true
+}
+
+// ContestsCleared reports if the "contests" edge to the Contest entity was cleared.
+func (m *SubmitMutation) ContestsCleared() bool {
+	return m.clearedcontests
+}
+
+// RemoveContestIDs removes the "contests" edge to the Contest entity by IDs.
+func (m *SubmitMutation) RemoveContestIDs(ids ...int) {
+	if m.removedcontests == nil {
+		m.removedcontests = make(map[int]struct{})
+	}
+	for i := range ids {
+		delete(m.contests, ids[i])
+		m.removedcontests[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedContests returns the removed IDs of the "contests" edge to the Contest entity.
+func (m *SubmitMutation) RemovedContestsIDs() (ids []int) {
+	for id := range m.removedcontests {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ContestsIDs returns the "contests" edge IDs in the mutation.
+func (m *SubmitMutation) ContestsIDs() (ids []int) {
+	for id := range m.contests {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ResetContests resets all changes to the "contests" edge.
+func (m *SubmitMutation) ResetContests() {
+	m.contests = nil
+	m.clearedcontests = false
+	m.removedcontests = nil
 }
 
 // Where appends a list predicates to the SubmitMutation builder.
@@ -2309,12 +2459,15 @@ func (m *SubmitMutation) ResetField(name string) error {
 
 // AddedEdges returns all edge names that were set/added in this mutation.
 func (m *SubmitMutation) AddedEdges() []string {
-	edges := make([]string, 0, 2)
+	edges := make([]string, 0, 3)
 	if m.tagResults != nil {
 		edges = append(edges, submit.EdgeTagResults)
 	}
-	if m.group != nil {
-		edges = append(edges, submit.EdgeGroup)
+	if m.groups != nil {
+		edges = append(edges, submit.EdgeGroups)
+	}
+	if m.contests != nil {
+		edges = append(edges, submit.EdgeContests)
 	}
 	return edges
 }
@@ -2329,9 +2482,15 @@ func (m *SubmitMutation) AddedIDs(name string) []ent.Value {
 			ids = append(ids, id)
 		}
 		return ids
-	case submit.EdgeGroup:
-		ids := make([]ent.Value, 0, len(m.group))
-		for id := range m.group {
+	case submit.EdgeGroups:
+		ids := make([]ent.Value, 0, len(m.groups))
+		for id := range m.groups {
+			ids = append(ids, id)
+		}
+		return ids
+	case submit.EdgeContests:
+		ids := make([]ent.Value, 0, len(m.contests))
+		for id := range m.contests {
 			ids = append(ids, id)
 		}
 		return ids
@@ -2341,12 +2500,15 @@ func (m *SubmitMutation) AddedIDs(name string) []ent.Value {
 
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *SubmitMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 2)
+	edges := make([]string, 0, 3)
 	if m.removedtagResults != nil {
 		edges = append(edges, submit.EdgeTagResults)
 	}
-	if m.removedgroup != nil {
-		edges = append(edges, submit.EdgeGroup)
+	if m.removedgroups != nil {
+		edges = append(edges, submit.EdgeGroups)
+	}
+	if m.removedcontests != nil {
+		edges = append(edges, submit.EdgeContests)
 	}
 	return edges
 }
@@ -2361,9 +2523,15 @@ func (m *SubmitMutation) RemovedIDs(name string) []ent.Value {
 			ids = append(ids, id)
 		}
 		return ids
-	case submit.EdgeGroup:
-		ids := make([]ent.Value, 0, len(m.removedgroup))
-		for id := range m.removedgroup {
+	case submit.EdgeGroups:
+		ids := make([]ent.Value, 0, len(m.removedgroups))
+		for id := range m.removedgroups {
+			ids = append(ids, id)
+		}
+		return ids
+	case submit.EdgeContests:
+		ids := make([]ent.Value, 0, len(m.removedcontests))
+		for id := range m.removedcontests {
 			ids = append(ids, id)
 		}
 		return ids
@@ -2373,12 +2541,15 @@ func (m *SubmitMutation) RemovedIDs(name string) []ent.Value {
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
 func (m *SubmitMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 2)
+	edges := make([]string, 0, 3)
 	if m.clearedtagResults {
 		edges = append(edges, submit.EdgeTagResults)
 	}
-	if m.clearedgroup {
-		edges = append(edges, submit.EdgeGroup)
+	if m.clearedgroups {
+		edges = append(edges, submit.EdgeGroups)
+	}
+	if m.clearedcontests {
+		edges = append(edges, submit.EdgeContests)
 	}
 	return edges
 }
@@ -2389,8 +2560,10 @@ func (m *SubmitMutation) EdgeCleared(name string) bool {
 	switch name {
 	case submit.EdgeTagResults:
 		return m.clearedtagResults
-	case submit.EdgeGroup:
-		return m.clearedgroup
+	case submit.EdgeGroups:
+		return m.clearedgroups
+	case submit.EdgeContests:
+		return m.clearedcontests
 	}
 	return false
 }
@@ -2410,8 +2583,11 @@ func (m *SubmitMutation) ResetEdge(name string) error {
 	case submit.EdgeTagResults:
 		m.ResetTagResults()
 		return nil
-	case submit.EdgeGroup:
-		m.ResetGroup()
+	case submit.EdgeGroups:
+		m.ResetGroups()
+		return nil
+	case submit.EdgeContests:
+		m.ResetContests()
 		return nil
 	}
 	return fmt.Errorf("unknown Submit edge %s", name)

@@ -41,11 +41,13 @@ type Submit struct {
 type SubmitEdges struct {
 	// TagResults holds the value of the tagResults edge.
 	TagResults []*TagResult `json:"tagResults,omitempty"`
-	// Group holds the value of the group edge.
-	Group []*Group `json:"group,omitempty"`
+	// Groups holds the value of the groups edge.
+	Groups []*Group `json:"groups,omitempty"`
+	// Contests holds the value of the contests edge.
+	Contests []*Contest `json:"contests,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [2]bool
+	loadedTypes [3]bool
 }
 
 // TagResultsOrErr returns the TagResults value or an error if the edge
@@ -57,13 +59,22 @@ func (e SubmitEdges) TagResultsOrErr() ([]*TagResult, error) {
 	return nil, &NotLoadedError{edge: "tagResults"}
 }
 
-// GroupOrErr returns the Group value or an error if the edge
+// GroupsOrErr returns the Groups value or an error if the edge
 // was not loaded in eager-loading.
-func (e SubmitEdges) GroupOrErr() ([]*Group, error) {
+func (e SubmitEdges) GroupsOrErr() ([]*Group, error) {
 	if e.loadedTypes[1] {
-		return e.Group, nil
+		return e.Groups, nil
 	}
-	return nil, &NotLoadedError{edge: "group"}
+	return nil, &NotLoadedError{edge: "groups"}
+}
+
+// ContestsOrErr returns the Contests value or an error if the edge
+// was not loaded in eager-loading.
+func (e SubmitEdges) ContestsOrErr() ([]*Contest, error) {
+	if e.loadedTypes[2] {
+		return e.Contests, nil
+	}
+	return nil, &NotLoadedError{edge: "contests"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -158,9 +169,14 @@ func (s *Submit) QueryTagResults() *TagResultQuery {
 	return NewSubmitClient(s.config).QueryTagResults(s)
 }
 
-// QueryGroup queries the "group" edge of the Submit entity.
-func (s *Submit) QueryGroup() *GroupQuery {
-	return NewSubmitClient(s.config).QueryGroup(s)
+// QueryGroups queries the "groups" edge of the Submit entity.
+func (s *Submit) QueryGroups() *GroupQuery {
+	return NewSubmitClient(s.config).QueryGroups(s)
+}
+
+// QueryContests queries the "contests" edge of the Submit entity.
+func (s *Submit) QueryContests() *ContestQuery {
+	return NewSubmitClient(s.config).QueryContests(s)
 }
 
 // Update returns a builder for updating this Submit.

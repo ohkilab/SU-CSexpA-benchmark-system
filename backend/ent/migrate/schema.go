@@ -10,13 +10,13 @@ import (
 var (
 	// ContestsColumns holds the columns for the "contests" table.
 	ContestsColumns = []*schema.Column{
-		{Name: "year", Type: field.TypeInt, Increment: true},
-		{Name: "qualifier_start_at", Type: field.TypeTime},
-		{Name: "qualifier_end_at", Type: field.TypeTime},
-		{Name: "qualifier_submit_limit", Type: field.TypeInt},
-		{Name: "final_start_at", Type: field.TypeTime},
-		{Name: "final_end_at", Type: field.TypeTime},
-		{Name: "final_submit_limit", Type: field.TypeInt},
+		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "title", Type: field.TypeString},
+		{Name: "start_at", Type: field.TypeTime},
+		{Name: "end_at", Type: field.TypeTime},
+		{Name: "submit_limit", Type: field.TypeInt},
+		{Name: "year", Type: field.TypeInt},
+		{Name: "created_at", Type: field.TypeTime},
 		{Name: "updated_at", Type: field.TypeTime, Nullable: true},
 	}
 	// ContestsTable holds the schema information for the "contests" table.
@@ -86,6 +86,31 @@ var (
 			},
 		},
 	}
+	// ContestSubmitsColumns holds the columns for the "contest_submits" table.
+	ContestSubmitsColumns = []*schema.Column{
+		{Name: "contest_id", Type: field.TypeInt},
+		{Name: "submit_id", Type: field.TypeInt},
+	}
+	// ContestSubmitsTable holds the schema information for the "contest_submits" table.
+	ContestSubmitsTable = &schema.Table{
+		Name:       "contest_submits",
+		Columns:    ContestSubmitsColumns,
+		PrimaryKey: []*schema.Column{ContestSubmitsColumns[0], ContestSubmitsColumns[1]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "contest_submits_contest_id",
+				Columns:    []*schema.Column{ContestSubmitsColumns[0]},
+				RefColumns: []*schema.Column{ContestsColumns[0]},
+				OnDelete:   schema.Cascade,
+			},
+			{
+				Symbol:     "contest_submits_submit_id",
+				Columns:    []*schema.Column{ContestSubmitsColumns[1]},
+				RefColumns: []*schema.Column{SubmitsColumns[0]},
+				OnDelete:   schema.Cascade,
+			},
+		},
+	}
 	// GroupSubmitsColumns holds the columns for the "group_submits" table.
 	GroupSubmitsColumns = []*schema.Column{
 		{Name: "group_id", Type: field.TypeString},
@@ -117,12 +142,15 @@ var (
 		GroupsTable,
 		SubmitsTable,
 		TagResultsTable,
+		ContestSubmitsTable,
 		GroupSubmitsTable,
 	}
 )
 
 func init() {
 	TagResultsTable.ForeignKeys[0].RefTable = SubmitsTable
+	ContestSubmitsTable.ForeignKeys[0].RefTable = ContestsTable
+	ContestSubmitsTable.ForeignKeys[1].RefTable = SubmitsTable
 	GroupSubmitsTable.ForeignKeys[0].RefTable = GroupsTable
 	GroupSubmitsTable.ForeignKeys[1].RefTable = SubmitsTable
 }

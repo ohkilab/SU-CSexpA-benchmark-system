@@ -311,6 +311,22 @@ func (c *ContestClient) GetX(ctx context.Context, id int) *Contest {
 	return obj
 }
 
+// QuerySubmits queries the submits edge of a Contest.
+func (c *ContestClient) QuerySubmits(co *Contest) *SubmitQuery {
+	query := (&SubmitClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := co.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(contest.Table, contest.FieldID, id),
+			sqlgraph.To(submit.Table, submit.FieldID),
+			sqlgraph.Edge(sqlgraph.M2M, false, contest.SubmitsTable, contest.SubmitsPrimaryKey...),
+		)
+		fromV = sqlgraph.Neighbors(co.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
 // Hooks returns the client hooks.
 func (c *ContestClient) Hooks() []Hook {
 	return c.hooks.Contest
@@ -579,15 +595,31 @@ func (c *SubmitClient) QueryTagResults(s *Submit) *TagResultQuery {
 	return query
 }
 
-// QueryGroup queries the group edge of a Submit.
-func (c *SubmitClient) QueryGroup(s *Submit) *GroupQuery {
+// QueryGroups queries the groups edge of a Submit.
+func (c *SubmitClient) QueryGroups(s *Submit) *GroupQuery {
 	query := (&GroupClient{config: c.config}).Query()
 	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
 		id := s.ID
 		step := sqlgraph.NewStep(
 			sqlgraph.From(submit.Table, submit.FieldID, id),
 			sqlgraph.To(group.Table, group.FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, true, submit.GroupTable, submit.GroupPrimaryKey...),
+			sqlgraph.Edge(sqlgraph.M2M, true, submit.GroupsTable, submit.GroupsPrimaryKey...),
+		)
+		fromV = sqlgraph.Neighbors(s.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryContests queries the contests edge of a Submit.
+func (c *SubmitClient) QueryContests(s *Submit) *ContestQuery {
+	query := (&ContestClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := s.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(submit.Table, submit.FieldID, id),
+			sqlgraph.To(contest.Table, contest.FieldID),
+			sqlgraph.Edge(sqlgraph.M2M, true, submit.ContestsTable, submit.ContestsPrimaryKey...),
 		)
 		fromV = sqlgraph.Neighbors(s.driver.Dialect(), step)
 		return fromV, nil

@@ -11,6 +11,7 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/ent/contest"
+	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/ent/submit"
 )
 
 // ContestCreate is the builder for creating a Contest entity.
@@ -20,39 +21,39 @@ type ContestCreate struct {
 	hooks    []Hook
 }
 
-// SetQualifierStartAt sets the "qualifier_start_at" field.
-func (cc *ContestCreate) SetQualifierStartAt(t time.Time) *ContestCreate {
-	cc.mutation.SetQualifierStartAt(t)
+// SetTitle sets the "title" field.
+func (cc *ContestCreate) SetTitle(s string) *ContestCreate {
+	cc.mutation.SetTitle(s)
 	return cc
 }
 
-// SetQualifierEndAt sets the "qualifier_end_at" field.
-func (cc *ContestCreate) SetQualifierEndAt(t time.Time) *ContestCreate {
-	cc.mutation.SetQualifierEndAt(t)
+// SetStartAt sets the "start_at" field.
+func (cc *ContestCreate) SetStartAt(t time.Time) *ContestCreate {
+	cc.mutation.SetStartAt(t)
 	return cc
 }
 
-// SetQualifierSubmitLimit sets the "qualifier_submit_limit" field.
-func (cc *ContestCreate) SetQualifierSubmitLimit(i int) *ContestCreate {
-	cc.mutation.SetQualifierSubmitLimit(i)
+// SetEndAt sets the "end_at" field.
+func (cc *ContestCreate) SetEndAt(t time.Time) *ContestCreate {
+	cc.mutation.SetEndAt(t)
 	return cc
 }
 
-// SetFinalStartAt sets the "final_start_at" field.
-func (cc *ContestCreate) SetFinalStartAt(t time.Time) *ContestCreate {
-	cc.mutation.SetFinalStartAt(t)
+// SetSubmitLimit sets the "submit_limit" field.
+func (cc *ContestCreate) SetSubmitLimit(i int) *ContestCreate {
+	cc.mutation.SetSubmitLimit(i)
 	return cc
 }
 
-// SetFinalEndAt sets the "final_end_at" field.
-func (cc *ContestCreate) SetFinalEndAt(t time.Time) *ContestCreate {
-	cc.mutation.SetFinalEndAt(t)
+// SetYear sets the "year" field.
+func (cc *ContestCreate) SetYear(i int) *ContestCreate {
+	cc.mutation.SetYear(i)
 	return cc
 }
 
-// SetFinalSubmitLimit sets the "final_submit_limit" field.
-func (cc *ContestCreate) SetFinalSubmitLimit(i int) *ContestCreate {
-	cc.mutation.SetFinalSubmitLimit(i)
+// SetCreatedAt sets the "created_at" field.
+func (cc *ContestCreate) SetCreatedAt(t time.Time) *ContestCreate {
+	cc.mutation.SetCreatedAt(t)
 	return cc
 }
 
@@ -74,6 +75,21 @@ func (cc *ContestCreate) SetNillableUpdatedAt(t *time.Time) *ContestCreate {
 func (cc *ContestCreate) SetID(i int) *ContestCreate {
 	cc.mutation.SetID(i)
 	return cc
+}
+
+// AddSubmitIDs adds the "submits" edge to the Submit entity by IDs.
+func (cc *ContestCreate) AddSubmitIDs(ids ...int) *ContestCreate {
+	cc.mutation.AddSubmitIDs(ids...)
+	return cc
+}
+
+// AddSubmits adds the "submits" edges to the Submit entity.
+func (cc *ContestCreate) AddSubmits(s ...*Submit) *ContestCreate {
+	ids := make([]int, len(s))
+	for i := range s {
+		ids[i] = s[i].ID
+	}
+	return cc.AddSubmitIDs(ids...)
 }
 
 // Mutation returns the ContestMutation object of the builder.
@@ -110,28 +126,28 @@ func (cc *ContestCreate) ExecX(ctx context.Context) {
 
 // check runs all checks and user-defined validators on the builder.
 func (cc *ContestCreate) check() error {
-	if _, ok := cc.mutation.QualifierStartAt(); !ok {
-		return &ValidationError{Name: "qualifier_start_at", err: errors.New(`ent: missing required field "Contest.qualifier_start_at"`)}
+	if _, ok := cc.mutation.Title(); !ok {
+		return &ValidationError{Name: "title", err: errors.New(`ent: missing required field "Contest.title"`)}
 	}
-	if _, ok := cc.mutation.QualifierEndAt(); !ok {
-		return &ValidationError{Name: "qualifier_end_at", err: errors.New(`ent: missing required field "Contest.qualifier_end_at"`)}
+	if _, ok := cc.mutation.StartAt(); !ok {
+		return &ValidationError{Name: "start_at", err: errors.New(`ent: missing required field "Contest.start_at"`)}
 	}
-	if _, ok := cc.mutation.QualifierSubmitLimit(); !ok {
-		return &ValidationError{Name: "qualifier_submit_limit", err: errors.New(`ent: missing required field "Contest.qualifier_submit_limit"`)}
+	if _, ok := cc.mutation.EndAt(); !ok {
+		return &ValidationError{Name: "end_at", err: errors.New(`ent: missing required field "Contest.end_at"`)}
 	}
-	if _, ok := cc.mutation.FinalStartAt(); !ok {
-		return &ValidationError{Name: "final_start_at", err: errors.New(`ent: missing required field "Contest.final_start_at"`)}
+	if _, ok := cc.mutation.SubmitLimit(); !ok {
+		return &ValidationError{Name: "submit_limit", err: errors.New(`ent: missing required field "Contest.submit_limit"`)}
 	}
-	if _, ok := cc.mutation.FinalEndAt(); !ok {
-		return &ValidationError{Name: "final_end_at", err: errors.New(`ent: missing required field "Contest.final_end_at"`)}
+	if _, ok := cc.mutation.Year(); !ok {
+		return &ValidationError{Name: "year", err: errors.New(`ent: missing required field "Contest.year"`)}
 	}
-	if _, ok := cc.mutation.FinalSubmitLimit(); !ok {
-		return &ValidationError{Name: "final_submit_limit", err: errors.New(`ent: missing required field "Contest.final_submit_limit"`)}
-	}
-	if v, ok := cc.mutation.ID(); ok {
-		if err := contest.IDValidator(v); err != nil {
-			return &ValidationError{Name: "id", err: fmt.Errorf(`ent: validator failed for field "Contest.id": %w`, err)}
+	if v, ok := cc.mutation.Year(); ok {
+		if err := contest.YearValidator(v); err != nil {
+			return &ValidationError{Name: "year", err: fmt.Errorf(`ent: validator failed for field "Contest.year": %w`, err)}
 		}
+	}
+	if _, ok := cc.mutation.CreatedAt(); !ok {
+		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "Contest.created_at"`)}
 	}
 	return nil
 }
@@ -165,33 +181,49 @@ func (cc *ContestCreate) createSpec() (*Contest, *sqlgraph.CreateSpec) {
 		_node.ID = id
 		_spec.ID.Value = id
 	}
-	if value, ok := cc.mutation.QualifierStartAt(); ok {
-		_spec.SetField(contest.FieldQualifierStartAt, field.TypeTime, value)
-		_node.QualifierStartAt = value
+	if value, ok := cc.mutation.Title(); ok {
+		_spec.SetField(contest.FieldTitle, field.TypeString, value)
+		_node.Title = value
 	}
-	if value, ok := cc.mutation.QualifierEndAt(); ok {
-		_spec.SetField(contest.FieldQualifierEndAt, field.TypeTime, value)
-		_node.QualifierEndAt = value
+	if value, ok := cc.mutation.StartAt(); ok {
+		_spec.SetField(contest.FieldStartAt, field.TypeTime, value)
+		_node.StartAt = value
 	}
-	if value, ok := cc.mutation.QualifierSubmitLimit(); ok {
-		_spec.SetField(contest.FieldQualifierSubmitLimit, field.TypeInt, value)
-		_node.QualifierSubmitLimit = value
+	if value, ok := cc.mutation.EndAt(); ok {
+		_spec.SetField(contest.FieldEndAt, field.TypeTime, value)
+		_node.EndAt = value
 	}
-	if value, ok := cc.mutation.FinalStartAt(); ok {
-		_spec.SetField(contest.FieldFinalStartAt, field.TypeTime, value)
-		_node.FinalStartAt = value
+	if value, ok := cc.mutation.SubmitLimit(); ok {
+		_spec.SetField(contest.FieldSubmitLimit, field.TypeInt, value)
+		_node.SubmitLimit = value
 	}
-	if value, ok := cc.mutation.FinalEndAt(); ok {
-		_spec.SetField(contest.FieldFinalEndAt, field.TypeTime, value)
-		_node.FinalEndAt = value
+	if value, ok := cc.mutation.Year(); ok {
+		_spec.SetField(contest.FieldYear, field.TypeInt, value)
+		_node.Year = value
 	}
-	if value, ok := cc.mutation.FinalSubmitLimit(); ok {
-		_spec.SetField(contest.FieldFinalSubmitLimit, field.TypeInt, value)
-		_node.FinalSubmitLimit = value
+	if value, ok := cc.mutation.CreatedAt(); ok {
+		_spec.SetField(contest.FieldCreatedAt, field.TypeTime, value)
+		_node.CreatedAt = value
 	}
 	if value, ok := cc.mutation.UpdatedAt(); ok {
 		_spec.SetField(contest.FieldUpdatedAt, field.TypeTime, value)
 		_node.UpdatedAt = value
+	}
+	if nodes := cc.mutation.SubmitsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2M,
+			Inverse: false,
+			Table:   contest.SubmitsTable,
+			Columns: contest.SubmitsPrimaryKey,
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(submit.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec
 }
