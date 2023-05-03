@@ -32,11 +32,11 @@ func init() {
 	submitFields := schema.Submit{}.Fields()
 	_ = submitFields
 	// submitDescYear is the schema descriptor for year field.
-	submitDescYear := submitFields[1].Descriptor()
+	submitDescYear := submitFields[2].Descriptor()
 	// submit.YearValidator is a validator for the "year" field. It is called by the builders before save.
 	submit.YearValidator = submitDescYear.Validators[0].(func(int) error)
 	// submitDescScore is the schema descriptor for score field.
-	submitDescScore := submitFields[2].Descriptor()
+	submitDescScore := submitFields[3].Descriptor()
 	// submit.ScoreValidator is a validator for the "score" field. It is called by the builders before save.
 	submit.ScoreValidator = submitDescScore.Validators[0].(func(int) error)
 }

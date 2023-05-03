@@ -1442,6 +1442,7 @@ type SubmitMutation struct {
 	op                Op
 	typ               string
 	id                *string
+	ip_addr           *string
 	year              *int
 	addyear           *int
 	score             *int
@@ -1564,6 +1565,42 @@ func (m *SubmitMutation) IDs(ctx context.Context) ([]string, error) {
 	default:
 		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
 	}
+}
+
+// SetIPAddr sets the "ip_addr" field.
+func (m *SubmitMutation) SetIPAddr(s string) {
+	m.ip_addr = &s
+}
+
+// IPAddr returns the value of the "ip_addr" field in the mutation.
+func (m *SubmitMutation) IPAddr() (r string, exists bool) {
+	v := m.ip_addr
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldIPAddr returns the old "ip_addr" field's value of the Submit entity.
+// If the Submit object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *SubmitMutation) OldIPAddr(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldIPAddr is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldIPAddr requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldIPAddr: %w", err)
+	}
+	return oldValue.IPAddr, nil
+}
+
+// ResetIPAddr resets all changes to the "ip_addr" field.
+func (m *SubmitMutation) ResetIPAddr() {
+	m.ip_addr = nil
 }
 
 // SetYear sets the "year" field.
@@ -1990,7 +2027,10 @@ func (m *SubmitMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *SubmitMutation) Fields() []string {
-	fields := make([]string, 0, 6)
+	fields := make([]string, 0, 7)
+	if m.ip_addr != nil {
+		fields = append(fields, submit.FieldIPAddr)
+	}
 	if m.year != nil {
 		fields = append(fields, submit.FieldYear)
 	}
@@ -2017,6 +2057,8 @@ func (m *SubmitMutation) Fields() []string {
 // schema.
 func (m *SubmitMutation) Field(name string) (ent.Value, bool) {
 	switch name {
+	case submit.FieldIPAddr:
+		return m.IPAddr()
 	case submit.FieldYear:
 		return m.Year()
 	case submit.FieldScore:
@@ -2038,6 +2080,8 @@ func (m *SubmitMutation) Field(name string) (ent.Value, bool) {
 // database failed.
 func (m *SubmitMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
 	switch name {
+	case submit.FieldIPAddr:
+		return m.OldIPAddr(ctx)
 	case submit.FieldYear:
 		return m.OldYear(ctx)
 	case submit.FieldScore:
@@ -2059,6 +2103,13 @@ func (m *SubmitMutation) OldField(ctx context.Context, name string) (ent.Value, 
 // type.
 func (m *SubmitMutation) SetField(name string, value ent.Value) error {
 	switch name {
+	case submit.FieldIPAddr:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetIPAddr(v)
+		return nil
 	case submit.FieldYear:
 		v, ok := value.(int)
 		if !ok {
@@ -2192,6 +2243,9 @@ func (m *SubmitMutation) ClearField(name string) error {
 // It returns an error if the field is not defined in the schema.
 func (m *SubmitMutation) ResetField(name string) error {
 	switch name {
+	case submit.FieldIPAddr:
+		m.ResetIPAddr()
+		return nil
 	case submit.FieldYear:
 		m.ResetYear()
 		return nil

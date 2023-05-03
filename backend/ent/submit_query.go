@@ -334,12 +334,12 @@ func (sq *SubmitQuery) WithGroup(opts ...func(*GroupQuery)) *SubmitQuery {
 // Example:
 //
 //	var v []struct {
-//		Year int `json:"year,omitempty"`
+//		IPAddr string `json:"ip_addr,omitempty"`
 //		Count int `json:"count,omitempty"`
 //	}
 //
 //	client.Submit.Query().
-//		GroupBy(submit.FieldYear).
+//		GroupBy(submit.FieldIPAddr).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
 func (sq *SubmitQuery) GroupBy(field string, fields ...string) *SubmitGroupBy {
@@ -357,11 +357,11 @@ func (sq *SubmitQuery) GroupBy(field string, fields ...string) *SubmitGroupBy {
 // Example:
 //
 //	var v []struct {
-//		Year int `json:"year,omitempty"`
+//		IPAddr string `json:"ip_addr,omitempty"`
 //	}
 //
 //	client.Submit.Query().
-//		Select(submit.FieldYear).
+//		Select(submit.FieldIPAddr).
 //		Scan(ctx, &v)
 func (sq *SubmitQuery) Select(fields ...string) *SubmitSelect {
 	sq.ctx.Fields = append(sq.ctx.Fields, fields...)

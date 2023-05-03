@@ -30,6 +30,12 @@ func (su *SubmitUpdate) Where(ps ...predicate.Submit) *SubmitUpdate {
 	return su
 }
 
+// SetIPAddr sets the "ip_addr" field.
+func (su *SubmitUpdate) SetIPAddr(s string) *SubmitUpdate {
+	su.mutation.SetIPAddr(s)
+	return su
+}
+
 // SetYear sets the "year" field.
 func (su *SubmitUpdate) SetYear(i int) *SubmitUpdate {
 	su.mutation.ResetYear()
@@ -244,6 +250,9 @@ func (su *SubmitUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			}
 		}
 	}
+	if value, ok := su.mutation.IPAddr(); ok {
+		_spec.SetField(submit.FieldIPAddr, field.TypeString, value)
+	}
 	if value, ok := su.mutation.Year(); ok {
 		_spec.SetField(submit.FieldYear, field.TypeInt, value)
 	}
@@ -382,6 +391,12 @@ type SubmitUpdateOne struct {
 	fields   []string
 	hooks    []Hook
 	mutation *SubmitMutation
+}
+
+// SetIPAddr sets the "ip_addr" field.
+func (suo *SubmitUpdateOne) SetIPAddr(s string) *SubmitUpdateOne {
+	suo.mutation.SetIPAddr(s)
+	return suo
 }
 
 // SetYear sets the "year" field.
@@ -627,6 +642,9 @@ func (suo *SubmitUpdateOne) sqlSave(ctx context.Context) (_node *Submit, err err
 				ps[i](selector)
 			}
 		}
+	}
+	if value, ok := suo.mutation.IPAddr(); ok {
+		_spec.SetField(submit.FieldIPAddr, field.TypeString, value)
 	}
 	if value, ok := suo.mutation.Year(); ok {
 		_spec.SetField(submit.FieldYear, field.TypeInt, value)

@@ -14,6 +14,8 @@ const (
 	Label = "submit"
 	// FieldID holds the string denoting the id field in the database.
 	FieldID = "id"
+	// FieldIPAddr holds the string denoting the ip_addr field in the database.
+	FieldIPAddr = "ip_addr"
 	// FieldYear holds the string denoting the year field in the database.
 	FieldYear = "year"
 	// FieldScore holds the string denoting the score field in the database.
@@ -49,6 +51,7 @@ const (
 // Columns holds all SQL columns for submit fields.
 var Columns = []string{
 	FieldID,
+	FieldIPAddr,
 	FieldYear,
 	FieldScore,
 	FieldLanguage,
@@ -115,6 +118,11 @@ type OrderOption func(*sql.Selector)
 // ByID orders the results by the id field.
 func ByID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldID, opts...).ToFunc()
+}
+
+// ByIPAddr orders the results by the ip_addr field.
+func ByIPAddr(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldIPAddr, opts...).ToFunc()
 }
 
 // ByYear orders the results by the year field.
