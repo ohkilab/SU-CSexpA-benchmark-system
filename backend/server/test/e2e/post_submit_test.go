@@ -39,7 +39,9 @@ func Test_PostSubmit(t *testing.T) {
 		SetTitle("test contest").
 		SetStartAt(time.Date(2023, time.January, 1, 0, 0, 0, 0, time.UTC)).
 		SetEndAt(time.Date(2023, time.December, 31, 23, 59, 59, 0, time.UTC)).
+		SetYear(2023).
 		SetSubmitLimit(9999).
+		SetCreatedAt(time.Now()).
 		Save(ctx)
 	if err != nil {
 		t.Fatal(err)
@@ -54,13 +56,23 @@ func Test_PostSubmit(t *testing.T) {
 
 	// success
 	req := &pb.PostSubmitRequest{
-		IpAddr:    "10.123.456.789",
+		IpAddr:    "10.255.255.255",
 		ContestId: int32(contest.ID),
 	}
 	resp, err := client.PostSubmit(ctx, req)
-	assert.NoError(t, err)
+	if err != nil {
+		t.Fatal(err)
+	}
 	assert.NotEmpty(t, resp.Id)
 	assert.Equal(t, req.IpAddr, resp.IpAddr)
 	assert.Equal(t, req.ContestId, resp.ContestId)
 	assert.NotEmpty(t, resp.SubmitedAt)
+
+	// failed
+	req = &pb.PostSubmitRequest{
+		IpAddr:    "10.255.255.255",
+		ContestId: 0,
+	}
+	_, err = client.PostSubmit(ctx, req)
+	assert.Error(t, err)
 }
