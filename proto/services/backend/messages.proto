@@ -15,12 +15,16 @@ message PostLoginResponse {
   string token = 2;
 }
 
-message PostSubmitRequest { string ip_addr = 1; }
+message PostSubmitRequest { 
+  string ip_addr = 1;
+  int32 contest_id = 2;
+}
 
 message PostSubmitResponse {
   int32 id = 1;
   string ip_addr = 2;
-  google.protobuf.Timestamp submited_at = 3;
+  int32 contest_id = 3;
+  google.protobuf.Timestamp submited_at = 4;
 }
 
 message GetSubmitRequest { string submit_id = 1; }

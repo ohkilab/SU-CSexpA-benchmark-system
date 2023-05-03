@@ -48,6 +48,10 @@ export interface PostSubmitRequest {
      * @generated from protobuf field: string ip_addr = 1;
      */
     ipAddr: string;
+    /**
+     * @generated from protobuf field: int32 contest_id = 2;
+     */
+    contestId: number;
 }
 /**
  * @generated from protobuf message PostSubmitResponse
@@ -62,7 +66,11 @@ export interface PostSubmitResponse {
      */
     ipAddr: string;
     /**
-     * @generated from protobuf field: google.protobuf.Timestamp submited_at = 3;
+     * @generated from protobuf field: int32 contest_id = 3;
+     */
+    contestId: number;
+    /**
+     * @generated from protobuf field: google.protobuf.Timestamp submited_at = 4;
      */
     submitedAt?: Timestamp;
 }
@@ -329,11 +337,12 @@ export const PostLoginResponse = new PostLoginResponse$Type();
 class PostSubmitRequest$Type extends MessageType<PostSubmitRequest> {
     constructor() {
         super("PostSubmitRequest", [
-            { no: 1, name: "ip_addr", kind: "scalar", T: 9 /*ScalarType.STRING*/ }
+            { no: 1, name: "ip_addr", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 2, name: "contest_id", kind: "scalar", T: 5 /*ScalarType.INT32*/ }
         ]);
     }
     create(value?: PartialMessage<PostSubmitRequest>): PostSubmitRequest {
-        const message = { ipAddr: "" };
+        const message = { ipAddr: "", contestId: 0 };
         globalThis.Object.defineProperty(message, MESSAGE_TYPE, { enumerable: false, value: this });
         if (value !== undefined)
             reflectionMergePartial<PostSubmitRequest>(this, message, value);
@@ -346,6 +355,9 @@ class PostSubmitRequest$Type extends MessageType<PostSubmitRequest> {
             switch (fieldNo) {
                 case /* string ip_addr */ 1:
                     message.ipAddr = reader.string();
+                    break;
+                case /* int32 contest_id */ 2:
+                    message.contestId = reader.int32();
                     break;
                 default:
                     let u = options.readUnknownField;
@@ -362,6 +374,9 @@ class PostSubmitRequest$Type extends MessageType<PostSubmitRequest> {
         /* string ip_addr = 1; */
         if (message.ipAddr !== "")
             writer.tag(1, WireType.LengthDelimited).string(message.ipAddr);
+        /* int32 contest_id = 2; */
+        if (message.contestId !== 0)
+            writer.tag(2, WireType.Varint).int32(message.contestId);
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
@@ -378,11 +393,12 @@ class PostSubmitResponse$Type extends MessageType<PostSubmitResponse> {
         super("PostSubmitResponse", [
             { no: 1, name: "id", kind: "scalar", T: 5 /*ScalarType.INT32*/ },
             { no: 2, name: "ip_addr", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
-            { no: 3, name: "submited_at", kind: "message", T: () => Timestamp }
+            { no: 3, name: "contest_id", kind: "scalar", T: 5 /*ScalarType.INT32*/ },
+            { no: 4, name: "submited_at", kind: "message", T: () => Timestamp }
         ]);
     }
     create(value?: PartialMessage<PostSubmitResponse>): PostSubmitResponse {
-        const message = { id: 0, ipAddr: "" };
+        const message = { id: 0, ipAddr: "", contestId: 0 };
         globalThis.Object.defineProperty(message, MESSAGE_TYPE, { enumerable: false, value: this });
         if (value !== undefined)
             reflectionMergePartial<PostSubmitResponse>(this, message, value);
@@ -399,7 +415,10 @@ class PostSubmitResponse$Type extends MessageType<PostSubmitResponse> {
                 case /* string ip_addr */ 2:
                     message.ipAddr = reader.string();
                     break;
-                case /* google.protobuf.Timestamp submited_at */ 3:
+                case /* int32 contest_id */ 3:
+                    message.contestId = reader.int32();
+                    break;
+                case /* google.protobuf.Timestamp submited_at */ 4:
                     message.submitedAt = Timestamp.internalBinaryRead(reader, reader.uint32(), options, message.submitedAt);
                     break;
                 default:
@@ -420,9 +439,12 @@ class PostSubmitResponse$Type extends MessageType<PostSubmitResponse> {
         /* string ip_addr = 2; */
         if (message.ipAddr !== "")
             writer.tag(2, WireType.LengthDelimited).string(message.ipAddr);
-        /* google.protobuf.Timestamp submited_at = 3; */
+        /* int32 contest_id = 3; */
+        if (message.contestId !== 0)
+            writer.tag(3, WireType.Varint).int32(message.contestId);
+        /* google.protobuf.Timestamp submited_at = 4; */
         if (message.submitedAt)
-            Timestamp.internalBinaryWrite(message.submitedAt, writer.tag(3, WireType.LengthDelimited).fork(), options).join();
+            Timestamp.internalBinaryWrite(message.submitedAt, writer.tag(4, WireType.LengthDelimited).fork(), options).join();
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
