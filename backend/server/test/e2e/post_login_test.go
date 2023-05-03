@@ -25,7 +25,7 @@ func Test_PostLogin(t *testing.T) {
 	// prepare
 	encryptedPassword, _ := bcrypt.GenerateFromPassword([]byte("test"), bcrypt.DefaultCost)
 	g, _ := entClient.Group.Create().
-		SetID("test").
+		SetName("test").
 		SetEncryptedPassword(string(encryptedPassword)).
 		SetRole(group.RoleContestant).
 		SetScore(12345).
@@ -35,7 +35,7 @@ func Test_PostLogin(t *testing.T) {
 	// success
 	resp, err := client.PostLogin(ctx, &pb.PostLoginRequest{Id: "test", Password: "test"})
 	assert.NoError(t, err)
-	assert.Equal(t, g.ID, resp.Group.Id)
+	assert.Equal(t, g.Name, resp.Group.Id)
 	assert.Equal(t, int32(g.Year), resp.Group.Year)
 	assert.Equal(t, int32(g.Score), resp.Group.Score)
 	assert.Equal(t, g.Role, group.Role(strings.ToLower(pb.Role_name[int32(resp.Group.Role)])))

@@ -878,7 +878,8 @@ type GroupMutation struct {
 	config
 	op                 Op
 	typ                string
-	id                 *string
+	id                 *int
+	name               *string
 	year               *int
 	addyear            *int
 	score              *int
@@ -914,7 +915,7 @@ func newGroupMutation(c config, op Op, opts ...groupOption) *GroupMutation {
 }
 
 // withGroupID sets the ID field of the mutation.
-func withGroupID(id string) groupOption {
+func withGroupID(id int) groupOption {
 	return func(m *GroupMutation) {
 		var (
 			err   error
@@ -966,13 +967,13 @@ func (m GroupMutation) Tx() (*Tx, error) {
 
 // SetID sets the value of the id field. Note that this
 // operation is only accepted on creation of Group entities.
-func (m *GroupMutation) SetID(id string) {
+func (m *GroupMutation) SetID(id int) {
 	m.id = &id
 }
 
 // ID returns the ID value in the mutation. Note that the ID is only available
 // if it was provided to the builder or after it was returned from the database.
-func (m *GroupMutation) ID() (id string, exists bool) {
+func (m *GroupMutation) ID() (id int, exists bool) {
 	if m.id == nil {
 		return
 	}
@@ -983,12 +984,12 @@ func (m *GroupMutation) ID() (id string, exists bool) {
 // That means, if the mutation is applied within a transaction with an isolation level such
 // as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
 // or updated by the mutation.
-func (m *GroupMutation) IDs(ctx context.Context) ([]string, error) {
+func (m *GroupMutation) IDs(ctx context.Context) ([]int, error) {
 	switch {
 	case m.op.Is(OpUpdateOne | OpDeleteOne):
 		id, exists := m.ID()
 		if exists {
-			return []string{id}, nil
+			return []int{id}, nil
 		}
 		fallthrough
 	case m.op.Is(OpUpdate | OpDelete):
@@ -996,6 +997,42 @@ func (m *GroupMutation) IDs(ctx context.Context) ([]string, error) {
 	default:
 		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
 	}
+}
+
+// SetName sets the "name" field.
+func (m *GroupMutation) SetName(s string) {
+	m.name = &s
+}
+
+// Name returns the value of the "name" field in the mutation.
+func (m *GroupMutation) Name() (r string, exists bool) {
+	v := m.name
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldName returns the old "name" field's value of the Group entity.
+// If the Group object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *GroupMutation) OldName(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldName is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldName requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldName: %w", err)
+	}
+	return oldValue.Name, nil
+}
+
+// ResetName resets all changes to the "name" field.
+func (m *GroupMutation) ResetName() {
+	m.name = nil
 }
 
 // SetYear sets the "year" field.
@@ -1270,7 +1307,10 @@ func (m *GroupMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *GroupMutation) Fields() []string {
-	fields := make([]string, 0, 4)
+	fields := make([]string, 0, 5)
+	if m.name != nil {
+		fields = append(fields, group.FieldName)
+	}
 	if m.year != nil {
 		fields = append(fields, group.FieldYear)
 	}
@@ -1291,6 +1331,8 @@ func (m *GroupMutation) Fields() []string {
 // schema.
 func (m *GroupMutation) Field(name string) (ent.Value, bool) {
 	switch name {
+	case group.FieldName:
+		return m.Name()
 	case group.FieldYear:
 		return m.Year()
 	case group.FieldScore:
@@ -1308,6 +1350,8 @@ func (m *GroupMutation) Field(name string) (ent.Value, bool) {
 // database failed.
 func (m *GroupMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
 	switch name {
+	case group.FieldName:
+		return m.OldName(ctx)
 	case group.FieldYear:
 		return m.OldYear(ctx)
 	case group.FieldScore:
@@ -1325,6 +1369,13 @@ func (m *GroupMutation) OldField(ctx context.Context, name string) (ent.Value, e
 // type.
 func (m *GroupMutation) SetField(name string, value ent.Value) error {
 	switch name {
+	case group.FieldName:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetName(v)
+		return nil
 	case group.FieldYear:
 		v, ok := value.(int)
 		if !ok {
@@ -1429,6 +1480,9 @@ func (m *GroupMutation) ClearField(name string) error {
 // It returns an error if the field is not defined in the schema.
 func (m *GroupMutation) ResetField(name string) error {
 	switch name {
+	case group.FieldName:
+		m.ResetName()
+		return nil
 	case group.FieldYear:
 		m.ResetYear()
 		return nil
@@ -1548,8 +1602,8 @@ type SubmitMutation struct {
 	tagResults        map[int]struct{}
 	removedtagResults map[int]struct{}
 	clearedtagResults bool
-	groups            map[string]struct{}
-	removedgroups     map[string]struct{}
+	groups            map[int]struct{}
+	removedgroups     map[int]struct{}
 	clearedgroups     bool
 	contests          map[int]struct{}
 	removedcontests   map[int]struct{}
@@ -2063,9 +2117,9 @@ func (m *SubmitMutation) ResetTagResults() {
 }
 
 // AddGroupIDs adds the "groups" edge to the Group entity by ids.
-func (m *SubmitMutation) AddGroupIDs(ids ...string) {
+func (m *SubmitMutation) AddGroupIDs(ids ...int) {
 	if m.groups == nil {
-		m.groups = make(map[string]struct{})
+		m.groups = make(map[int]struct{})
 	}
 	for i := range ids {
 		m.groups[ids[i]] = struct{}{}
@@ -2083,9 +2137,9 @@ func (m *SubmitMutation) GroupsCleared() bool {
 }
 
 // RemoveGroupIDs removes the "groups" edge to the Group entity by IDs.
-func (m *SubmitMutation) RemoveGroupIDs(ids ...string) {
+func (m *SubmitMutation) RemoveGroupIDs(ids ...int) {
 	if m.removedgroups == nil {
-		m.removedgroups = make(map[string]struct{})
+		m.removedgroups = make(map[int]struct{})
 	}
 	for i := range ids {
 		delete(m.groups, ids[i])
@@ -2094,7 +2148,7 @@ func (m *SubmitMutation) RemoveGroupIDs(ids ...string) {
 }
 
 // RemovedGroups returns the removed IDs of the "groups" edge to the Group entity.
-func (m *SubmitMutation) RemovedGroupsIDs() (ids []string) {
+func (m *SubmitMutation) RemovedGroupsIDs() (ids []int) {
 	for id := range m.removedgroups {
 		ids = append(ids, id)
 	}
@@ -2102,7 +2156,7 @@ func (m *SubmitMutation) RemovedGroupsIDs() (ids []string) {
 }
 
 // GroupsIDs returns the "groups" edge IDs in the mutation.
-func (m *SubmitMutation) GroupsIDs() (ids []string) {
+func (m *SubmitMutation) GroupsIDs() (ids []int) {
 	for id := range m.groups {
 		ids = append(ids, id)
 	}

@@ -29,19 +29,19 @@ func main() {
 	ctx := context.Background()
 
 	encryptedPassword, _ := bcrypt.GenerateFromPassword([]byte("ohkilab"), bcrypt.DefaultCost)
-	_, err = entClient.Group.Create().SetID("ohkilab").SetEncryptedPassword(string(encryptedPassword)).SetYear(2023).SetRole(group.RoleContestant).SetScore(99999).Save(ctx)
+	_, err = entClient.Group.Create().SetName("ohkilab").SetEncryptedPassword(string(encryptedPassword)).SetYear(2023).SetRole(group.RoleContestant).SetScore(99999).Save(ctx)
 	if err != nil {
 		log.Println(err)
 	}
-	_, err = entClient.Group.Create().SetID("a01").SetEncryptedPassword(string(encryptedPassword)).SetYear(2023).SetRole(group.RoleContestant).SetScore(555).Save(ctx)
+	_, err = entClient.Group.Create().SetName("a01").SetEncryptedPassword(string(encryptedPassword)).SetYear(2023).SetRole(group.RoleContestant).SetScore(555).Save(ctx)
 	if err != nil {
 		log.Println(err)
 	}
-	_, err = entClient.Group.Create().SetID("a02").SetEncryptedPassword(string(encryptedPassword)).SetYear(2023).SetRole(group.RoleContestant).SetScore(444).Save(ctx)
+	_, err = entClient.Group.Create().SetName("a02").SetEncryptedPassword(string(encryptedPassword)).SetYear(2023).SetRole(group.RoleContestant).SetScore(444).Save(ctx)
 	if err != nil {
 		log.Println(err)
 	}
-	_, err = entClient.Group.Create().SetID("a03").SetEncryptedPassword(string(encryptedPassword)).SetYear(2023).SetRole(group.RoleContestant).SetScore(666).Save(ctx)
+	_, err = entClient.Group.Create().SetName("a03").SetEncryptedPassword(string(encryptedPassword)).SetYear(2023).SetRole(group.RoleContestant).SetScore(666).Save(ctx)
 	if err != nil {
 		log.Println(err)
 	}

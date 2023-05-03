@@ -27,7 +27,8 @@ var (
 	}
 	// GroupsColumns holds the columns for the "groups" table.
 	GroupsColumns = []*schema.Column{
-		{Name: "id", Type: field.TypeString},
+		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "name", Type: field.TypeString},
 		{Name: "year", Type: field.TypeInt},
 		{Name: "score", Type: field.TypeInt},
 		{Name: "role", Type: field.TypeEnum, Enums: []string{"contestant", "guest"}},
@@ -42,7 +43,7 @@ var (
 			{
 				Name:    "group_score",
 				Unique:  false,
-				Columns: []*schema.Column{GroupsColumns[2]},
+				Columns: []*schema.Column{GroupsColumns[3]},
 			},
 		},
 	}
@@ -113,7 +114,7 @@ var (
 	}
 	// GroupSubmitsColumns holds the columns for the "group_submits" table.
 	GroupSubmitsColumns = []*schema.Column{
-		{Name: "group_id", Type: field.TypeString},
+		{Name: "group_id", Type: field.TypeInt},
 		{Name: "submit_id", Type: field.TypeInt},
 	}
 	// GroupSubmitsTable holds the schema information for the "group_submits" table.

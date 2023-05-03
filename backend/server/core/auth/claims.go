@@ -8,8 +8,8 @@ import (
 )
 
 type Claims struct {
-	GroupID string `json:"group_id"`
-	Year    int    `json:"year"`
+	GroupID int `json:"group_id"`
+	Year    int `json:"year"`
 	jwt.RegisteredClaims
 }
 
@@ -30,7 +30,7 @@ func GetClaimsFromToken(token string, secret []byte) (*Claims, error) {
 	return claims, nil
 }
 
-func GenerateJWTToken(secret []byte, groupID string, year int) (string, error) {
+func GenerateJWTToken(secret []byte, groupID int, year int) (string, error) {
 	jwtToken := jwt.NewWithClaims(jwt.SigningMethodHS256, Claims{
 		GroupID: groupID,
 		Year:    year,

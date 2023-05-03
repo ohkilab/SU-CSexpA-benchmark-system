@@ -159,14 +159,14 @@ func (su *SubmitUpdate) AddTagResults(t ...*TagResult) *SubmitUpdate {
 }
 
 // AddGroupIDs adds the "groups" edge to the Group entity by IDs.
-func (su *SubmitUpdate) AddGroupIDs(ids ...string) *SubmitUpdate {
+func (su *SubmitUpdate) AddGroupIDs(ids ...int) *SubmitUpdate {
 	su.mutation.AddGroupIDs(ids...)
 	return su
 }
 
 // AddGroups adds the "groups" edges to the Group entity.
 func (su *SubmitUpdate) AddGroups(g ...*Group) *SubmitUpdate {
-	ids := make([]string, len(g))
+	ids := make([]int, len(g))
 	for i := range g {
 		ids[i] = g[i].ID
 	}
@@ -221,14 +221,14 @@ func (su *SubmitUpdate) ClearGroups() *SubmitUpdate {
 }
 
 // RemoveGroupIDs removes the "groups" edge to Group entities by IDs.
-func (su *SubmitUpdate) RemoveGroupIDs(ids ...string) *SubmitUpdate {
+func (su *SubmitUpdate) RemoveGroupIDs(ids ...int) *SubmitUpdate {
 	su.mutation.RemoveGroupIDs(ids...)
 	return su
 }
 
 // RemoveGroups removes "groups" edges to Group entities.
 func (su *SubmitUpdate) RemoveGroups(g ...*Group) *SubmitUpdate {
-	ids := make([]string, len(g))
+	ids := make([]int, len(g))
 	for i := range g {
 		ids[i] = g[i].ID
 	}
@@ -407,7 +407,7 @@ func (su *SubmitUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Columns: submit.GroupsPrimaryKey,
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(group.FieldID, field.TypeString),
+				IDSpec: sqlgraph.NewFieldSpec(group.FieldID, field.TypeInt),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -420,7 +420,7 @@ func (su *SubmitUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Columns: submit.GroupsPrimaryKey,
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(group.FieldID, field.TypeString),
+				IDSpec: sqlgraph.NewFieldSpec(group.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {
@@ -436,7 +436,7 @@ func (su *SubmitUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Columns: submit.GroupsPrimaryKey,
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(group.FieldID, field.TypeString),
+				IDSpec: sqlgraph.NewFieldSpec(group.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {
@@ -637,14 +637,14 @@ func (suo *SubmitUpdateOne) AddTagResults(t ...*TagResult) *SubmitUpdateOne {
 }
 
 // AddGroupIDs adds the "groups" edge to the Group entity by IDs.
-func (suo *SubmitUpdateOne) AddGroupIDs(ids ...string) *SubmitUpdateOne {
+func (suo *SubmitUpdateOne) AddGroupIDs(ids ...int) *SubmitUpdateOne {
 	suo.mutation.AddGroupIDs(ids...)
 	return suo
 }
 
 // AddGroups adds the "groups" edges to the Group entity.
 func (suo *SubmitUpdateOne) AddGroups(g ...*Group) *SubmitUpdateOne {
-	ids := make([]string, len(g))
+	ids := make([]int, len(g))
 	for i := range g {
 		ids[i] = g[i].ID
 	}
@@ -699,14 +699,14 @@ func (suo *SubmitUpdateOne) ClearGroups() *SubmitUpdateOne {
 }
 
 // RemoveGroupIDs removes the "groups" edge to Group entities by IDs.
-func (suo *SubmitUpdateOne) RemoveGroupIDs(ids ...string) *SubmitUpdateOne {
+func (suo *SubmitUpdateOne) RemoveGroupIDs(ids ...int) *SubmitUpdateOne {
 	suo.mutation.RemoveGroupIDs(ids...)
 	return suo
 }
 
 // RemoveGroups removes "groups" edges to Group entities.
 func (suo *SubmitUpdateOne) RemoveGroups(g ...*Group) *SubmitUpdateOne {
-	ids := make([]string, len(g))
+	ids := make([]int, len(g))
 	for i := range g {
 		ids[i] = g[i].ID
 	}
@@ -915,7 +915,7 @@ func (suo *SubmitUpdateOne) sqlSave(ctx context.Context) (_node *Submit, err err
 			Columns: submit.GroupsPrimaryKey,
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(group.FieldID, field.TypeString),
+				IDSpec: sqlgraph.NewFieldSpec(group.FieldID, field.TypeInt),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -928,7 +928,7 @@ func (suo *SubmitUpdateOne) sqlSave(ctx context.Context) (_node *Submit, err err
 			Columns: submit.GroupsPrimaryKey,
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(group.FieldID, field.TypeString),
+				IDSpec: sqlgraph.NewFieldSpec(group.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {
@@ -944,7 +944,7 @@ func (suo *SubmitUpdateOne) sqlSave(ctx context.Context) (_node *Submit, err err
 			Columns: submit.GroupsPrimaryKey,
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(group.FieldID, field.TypeString),
+				IDSpec: sqlgraph.NewFieldSpec(group.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {

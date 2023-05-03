@@ -119,14 +119,14 @@ func (sc *SubmitCreate) AddTagResults(t ...*TagResult) *SubmitCreate {
 }
 
 // AddGroupIDs adds the "groups" edge to the Group entity by IDs.
-func (sc *SubmitCreate) AddGroupIDs(ids ...string) *SubmitCreate {
+func (sc *SubmitCreate) AddGroupIDs(ids ...int) *SubmitCreate {
 	sc.mutation.AddGroupIDs(ids...)
 	return sc
 }
 
 // AddGroups adds the "groups" edges to the Group entity.
 func (sc *SubmitCreate) AddGroups(g ...*Group) *SubmitCreate {
-	ids := make([]string, len(g))
+	ids := make([]int, len(g))
 	for i := range g {
 		ids[i] = g[i].ID
 	}
@@ -290,7 +290,7 @@ func (sc *SubmitCreate) createSpec() (*Submit, *sqlgraph.CreateSpec) {
 			Columns: submit.GroupsPrimaryKey,
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(group.FieldID, field.TypeString),
+				IDSpec: sqlgraph.NewFieldSpec(group.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {

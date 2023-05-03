@@ -524,7 +524,7 @@ func (sq *SubmitQuery) loadTagResults(ctx context.Context, query *TagResultQuery
 func (sq *SubmitQuery) loadGroups(ctx context.Context, query *GroupQuery, nodes []*Submit, init func(*Submit), assign func(*Submit, *Group)) error {
 	edgeIDs := make([]driver.Value, len(nodes))
 	byID := make(map[int]*Submit)
-	nids := make(map[string]map[*Submit]struct{})
+	nids := make(map[int]map[*Submit]struct{})
 	for i, node := range nodes {
 		edgeIDs[i] = node.ID
 		byID[node.ID] = node
@@ -557,7 +557,7 @@ func (sq *SubmitQuery) loadGroups(ctx context.Context, query *GroupQuery, nodes 
 			}
 			spec.Assign = func(columns []string, values []any) error {
 				outValue := int(values[0].(*sql.NullInt64).Int64)
-				inValue := values[1].(*sql.NullString).String
+				inValue := int(values[1].(*sql.NullInt64).Int64)
 				if nids[inValue] == nil {
 					nids[inValue] = map[*Submit]struct{}{byID[outValue]: {}}
 					return assign(columns[1:], values[1:])

@@ -15,7 +15,8 @@ type Group struct {
 // Fields of the Group.
 func (Group) Fields() []ent.Field {
 	return []ent.Field{
-		field.String("id"),
+		field.Int("id"),
+		field.String("name"),
 		field.Int("year").Positive(),
 		field.Int("score").Positive(),
 		field.Enum("role").Values("contestant", "guest"),

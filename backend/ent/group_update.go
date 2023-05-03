@@ -28,6 +28,12 @@ func (gu *GroupUpdate) Where(ps ...predicate.Group) *GroupUpdate {
 	return gu
 }
 
+// SetName sets the "name" field.
+func (gu *GroupUpdate) SetName(s string) *GroupUpdate {
+	gu.mutation.SetName(s)
+	return gu
+}
+
 // SetYear sets the "year" field.
 func (gu *GroupUpdate) SetYear(i int) *GroupUpdate {
 	gu.mutation.ResetYear()
@@ -158,13 +164,16 @@ func (gu *GroupUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if err := gu.check(); err != nil {
 		return n, err
 	}
-	_spec := sqlgraph.NewUpdateSpec(group.Table, group.Columns, sqlgraph.NewFieldSpec(group.FieldID, field.TypeString))
+	_spec := sqlgraph.NewUpdateSpec(group.Table, group.Columns, sqlgraph.NewFieldSpec(group.FieldID, field.TypeInt))
 	if ps := gu.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
+	}
+	if value, ok := gu.mutation.Name(); ok {
+		_spec.SetField(group.FieldName, field.TypeString, value)
 	}
 	if value, ok := gu.mutation.Year(); ok {
 		_spec.SetField(group.FieldYear, field.TypeInt, value)
@@ -247,6 +256,12 @@ type GroupUpdateOne struct {
 	fields   []string
 	hooks    []Hook
 	mutation *GroupMutation
+}
+
+// SetName sets the "name" field.
+func (guo *GroupUpdateOne) SetName(s string) *GroupUpdateOne {
+	guo.mutation.SetName(s)
+	return guo
 }
 
 // SetYear sets the "year" field.
@@ -392,7 +407,7 @@ func (guo *GroupUpdateOne) sqlSave(ctx context.Context) (_node *Group, err error
 	if err := guo.check(); err != nil {
 		return _node, err
 	}
-	_spec := sqlgraph.NewUpdateSpec(group.Table, group.Columns, sqlgraph.NewFieldSpec(group.FieldID, field.TypeString))
+	_spec := sqlgraph.NewUpdateSpec(group.Table, group.Columns, sqlgraph.NewFieldSpec(group.FieldID, field.TypeInt))
 	id, ok := guo.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "Group.id" for update`)}
@@ -416,6 +431,9 @@ func (guo *GroupUpdateOne) sqlSave(ctx context.Context) (_node *Group, err error
 				ps[i](selector)
 			}
 		}
+	}
+	if value, ok := guo.mutation.Name(); ok {
+		_spec.SetField(group.FieldName, field.TypeString, value)
 	}
 	if value, ok := guo.mutation.Year(); ok {
 		_spec.SetField(group.FieldYear, field.TypeInt, value)

@@ -106,8 +106,8 @@ func (gq *GroupQuery) FirstX(ctx context.Context) *Group {
 
 // FirstID returns the first Group ID from the query.
 // Returns a *NotFoundError when no Group ID was found.
-func (gq *GroupQuery) FirstID(ctx context.Context) (id string, err error) {
-	var ids []string
+func (gq *GroupQuery) FirstID(ctx context.Context) (id int, err error) {
+	var ids []int
 	if ids, err = gq.Limit(1).IDs(setContextOp(ctx, gq.ctx, "FirstID")); err != nil {
 		return
 	}
@@ -119,7 +119,7 @@ func (gq *GroupQuery) FirstID(ctx context.Context) (id string, err error) {
 }
 
 // FirstIDX is like FirstID, but panics if an error occurs.
-func (gq *GroupQuery) FirstIDX(ctx context.Context) string {
+func (gq *GroupQuery) FirstIDX(ctx context.Context) int {
 	id, err := gq.FirstID(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
@@ -157,8 +157,8 @@ func (gq *GroupQuery) OnlyX(ctx context.Context) *Group {
 // OnlyID is like Only, but returns the only Group ID in the query.
 // Returns a *NotSingularError when more than one Group ID is found.
 // Returns a *NotFoundError when no entities are found.
-func (gq *GroupQuery) OnlyID(ctx context.Context) (id string, err error) {
-	var ids []string
+func (gq *GroupQuery) OnlyID(ctx context.Context) (id int, err error) {
+	var ids []int
 	if ids, err = gq.Limit(2).IDs(setContextOp(ctx, gq.ctx, "OnlyID")); err != nil {
 		return
 	}
@@ -174,7 +174,7 @@ func (gq *GroupQuery) OnlyID(ctx context.Context) (id string, err error) {
 }
 
 // OnlyIDX is like OnlyID, but panics if an error occurs.
-func (gq *GroupQuery) OnlyIDX(ctx context.Context) string {
+func (gq *GroupQuery) OnlyIDX(ctx context.Context) int {
 	id, err := gq.OnlyID(ctx)
 	if err != nil {
 		panic(err)
@@ -202,7 +202,7 @@ func (gq *GroupQuery) AllX(ctx context.Context) []*Group {
 }
 
 // IDs executes the query and returns a list of Group IDs.
-func (gq *GroupQuery) IDs(ctx context.Context) (ids []string, err error) {
+func (gq *GroupQuery) IDs(ctx context.Context) (ids []int, err error) {
 	if gq.ctx.Unique == nil && gq.path != nil {
 		gq.Unique(true)
 	}
@@ -214,7 +214,7 @@ func (gq *GroupQuery) IDs(ctx context.Context) (ids []string, err error) {
 }
 
 // IDsX is like IDs, but panics if an error occurs.
-func (gq *GroupQuery) IDsX(ctx context.Context) []string {
+func (gq *GroupQuery) IDsX(ctx context.Context) []int {
 	ids, err := gq.IDs(ctx)
 	if err != nil {
 		panic(err)
@@ -298,12 +298,12 @@ func (gq *GroupQuery) WithSubmits(opts ...func(*SubmitQuery)) *GroupQuery {
 // Example:
 //
 //	var v []struct {
-//		Year int `json:"year,omitempty"`
+//		Name string `json:"name,omitempty"`
 //		Count int `json:"count,omitempty"`
 //	}
 //
 //	client.Group.Query().
-//		GroupBy(group.FieldYear).
+//		GroupBy(group.FieldName).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
 func (gq *GroupQuery) GroupBy(field string, fields ...string) *GroupGroupBy {
@@ -321,11 +321,11 @@ func (gq *GroupQuery) GroupBy(field string, fields ...string) *GroupGroupBy {
 // Example:
 //
 //	var v []struct {
-//		Year int `json:"year,omitempty"`
+//		Name string `json:"name,omitempty"`
 //	}
 //
 //	client.Group.Query().
-//		Select(group.FieldYear).
+//		Select(group.FieldName).
 //		Scan(ctx, &v)
 func (gq *GroupQuery) Select(fields ...string) *GroupSelect {
 	gq.ctx.Fields = append(gq.ctx.Fields, fields...)
@@ -404,7 +404,7 @@ func (gq *GroupQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Group,
 
 func (gq *GroupQuery) loadSubmits(ctx context.Context, query *SubmitQuery, nodes []*Group, init func(*Group), assign func(*Group, *Submit)) error {
 	edgeIDs := make([]driver.Value, len(nodes))
-	byID := make(map[string]*Group)
+	byID := make(map[int]*Group)
 	nids := make(map[int]map[*Group]struct{})
 	for i, node := range nodes {
 		edgeIDs[i] = node.ID
@@ -434,10 +434,10 @@ func (gq *GroupQuery) loadSubmits(ctx context.Context, query *SubmitQuery, nodes
 				if err != nil {
 					return nil, err
 				}
-				return append([]any{new(sql.NullString)}, values...), nil
+				return append([]any{new(sql.NullInt64)}, values...), nil
 			}
 			spec.Assign = func(columns []string, values []any) error {
-				outValue := values[0].(*sql.NullString).String
+				outValue := int(values[0].(*sql.NullInt64).Int64)
 				inValue := int(values[1].(*sql.NullInt64).Int64)
 				if nids[inValue] == nil {
 					nids[inValue] = map[*Group]struct{}{byID[outValue]: {}}
@@ -474,7 +474,7 @@ func (gq *GroupQuery) sqlCount(ctx context.Context) (int, error) {
 }
 
 func (gq *GroupQuery) querySpec() *sqlgraph.QuerySpec {
-	_spec := sqlgraph.NewQuerySpec(group.Table, group.Columns, sqlgraph.NewFieldSpec(group.FieldID, field.TypeString))
+	_spec := sqlgraph.NewQuerySpec(group.Table, group.Columns, sqlgraph.NewFieldSpec(group.FieldID, field.TypeInt))
 	_spec.From = gq.sql
 	if unique := gq.ctx.Unique; unique != nil {
 		_spec.Unique = *unique

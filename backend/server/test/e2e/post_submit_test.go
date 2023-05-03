@@ -26,7 +26,7 @@ func Test_PostSubmit(t *testing.T) {
 	// prepare
 	encryptedPassword, _ := bcrypt.GenerateFromPassword([]byte("test"), bcrypt.DefaultCost)
 	group, err := entClient.Group.Create().
-		SetID("test").
+		SetName("test").
 		SetEncryptedPassword(string(encryptedPassword)).
 		SetRole(group.RoleContestant).
 		SetScore(12345).
