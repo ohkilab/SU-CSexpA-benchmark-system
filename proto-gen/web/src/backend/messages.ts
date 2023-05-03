@@ -54,9 +54,9 @@ export interface PostSubmitRequest {
  */
 export interface PostSubmitResponse {
     /**
-     * @generated from protobuf field: string id = 1;
+     * @generated from protobuf field: int32 id = 1;
      */
-    id: string;
+    id: number;
     /**
      * @generated from protobuf field: string ip_addr = 2;
      */
@@ -376,13 +376,13 @@ export const PostSubmitRequest = new PostSubmitRequest$Type();
 class PostSubmitResponse$Type extends MessageType<PostSubmitResponse> {
     constructor() {
         super("PostSubmitResponse", [
-            { no: 1, name: "id", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 1, name: "id", kind: "scalar", T: 5 /*ScalarType.INT32*/ },
             { no: 2, name: "ip_addr", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
             { no: 3, name: "submited_at", kind: "message", T: () => Timestamp }
         ]);
     }
     create(value?: PartialMessage<PostSubmitResponse>): PostSubmitResponse {
-        const message = { id: "", ipAddr: "" };
+        const message = { id: 0, ipAddr: "" };
         globalThis.Object.defineProperty(message, MESSAGE_TYPE, { enumerable: false, value: this });
         if (value !== undefined)
             reflectionMergePartial<PostSubmitResponse>(this, message, value);
@@ -393,8 +393,8 @@ class PostSubmitResponse$Type extends MessageType<PostSubmitResponse> {
         while (reader.pos < end) {
             let [fieldNo, wireType] = reader.tag();
             switch (fieldNo) {
-                case /* string id */ 1:
-                    message.id = reader.string();
+                case /* int32 id */ 1:
+                    message.id = reader.int32();
                     break;
                 case /* string ip_addr */ 2:
                     message.ipAddr = reader.string();
@@ -414,9 +414,9 @@ class PostSubmitResponse$Type extends MessageType<PostSubmitResponse> {
         return message;
     }
     internalBinaryWrite(message: PostSubmitResponse, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
-        /* string id = 1; */
-        if (message.id !== "")
-            writer.tag(1, WireType.LengthDelimited).string(message.id);
+        /* int32 id = 1; */
+        if (message.id !== 0)
+            writer.tag(1, WireType.Varint).int32(message.id);
         /* string ip_addr = 2; */
         if (message.ipAddr !== "")
             writer.tag(2, WireType.LengthDelimited).string(message.ipAddr);
