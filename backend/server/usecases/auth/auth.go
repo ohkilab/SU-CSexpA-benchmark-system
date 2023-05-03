@@ -2,7 +2,6 @@ package auth
 
 import (
 	"context"
-	"log"
 
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/ent"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/ent/group"
@@ -23,17 +22,20 @@ func NewInteractor(secret []byte, entClient *ent.Client) *AuthInteractor {
 }
 
 func (i *AuthInteractor) PostLogin(ctx context.Context, id, password string) (*backend.PostLoginResponse, error) {
-	encryptedPassword, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+	groups, err := i.entClient.Group.Query().Where(group.NameEQ(id)).All(ctx)
 	if err != nil {
-		log.Println(err)
-		return nil, status.Error(codes.Internal, "failed to generateFromPassword")
-	}
-	group, err := i.entClient.Group.Query().Where(group.NameEQ(id), group.EncryptedPasswordEQ(string(encryptedPassword))).Only(ctx)
-	if err != nil {
-		if ent.IsNotFound(err) {
-			return nil, status.Error(codes.Unauthenticated, "id or password is incorrect")
-		}
 		return nil, status.Error(codes.Internal, err.Error())
+	}
+	var group *ent.Group
+	for _, g := range groups {
+		err := bcrypt.CompareHashAndPassword([]byte(g.EncryptedPassword), []byte(password))
+		if err == nil {
+			group = g
+			break
+		}
+	}
+	if group == nil {
+		return nil, status.Error(codes.Unauthenticated, "id or password is incorrect")
 	}
 	jwtToken, err := auth.GenerateJWTToken(i.secret, group.ID, group.Year)
 	if err != nil {

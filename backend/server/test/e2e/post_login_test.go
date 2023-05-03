@@ -34,7 +34,9 @@ func Test_PostLogin(t *testing.T) {
 
 	// success
 	resp, err := client.PostLogin(ctx, &pb.PostLoginRequest{Id: "test", Password: "test"})
-	assert.NoError(t, err)
+	if err != nil {
+		t.Fatal(err)
+	}
 	assert.Equal(t, g.Name, resp.Group.Id)
 	assert.Equal(t, int32(g.Year), resp.Group.Year)
 	assert.Equal(t, int32(g.Score), resp.Group.Score)
