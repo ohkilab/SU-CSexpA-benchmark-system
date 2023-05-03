@@ -16,11 +16,10 @@ import (
 
 func Test_PostLogin(t *testing.T) {
 	ctx := context.Background()
-	entClient := enttestOpen(ctx, t)
-	defer entClient.Close()
-	server, conn := launchGrpcServer(t, grpc.WithJwtSecret("secret"), grpc.WithEntClient(entClient))
-	defer server.GracefulStop()
-	defer conn.Close()
+	entClient, cleanupFunc := enttestOpen(ctx, t)
+	defer cleanupFunc(t)
+	conn, closeFunc := launchGrpcServer(t, grpc.WithJwtSecret("secret"), grpc.WithEntClient(entClient))
+	defer closeFunc()
 	client := pb.NewBackendServiceClient(conn)
 
 	// prepare

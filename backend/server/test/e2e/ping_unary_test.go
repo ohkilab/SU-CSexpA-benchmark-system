@@ -10,9 +10,8 @@ import (
 
 func Test_PingUnary(t *testing.T) {
 	ctx := context.Background()
-	server, conn := launchGrpcServer(t)
-	defer server.GracefulStop()
-	defer conn.Close()
+	conn, closeFunc := launchGrpcServer(t)
+	defer closeFunc()
 	client := pb.NewHealthcheckServiceClient(conn)
 	resp, err := client.PingUnary(ctx, &pb.PingUnaryRequest{Ping: "ping"})
 	if err != nil {

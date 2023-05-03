@@ -2,22 +2,28 @@ package grpc
 
 import (
 	"context"
+	"net/netip"
 
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/ent"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/usecases/auth"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/usecases/ranking"
+	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/usecases/submit"
 	pb "github.com/ohkilab/SU-CSexpA-benchmark-system/proto-gen/go/backend"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 )
 
 type backendServiceServer struct {
 	authInteractor    *auth.AuthInteractor
 	rankingInteractor *ranking.RankingInteractor
+	submitInteractor  *submit.Interactor
 }
 
 func NewBackendService(secret []byte, entClient *ent.Client) pb.BackendServiceServer {
 	authInteractor := auth.NewInteractor(secret, entClient)
 	rankingInteractor := ranking.NewInteractor(entClient)
-	return &backendServiceServer{authInteractor, rankingInteractor}
+	submitInteractor := submit.NewInteractor(entClient)
+	return &backendServiceServer{authInteractor, rankingInteractor, submitInteractor}
 }
 
 func (s *backendServiceServer) GetRanking(ctx context.Context, req *pb.GetRankingRequest) (*pb.GetRankingResponse, error) {
@@ -29,8 +35,10 @@ func (s *backendServiceServer) GetRanking(ctx context.Context, req *pb.GetRankin
 }
 
 func (s *backendServiceServer) PostSubmit(ctx context.Context, req *pb.PostSubmitRequest) (*pb.PostSubmitResponse, error) {
-	// !!!unimplemented!!!
-	return nil, nil
+	if _, err := netip.ParseAddr(req.IpAddr); err != nil {
+		return nil, status.Error(codes.InvalidArgument, err.Error())
+	}
+	return s.submitInteractor.PostSubmit(ctx, req)
 }
 
 func (s *backendServiceServer) GetSubmit(req *pb.GetSubmitRequest, stream pb.BackendService_GetSubmitServer) error {
