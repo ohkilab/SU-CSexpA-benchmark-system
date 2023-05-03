@@ -40,9 +40,25 @@ func (sc *SubmitCreate) SetScore(i int) *SubmitCreate {
 	return sc
 }
 
+// SetNillableScore sets the "score" field if the given value is not nil.
+func (sc *SubmitCreate) SetNillableScore(i *int) *SubmitCreate {
+	if i != nil {
+		sc.SetScore(*i)
+	}
+	return sc
+}
+
 // SetLanguage sets the "language" field.
 func (sc *SubmitCreate) SetLanguage(s submit.Language) *SubmitCreate {
 	sc.mutation.SetLanguage(s)
+	return sc
+}
+
+// SetNillableLanguage sets the "language" field if the given value is not nil.
+func (sc *SubmitCreate) SetNillableLanguage(s *submit.Language) *SubmitCreate {
+	if s != nil {
+		sc.SetLanguage(*s)
+	}
 	return sc
 }
 
@@ -161,16 +177,10 @@ func (sc *SubmitCreate) check() error {
 			return &ValidationError{Name: "year", err: fmt.Errorf(`ent: validator failed for field "Submit.year": %w`, err)}
 		}
 	}
-	if _, ok := sc.mutation.Score(); !ok {
-		return &ValidationError{Name: "score", err: errors.New(`ent: missing required field "Submit.score"`)}
-	}
 	if v, ok := sc.mutation.Score(); ok {
 		if err := submit.ScoreValidator(v); err != nil {
 			return &ValidationError{Name: "score", err: fmt.Errorf(`ent: validator failed for field "Submit.score": %w`, err)}
 		}
-	}
-	if _, ok := sc.mutation.Language(); !ok {
-		return &ValidationError{Name: "language", err: errors.New(`ent: missing required field "Submit.language"`)}
 	}
 	if v, ok := sc.mutation.Language(); ok {
 		if err := submit.LanguageValidator(v); err != nil {

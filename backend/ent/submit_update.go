@@ -56,15 +56,43 @@ func (su *SubmitUpdate) SetScore(i int) *SubmitUpdate {
 	return su
 }
 
+// SetNillableScore sets the "score" field if the given value is not nil.
+func (su *SubmitUpdate) SetNillableScore(i *int) *SubmitUpdate {
+	if i != nil {
+		su.SetScore(*i)
+	}
+	return su
+}
+
 // AddScore adds i to the "score" field.
 func (su *SubmitUpdate) AddScore(i int) *SubmitUpdate {
 	su.mutation.AddScore(i)
 	return su
 }
 
+// ClearScore clears the value of the "score" field.
+func (su *SubmitUpdate) ClearScore() *SubmitUpdate {
+	su.mutation.ClearScore()
+	return su
+}
+
 // SetLanguage sets the "language" field.
 func (su *SubmitUpdate) SetLanguage(s submit.Language) *SubmitUpdate {
 	su.mutation.SetLanguage(s)
+	return su
+}
+
+// SetNillableLanguage sets the "language" field if the given value is not nil.
+func (su *SubmitUpdate) SetNillableLanguage(s *submit.Language) *SubmitUpdate {
+	if s != nil {
+		su.SetLanguage(*s)
+	}
+	return su
+}
+
+// ClearLanguage clears the value of the "language" field.
+func (su *SubmitUpdate) ClearLanguage() *SubmitUpdate {
+	su.mutation.ClearLanguage()
 	return su
 }
 
@@ -265,8 +293,14 @@ func (su *SubmitUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if value, ok := su.mutation.AddedScore(); ok {
 		_spec.AddField(submit.FieldScore, field.TypeInt, value)
 	}
+	if su.mutation.ScoreCleared() {
+		_spec.ClearField(submit.FieldScore, field.TypeInt)
+	}
 	if value, ok := su.mutation.Language(); ok {
 		_spec.SetField(submit.FieldLanguage, field.TypeEnum, value)
+	}
+	if su.mutation.LanguageCleared() {
+		_spec.ClearField(submit.FieldLanguage, field.TypeEnum)
 	}
 	if value, ok := su.mutation.SubmitedAt(); ok {
 		_spec.SetField(submit.FieldSubmitedAt, field.TypeTime, value)
@@ -419,15 +453,43 @@ func (suo *SubmitUpdateOne) SetScore(i int) *SubmitUpdateOne {
 	return suo
 }
 
+// SetNillableScore sets the "score" field if the given value is not nil.
+func (suo *SubmitUpdateOne) SetNillableScore(i *int) *SubmitUpdateOne {
+	if i != nil {
+		suo.SetScore(*i)
+	}
+	return suo
+}
+
 // AddScore adds i to the "score" field.
 func (suo *SubmitUpdateOne) AddScore(i int) *SubmitUpdateOne {
 	suo.mutation.AddScore(i)
 	return suo
 }
 
+// ClearScore clears the value of the "score" field.
+func (suo *SubmitUpdateOne) ClearScore() *SubmitUpdateOne {
+	suo.mutation.ClearScore()
+	return suo
+}
+
 // SetLanguage sets the "language" field.
 func (suo *SubmitUpdateOne) SetLanguage(s submit.Language) *SubmitUpdateOne {
 	suo.mutation.SetLanguage(s)
+	return suo
+}
+
+// SetNillableLanguage sets the "language" field if the given value is not nil.
+func (suo *SubmitUpdateOne) SetNillableLanguage(s *submit.Language) *SubmitUpdateOne {
+	if s != nil {
+		suo.SetLanguage(*s)
+	}
+	return suo
+}
+
+// ClearLanguage clears the value of the "language" field.
+func (suo *SubmitUpdateOne) ClearLanguage() *SubmitUpdateOne {
+	suo.mutation.ClearLanguage()
 	return suo
 }
 
@@ -658,8 +720,14 @@ func (suo *SubmitUpdateOne) sqlSave(ctx context.Context) (_node *Submit, err err
 	if value, ok := suo.mutation.AddedScore(); ok {
 		_spec.AddField(submit.FieldScore, field.TypeInt, value)
 	}
+	if suo.mutation.ScoreCleared() {
+		_spec.ClearField(submit.FieldScore, field.TypeInt)
+	}
 	if value, ok := suo.mutation.Language(); ok {
 		_spec.SetField(submit.FieldLanguage, field.TypeEnum, value)
+	}
+	if suo.mutation.LanguageCleared() {
+		_spec.ClearField(submit.FieldLanguage, field.TypeEnum)
 	}
 	if value, ok := suo.mutation.SubmitedAt(); ok {
 		_spec.SetField(submit.FieldSubmitedAt, field.TypeTime, value)

@@ -1709,10 +1709,24 @@ func (m *SubmitMutation) AddedScore() (r int, exists bool) {
 	return *v, true
 }
 
+// ClearScore clears the value of the "score" field.
+func (m *SubmitMutation) ClearScore() {
+	m.score = nil
+	m.addscore = nil
+	m.clearedFields[submit.FieldScore] = struct{}{}
+}
+
+// ScoreCleared returns if the "score" field was cleared in this mutation.
+func (m *SubmitMutation) ScoreCleared() bool {
+	_, ok := m.clearedFields[submit.FieldScore]
+	return ok
+}
+
 // ResetScore resets all changes to the "score" field.
 func (m *SubmitMutation) ResetScore() {
 	m.score = nil
 	m.addscore = nil
+	delete(m.clearedFields, submit.FieldScore)
 }
 
 // SetLanguage sets the "language" field.
@@ -1746,9 +1760,22 @@ func (m *SubmitMutation) OldLanguage(ctx context.Context) (v submit.Language, er
 	return oldValue.Language, nil
 }
 
+// ClearLanguage clears the value of the "language" field.
+func (m *SubmitMutation) ClearLanguage() {
+	m.language = nil
+	m.clearedFields[submit.FieldLanguage] = struct{}{}
+}
+
+// LanguageCleared returns if the "language" field was cleared in this mutation.
+func (m *SubmitMutation) LanguageCleared() bool {
+	_, ok := m.clearedFields[submit.FieldLanguage]
+	return ok
+}
+
 // ResetLanguage resets all changes to the "language" field.
 func (m *SubmitMutation) ResetLanguage() {
 	m.language = nil
+	delete(m.clearedFields, submit.FieldLanguage)
 }
 
 // SetSubmitedAt sets the "submited_at" field.
@@ -2209,6 +2236,12 @@ func (m *SubmitMutation) AddField(name string, value ent.Value) error {
 // mutation.
 func (m *SubmitMutation) ClearedFields() []string {
 	var fields []string
+	if m.FieldCleared(submit.FieldScore) {
+		fields = append(fields, submit.FieldScore)
+	}
+	if m.FieldCleared(submit.FieldLanguage) {
+		fields = append(fields, submit.FieldLanguage)
+	}
 	if m.FieldCleared(submit.FieldCompletedAt) {
 		fields = append(fields, submit.FieldCompletedAt)
 	}
@@ -2229,6 +2262,12 @@ func (m *SubmitMutation) FieldCleared(name string) bool {
 // error if the field is not defined in the schema.
 func (m *SubmitMutation) ClearField(name string) error {
 	switch name {
+	case submit.FieldScore:
+		m.ClearScore()
+		return nil
+	case submit.FieldLanguage:
+		m.ClearLanguage()
+		return nil
 	case submit.FieldCompletedAt:
 		m.ClearCompletedAt()
 		return nil

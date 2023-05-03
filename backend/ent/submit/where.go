@@ -230,6 +230,16 @@ func ScoreLTE(v int) predicate.Submit {
 	return predicate.Submit(sql.FieldLTE(FieldScore, v))
 }
 
+// ScoreIsNil applies the IsNil predicate on the "score" field.
+func ScoreIsNil() predicate.Submit {
+	return predicate.Submit(sql.FieldIsNull(FieldScore))
+}
+
+// ScoreNotNil applies the NotNil predicate on the "score" field.
+func ScoreNotNil() predicate.Submit {
+	return predicate.Submit(sql.FieldNotNull(FieldScore))
+}
+
 // LanguageEQ applies the EQ predicate on the "language" field.
 func LanguageEQ(v Language) predicate.Submit {
 	return predicate.Submit(sql.FieldEQ(FieldLanguage, v))
@@ -248,6 +258,16 @@ func LanguageIn(vs ...Language) predicate.Submit {
 // LanguageNotIn applies the NotIn predicate on the "language" field.
 func LanguageNotIn(vs ...Language) predicate.Submit {
 	return predicate.Submit(sql.FieldNotIn(FieldLanguage, vs...))
+}
+
+// LanguageIsNil applies the IsNil predicate on the "language" field.
+func LanguageIsNil() predicate.Submit {
+	return predicate.Submit(sql.FieldIsNull(FieldLanguage))
+}
+
+// LanguageNotNil applies the NotNil predicate on the "language" field.
+func LanguageNotNil() predicate.Submit {
+	return predicate.Submit(sql.FieldNotNull(FieldLanguage))
 }
 
 // SubmitedAtEQ applies the EQ predicate on the "submited_at" field.
