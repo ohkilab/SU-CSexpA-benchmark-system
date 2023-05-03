@@ -47,12 +47,10 @@ func main() {
 	}
 
 	_, err = entClient.Contest.Create().
-		SetQualifierStartAt(time.Date(2023, time.January, 1, 0, 0, 0, 0, time.UTC)).
-		SetQualifierEndAt(time.Date(2023, time.December, 31, 23, 59, 59, 0, time.UTC)).
-		SetQualifierSubmitLimit(9999).
-		SetFinalStartAt(time.Date(2024, time.January, 1, 0, 0, 0, 0, time.UTC)).
-		SetFinalEndAt(time.Date(2024, time.December, 31, 23, 59, 59, 0, time.UTC)).
-		SetFinalSubmitLimit(9999).
+		SetTitle("test contest").
+		SetStartAt(time.Date(2023, time.January, 1, 0, 0, 0, 0, time.UTC)).
+		SetEndAt(time.Date(2023, time.December, 31, 23, 59, 59, 0, time.UTC)).
+		SetSubmitLimit(9999).
 		Save(ctx)
 	if err != nil {
 		log.Println(err)
