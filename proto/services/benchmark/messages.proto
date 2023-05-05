@@ -5,11 +5,32 @@ import "google/protobuf/timestamp.proto";
 option go_package = "./benchmark";
 
 message ExecuteRequest {
-  string url = 1;          // e.g.) 10.123.234.123?tag=hoge
+  repeated Task tasks = 1;
   string group_id = 2;     // for logging
-  int32 thread_num = 3;    // the number of threads for request
-  int32 attempt_count = 4; // the count of attempting for request
-  int32 attempt_time = 5;  // the duration of attempting
+}
+
+message Task {
+  string url = 1;        // e.g.) http://10.255.255.255/endpoint
+  HttpMethod method = 2;
+  repeated URLParam params = 3;
+  string content_type = 4;
+  string body = 5;
+
+  int32 thread_num = 6;    // the number of threads for a task
+  int32 attempt_count = 7; // the count of attempting for a task
+  int32 attempt_time = 8;  // the duration of attempting
+}
+
+enum HttpMethod {
+  GET = 0;
+  POST = 1;
+  PUT = 2;
+  DELETE = 3;
+}
+
+message URLParam {
+  string key = 1;
+  string value = 2;
 }
 
 // 冪等性がないと全ての body について validate しないといけなくなる
