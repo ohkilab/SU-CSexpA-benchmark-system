@@ -19,8 +19,8 @@ type Submit struct {
 	config `json:"-"`
 	// ID of the ent.
 	ID int `json:"id,omitempty"`
-	// IPAddr holds the value of the "ip_addr" field.
-	IPAddr string `json:"ip_addr,omitempty"`
+	// URL holds the value of the "url" field.
+	URL string `json:"url,omitempty"`
 	// Year holds the value of the "year" field.
 	Year int `json:"year,omitempty"`
 	// Score holds the value of the "score" field.
@@ -96,7 +96,7 @@ func (*Submit) scanValues(columns []string) ([]any, error) {
 		switch columns[i] {
 		case submit.FieldID, submit.FieldYear, submit.FieldScore:
 			values[i] = new(sql.NullInt64)
-		case submit.FieldIPAddr, submit.FieldLanguage:
+		case submit.FieldURL, submit.FieldLanguage:
 			values[i] = new(sql.NullString)
 		case submit.FieldSubmitedAt, submit.FieldCompletedAt, submit.FieldUpdatedAt:
 			values[i] = new(sql.NullTime)
@@ -125,11 +125,11 @@ func (s *Submit) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
 			s.ID = int(value.Int64)
-		case submit.FieldIPAddr:
+		case submit.FieldURL:
 			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field ip_addr", values[i])
+				return fmt.Errorf("unexpected type %T for field url", values[i])
 			} else if value.Valid {
-				s.IPAddr = value.String
+				s.URL = value.String
 			}
 		case submit.FieldYear:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
@@ -232,8 +232,8 @@ func (s *Submit) String() string {
 	var builder strings.Builder
 	builder.WriteString("Submit(")
 	builder.WriteString(fmt.Sprintf("id=%v, ", s.ID))
-	builder.WriteString("ip_addr=")
-	builder.WriteString(s.IPAddr)
+	builder.WriteString("url=")
+	builder.WriteString(s.URL)
 	builder.WriteString(", ")
 	builder.WriteString("year=")
 	builder.WriteString(fmt.Sprintf("%v", s.Year))

@@ -50,7 +50,7 @@ var (
 	// SubmitsColumns holds the columns for the "submits" table.
 	SubmitsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
-		{Name: "ip_addr", Type: field.TypeString},
+		{Name: "url", Type: field.TypeString},
 		{Name: "year", Type: field.TypeInt},
 		{Name: "score", Type: field.TypeInt, Nullable: true},
 		{Name: "language", Type: field.TypeEnum, Nullable: true, Enums: []string{"php", "go", "rust", "javascript", "csharp", "cpp", "ruby", "python"}},

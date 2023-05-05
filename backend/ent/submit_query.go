@@ -371,12 +371,12 @@ func (sq *SubmitQuery) WithContests(opts ...func(*ContestQuery)) *SubmitQuery {
 // Example:
 //
 //	var v []struct {
-//		IPAddr string `json:"ip_addr,omitempty"`
+//		URL string `json:"url,omitempty"`
 //		Count int `json:"count,omitempty"`
 //	}
 //
 //	client.Submit.Query().
-//		GroupBy(submit.FieldIPAddr).
+//		GroupBy(submit.FieldURL).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
 func (sq *SubmitQuery) GroupBy(field string, fields ...string) *SubmitGroupBy {
@@ -394,11 +394,11 @@ func (sq *SubmitQuery) GroupBy(field string, fields ...string) *SubmitGroupBy {
 // Example:
 //
 //	var v []struct {
-//		IPAddr string `json:"ip_addr,omitempty"`
+//		URL string `json:"url,omitempty"`
 //	}
 //
 //	client.Submit.Query().
-//		Select(submit.FieldIPAddr).
+//		Select(submit.FieldURL).
 //		Scan(ctx, &v)
 func (sq *SubmitQuery) Select(fields ...string) *SubmitSelect {
 	sq.ctx.Fields = append(sq.ctx.Fields, fields...)

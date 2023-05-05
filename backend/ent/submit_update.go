@@ -31,9 +31,9 @@ func (su *SubmitUpdate) Where(ps ...predicate.Submit) *SubmitUpdate {
 	return su
 }
 
-// SetIPAddr sets the "ip_addr" field.
-func (su *SubmitUpdate) SetIPAddr(s string) *SubmitUpdate {
-	su.mutation.SetIPAddr(s)
+// SetURL sets the "url" field.
+func (su *SubmitUpdate) SetURL(s string) *SubmitUpdate {
+	su.mutation.SetURL(s)
 	return su
 }
 
@@ -288,8 +288,8 @@ func (su *SubmitUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			}
 		}
 	}
-	if value, ok := su.mutation.IPAddr(); ok {
-		_spec.SetField(submit.FieldIPAddr, field.TypeString, value)
+	if value, ok := su.mutation.URL(); ok {
+		_spec.SetField(submit.FieldURL, field.TypeString, value)
 	}
 	if value, ok := su.mutation.Year(); ok {
 		_spec.SetField(submit.FieldYear, field.TypeInt, value)
@@ -450,9 +450,9 @@ type SubmitUpdateOne struct {
 	mutation *SubmitMutation
 }
 
-// SetIPAddr sets the "ip_addr" field.
-func (suo *SubmitUpdateOne) SetIPAddr(s string) *SubmitUpdateOne {
-	suo.mutation.SetIPAddr(s)
+// SetURL sets the "url" field.
+func (suo *SubmitUpdateOne) SetURL(s string) *SubmitUpdateOne {
+	suo.mutation.SetURL(s)
 	return suo
 }
 
@@ -737,8 +737,8 @@ func (suo *SubmitUpdateOne) sqlSave(ctx context.Context) (_node *Submit, err err
 			}
 		}
 	}
-	if value, ok := suo.mutation.IPAddr(); ok {
-		_spec.SetField(submit.FieldIPAddr, field.TypeString, value)
+	if value, ok := suo.mutation.URL(); ok {
+		_spec.SetField(submit.FieldURL, field.TypeString, value)
 	}
 	if value, ok := suo.mutation.Year(); ok {
 		_spec.SetField(submit.FieldYear, field.TypeInt, value)

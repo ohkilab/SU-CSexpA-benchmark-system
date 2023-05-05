@@ -55,9 +55,9 @@ func IDLTE(id int) predicate.Submit {
 	return predicate.Submit(sql.FieldLTE(FieldID, id))
 }
 
-// IPAddr applies equality check predicate on the "ip_addr" field. It's identical to IPAddrEQ.
-func IPAddr(v string) predicate.Submit {
-	return predicate.Submit(sql.FieldEQ(FieldIPAddr, v))
+// URL applies equality check predicate on the "url" field. It's identical to URLEQ.
+func URL(v string) predicate.Submit {
+	return predicate.Submit(sql.FieldEQ(FieldURL, v))
 }
 
 // Year applies equality check predicate on the "year" field. It's identical to YearEQ.
@@ -85,69 +85,69 @@ func UpdatedAt(v time.Time) predicate.Submit {
 	return predicate.Submit(sql.FieldEQ(FieldUpdatedAt, v))
 }
 
-// IPAddrEQ applies the EQ predicate on the "ip_addr" field.
-func IPAddrEQ(v string) predicate.Submit {
-	return predicate.Submit(sql.FieldEQ(FieldIPAddr, v))
+// URLEQ applies the EQ predicate on the "url" field.
+func URLEQ(v string) predicate.Submit {
+	return predicate.Submit(sql.FieldEQ(FieldURL, v))
 }
 
-// IPAddrNEQ applies the NEQ predicate on the "ip_addr" field.
-func IPAddrNEQ(v string) predicate.Submit {
-	return predicate.Submit(sql.FieldNEQ(FieldIPAddr, v))
+// URLNEQ applies the NEQ predicate on the "url" field.
+func URLNEQ(v string) predicate.Submit {
+	return predicate.Submit(sql.FieldNEQ(FieldURL, v))
 }
 
-// IPAddrIn applies the In predicate on the "ip_addr" field.
-func IPAddrIn(vs ...string) predicate.Submit {
-	return predicate.Submit(sql.FieldIn(FieldIPAddr, vs...))
+// URLIn applies the In predicate on the "url" field.
+func URLIn(vs ...string) predicate.Submit {
+	return predicate.Submit(sql.FieldIn(FieldURL, vs...))
 }
 
-// IPAddrNotIn applies the NotIn predicate on the "ip_addr" field.
-func IPAddrNotIn(vs ...string) predicate.Submit {
-	return predicate.Submit(sql.FieldNotIn(FieldIPAddr, vs...))
+// URLNotIn applies the NotIn predicate on the "url" field.
+func URLNotIn(vs ...string) predicate.Submit {
+	return predicate.Submit(sql.FieldNotIn(FieldURL, vs...))
 }
 
-// IPAddrGT applies the GT predicate on the "ip_addr" field.
-func IPAddrGT(v string) predicate.Submit {
-	return predicate.Submit(sql.FieldGT(FieldIPAddr, v))
+// URLGT applies the GT predicate on the "url" field.
+func URLGT(v string) predicate.Submit {
+	return predicate.Submit(sql.FieldGT(FieldURL, v))
 }
 
-// IPAddrGTE applies the GTE predicate on the "ip_addr" field.
-func IPAddrGTE(v string) predicate.Submit {
-	return predicate.Submit(sql.FieldGTE(FieldIPAddr, v))
+// URLGTE applies the GTE predicate on the "url" field.
+func URLGTE(v string) predicate.Submit {
+	return predicate.Submit(sql.FieldGTE(FieldURL, v))
 }
 
-// IPAddrLT applies the LT predicate on the "ip_addr" field.
-func IPAddrLT(v string) predicate.Submit {
-	return predicate.Submit(sql.FieldLT(FieldIPAddr, v))
+// URLLT applies the LT predicate on the "url" field.
+func URLLT(v string) predicate.Submit {
+	return predicate.Submit(sql.FieldLT(FieldURL, v))
 }
 
-// IPAddrLTE applies the LTE predicate on the "ip_addr" field.
-func IPAddrLTE(v string) predicate.Submit {
-	return predicate.Submit(sql.FieldLTE(FieldIPAddr, v))
+// URLLTE applies the LTE predicate on the "url" field.
+func URLLTE(v string) predicate.Submit {
+	return predicate.Submit(sql.FieldLTE(FieldURL, v))
 }
 
-// IPAddrContains applies the Contains predicate on the "ip_addr" field.
-func IPAddrContains(v string) predicate.Submit {
-	return predicate.Submit(sql.FieldContains(FieldIPAddr, v))
+// URLContains applies the Contains predicate on the "url" field.
+func URLContains(v string) predicate.Submit {
+	return predicate.Submit(sql.FieldContains(FieldURL, v))
 }
 
-// IPAddrHasPrefix applies the HasPrefix predicate on the "ip_addr" field.
-func IPAddrHasPrefix(v string) predicate.Submit {
-	return predicate.Submit(sql.FieldHasPrefix(FieldIPAddr, v))
+// URLHasPrefix applies the HasPrefix predicate on the "url" field.
+func URLHasPrefix(v string) predicate.Submit {
+	return predicate.Submit(sql.FieldHasPrefix(FieldURL, v))
 }
 
-// IPAddrHasSuffix applies the HasSuffix predicate on the "ip_addr" field.
-func IPAddrHasSuffix(v string) predicate.Submit {
-	return predicate.Submit(sql.FieldHasSuffix(FieldIPAddr, v))
+// URLHasSuffix applies the HasSuffix predicate on the "url" field.
+func URLHasSuffix(v string) predicate.Submit {
+	return predicate.Submit(sql.FieldHasSuffix(FieldURL, v))
 }
 
-// IPAddrEqualFold applies the EqualFold predicate on the "ip_addr" field.
-func IPAddrEqualFold(v string) predicate.Submit {
-	return predicate.Submit(sql.FieldEqualFold(FieldIPAddr, v))
+// URLEqualFold applies the EqualFold predicate on the "url" field.
+func URLEqualFold(v string) predicate.Submit {
+	return predicate.Submit(sql.FieldEqualFold(FieldURL, v))
 }
 
-// IPAddrContainsFold applies the ContainsFold predicate on the "ip_addr" field.
-func IPAddrContainsFold(v string) predicate.Submit {
-	return predicate.Submit(sql.FieldContainsFold(FieldIPAddr, v))
+// URLContainsFold applies the ContainsFold predicate on the "url" field.
+func URLContainsFold(v string) predicate.Submit {
+	return predicate.Submit(sql.FieldContainsFold(FieldURL, v))
 }
 
 // YearEQ applies the EQ predicate on the "year" field.

@@ -23,9 +23,9 @@ type SubmitCreate struct {
 	hooks    []Hook
 }
 
-// SetIPAddr sets the "ip_addr" field.
-func (sc *SubmitCreate) SetIPAddr(s string) *SubmitCreate {
-	sc.mutation.SetIPAddr(s)
+// SetURL sets the "url" field.
+func (sc *SubmitCreate) SetURL(s string) *SubmitCreate {
+	sc.mutation.SetURL(s)
 	return sc
 }
 
@@ -190,8 +190,8 @@ func (sc *SubmitCreate) ExecX(ctx context.Context) {
 
 // check runs all checks and user-defined validators on the builder.
 func (sc *SubmitCreate) check() error {
-	if _, ok := sc.mutation.IPAddr(); !ok {
-		return &ValidationError{Name: "ip_addr", err: errors.New(`ent: missing required field "Submit.ip_addr"`)}
+	if _, ok := sc.mutation.URL(); !ok {
+		return &ValidationError{Name: "url", err: errors.New(`ent: missing required field "Submit.url"`)}
 	}
 	if _, ok := sc.mutation.Year(); !ok {
 		return &ValidationError{Name: "year", err: errors.New(`ent: missing required field "Submit.year"`)}
@@ -241,9 +241,9 @@ func (sc *SubmitCreate) createSpec() (*Submit, *sqlgraph.CreateSpec) {
 		_node.ID = id
 		_spec.ID.Value = id
 	}
-	if value, ok := sc.mutation.IPAddr(); ok {
-		_spec.SetField(submit.FieldIPAddr, field.TypeString, value)
-		_node.IPAddr = value
+	if value, ok := sc.mutation.URL(); ok {
+		_spec.SetField(submit.FieldURL, field.TypeString, value)
+		_node.URL = value
 	}
 	if value, ok := sc.mutation.Year(); ok {
 		_spec.SetField(submit.FieldYear, field.TypeInt, value)
