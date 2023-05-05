@@ -47,6 +47,8 @@ func (i *Interactor) PostSubmit(ctx context.Context, req *backendpb.PostSubmitRe
 		SetIPAddr(req.IpAddr).
 		SetYear(claims.Year).
 		SetSubmitedAt(timejst.Now()).
+		SetContestsID(int(req.ContestId)).
+		SetGroupsID(claims.GroupID).
 		Save(ctx)
 	if err != nil {
 		return nil, status.Error(codes.Internal, err.Error())
