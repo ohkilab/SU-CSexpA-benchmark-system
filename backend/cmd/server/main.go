@@ -10,6 +10,9 @@ import (
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/ent"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/api/grpc"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/core/config"
+	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/worker"
+	"github.com/ohkilab/SU-CSexpA-benchmark-system/proto-gen/go/benchmark"
+	pkgrpc "google.golang.org/grpc"
 )
 
 func main() {
@@ -29,6 +32,16 @@ func main() {
 	if err := entClient.Schema.Create(context.Background()); err != nil {
 		log.Fatal(err)
 	}
+
+	// benchmark worker
+	conn, err := pkgrpc.Dial(config.BenchmarkHost, pkgrpc.WithInsecure())
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer conn.Close()
+	benchmarkClient := benchmark.NewBenchmarkServiceClient(conn)
+	benchmarkWorker := worker.New(entClient, benchmarkClient)
+	go benchmarkWorker.Run()
 
 	// build grpc server
 	grpcServer := grpc.NewServer(grpc.WithEntClient(entClient))
