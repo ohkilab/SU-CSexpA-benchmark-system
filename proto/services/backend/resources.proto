@@ -49,6 +49,7 @@ message TaskResult {
   int32 attempt_time = 12;
   google.protobuf.Timestamp created_at = 13;
   optional google.protobuf.Timestamp deleted_at = 14;
+  optional string error_message = 15;
 }
 
 enum Language {

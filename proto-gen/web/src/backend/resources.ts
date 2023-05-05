@@ -163,6 +163,10 @@ export interface TaskResult {
      * @generated from protobuf field: optional google.protobuf.Timestamp deleted_at = 14;
      */
     deletedAt?: Timestamp;
+    /**
+     * @generated from protobuf field: optional string error_message = 15;
+     */
+    errorMessage?: string;
 }
 /**
  * @generated from protobuf enum Language
@@ -484,7 +488,8 @@ class TaskResult$Type extends MessageType<TaskResult> {
             { no: 11, name: "attempt_count", kind: "scalar", T: 5 /*ScalarType.INT32*/ },
             { no: 12, name: "attempt_time", kind: "scalar", T: 5 /*ScalarType.INT32*/ },
             { no: 13, name: "created_at", kind: "message", T: () => Timestamp },
-            { no: 14, name: "deleted_at", kind: "message", T: () => Timestamp }
+            { no: 14, name: "deleted_at", kind: "message", T: () => Timestamp },
+            { no: 15, name: "error_message", kind: "scalar", opt: true, T: 9 /*ScalarType.STRING*/ }
         ]);
     }
     create(value?: PartialMessage<TaskResult>): TaskResult {
@@ -541,6 +546,9 @@ class TaskResult$Type extends MessageType<TaskResult> {
                 case /* optional google.protobuf.Timestamp deleted_at */ 14:
                     message.deletedAt = Timestamp.internalBinaryRead(reader, reader.uint32(), options, message.deletedAt);
                     break;
+                case /* optional string error_message */ 15:
+                    message.errorMessage = reader.string();
+                    break;
                 default:
                     let u = options.readUnknownField;
                     if (u === "throw")
@@ -595,6 +603,9 @@ class TaskResult$Type extends MessageType<TaskResult> {
         /* optional google.protobuf.Timestamp deleted_at = 14; */
         if (message.deletedAt)
             Timestamp.internalBinaryWrite(message.deletedAt, writer.tag(14, WireType.LengthDelimited).fork(), options).join();
+        /* optional string error_message = 15; */
+        if (message.errorMessage !== undefined)
+            writer.tag(15, WireType.LengthDelimited).string(message.errorMessage);
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
