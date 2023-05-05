@@ -4,7 +4,6 @@ import { GetRankingResponse_Record } from 'proto-gen-web/src/backend/messages';
 // TODO: add logout action
 
 export interface IState {
-  id: string
   token: string
   group: string
   benchmarking: boolean
@@ -15,7 +14,6 @@ export interface IState {
 
 export const useStateStore = defineStore('state', {
   state: (): IState => ({
-    id: '',
     token: '',
     group: '',
     benchmarking: false,

@@ -22,7 +22,7 @@ const backend = new BackendServiceClient(
 const handleLogin = () => {
   backend.postLogin({ id: id.value , password: password.value }).then(value => {
     console.log(value.response)
-    state.id = id
+    state.group = id.value
     emit('loggedIn', value.response.token)
   }).catch(err => {
     console.log(err.message)
