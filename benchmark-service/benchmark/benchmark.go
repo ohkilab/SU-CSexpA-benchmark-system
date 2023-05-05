@@ -23,7 +23,7 @@ func NewClient() *Client {
 	}
 }
 
-func (c *Client) Run(ctx context.Context, ipAddr string, interceptor func(req *http.Request), options ...optionFunc) <-chan *Result {
+func (c *Client) Run(ctx context.Context, url string, interceptor func(req *http.Request), options ...optionFunc) <-chan *Result {
 	option := &option{
 		threadNum: 5,
 		timeout:   5 * time.Second,
@@ -50,7 +50,7 @@ func (c *Client) Run(ctx context.Context, ipAddr string, interceptor func(req *h
 					}
 				}()
 				for {
-					resp, took, err := c.request("http://"+ipAddr, interceptor, time.Minute)
+					resp, took, err := c.request(url, interceptor, time.Minute)
 					if err != nil {
 						errChan <- err
 						return
