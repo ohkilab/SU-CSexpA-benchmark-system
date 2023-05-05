@@ -137,18 +137,15 @@ func toGetSubmitResponse(submit *ent.Submit) *backendpb.GetSubmitResponse {
 					requestBody = &taskResult.RequestBody
 				}
 				return &backendpb.TaskResult{
-					Id:                  int32(taskResult.ID),
-					RequestPerSec:       int32(taskResult.RequestPerSec),
-					Url:                 taskResult.URL,
-					Method:              taskResult.Method,
-					RequestContentType:  taskResult.RequestContentType,
-					RequestBody:         requestBody,
-					ResponseCode:        taskResult.ResponseCode,
-					ResponseContentType: taskResult.ResponseContentType,
-					ResponseBody:        taskResult.ResponseBody,
-					ThreadNum:           int32(taskResult.ThreadNum),
-					AttemptCount:        int32(taskResult.AttemptCount),
-					CreatedAt:           timestamppb.New(taskResult.CreatedAt),
+					Id:                 int32(taskResult.ID),
+					RequestPerSec:      int32(taskResult.RequestPerSec),
+					Url:                taskResult.URL,
+					Method:             taskResult.Method,
+					RequestContentType: taskResult.RequestContentType,
+					RequestBody:        requestBody,
+					ThreadNum:          int32(taskResult.ThreadNum),
+					AttemptCount:       int32(taskResult.AttemptCount),
+					CreatedAt:          timestamppb.New(taskResult.CreatedAt),
 				}
 			}),
 		},

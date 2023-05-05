@@ -88,9 +88,6 @@ var (
 		{Name: "method", Type: field.TypeString},
 		{Name: "request_content_type", Type: field.TypeString},
 		{Name: "request_body", Type: field.TypeString, Nullable: true},
-		{Name: "response_code", Type: field.TypeString},
-		{Name: "response_content_type", Type: field.TypeString},
-		{Name: "response_body", Type: field.TypeString},
 		{Name: "thread_num", Type: field.TypeInt},
 		{Name: "attempt_count", Type: field.TypeInt},
 		{Name: "created_at", Type: field.TypeTime},
@@ -105,7 +102,7 @@ var (
 		ForeignKeys: []*schema.ForeignKey{
 			{
 				Symbol:     "task_results_submits_taskResults",
-				Columns:    []*schema.Column{TaskResultsColumns[13]},
+				Columns:    []*schema.Column{TaskResultsColumns[10]},
 				RefColumns: []*schema.Column{SubmitsColumns[0]},
 				OnDelete:   schema.SetNull,
 			},

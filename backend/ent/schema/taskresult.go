@@ -20,10 +20,6 @@ func (TaskResult) Fields() []ent.Field {
 		field.String("method"),
 		field.String("request_content_type"),
 		field.String("request_body").Optional(),
-		// response
-		field.String("response_code"),
-		field.String("response_content_type"),
-		field.String("response_body"),
 		// config
 		field.Int("thread_num"),
 		field.Int("attempt_count"),

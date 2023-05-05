@@ -2602,28 +2602,25 @@ func (m *SubmitMutation) ResetEdge(name string) error {
 // TaskResultMutation represents an operation that mutates the TaskResult nodes in the graph.
 type TaskResultMutation struct {
 	config
-	op                    Op
-	typ                   string
-	id                    *int
-	request_per_sec       *int
-	addrequest_per_sec    *int
-	url                   *string
-	method                *string
-	request_content_type  *string
-	request_body          *string
-	response_code         *string
-	response_content_type *string
-	response_body         *string
-	thread_num            *int
-	addthread_num         *int
-	attempt_count         *int
-	addattempt_count      *int
-	created_at            *time.Time
-	deleted_at            *time.Time
-	clearedFields         map[string]struct{}
-	done                  bool
-	oldValue              func(context.Context) (*TaskResult, error)
-	predicates            []predicate.TaskResult
+	op                   Op
+	typ                  string
+	id                   *int
+	request_per_sec      *int
+	addrequest_per_sec   *int
+	url                  *string
+	method               *string
+	request_content_type *string
+	request_body         *string
+	thread_num           *int
+	addthread_num        *int
+	attempt_count        *int
+	addattempt_count     *int
+	created_at           *time.Time
+	deleted_at           *time.Time
+	clearedFields        map[string]struct{}
+	done                 bool
+	oldValue             func(context.Context) (*TaskResult, error)
+	predicates           []predicate.TaskResult
 }
 
 var _ ent.Mutation = (*TaskResultMutation)(nil)
@@ -2943,114 +2940,6 @@ func (m *TaskResultMutation) ResetRequestBody() {
 	delete(m.clearedFields, taskresult.FieldRequestBody)
 }
 
-// SetResponseCode sets the "response_code" field.
-func (m *TaskResultMutation) SetResponseCode(s string) {
-	m.response_code = &s
-}
-
-// ResponseCode returns the value of the "response_code" field in the mutation.
-func (m *TaskResultMutation) ResponseCode() (r string, exists bool) {
-	v := m.response_code
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldResponseCode returns the old "response_code" field's value of the TaskResult entity.
-// If the TaskResult object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *TaskResultMutation) OldResponseCode(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldResponseCode is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldResponseCode requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldResponseCode: %w", err)
-	}
-	return oldValue.ResponseCode, nil
-}
-
-// ResetResponseCode resets all changes to the "response_code" field.
-func (m *TaskResultMutation) ResetResponseCode() {
-	m.response_code = nil
-}
-
-// SetResponseContentType sets the "response_content_type" field.
-func (m *TaskResultMutation) SetResponseContentType(s string) {
-	m.response_content_type = &s
-}
-
-// ResponseContentType returns the value of the "response_content_type" field in the mutation.
-func (m *TaskResultMutation) ResponseContentType() (r string, exists bool) {
-	v := m.response_content_type
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldResponseContentType returns the old "response_content_type" field's value of the TaskResult entity.
-// If the TaskResult object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *TaskResultMutation) OldResponseContentType(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldResponseContentType is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldResponseContentType requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldResponseContentType: %w", err)
-	}
-	return oldValue.ResponseContentType, nil
-}
-
-// ResetResponseContentType resets all changes to the "response_content_type" field.
-func (m *TaskResultMutation) ResetResponseContentType() {
-	m.response_content_type = nil
-}
-
-// SetResponseBody sets the "response_body" field.
-func (m *TaskResultMutation) SetResponseBody(s string) {
-	m.response_body = &s
-}
-
-// ResponseBody returns the value of the "response_body" field in the mutation.
-func (m *TaskResultMutation) ResponseBody() (r string, exists bool) {
-	v := m.response_body
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldResponseBody returns the old "response_body" field's value of the TaskResult entity.
-// If the TaskResult object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *TaskResultMutation) OldResponseBody(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldResponseBody is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldResponseBody requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldResponseBody: %w", err)
-	}
-	return oldValue.ResponseBody, nil
-}
-
-// ResetResponseBody resets all changes to the "response_body" field.
-func (m *TaskResultMutation) ResetResponseBody() {
-	m.response_body = nil
-}
-
 // SetThreadNum sets the "thread_num" field.
 func (m *TaskResultMutation) SetThreadNum(i int) {
 	m.thread_num = &i
@@ -3282,7 +3171,7 @@ func (m *TaskResultMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *TaskResultMutation) Fields() []string {
-	fields := make([]string, 0, 12)
+	fields := make([]string, 0, 9)
 	if m.request_per_sec != nil {
 		fields = append(fields, taskresult.FieldRequestPerSec)
 	}
@@ -3297,15 +3186,6 @@ func (m *TaskResultMutation) Fields() []string {
 	}
 	if m.request_body != nil {
 		fields = append(fields, taskresult.FieldRequestBody)
-	}
-	if m.response_code != nil {
-		fields = append(fields, taskresult.FieldResponseCode)
-	}
-	if m.response_content_type != nil {
-		fields = append(fields, taskresult.FieldResponseContentType)
-	}
-	if m.response_body != nil {
-		fields = append(fields, taskresult.FieldResponseBody)
 	}
 	if m.thread_num != nil {
 		fields = append(fields, taskresult.FieldThreadNum)
@@ -3337,12 +3217,6 @@ func (m *TaskResultMutation) Field(name string) (ent.Value, bool) {
 		return m.RequestContentType()
 	case taskresult.FieldRequestBody:
 		return m.RequestBody()
-	case taskresult.FieldResponseCode:
-		return m.ResponseCode()
-	case taskresult.FieldResponseContentType:
-		return m.ResponseContentType()
-	case taskresult.FieldResponseBody:
-		return m.ResponseBody()
 	case taskresult.FieldThreadNum:
 		return m.ThreadNum()
 	case taskresult.FieldAttemptCount:
@@ -3370,12 +3244,6 @@ func (m *TaskResultMutation) OldField(ctx context.Context, name string) (ent.Val
 		return m.OldRequestContentType(ctx)
 	case taskresult.FieldRequestBody:
 		return m.OldRequestBody(ctx)
-	case taskresult.FieldResponseCode:
-		return m.OldResponseCode(ctx)
-	case taskresult.FieldResponseContentType:
-		return m.OldResponseContentType(ctx)
-	case taskresult.FieldResponseBody:
-		return m.OldResponseBody(ctx)
 	case taskresult.FieldThreadNum:
 		return m.OldThreadNum(ctx)
 	case taskresult.FieldAttemptCount:
@@ -3427,27 +3295,6 @@ func (m *TaskResultMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetRequestBody(v)
-		return nil
-	case taskresult.FieldResponseCode:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetResponseCode(v)
-		return nil
-	case taskresult.FieldResponseContentType:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetResponseContentType(v)
-		return nil
-	case taskresult.FieldResponseBody:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetResponseBody(v)
 		return nil
 	case taskresult.FieldThreadNum:
 		v, ok := value.(int)
@@ -3594,15 +3441,6 @@ func (m *TaskResultMutation) ResetField(name string) error {
 		return nil
 	case taskresult.FieldRequestBody:
 		m.ResetRequestBody()
-		return nil
-	case taskresult.FieldResponseCode:
-		m.ResetResponseCode()
-		return nil
-	case taskresult.FieldResponseContentType:
-		m.ResetResponseContentType()
-		return nil
-	case taskresult.FieldResponseBody:
-		m.ResetResponseBody()
 		return nil
 	case taskresult.FieldThreadNum:
 		m.ResetThreadNum()

@@ -27,12 +27,6 @@ type TaskResult struct {
 	RequestContentType string `json:"request_content_type,omitempty"`
 	// RequestBody holds the value of the "request_body" field.
 	RequestBody string `json:"request_body,omitempty"`
-	// ResponseCode holds the value of the "response_code" field.
-	ResponseCode string `json:"response_code,omitempty"`
-	// ResponseContentType holds the value of the "response_content_type" field.
-	ResponseContentType string `json:"response_content_type,omitempty"`
-	// ResponseBody holds the value of the "response_body" field.
-	ResponseBody string `json:"response_body,omitempty"`
 	// ThreadNum holds the value of the "thread_num" field.
 	ThreadNum int `json:"thread_num,omitempty"`
 	// AttemptCount holds the value of the "attempt_count" field.
@@ -52,7 +46,7 @@ func (*TaskResult) scanValues(columns []string) ([]any, error) {
 		switch columns[i] {
 		case taskresult.FieldID, taskresult.FieldRequestPerSec, taskresult.FieldThreadNum, taskresult.FieldAttemptCount:
 			values[i] = new(sql.NullInt64)
-		case taskresult.FieldURL, taskresult.FieldMethod, taskresult.FieldRequestContentType, taskresult.FieldRequestBody, taskresult.FieldResponseCode, taskresult.FieldResponseContentType, taskresult.FieldResponseBody:
+		case taskresult.FieldURL, taskresult.FieldMethod, taskresult.FieldRequestContentType, taskresult.FieldRequestBody:
 			values[i] = new(sql.NullString)
 		case taskresult.FieldCreatedAt, taskresult.FieldDeletedAt:
 			values[i] = new(sql.NullTime)
@@ -108,24 +102,6 @@ func (tr *TaskResult) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field request_body", values[i])
 			} else if value.Valid {
 				tr.RequestBody = value.String
-			}
-		case taskresult.FieldResponseCode:
-			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field response_code", values[i])
-			} else if value.Valid {
-				tr.ResponseCode = value.String
-			}
-		case taskresult.FieldResponseContentType:
-			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field response_content_type", values[i])
-			} else if value.Valid {
-				tr.ResponseContentType = value.String
-			}
-		case taskresult.FieldResponseBody:
-			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field response_body", values[i])
-			} else if value.Valid {
-				tr.ResponseBody = value.String
 			}
 		case taskresult.FieldThreadNum:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
@@ -208,15 +184,6 @@ func (tr *TaskResult) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("request_body=")
 	builder.WriteString(tr.RequestBody)
-	builder.WriteString(", ")
-	builder.WriteString("response_code=")
-	builder.WriteString(tr.ResponseCode)
-	builder.WriteString(", ")
-	builder.WriteString("response_content_type=")
-	builder.WriteString(tr.ResponseContentType)
-	builder.WriteString(", ")
-	builder.WriteString("response_body=")
-	builder.WriteString(tr.ResponseBody)
 	builder.WriteString(", ")
 	builder.WriteString("thread_num=")
 	builder.WriteString(fmt.Sprintf("%v", tr.ThreadNum))

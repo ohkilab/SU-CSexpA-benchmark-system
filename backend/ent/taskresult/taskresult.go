@@ -21,12 +21,6 @@ const (
 	FieldRequestContentType = "request_content_type"
 	// FieldRequestBody holds the string denoting the request_body field in the database.
 	FieldRequestBody = "request_body"
-	// FieldResponseCode holds the string denoting the response_code field in the database.
-	FieldResponseCode = "response_code"
-	// FieldResponseContentType holds the string denoting the response_content_type field in the database.
-	FieldResponseContentType = "response_content_type"
-	// FieldResponseBody holds the string denoting the response_body field in the database.
-	FieldResponseBody = "response_body"
 	// FieldThreadNum holds the string denoting the thread_num field in the database.
 	FieldThreadNum = "thread_num"
 	// FieldAttemptCount holds the string denoting the attempt_count field in the database.
@@ -47,9 +41,6 @@ var Columns = []string{
 	FieldMethod,
 	FieldRequestContentType,
 	FieldRequestBody,
-	FieldResponseCode,
-	FieldResponseContentType,
-	FieldResponseBody,
 	FieldThreadNum,
 	FieldAttemptCount,
 	FieldCreatedAt,
@@ -108,21 +99,6 @@ func ByRequestContentType(opts ...sql.OrderTermOption) OrderOption {
 // ByRequestBody orders the results by the request_body field.
 func ByRequestBody(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldRequestBody, opts...).ToFunc()
-}
-
-// ByResponseCode orders the results by the response_code field.
-func ByResponseCode(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldResponseCode, opts...).ToFunc()
-}
-
-// ByResponseContentType orders the results by the response_content_type field.
-func ByResponseContentType(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldResponseContentType, opts...).ToFunc()
-}
-
-// ByResponseBody orders the results by the response_body field.
-func ByResponseBody(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldResponseBody, opts...).ToFunc()
 }
 
 // ByThreadNum orders the results by the thread_num field.

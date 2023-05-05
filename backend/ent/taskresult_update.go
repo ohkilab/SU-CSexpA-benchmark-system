@@ -79,24 +79,6 @@ func (tru *TaskResultUpdate) ClearRequestBody() *TaskResultUpdate {
 	return tru
 }
 
-// SetResponseCode sets the "response_code" field.
-func (tru *TaskResultUpdate) SetResponseCode(s string) *TaskResultUpdate {
-	tru.mutation.SetResponseCode(s)
-	return tru
-}
-
-// SetResponseContentType sets the "response_content_type" field.
-func (tru *TaskResultUpdate) SetResponseContentType(s string) *TaskResultUpdate {
-	tru.mutation.SetResponseContentType(s)
-	return tru
-}
-
-// SetResponseBody sets the "response_body" field.
-func (tru *TaskResultUpdate) SetResponseBody(s string) *TaskResultUpdate {
-	tru.mutation.SetResponseBody(s)
-	return tru
-}
-
 // SetThreadNum sets the "thread_num" field.
 func (tru *TaskResultUpdate) SetThreadNum(i int) *TaskResultUpdate {
 	tru.mutation.ResetThreadNum()
@@ -211,15 +193,6 @@ func (tru *TaskResultUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if tru.mutation.RequestBodyCleared() {
 		_spec.ClearField(taskresult.FieldRequestBody, field.TypeString)
 	}
-	if value, ok := tru.mutation.ResponseCode(); ok {
-		_spec.SetField(taskresult.FieldResponseCode, field.TypeString, value)
-	}
-	if value, ok := tru.mutation.ResponseContentType(); ok {
-		_spec.SetField(taskresult.FieldResponseContentType, field.TypeString, value)
-	}
-	if value, ok := tru.mutation.ResponseBody(); ok {
-		_spec.SetField(taskresult.FieldResponseBody, field.TypeString, value)
-	}
 	if value, ok := tru.mutation.ThreadNum(); ok {
 		_spec.SetField(taskresult.FieldThreadNum, field.TypeInt, value)
 	}
@@ -309,24 +282,6 @@ func (truo *TaskResultUpdateOne) SetNillableRequestBody(s *string) *TaskResultUp
 // ClearRequestBody clears the value of the "request_body" field.
 func (truo *TaskResultUpdateOne) ClearRequestBody() *TaskResultUpdateOne {
 	truo.mutation.ClearRequestBody()
-	return truo
-}
-
-// SetResponseCode sets the "response_code" field.
-func (truo *TaskResultUpdateOne) SetResponseCode(s string) *TaskResultUpdateOne {
-	truo.mutation.SetResponseCode(s)
-	return truo
-}
-
-// SetResponseContentType sets the "response_content_type" field.
-func (truo *TaskResultUpdateOne) SetResponseContentType(s string) *TaskResultUpdateOne {
-	truo.mutation.SetResponseContentType(s)
-	return truo
-}
-
-// SetResponseBody sets the "response_body" field.
-func (truo *TaskResultUpdateOne) SetResponseBody(s string) *TaskResultUpdateOne {
-	truo.mutation.SetResponseBody(s)
 	return truo
 }
 
@@ -473,15 +428,6 @@ func (truo *TaskResultUpdateOne) sqlSave(ctx context.Context) (_node *TaskResult
 	}
 	if truo.mutation.RequestBodyCleared() {
 		_spec.ClearField(taskresult.FieldRequestBody, field.TypeString)
-	}
-	if value, ok := truo.mutation.ResponseCode(); ok {
-		_spec.SetField(taskresult.FieldResponseCode, field.TypeString, value)
-	}
-	if value, ok := truo.mutation.ResponseContentType(); ok {
-		_spec.SetField(taskresult.FieldResponseContentType, field.TypeString, value)
-	}
-	if value, ok := truo.mutation.ResponseBody(); ok {
-		_spec.SetField(taskresult.FieldResponseBody, field.TypeString, value)
 	}
 	if value, ok := truo.mutation.ThreadNum(); ok {
 		_spec.SetField(taskresult.FieldThreadNum, field.TypeInt, value)

@@ -58,24 +58,6 @@ func (trc *TaskResultCreate) SetNillableRequestBody(s *string) *TaskResultCreate
 	return trc
 }
 
-// SetResponseCode sets the "response_code" field.
-func (trc *TaskResultCreate) SetResponseCode(s string) *TaskResultCreate {
-	trc.mutation.SetResponseCode(s)
-	return trc
-}
-
-// SetResponseContentType sets the "response_content_type" field.
-func (trc *TaskResultCreate) SetResponseContentType(s string) *TaskResultCreate {
-	trc.mutation.SetResponseContentType(s)
-	return trc
-}
-
-// SetResponseBody sets the "response_body" field.
-func (trc *TaskResultCreate) SetResponseBody(s string) *TaskResultCreate {
-	trc.mutation.SetResponseBody(s)
-	return trc
-}
-
 // SetThreadNum sets the "thread_num" field.
 func (trc *TaskResultCreate) SetThreadNum(i int) *TaskResultCreate {
 	trc.mutation.SetThreadNum(i)
@@ -160,15 +142,6 @@ func (trc *TaskResultCreate) check() error {
 	if _, ok := trc.mutation.RequestContentType(); !ok {
 		return &ValidationError{Name: "request_content_type", err: errors.New(`ent: missing required field "TaskResult.request_content_type"`)}
 	}
-	if _, ok := trc.mutation.ResponseCode(); !ok {
-		return &ValidationError{Name: "response_code", err: errors.New(`ent: missing required field "TaskResult.response_code"`)}
-	}
-	if _, ok := trc.mutation.ResponseContentType(); !ok {
-		return &ValidationError{Name: "response_content_type", err: errors.New(`ent: missing required field "TaskResult.response_content_type"`)}
-	}
-	if _, ok := trc.mutation.ResponseBody(); !ok {
-		return &ValidationError{Name: "response_body", err: errors.New(`ent: missing required field "TaskResult.response_body"`)}
-	}
 	if _, ok := trc.mutation.ThreadNum(); !ok {
 		return &ValidationError{Name: "thread_num", err: errors.New(`ent: missing required field "TaskResult.thread_num"`)}
 	}
@@ -229,18 +202,6 @@ func (trc *TaskResultCreate) createSpec() (*TaskResult, *sqlgraph.CreateSpec) {
 	if value, ok := trc.mutation.RequestBody(); ok {
 		_spec.SetField(taskresult.FieldRequestBody, field.TypeString, value)
 		_node.RequestBody = value
-	}
-	if value, ok := trc.mutation.ResponseCode(); ok {
-		_spec.SetField(taskresult.FieldResponseCode, field.TypeString, value)
-		_node.ResponseCode = value
-	}
-	if value, ok := trc.mutation.ResponseContentType(); ok {
-		_spec.SetField(taskresult.FieldResponseContentType, field.TypeString, value)
-		_node.ResponseContentType = value
-	}
-	if value, ok := trc.mutation.ResponseBody(); ok {
-		_spec.SetField(taskresult.FieldResponseBody, field.TypeString, value)
-		_node.ResponseBody = value
 	}
 	if value, ok := trc.mutation.ThreadNum(); ok {
 		_spec.SetField(taskresult.FieldThreadNum, field.TypeInt, value)
