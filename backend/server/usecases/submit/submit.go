@@ -8,6 +8,7 @@ import (
 
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/ent"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/ent/contest"
+	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/ent/submit"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/api/grpc/interceptor"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/core/timejst"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/worker"
@@ -92,28 +93,23 @@ func generateRandomTags(n int) []string {
 }
 
 func (i *Interactor) GetSubmit(req *backendpb.GetSubmitRequest, stream backendpb.BackendService_GetSubmitServer) error {
-	s, err := i.entClient.Submit.Get(stream.Context(), int(req.SubmitId))
-	if err != nil {
-		if ent.IsNotFound(err) {
-			return status.Error(codes.NotFound, "no such submit")
-		}
-		return status.Error(codes.Internal, err.Error())
-	}
-
 	for {
-		time.Sleep(2 * time.Second)
-
-		s, err = i.entClient.Submit.Get(stream.Context(), int(req.SubmitId))
+		s, err := i.entClient.Submit.Query().Where(submit.IDEQ(int(req.SubmitId))).WithGroups().Only(stream.Context())
 		if err != nil {
+			if ent.IsNotFound(err) {
+				return status.Error(codes.NotFound, "no such submit")
+			}
 			return status.Error(codes.Internal, err.Error())
+		}
+		if err := stream.Send(toGetSubmitResponse(s)); err != nil {
+			return err
 		}
 		// ベンチマーク処理が完了していたら結果を返す
 		if !s.CompletedAt.IsZero() {
 			break
 		}
-		if err := stream.Send(toGetSubmitResponse(s)); err != nil {
-			return err
-		}
+
+		time.Sleep(2 * time.Second)
 	}
 
 	return nil
@@ -127,7 +123,7 @@ func toGetSubmitResponse(submit *ent.Submit) *backendpb.GetSubmitResponse {
 	return &backendpb.GetSubmitResponse{
 		Submit: &backendpb.Submit{
 			Id:      int32(submit.ID),
-			GroupId: int32(submit.Edges.Groups[0].ID),
+			GroupId: int32(submit.Edges.Groups.ID),
 			Year:    int32(submit.Year),
 			Score:   int32(submit.Score),
 			// Language: submit.Language,

@@ -43,7 +43,7 @@ func launchGrpcServer(t *testing.T, optionFuncs ...grpc.OptionFunc) (*pkggrpc.Cl
 type cleanupFunc func(t *testing.T)
 
 func enttestOpen(ctx context.Context, t *testing.T) (*ent.Client, cleanupFunc) {
-	dsn := fmt.Sprintf("root:%s@tcp(localhost:%s)/%s", os.Getenv("MYSQL_ROOT_PASSWORD"), os.Getenv("TEST_MYSQL_PORT"), os.Getenv("MYSQL_DATABASE"))
+	dsn := fmt.Sprintf("root:%s@tcp(localhost:%s)/%s?parseTime=true", os.Getenv("MYSQL_ROOT_PASSWORD"), os.Getenv("TEST_MYSQL_PORT"), os.Getenv("MYSQL_DATABASE"))
 	db, err := sql.Open("mysql", dsn)
 	if err != nil {
 		t.Fatal(err)

@@ -47,6 +47,7 @@ func (w *worker) Run() {
 		}
 
 		eg := &errgroup.Group{}
+		score := 0
 		for {
 			resp, err := stream.Recv()
 			if err == io.EOF {
@@ -59,6 +60,7 @@ func (w *worker) Run() {
 				log.Println(err)
 			}
 
+			score += int(resp.RequestsPerSecond)
 			eg.Go(func() error {
 				resp := resp
 				// TODO: validation
@@ -83,7 +85,11 @@ func (w *worker) Run() {
 		}
 
 		now := timejst.Now()
-		if _, err := w.entClient.Submit.Update().SetCompletedAt(now).SetUpdatedAt(now).Save(ctx); err != nil {
+		if _, err := w.entClient.Submit.Update().
+			SetCompletedAt(now).
+			SetUpdatedAt(now).
+			SetScore(score).
+			Save(ctx); err != nil {
 			log.Println("ERROR", err)
 		}
 	}

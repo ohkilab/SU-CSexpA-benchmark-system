@@ -5,9 +5,11 @@ import (
 	"testing"
 	"time"
 
+	"github.com/golang/mock/gomock"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/ent/group"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/api/grpc"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/core/auth"
+	mock_worker "github.com/ohkilab/SU-CSexpA-benchmark-system/backend/worker/mock"
 	pb "github.com/ohkilab/SU-CSexpA-benchmark-system/proto-gen/go/backend"
 	"github.com/stretchr/testify/assert"
 	"golang.org/x/crypto/bcrypt"
@@ -18,8 +20,12 @@ func Test_PostSubmit(t *testing.T) {
 	ctx := context.Background()
 	entClient, cleanupFunc := enttestOpen(ctx, t)
 	defer cleanupFunc(t)
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+	worker := mock_worker.NewMockWorker(ctrl)
+	worker.EXPECT().Push(gomock.Any()).AnyTimes()
 	secret := []byte("secret")
-	conn, closeFunc := launchGrpcServer(t, grpc.WithJwtSecret("secret"), grpc.WithEntClient(entClient))
+	conn, closeFunc := launchGrpcServer(t, grpc.WithJwtSecret("secret"), grpc.WithEntClient(entClient), grpc.WithWorker(worker))
 	defer closeFunc()
 	client := pb.NewBackendServiceClient(conn)
 

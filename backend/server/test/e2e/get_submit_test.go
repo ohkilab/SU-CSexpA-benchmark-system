@@ -6,6 +6,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/ent/group"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/api/grpc"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/core/timejst"
 	pb "github.com/ohkilab/SU-CSexpA-benchmark-system/proto-gen/go/backend"
@@ -20,19 +21,28 @@ func Test_GetSubmit(t *testing.T) {
 	defer closeFunc()
 	client := pb.NewBackendServiceClient(conn)
 
+	// prepare
+	group, _ := entClient.Group.Create().
+		SetName("test").
+		SetEncryptedPassword(string("hoge")).
+		SetRole(group.RoleContestant).
+		SetScore(12345).
+		SetYear(2023).
+		Save(ctx)
 	submit, _ := entClient.Submit.Create().
 		SetIPAddr("10.255.255.255").
 		SetYear(2023).
+		SetScore(100).
 		SetSubmitedAt(timejst.Now()).
+		SetGroups(group).
+		SetCompletedAt(timejst.Now()).
 		Save(ctx)
-	go func() {
-
-	}()
 
 	stream, err := client.GetSubmit(ctx, &pb.GetSubmitRequest{SubmitId: int32(submit.ID)})
 	if err != nil {
 		t.Fatal(err)
 	}
+	var ok bool
 	for {
 		msg, err := stream.Recv()
 		if err == io.EOF {
@@ -41,6 +51,7 @@ func Test_GetSubmit(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
+		ok = true
 
 		for _, taskRes := range msg.Submit.TaskResults {
 			dbtaskRes, err := entClient.TaskResult.Get(ctx, int(taskRes.Id))
@@ -53,6 +64,7 @@ func Test_GetSubmit(t *testing.T) {
 
 		time.Sleep(time.Second)
 	}
+	assert.True(t, ok)
 
 	submit, _ = entClient.Submit.Get(ctx, submit.ID)
 	assert.NotEmpty(t, submit.Score)
