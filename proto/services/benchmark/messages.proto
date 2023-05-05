@@ -12,7 +12,6 @@ message ExecuteRequest {
 message Task {
   string url = 1;        // e.g.) http://10.255.255.255/endpoint
   HttpMethod method = 2;
-  repeated URLParam params = 3;
   string content_type = 4;
   string body = 5;
 
@@ -26,11 +25,6 @@ enum HttpMethod {
   POST = 1;
   PUT = 2;
   DELETE = 3;
-}
-
-message URLParam {
-  string key = 1;
-  string value = 2;
 }
 
 // 冪等性がないと全ての body について validate しないといけなくなる
