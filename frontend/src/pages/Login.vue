@@ -3,13 +3,13 @@ import { GrpcWebFetchTransport } from '@protobuf-ts/grpcweb-transport';
 import { BackendServiceClient } from 'proto-gen-web/src/backend/services.client';
 import { ref } from 'vue';
 
-import { useStateStore } from '../stores/state';
+import { useStateStore, IState } from '../stores/state';
 
 const id = ref('')
 const password = ref('')
 const errMsg = ref('')
 
-const state = useStateStore()
+const state:IState = useStateStore()
 
 const emit = defineEmits(['loggedIn'])
 

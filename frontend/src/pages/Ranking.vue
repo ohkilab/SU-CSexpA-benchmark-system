@@ -7,7 +7,7 @@ import RankItem from '../components/RankItem.vue'
 import TopRank from '../components/TopRank.vue'
 import { GetRankingResponse_Record } from 'proto-gen-web/src/backend/messages';
 
-import { useStateStore } from '../stores/state';
+import { useStateStore, IState } from '../stores/state';
 
 const state = useStateStore()
 
