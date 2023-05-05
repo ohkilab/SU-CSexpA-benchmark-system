@@ -96,7 +96,7 @@ func generateRandomTags(n int) []string {
 
 func (i *Interactor) GetSubmit(req *backendpb.GetSubmitRequest, stream backendpb.BackendService_GetSubmitServer) error {
 	for {
-		s, err := i.entClient.Submit.Query().Where(submit.IDEQ(int(req.SubmitId))).WithGroups().Only(stream.Context())
+		s, err := i.entClient.Submit.Query().Where(submit.IDEQ(int(req.SubmitId))).WithGroups().WithTaskResults().Only(stream.Context())
 		if err != nil {
 			if ent.IsNotFound(err) {
 				return status.Error(codes.NotFound, "no such submit")
