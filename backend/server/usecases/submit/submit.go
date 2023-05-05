@@ -44,7 +44,7 @@ func (i *Interactor) PostSubmit(ctx context.Context, req *backendpb.PostSubmitRe
 		return nil, status.Error(codes.InvalidArgument, "no such contest")
 	}
 	submit, err := i.entClient.Submit.Create().
-		SetIPAddr(req.IpAddr).
+		SetURL(req.Url).
 		SetYear(claims.Year).
 		SetSubmitedAt(timejst.Now()).
 		SetContestsID(int(req.ContestId)).
@@ -55,18 +55,18 @@ func (i *Interactor) PostSubmit(ctx context.Context, req *backendpb.PostSubmitRe
 	}
 
 	// add a task to worker
-	executeRequest := buildTask(submit.IPAddr, strconv.Itoa(claims.GroupID), submit.ID)
+	executeRequest := buildTask(submit.URL, strconv.Itoa(claims.GroupID), submit.ID)
 	i.worker.Push(executeRequest)
 
 	return &backendpb.PostSubmitResponse{
 		Id:         int32(submit.ID),
-		IpAddr:     submit.IPAddr,
+		Url:        submit.URL,
 		ContestId:  req.ContestId,
 		SubmitedAt: timestamppb.New(submit.SubmitedAt),
 	}, nil
 }
 
-func buildTask(ipAddr, groupID string, submitID int) *worker.Task {
+func buildTask(url, groupID string, submitID int) *worker.Task {
 	tags := generateRandomTags(50)
 	return &worker.Task{
 		Req: &benchmarkpb.ExecuteRequest{
@@ -74,7 +74,7 @@ func buildTask(ipAddr, groupID string, submitID int) *worker.Task {
 			Tasks: lo.Map(tags, func(tag string, _ int) *benchmarkpb.Task {
 				return &benchmarkpb.Task{
 					Request: &benchmarkpb.HttpRequest{
-						Url:         fmt.Sprintf("http://%s?tag=%s", ipAddr, tag),
+						Url:         fmt.Sprintf("%s?tag=%s", url, tag),
 						Method:      benchmarkpb.HttpMethod_GET,
 						ContentType: "application/x-www-form-urlencoded",
 						Body:        "",
@@ -90,11 +90,31 @@ func buildTask(ipAddr, groupID string, submitID int) *worker.Task {
 
 // TODO: flickr の tag api を叩いて取るとか？
 func generateRandomTags(n int) []string {
-	tags := make([]string, n)
-	for i := range tags {
-		tags[i] = lo.RandomString(10, lo.AlphanumericCharset)
+	// tags := make([]string, n)
+	// for i := range tags {
+	// 	tags[i] = lo.RandomString(10, lo.AlphanumericCharset)
+	// }
+	// return tags
+
+	return []string{
+		"陸上自衛隊",
+		"陸光麵館",
+		"陸前高田ボランティア",
+		"陸前高田市",
+		"陸家嘴",
+		"陸羽茶室",
+		"陸航",
+		"険道",
+		"陽光橋",
+		"陽光橋夜景",
+		"陽明公園",
+		"陽明大學",
+		"陽明山",
+		"陽明山中國麗緻大飯店",
+		"陽明山公園",
+		"陽明山前山公園",
+		"陽明山國家公園",
 	}
-	return tags
 }
 
 func (i *Interactor) GetSubmit(req *backendpb.GetSubmitRequest, stream backendpb.BackendService_GetSubmitServer) error {

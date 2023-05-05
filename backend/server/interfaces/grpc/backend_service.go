@@ -2,7 +2,7 @@ package grpc
 
 import (
 	"context"
-	"net/netip"
+	"net/url"
 
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/ent"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/usecases/auth"
@@ -36,10 +36,8 @@ func (s *backendServiceServer) GetRanking(ctx context.Context, req *pb.GetRankin
 }
 
 func (s *backendServiceServer) PostSubmit(ctx context.Context, req *pb.PostSubmitRequest) (*pb.PostSubmitResponse, error) {
-	if _, err := netip.ParseAddrPort(req.IpAddr); err != nil {
-		if _, err := netip.ParseAddr(req.IpAddr); err != nil {
-			return nil, status.Error(codes.InvalidArgument, err.Error())
-		}
+	if _, err := url.ParseRequestURI(req.Url); err != nil {
+		return nil, status.Error(codes.InvalidArgument, err.Error())
 	}
 	return s.submitInteractor.PostSubmit(ctx, req)
 }

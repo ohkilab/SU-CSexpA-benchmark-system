@@ -66,6 +66,7 @@ func (w *worker) Run() {
 			}
 			if err != nil {
 				log.Println(err)
+				return
 			}
 
 			eg.Go(func() error {
@@ -77,6 +78,7 @@ func (w *worker) Run() {
 				}
 				mu.Unlock()
 
+				log.Println(resp.RequestsPerSecond)
 				var errorMessage string
 				if resp.ErrorMessage != nil {
 					errorMessage = *resp.ErrorMessage
@@ -101,7 +103,8 @@ func (w *worker) Run() {
 		}
 
 		now := timejst.Now()
-		if _, err := w.entClient.Submit.Update().
+		if _, err := w.entClient.Submit.
+			UpdateOneID(task.SubmitID).
 			SetCompletedAt(now).
 			SetUpdatedAt(now).
 			SetScore(score).

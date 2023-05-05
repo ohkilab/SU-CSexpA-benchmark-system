@@ -63,7 +63,7 @@ func Test_PostSubmit(t *testing.T) {
 
 	// success
 	req := &pb.PostSubmitRequest{
-		IpAddr:    "10.255.255.255",
+		Url:    "http://10.255.255.255",
 		ContestId: int32(contest.ID),
 	}
 	resp, err := client.PostSubmit(ctx, req)
@@ -71,13 +71,13 @@ func Test_PostSubmit(t *testing.T) {
 		t.Fatal(err)
 	}
 	assert.NotEmpty(t, resp.Id)
-	assert.Equal(t, req.IpAddr, resp.IpAddr)
+	assert.Equal(t, req.Url, resp.Url)
 	assert.Equal(t, req.ContestId, resp.ContestId)
 	assert.NotEmpty(t, resp.SubmitedAt)
 
 	// failed
 	req = &pb.PostSubmitRequest{
-		IpAddr:    "10.255.255.255",
+		Url:    "http://10.255.255.255",
 		ContestId: 0,
 	}
 	_, err = client.PostSubmit(ctx, req)
