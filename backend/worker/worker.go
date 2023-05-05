@@ -18,18 +18,6 @@ type Worker struct {
 	queue           *Queue[pb.ExecuteRequest]
 }
 
-type Task struct {
-	GroupID int
-	Host    string
-	Tags    []string
-}
-
-const (
-	threadNum    int           = 5
-	attemptCount int           = 100
-	attemptTime  time.Duration = 10 * time.Second
-)
-
 func New(entClient *ent.Client, benchmarkClient pb.BenchmarkServiceClient) *Worker {
 	return &Worker{entClient, benchmarkClient, &Queue[pb.ExecuteRequest]{}}
 }
@@ -78,9 +66,8 @@ func (w *Worker) Run() {
 					SetResponseCode(resp.Response.StatusCode).
 					SetResponseContentType(resp.Response.ContentType).
 					SetResponseBody(resp.Response.Body).
-					SetThreadNum(threadNum).
-					SetAttemptCount(attemptCount).
-					SetAttemptTime(int(attemptTime.Seconds())).
+					SetThreadNum(int(resp.ThreadNum)).
+					SetAttemptCount(int(resp.AttemptCount)).
 					SetCreatedAt(timejst.Now()).
 					Save(ctx)
 				return err

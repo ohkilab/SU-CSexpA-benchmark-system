@@ -8,6 +8,7 @@ import (
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/usecases/auth"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/usecases/ranking"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/usecases/submit"
+	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/worker"
 	pb "github.com/ohkilab/SU-CSexpA-benchmark-system/proto-gen/go/backend"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -19,10 +20,10 @@ type backendServiceServer struct {
 	submitInteractor  *submit.Interactor
 }
 
-func NewBackendService(secret []byte, entClient *ent.Client) pb.BackendServiceServer {
+func NewBackendService(secret []byte, entClient *ent.Client, worker *worker.Worker) pb.BackendServiceServer {
 	authInteractor := auth.NewInteractor(secret, entClient)
 	rankingInteractor := ranking.NewInteractor(entClient)
-	submitInteractor := submit.NewInteractor(entClient)
+	submitInteractor := submit.NewInteractor(entClient, worker)
 	return &backendServiceServer{authInteractor, rankingInteractor, submitInteractor}
 }
 
