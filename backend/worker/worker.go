@@ -89,5 +89,10 @@ func (w *Worker) Run() {
 		if err := eg.Wait(); err != nil {
 			log.Println(err)
 		}
+
+		now := timejst.Now()
+		if _, err := w.entClient.Submit.Update().SetCompletedAt(now).SetUpdatedAt(now).Save(ctx); err != nil {
+			log.Println("ERROR", err)
+		}
 	}
 }
