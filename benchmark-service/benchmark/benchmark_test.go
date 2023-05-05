@@ -3,9 +3,11 @@ package benchmark
 import (
 	"context"
 	"fmt"
+	"io"
 	"log"
 	"net"
 	"net/http"
+	"net/url"
 	"testing"
 	"time"
 )
@@ -14,11 +16,14 @@ func Test_Run(t *testing.T) {
 	port := launchTestServer(t)
 	time.Sleep(time.Second)
 	c := NewClient()
-	ch := c.Run(context.Background(), fmt.Sprintf("0.0.0.0:%v", port), func(req *http.Request) {}, OptTimeout(5*time.Second))
-	for res := range ch {
-		if res.HttpResult != nil {
-			log.Println(res.HttpResult.ResponseTime)
-		}
+	results, err := c.Run(context.Background(), fmt.Sprintf("http://0.0.0.0:%v", port), func(uri *url.URL, body io.ReadCloser) error {
+		return nil
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, r := range results {
+		log.Println(r)
 	}
 }
 

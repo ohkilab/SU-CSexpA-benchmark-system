@@ -1,10 +1,8 @@
 package benchmark
 
-import "time"
-
 type option struct {
-	threadNum int
-	timeout   time.Duration
+	threadNum   int
+	attmptCount int
 }
 
 type optionFunc func(o *option)
@@ -15,8 +13,8 @@ func OptThreadNum(num int) optionFunc {
 	}
 }
 
-func OptTimeout(timeout time.Duration) optionFunc {
+func OptAttemptCount(count int) optionFunc {
 	return func(o *option) {
-		o.timeout = timeout
+		o.attmptCount = count
 	}
 }

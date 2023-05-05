@@ -3,9 +3,12 @@ package benchmark
 import (
 	"context"
 	"io"
-	"log"
 	"net/http"
+	"net/url"
+	"sync"
 	"time"
+
+	"golang.org/x/sync/errgroup"
 )
 
 type Client struct {
@@ -23,103 +26,76 @@ func NewClient() *Client {
 	}
 }
 
-func (c *Client) Run(ctx context.Context, url string, interceptor func(req *http.Request), options ...optionFunc) <-chan *Result {
+func (c *Client) Run(ctx context.Context, url string, validate func(uri *url.URL, body io.ReadCloser) error, options ...optionFunc) ([]*HttpResult, error) {
 	option := &option{
-		threadNum: 5,
-		timeout:   5 * time.Second,
+		threadNum:   5,
+		attmptCount: 500,
 	}
 	for _, f := range options {
 		f(option)
 	}
 
-	resultChan := make(chan *Result)
-	go func() {
-		defer close(resultChan)
+	ctx, cancel := context.WithTimeout(ctx, time.Minute)
+	defer cancel()
 
-		errChan := make(chan error)
-		defer close(errChan)
-
-		ctx, cancel := context.WithTimeout(ctx, option.timeout)
-		defer cancel()
-
-		for range make([]struct{}, option.threadNum) {
-			go func() {
-				defer func() {
-					if r := recover(); r != nil {
-						return
-					}
-				}()
-				for {
-					resp, took, err := c.request(url, interceptor, time.Minute)
+	attemptCount := 0
+	results := make([]*HttpResult, 0)
+	mu := sync.Mutex{}
+	eg, ctx := errgroup.WithContext(ctx)
+	for range make([]struct{}, option.threadNum) {
+		eg.Go(func() error {
+			for {
+				select {
+				case <-ctx.Done():
+					return nil
+				default:
+					resp, took, err := c.request(url)
 					if err != nil {
-						errChan <- err
-						return
+						return err
 					}
-					httpResult, err := NewResultWithHttpResult(resp, took)
-					if err != nil {
-						errChan <- err
-						return
+
+					done := func() bool {
+						mu.Lock()
+						defer mu.Unlock()
+						results = append(results, &HttpResult{
+							StatusCode:   resp.StatusCode,
+							ContentType:  resp.Header.Get("Content-Type"),
+							Body:         resp.Body,
+							ResponseTime: took,
+						})
+						attemptCount++
+						if attemptCount == option.attmptCount {
+							return true
+						}
+						return false
+					}()
+					if done {
+						cancel()
 					}
-					resultChan <- httpResult
 				}
-			}()
-		}
-
-		for {
-			select {
-			case <-ctx.Done():
-				log.Println("ctx done")
-				return
-			case err := <-errChan:
-				log.Println("errChan:", err)
-				resultChan <- NewResultWithError(err)
-				return
 			}
-		}
-	}()
+		})
+	}
+	if err := eg.Wait(); err != nil {
+		return nil, err
+	}
 
-	return resultChan
+	return results, nil
 }
 
-func (c *Client) request(url string, interceptor func(req *http.Request), timeout time.Duration) (*http.Response, time.Duration, error) {
+func (c *Client) request(url string) (*http.Response, time.Duration, error) {
 	req, _ := http.NewRequest(http.MethodGet, url, nil)
-	interceptor(req)
 	now := time.Now()
 	resp, err := c.httpClient.Do(req)
 	if err != nil {
 		return nil, 0, err
 	}
-	return resp, time.Now().Sub(now), nil
-}
-
-type Result struct {
-	HttpResult *HttpResult
-	Err        error
+	return resp, time.Since(now), nil
 }
 
 type HttpResult struct {
 	StatusCode   int
 	ContentType  string
-	Body         []byte
+	Body         io.ReadCloser
 	ResponseTime time.Duration
-}
-
-func NewResultWithHttpResult(resp *http.Response, responseTime time.Duration) (*Result, error) {
-	defer resp.Body.Close()
-	b, err := io.ReadAll(resp.Body)
-	if err != nil {
-		return nil, err
-	}
-	return &Result{
-		HttpResult: &HttpResult{
-			StatusCode:   resp.StatusCode,
-			ContentType:  resp.Header.Get("Content-Type"),
-			Body:         b,
-			ResponseTime: responseTime,
-		},
-	}, nil
-}
-
-func NewResultWithError(err error) *Result {
-	return &Result{Err: err}
 }
