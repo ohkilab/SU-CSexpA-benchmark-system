@@ -16,8 +16,6 @@ services:
     build:
       context: benchmark-service
       dockerfile: Dockerfile
-    environment:
-      - REDIS_ADDR=redis
 
   db:
     image: mysql:8.0
