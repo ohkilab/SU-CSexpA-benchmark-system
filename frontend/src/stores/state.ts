@@ -12,7 +12,7 @@ export interface IState {
   records: Array<GetRankingResponse_Record> | null
 }
 
-export const useStateStore = defineStore('state', {
+export const useStateStore = defineStore<'state', IState>('state', {
   state: (): IState => ({
     token: '',
     group: '',
