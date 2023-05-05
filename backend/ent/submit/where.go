@@ -422,7 +422,7 @@ func HasTagResults() predicate.Submit {
 }
 
 // HasTagResultsWith applies the HasEdge predicate on the "tagResults" edge with a given conditions (other predicates).
-func HasTagResultsWith(preds ...predicate.TagResult) predicate.Submit {
+func HasTagResultsWith(preds ...predicate.TaskResult) predicate.Submit {
 	return predicate.Submit(func(s *sql.Selector) {
 		step := newTagResultsStep()
 		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {

@@ -64,24 +64,33 @@ var (
 		Columns:    SubmitsColumns,
 		PrimaryKey: []*schema.Column{SubmitsColumns[0]},
 	}
-	// TagResultsColumns holds the columns for the "tag_results" table.
-	TagResultsColumns = []*schema.Column{
+	// TaskResultsColumns holds the columns for the "task_results" table.
+	TaskResultsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
-		{Name: "name", Type: field.TypeString},
-		{Name: "score", Type: field.TypeInt},
+		{Name: "request_per_sec", Type: field.TypeInt},
+		{Name: "url", Type: field.TypeString},
+		{Name: "method", Type: field.TypeString},
+		{Name: "request_content_type", Type: field.TypeString},
+		{Name: "request_body", Type: field.TypeString, Nullable: true},
+		{Name: "response_code", Type: field.TypeString},
+		{Name: "response_content_type", Type: field.TypeString},
+		{Name: "response_body", Type: field.TypeString},
+		{Name: "thread_num", Type: field.TypeInt},
+		{Name: "attempt_count", Type: field.TypeInt},
+		{Name: "attempt_time", Type: field.TypeInt},
 		{Name: "created_at", Type: field.TypeTime},
 		{Name: "deleted_at", Type: field.TypeTime, Nullable: true},
 		{Name: "submit_tag_results", Type: field.TypeInt, Nullable: true},
 	}
-	// TagResultsTable holds the schema information for the "tag_results" table.
-	TagResultsTable = &schema.Table{
-		Name:       "tag_results",
-		Columns:    TagResultsColumns,
-		PrimaryKey: []*schema.Column{TagResultsColumns[0]},
+	// TaskResultsTable holds the schema information for the "task_results" table.
+	TaskResultsTable = &schema.Table{
+		Name:       "task_results",
+		Columns:    TaskResultsColumns,
+		PrimaryKey: []*schema.Column{TaskResultsColumns[0]},
 		ForeignKeys: []*schema.ForeignKey{
 			{
-				Symbol:     "tag_results_submits_tagResults",
-				Columns:    []*schema.Column{TagResultsColumns[5]},
+				Symbol:     "task_results_submits_tagResults",
+				Columns:    []*schema.Column{TaskResultsColumns[14]},
 				RefColumns: []*schema.Column{SubmitsColumns[0]},
 				OnDelete:   schema.SetNull,
 			},
@@ -142,14 +151,14 @@ var (
 		ContestsTable,
 		GroupsTable,
 		SubmitsTable,
-		TagResultsTable,
+		TaskResultsTable,
 		ContestSubmitsTable,
 		GroupSubmitsTable,
 	}
 )
 
 func init() {
-	TagResultsTable.ForeignKeys[0].RefTable = SubmitsTable
+	TaskResultsTable.ForeignKeys[0].RefTable = SubmitsTable
 	ContestSubmitsTable.ForeignKeys[0].RefTable = ContestsTable
 	ContestSubmitsTable.ForeignKeys[1].RefTable = SubmitsTable
 	GroupSubmitsTable.ForeignKeys[0].RefTable = GroupsTable

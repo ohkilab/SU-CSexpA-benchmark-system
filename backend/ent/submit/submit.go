@@ -37,10 +37,10 @@ const (
 	// Table holds the table name of the submit in the database.
 	Table = "submits"
 	// TagResultsTable is the table that holds the tagResults relation/edge.
-	TagResultsTable = "tag_results"
-	// TagResultsInverseTable is the table name for the TagResult entity.
-	// It exists in this package in order to avoid circular dependency with the "tagresult" package.
-	TagResultsInverseTable = "tag_results"
+	TagResultsTable = "task_results"
+	// TagResultsInverseTable is the table name for the TaskResult entity.
+	// It exists in this package in order to avoid circular dependency with the "taskresult" package.
+	TagResultsInverseTable = "task_results"
 	// TagResultsColumn is the table column denoting the tagResults relation/edge.
 	TagResultsColumn = "submit_tag_results"
 	// GroupsTable is the table that holds the groups relation/edge. The primary key declared below.

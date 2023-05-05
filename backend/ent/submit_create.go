@@ -13,7 +13,7 @@ import (
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/ent/contest"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/ent/group"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/ent/submit"
-	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/ent/tagresult"
+	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/ent/taskresult"
 )
 
 // SubmitCreate is the builder for creating a Submit entity.
@@ -103,14 +103,14 @@ func (sc *SubmitCreate) SetID(i int) *SubmitCreate {
 	return sc
 }
 
-// AddTagResultIDs adds the "tagResults" edge to the TagResult entity by IDs.
+// AddTagResultIDs adds the "tagResults" edge to the TaskResult entity by IDs.
 func (sc *SubmitCreate) AddTagResultIDs(ids ...int) *SubmitCreate {
 	sc.mutation.AddTagResultIDs(ids...)
 	return sc
 }
 
-// AddTagResults adds the "tagResults" edges to the TagResult entity.
-func (sc *SubmitCreate) AddTagResults(t ...*TagResult) *SubmitCreate {
+// AddTagResults adds the "tagResults" edges to the TaskResult entity.
+func (sc *SubmitCreate) AddTagResults(t ...*TaskResult) *SubmitCreate {
 	ids := make([]int, len(t))
 	for i := range t {
 		ids[i] = t[i].ID
@@ -274,7 +274,7 @@ func (sc *SubmitCreate) createSpec() (*Submit, *sqlgraph.CreateSpec) {
 			Columns: []string{submit.TagResultsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(tagresult.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(taskresult.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {

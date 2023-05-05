@@ -15,7 +15,7 @@ import (
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/ent/group"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/ent/predicate"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/ent/submit"
-	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/ent/tagresult"
+	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/ent/taskresult"
 )
 
 // SubmitUpdate is the builder for updating Submit entities.
@@ -143,14 +143,14 @@ func (su *SubmitUpdate) ClearUpdatedAt() *SubmitUpdate {
 	return su
 }
 
-// AddTagResultIDs adds the "tagResults" edge to the TagResult entity by IDs.
+// AddTagResultIDs adds the "tagResults" edge to the TaskResult entity by IDs.
 func (su *SubmitUpdate) AddTagResultIDs(ids ...int) *SubmitUpdate {
 	su.mutation.AddTagResultIDs(ids...)
 	return su
 }
 
-// AddTagResults adds the "tagResults" edges to the TagResult entity.
-func (su *SubmitUpdate) AddTagResults(t ...*TagResult) *SubmitUpdate {
+// AddTagResults adds the "tagResults" edges to the TaskResult entity.
+func (su *SubmitUpdate) AddTagResults(t ...*TaskResult) *SubmitUpdate {
 	ids := make([]int, len(t))
 	for i := range t {
 		ids[i] = t[i].ID
@@ -193,20 +193,20 @@ func (su *SubmitUpdate) Mutation() *SubmitMutation {
 	return su.mutation
 }
 
-// ClearTagResults clears all "tagResults" edges to the TagResult entity.
+// ClearTagResults clears all "tagResults" edges to the TaskResult entity.
 func (su *SubmitUpdate) ClearTagResults() *SubmitUpdate {
 	su.mutation.ClearTagResults()
 	return su
 }
 
-// RemoveTagResultIDs removes the "tagResults" edge to TagResult entities by IDs.
+// RemoveTagResultIDs removes the "tagResults" edge to TaskResult entities by IDs.
 func (su *SubmitUpdate) RemoveTagResultIDs(ids ...int) *SubmitUpdate {
 	su.mutation.RemoveTagResultIDs(ids...)
 	return su
 }
 
-// RemoveTagResults removes "tagResults" edges to TagResult entities.
-func (su *SubmitUpdate) RemoveTagResults(t ...*TagResult) *SubmitUpdate {
+// RemoveTagResults removes "tagResults" edges to TaskResult entities.
+func (su *SubmitUpdate) RemoveTagResults(t ...*TaskResult) *SubmitUpdate {
 	ids := make([]int, len(t))
 	for i := range t {
 		ids[i] = t[i].ID
@@ -362,7 +362,7 @@ func (su *SubmitUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Columns: []string{submit.TagResultsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(tagresult.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(taskresult.FieldID, field.TypeInt),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -375,7 +375,7 @@ func (su *SubmitUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Columns: []string{submit.TagResultsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(tagresult.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(taskresult.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {
@@ -391,7 +391,7 @@ func (su *SubmitUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Columns: []string{submit.TagResultsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(tagresult.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(taskresult.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {
@@ -621,14 +621,14 @@ func (suo *SubmitUpdateOne) ClearUpdatedAt() *SubmitUpdateOne {
 	return suo
 }
 
-// AddTagResultIDs adds the "tagResults" edge to the TagResult entity by IDs.
+// AddTagResultIDs adds the "tagResults" edge to the TaskResult entity by IDs.
 func (suo *SubmitUpdateOne) AddTagResultIDs(ids ...int) *SubmitUpdateOne {
 	suo.mutation.AddTagResultIDs(ids...)
 	return suo
 }
 
-// AddTagResults adds the "tagResults" edges to the TagResult entity.
-func (suo *SubmitUpdateOne) AddTagResults(t ...*TagResult) *SubmitUpdateOne {
+// AddTagResults adds the "tagResults" edges to the TaskResult entity.
+func (suo *SubmitUpdateOne) AddTagResults(t ...*TaskResult) *SubmitUpdateOne {
 	ids := make([]int, len(t))
 	for i := range t {
 		ids[i] = t[i].ID
@@ -671,20 +671,20 @@ func (suo *SubmitUpdateOne) Mutation() *SubmitMutation {
 	return suo.mutation
 }
 
-// ClearTagResults clears all "tagResults" edges to the TagResult entity.
+// ClearTagResults clears all "tagResults" edges to the TaskResult entity.
 func (suo *SubmitUpdateOne) ClearTagResults() *SubmitUpdateOne {
 	suo.mutation.ClearTagResults()
 	return suo
 }
 
-// RemoveTagResultIDs removes the "tagResults" edge to TagResult entities by IDs.
+// RemoveTagResultIDs removes the "tagResults" edge to TaskResult entities by IDs.
 func (suo *SubmitUpdateOne) RemoveTagResultIDs(ids ...int) *SubmitUpdateOne {
 	suo.mutation.RemoveTagResultIDs(ids...)
 	return suo
 }
 
-// RemoveTagResults removes "tagResults" edges to TagResult entities.
-func (suo *SubmitUpdateOne) RemoveTagResults(t ...*TagResult) *SubmitUpdateOne {
+// RemoveTagResults removes "tagResults" edges to TaskResult entities.
+func (suo *SubmitUpdateOne) RemoveTagResults(t ...*TaskResult) *SubmitUpdateOne {
 	ids := make([]int, len(t))
 	for i := range t {
 		ids[i] = t[i].ID
@@ -870,7 +870,7 @@ func (suo *SubmitUpdateOne) sqlSave(ctx context.Context) (_node *Submit, err err
 			Columns: []string{submit.TagResultsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(tagresult.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(taskresult.FieldID, field.TypeInt),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -883,7 +883,7 @@ func (suo *SubmitUpdateOne) sqlSave(ctx context.Context) (_node *Submit, err err
 			Columns: []string{submit.TagResultsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(tagresult.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(taskresult.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {
@@ -899,7 +899,7 @@ func (suo *SubmitUpdateOne) sqlSave(ctx context.Context) (_node *Submit, err err
 			Columns: []string{submit.TagResultsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(tagresult.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(taskresult.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {

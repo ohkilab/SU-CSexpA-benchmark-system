@@ -40,7 +40,7 @@ type Submit struct {
 // SubmitEdges holds the relations/edges for other nodes in the graph.
 type SubmitEdges struct {
 	// TagResults holds the value of the tagResults edge.
-	TagResults []*TagResult `json:"tagResults,omitempty"`
+	TagResults []*TaskResult `json:"tagResults,omitempty"`
 	// Groups holds the value of the groups edge.
 	Groups []*Group `json:"groups,omitempty"`
 	// Contests holds the value of the contests edge.
@@ -52,7 +52,7 @@ type SubmitEdges struct {
 
 // TagResultsOrErr returns the TagResults value or an error if the edge
 // was not loaded in eager-loading.
-func (e SubmitEdges) TagResultsOrErr() ([]*TagResult, error) {
+func (e SubmitEdges) TagResultsOrErr() ([]*TaskResult, error) {
 	if e.loadedTypes[0] {
 		return e.TagResults, nil
 	}
@@ -165,7 +165,7 @@ func (s *Submit) Value(name string) (ent.Value, error) {
 }
 
 // QueryTagResults queries the "tagResults" edge of the Submit entity.
-func (s *Submit) QueryTagResults() *TagResultQuery {
+func (s *Submit) QueryTagResults() *TaskResultQuery {
 	return NewSubmitClient(s.config).QueryTagResults(s)
 }
 

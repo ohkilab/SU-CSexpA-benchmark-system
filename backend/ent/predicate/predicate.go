@@ -15,5 +15,5 @@ type Group func(*sql.Selector)
 // Submit is the predicate function for submit builders.
 type Submit func(*sql.Selector)
 
-// TagResult is the predicate function for tagresult builders.
-type TagResult func(*sql.Selector)
+// TaskResult is the predicate function for taskresult builders.
+type TaskResult func(*sql.Selector)

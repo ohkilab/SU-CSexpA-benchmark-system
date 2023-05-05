@@ -15,7 +15,7 @@ import (
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/ent/group"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/ent/predicate"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/ent/submit"
-	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/ent/tagresult"
+	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/ent/taskresult"
 )
 
 // SubmitQuery is the builder for querying Submit entities.
@@ -25,7 +25,7 @@ type SubmitQuery struct {
 	order          []submit.OrderOption
 	inters         []Interceptor
 	predicates     []predicate.Submit
-	withTagResults *TagResultQuery
+	withTagResults *TaskResultQuery
 	withGroups     *GroupQuery
 	withContests   *ContestQuery
 	// intermediate query (i.e. traversal path).
@@ -65,8 +65,8 @@ func (sq *SubmitQuery) Order(o ...submit.OrderOption) *SubmitQuery {
 }
 
 // QueryTagResults chains the current query on the "tagResults" edge.
-func (sq *SubmitQuery) QueryTagResults() *TagResultQuery {
-	query := (&TagResultClient{config: sq.config}).Query()
+func (sq *SubmitQuery) QueryTagResults() *TaskResultQuery {
+	query := (&TaskResultClient{config: sq.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
 		if err := sq.prepareQuery(ctx); err != nil {
 			return nil, err
@@ -77,7 +77,7 @@ func (sq *SubmitQuery) QueryTagResults() *TagResultQuery {
 		}
 		step := sqlgraph.NewStep(
 			sqlgraph.From(submit.Table, submit.FieldID, selector),
-			sqlgraph.To(tagresult.Table, tagresult.FieldID),
+			sqlgraph.To(taskresult.Table, taskresult.FieldID),
 			sqlgraph.Edge(sqlgraph.O2M, false, submit.TagResultsTable, submit.TagResultsColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(sq.driver.Dialect(), step)
@@ -333,8 +333,8 @@ func (sq *SubmitQuery) Clone() *SubmitQuery {
 
 // WithTagResults tells the query-builder to eager-load the nodes that are connected to
 // the "tagResults" edge. The optional arguments are used to configure the query builder of the edge.
-func (sq *SubmitQuery) WithTagResults(opts ...func(*TagResultQuery)) *SubmitQuery {
-	query := (&TagResultClient{config: sq.config}).Query()
+func (sq *SubmitQuery) WithTagResults(opts ...func(*TaskResultQuery)) *SubmitQuery {
+	query := (&TaskResultClient{config: sq.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
@@ -468,8 +468,8 @@ func (sq *SubmitQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Submi
 	}
 	if query := sq.withTagResults; query != nil {
 		if err := sq.loadTagResults(ctx, query, nodes,
-			func(n *Submit) { n.Edges.TagResults = []*TagResult{} },
-			func(n *Submit, e *TagResult) { n.Edges.TagResults = append(n.Edges.TagResults, e) }); err != nil {
+			func(n *Submit) { n.Edges.TagResults = []*TaskResult{} },
+			func(n *Submit, e *TaskResult) { n.Edges.TagResults = append(n.Edges.TagResults, e) }); err != nil {
 			return nil, err
 		}
 	}
@@ -490,7 +490,7 @@ func (sq *SubmitQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Submi
 	return nodes, nil
 }
 
-func (sq *SubmitQuery) loadTagResults(ctx context.Context, query *TagResultQuery, nodes []*Submit, init func(*Submit), assign func(*Submit, *TagResult)) error {
+func (sq *SubmitQuery) loadTagResults(ctx context.Context, query *TaskResultQuery, nodes []*Submit, init func(*Submit), assign func(*Submit, *TaskResult)) error {
 	fks := make([]driver.Value, 0, len(nodes))
 	nodeids := make(map[int]*Submit)
 	for i := range nodes {
@@ -501,7 +501,7 @@ func (sq *SubmitQuery) loadTagResults(ctx context.Context, query *TagResultQuery
 		}
 	}
 	query.withFKs = true
-	query.Where(predicate.TagResult(func(s *sql.Selector) {
+	query.Where(predicate.TaskResult(func(s *sql.Selector) {
 		s.Where(sql.InValues(s.C(submit.TagResultsColumn), fks...))
 	}))
 	neighbors, err := query.All(ctx)

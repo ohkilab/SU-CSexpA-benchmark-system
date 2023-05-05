@@ -17,7 +17,7 @@ import (
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/ent/contest"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/ent/group"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/ent/submit"
-	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/ent/tagresult"
+	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/ent/taskresult"
 )
 
 // Client is the client that holds all ent builders.
@@ -31,8 +31,8 @@ type Client struct {
 	Group *GroupClient
 	// Submit is the client for interacting with the Submit builders.
 	Submit *SubmitClient
-	// TagResult is the client for interacting with the TagResult builders.
-	TagResult *TagResultClient
+	// TaskResult is the client for interacting with the TaskResult builders.
+	TaskResult *TaskResultClient
 }
 
 // NewClient creates a new client configured with the given options.
@@ -49,7 +49,7 @@ func (c *Client) init() {
 	c.Contest = NewContestClient(c.config)
 	c.Group = NewGroupClient(c.config)
 	c.Submit = NewSubmitClient(c.config)
-	c.TagResult = NewTagResultClient(c.config)
+	c.TaskResult = NewTaskResultClient(c.config)
 }
 
 type (
@@ -130,12 +130,12 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 	cfg := c.config
 	cfg.driver = tx
 	return &Tx{
-		ctx:       ctx,
-		config:    cfg,
-		Contest:   NewContestClient(cfg),
-		Group:     NewGroupClient(cfg),
-		Submit:    NewSubmitClient(cfg),
-		TagResult: NewTagResultClient(cfg),
+		ctx:        ctx,
+		config:     cfg,
+		Contest:    NewContestClient(cfg),
+		Group:      NewGroupClient(cfg),
+		Submit:     NewSubmitClient(cfg),
+		TaskResult: NewTaskResultClient(cfg),
 	}, nil
 }
 
@@ -153,12 +153,12 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 	cfg := c.config
 	cfg.driver = &txDriver{tx: tx, drv: c.driver}
 	return &Tx{
-		ctx:       ctx,
-		config:    cfg,
-		Contest:   NewContestClient(cfg),
-		Group:     NewGroupClient(cfg),
-		Submit:    NewSubmitClient(cfg),
-		TagResult: NewTagResultClient(cfg),
+		ctx:        ctx,
+		config:     cfg,
+		Contest:    NewContestClient(cfg),
+		Group:      NewGroupClient(cfg),
+		Submit:     NewSubmitClient(cfg),
+		TaskResult: NewTaskResultClient(cfg),
 	}, nil
 }
 
@@ -190,7 +190,7 @@ func (c *Client) Use(hooks ...Hook) {
 	c.Contest.Use(hooks...)
 	c.Group.Use(hooks...)
 	c.Submit.Use(hooks...)
-	c.TagResult.Use(hooks...)
+	c.TaskResult.Use(hooks...)
 }
 
 // Intercept adds the query interceptors to all the entity clients.
@@ -199,7 +199,7 @@ func (c *Client) Intercept(interceptors ...Interceptor) {
 	c.Contest.Intercept(interceptors...)
 	c.Group.Intercept(interceptors...)
 	c.Submit.Intercept(interceptors...)
-	c.TagResult.Intercept(interceptors...)
+	c.TaskResult.Intercept(interceptors...)
 }
 
 // Mutate implements the ent.Mutator interface.
@@ -211,8 +211,8 @@ func (c *Client) Mutate(ctx context.Context, m Mutation) (Value, error) {
 		return c.Group.mutate(ctx, m)
 	case *SubmitMutation:
 		return c.Submit.mutate(ctx, m)
-	case *TagResultMutation:
-		return c.TagResult.mutate(ctx, m)
+	case *TaskResultMutation:
+		return c.TaskResult.mutate(ctx, m)
 	default:
 		return nil, fmt.Errorf("ent: unknown mutation type %T", m)
 	}
@@ -580,13 +580,13 @@ func (c *SubmitClient) GetX(ctx context.Context, id int) *Submit {
 }
 
 // QueryTagResults queries the tagResults edge of a Submit.
-func (c *SubmitClient) QueryTagResults(s *Submit) *TagResultQuery {
-	query := (&TagResultClient{config: c.config}).Query()
+func (c *SubmitClient) QueryTagResults(s *Submit) *TaskResultQuery {
+	query := (&TaskResultClient{config: c.config}).Query()
 	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
 		id := s.ID
 		step := sqlgraph.NewStep(
 			sqlgraph.From(submit.Table, submit.FieldID, id),
-			sqlgraph.To(tagresult.Table, tagresult.FieldID),
+			sqlgraph.To(taskresult.Table, taskresult.FieldID),
 			sqlgraph.Edge(sqlgraph.O2M, false, submit.TagResultsTable, submit.TagResultsColumn),
 		)
 		fromV = sqlgraph.Neighbors(s.driver.Dialect(), step)
@@ -652,92 +652,92 @@ func (c *SubmitClient) mutate(ctx context.Context, m *SubmitMutation) (Value, er
 	}
 }
 
-// TagResultClient is a client for the TagResult schema.
-type TagResultClient struct {
+// TaskResultClient is a client for the TaskResult schema.
+type TaskResultClient struct {
 	config
 }
 
-// NewTagResultClient returns a client for the TagResult from the given config.
-func NewTagResultClient(c config) *TagResultClient {
-	return &TagResultClient{config: c}
+// NewTaskResultClient returns a client for the TaskResult from the given config.
+func NewTaskResultClient(c config) *TaskResultClient {
+	return &TaskResultClient{config: c}
 }
 
 // Use adds a list of mutation hooks to the hooks stack.
-// A call to `Use(f, g, h)` equals to `tagresult.Hooks(f(g(h())))`.
-func (c *TagResultClient) Use(hooks ...Hook) {
-	c.hooks.TagResult = append(c.hooks.TagResult, hooks...)
+// A call to `Use(f, g, h)` equals to `taskresult.Hooks(f(g(h())))`.
+func (c *TaskResultClient) Use(hooks ...Hook) {
+	c.hooks.TaskResult = append(c.hooks.TaskResult, hooks...)
 }
 
 // Intercept adds a list of query interceptors to the interceptors stack.
-// A call to `Intercept(f, g, h)` equals to `tagresult.Intercept(f(g(h())))`.
-func (c *TagResultClient) Intercept(interceptors ...Interceptor) {
-	c.inters.TagResult = append(c.inters.TagResult, interceptors...)
+// A call to `Intercept(f, g, h)` equals to `taskresult.Intercept(f(g(h())))`.
+func (c *TaskResultClient) Intercept(interceptors ...Interceptor) {
+	c.inters.TaskResult = append(c.inters.TaskResult, interceptors...)
 }
 
-// Create returns a builder for creating a TagResult entity.
-func (c *TagResultClient) Create() *TagResultCreate {
-	mutation := newTagResultMutation(c.config, OpCreate)
-	return &TagResultCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+// Create returns a builder for creating a TaskResult entity.
+func (c *TaskResultClient) Create() *TaskResultCreate {
+	mutation := newTaskResultMutation(c.config, OpCreate)
+	return &TaskResultCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
-// CreateBulk returns a builder for creating a bulk of TagResult entities.
-func (c *TagResultClient) CreateBulk(builders ...*TagResultCreate) *TagResultCreateBulk {
-	return &TagResultCreateBulk{config: c.config, builders: builders}
+// CreateBulk returns a builder for creating a bulk of TaskResult entities.
+func (c *TaskResultClient) CreateBulk(builders ...*TaskResultCreate) *TaskResultCreateBulk {
+	return &TaskResultCreateBulk{config: c.config, builders: builders}
 }
 
-// Update returns an update builder for TagResult.
-func (c *TagResultClient) Update() *TagResultUpdate {
-	mutation := newTagResultMutation(c.config, OpUpdate)
-	return &TagResultUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+// Update returns an update builder for TaskResult.
+func (c *TaskResultClient) Update() *TaskResultUpdate {
+	mutation := newTaskResultMutation(c.config, OpUpdate)
+	return &TaskResultUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
 // UpdateOne returns an update builder for the given entity.
-func (c *TagResultClient) UpdateOne(tr *TagResult) *TagResultUpdateOne {
-	mutation := newTagResultMutation(c.config, OpUpdateOne, withTagResult(tr))
-	return &TagResultUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+func (c *TaskResultClient) UpdateOne(tr *TaskResult) *TaskResultUpdateOne {
+	mutation := newTaskResultMutation(c.config, OpUpdateOne, withTaskResult(tr))
+	return &TaskResultUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
 // UpdateOneID returns an update builder for the given id.
-func (c *TagResultClient) UpdateOneID(id int) *TagResultUpdateOne {
-	mutation := newTagResultMutation(c.config, OpUpdateOne, withTagResultID(id))
-	return &TagResultUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+func (c *TaskResultClient) UpdateOneID(id int) *TaskResultUpdateOne {
+	mutation := newTaskResultMutation(c.config, OpUpdateOne, withTaskResultID(id))
+	return &TaskResultUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
-// Delete returns a delete builder for TagResult.
-func (c *TagResultClient) Delete() *TagResultDelete {
-	mutation := newTagResultMutation(c.config, OpDelete)
-	return &TagResultDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+// Delete returns a delete builder for TaskResult.
+func (c *TaskResultClient) Delete() *TaskResultDelete {
+	mutation := newTaskResultMutation(c.config, OpDelete)
+	return &TaskResultDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
 // DeleteOne returns a builder for deleting the given entity.
-func (c *TagResultClient) DeleteOne(tr *TagResult) *TagResultDeleteOne {
+func (c *TaskResultClient) DeleteOne(tr *TaskResult) *TaskResultDeleteOne {
 	return c.DeleteOneID(tr.ID)
 }
 
 // DeleteOneID returns a builder for deleting the given entity by its id.
-func (c *TagResultClient) DeleteOneID(id int) *TagResultDeleteOne {
-	builder := c.Delete().Where(tagresult.ID(id))
+func (c *TaskResultClient) DeleteOneID(id int) *TaskResultDeleteOne {
+	builder := c.Delete().Where(taskresult.ID(id))
 	builder.mutation.id = &id
 	builder.mutation.op = OpDeleteOne
-	return &TagResultDeleteOne{builder}
+	return &TaskResultDeleteOne{builder}
 }
 
-// Query returns a query builder for TagResult.
-func (c *TagResultClient) Query() *TagResultQuery {
-	return &TagResultQuery{
+// Query returns a query builder for TaskResult.
+func (c *TaskResultClient) Query() *TaskResultQuery {
+	return &TaskResultQuery{
 		config: c.config,
-		ctx:    &QueryContext{Type: TypeTagResult},
+		ctx:    &QueryContext{Type: TypeTaskResult},
 		inters: c.Interceptors(),
 	}
 }
 
-// Get returns a TagResult entity by its id.
-func (c *TagResultClient) Get(ctx context.Context, id int) (*TagResult, error) {
-	return c.Query().Where(tagresult.ID(id)).Only(ctx)
+// Get returns a TaskResult entity by its id.
+func (c *TaskResultClient) Get(ctx context.Context, id int) (*TaskResult, error) {
+	return c.Query().Where(taskresult.ID(id)).Only(ctx)
 }
 
 // GetX is like Get, but panics if an error occurs.
-func (c *TagResultClient) GetX(ctx context.Context, id int) *TagResult {
+func (c *TaskResultClient) GetX(ctx context.Context, id int) *TaskResult {
 	obj, err := c.Get(ctx, id)
 	if err != nil {
 		panic(err)
@@ -746,36 +746,36 @@ func (c *TagResultClient) GetX(ctx context.Context, id int) *TagResult {
 }
 
 // Hooks returns the client hooks.
-func (c *TagResultClient) Hooks() []Hook {
-	return c.hooks.TagResult
+func (c *TaskResultClient) Hooks() []Hook {
+	return c.hooks.TaskResult
 }
 
 // Interceptors returns the client interceptors.
-func (c *TagResultClient) Interceptors() []Interceptor {
-	return c.inters.TagResult
+func (c *TaskResultClient) Interceptors() []Interceptor {
+	return c.inters.TaskResult
 }
 
-func (c *TagResultClient) mutate(ctx context.Context, m *TagResultMutation) (Value, error) {
+func (c *TaskResultClient) mutate(ctx context.Context, m *TaskResultMutation) (Value, error) {
 	switch m.Op() {
 	case OpCreate:
-		return (&TagResultCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+		return (&TaskResultCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
 	case OpUpdate:
-		return (&TagResultUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+		return (&TaskResultUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
 	case OpUpdateOne:
-		return (&TagResultUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+		return (&TaskResultUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
 	case OpDelete, OpDeleteOne:
-		return (&TagResultDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+		return (&TaskResultDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
 	default:
-		return nil, fmt.Errorf("ent: unknown TagResult mutation op: %q", m.Op())
+		return nil, fmt.Errorf("ent: unknown TaskResult mutation op: %q", m.Op())
 	}
 }
 
 // hooks and interceptors per client, for fast access.
 type (
 	hooks struct {
-		Contest, Group, Submit, TagResult []ent.Hook
+		Contest, Group, Submit, TaskResult []ent.Hook
 	}
 	inters struct {
-		Contest, Group, Submit, TagResult []ent.Interceptor
+		Contest, Group, Submit, TaskResult []ent.Interceptor
 	}
 )
