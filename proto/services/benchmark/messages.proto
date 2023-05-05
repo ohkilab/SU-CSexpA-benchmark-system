@@ -26,7 +26,7 @@ enum HttpMethod {
 message ExecuteResponse {
   bool ok = 1;
   optional string error_message = 2; // if ok is false, this field is set
-  int32 time_elapsed = 3;  // in milliseconds
+  int64 time_elapsed = 3;  // in milliseconds
   int32 total_requests = 4;
   int32 requests_per_second = 5;
 }
