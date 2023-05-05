@@ -79,49 +79,18 @@ export interface PostSubmitResponse {
  */
 export interface GetSubmitRequest {
     /**
-     * @generated from protobuf field: string submit_id = 1;
+     * @generated from protobuf field: int32 submit_id = 1;
      */
-    submitId: string;
+    submitId: number;
 }
 /**
  * @generated from protobuf message GetSubmitResponse
  */
 export interface GetSubmitResponse {
     /**
-     * @generated from protobuf oneof: result
+     * @generated from protobuf field: Submit submit = 1;
      */
-    result: {
-        oneofKind: "tagProgress";
-        /**
-         * @generated from protobuf field: GetSubmitResponse.TagProgress tag_progress = 1;
-         */
-        tagProgress: GetSubmitResponse_TagProgress; // if the submit is in progress, return this by server streaming.
-    } | {
-        oneofKind: "submit";
-        /**
-         * @generated from protobuf field: Submit submit = 2;
-         */
-        submit: Submit; // if the submit has been finished, return this only once.
-    } | {
-        oneofKind: undefined;
-    };
-}
-/**
- * @generated from protobuf message GetSubmitResponse.TagProgress
- */
-export interface GetSubmitResponse_TagProgress {
-    /**
-     * @generated from protobuf field: string submit_id = 1;
-     */
-    submitId: string;
-    /**
-     * @generated from protobuf field: int32 score = 2;
-     */
-    score: number;
-    /**
-     * @generated from protobuf field: string name = 3;
-     */
-    name: string; // it may be secret_{i}
+    submit?: Submit;
 }
 /**
  * @generated from protobuf message GetRankingRequest
@@ -459,11 +428,11 @@ export const PostSubmitResponse = new PostSubmitResponse$Type();
 class GetSubmitRequest$Type extends MessageType<GetSubmitRequest> {
     constructor() {
         super("GetSubmitRequest", [
-            { no: 1, name: "submit_id", kind: "scalar", T: 9 /*ScalarType.STRING*/ }
+            { no: 1, name: "submit_id", kind: "scalar", T: 5 /*ScalarType.INT32*/ }
         ]);
     }
     create(value?: PartialMessage<GetSubmitRequest>): GetSubmitRequest {
-        const message = { submitId: "" };
+        const message = { submitId: 0 };
         globalThis.Object.defineProperty(message, MESSAGE_TYPE, { enumerable: false, value: this });
         if (value !== undefined)
             reflectionMergePartial<GetSubmitRequest>(this, message, value);
@@ -474,8 +443,8 @@ class GetSubmitRequest$Type extends MessageType<GetSubmitRequest> {
         while (reader.pos < end) {
             let [fieldNo, wireType] = reader.tag();
             switch (fieldNo) {
-                case /* string submit_id */ 1:
-                    message.submitId = reader.string();
+                case /* int32 submit_id */ 1:
+                    message.submitId = reader.int32();
                     break;
                 default:
                     let u = options.readUnknownField;
@@ -489,9 +458,9 @@ class GetSubmitRequest$Type extends MessageType<GetSubmitRequest> {
         return message;
     }
     internalBinaryWrite(message: GetSubmitRequest, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
-        /* string submit_id = 1; */
-        if (message.submitId !== "")
-            writer.tag(1, WireType.LengthDelimited).string(message.submitId);
+        /* int32 submit_id = 1; */
+        if (message.submitId !== 0)
+            writer.tag(1, WireType.Varint).int32(message.submitId);
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
@@ -506,12 +475,11 @@ export const GetSubmitRequest = new GetSubmitRequest$Type();
 class GetSubmitResponse$Type extends MessageType<GetSubmitResponse> {
     constructor() {
         super("GetSubmitResponse", [
-            { no: 1, name: "tag_progress", kind: "message", oneof: "result", T: () => GetSubmitResponse_TagProgress },
-            { no: 2, name: "submit", kind: "message", oneof: "result", T: () => Submit }
+            { no: 1, name: "submit", kind: "message", T: () => Submit }
         ]);
     }
     create(value?: PartialMessage<GetSubmitResponse>): GetSubmitResponse {
-        const message = { result: { oneofKind: undefined } };
+        const message = {};
         globalThis.Object.defineProperty(message, MESSAGE_TYPE, { enumerable: false, value: this });
         if (value !== undefined)
             reflectionMergePartial<GetSubmitResponse>(this, message, value);
@@ -522,17 +490,8 @@ class GetSubmitResponse$Type extends MessageType<GetSubmitResponse> {
         while (reader.pos < end) {
             let [fieldNo, wireType] = reader.tag();
             switch (fieldNo) {
-                case /* GetSubmitResponse.TagProgress tag_progress */ 1:
-                    message.result = {
-                        oneofKind: "tagProgress",
-                        tagProgress: GetSubmitResponse_TagProgress.internalBinaryRead(reader, reader.uint32(), options, (message.result as any).tagProgress)
-                    };
-                    break;
-                case /* Submit submit */ 2:
-                    message.result = {
-                        oneofKind: "submit",
-                        submit: Submit.internalBinaryRead(reader, reader.uint32(), options, (message.result as any).submit)
-                    };
+                case /* Submit submit */ 1:
+                    message.submit = Submit.internalBinaryRead(reader, reader.uint32(), options, message.submit);
                     break;
                 default:
                     let u = options.readUnknownField;
@@ -546,12 +505,9 @@ class GetSubmitResponse$Type extends MessageType<GetSubmitResponse> {
         return message;
     }
     internalBinaryWrite(message: GetSubmitResponse, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
-        /* GetSubmitResponse.TagProgress tag_progress = 1; */
-        if (message.result.oneofKind === "tagProgress")
-            GetSubmitResponse_TagProgress.internalBinaryWrite(message.result.tagProgress, writer.tag(1, WireType.LengthDelimited).fork(), options).join();
-        /* Submit submit = 2; */
-        if (message.result.oneofKind === "submit")
-            Submit.internalBinaryWrite(message.result.submit, writer.tag(2, WireType.LengthDelimited).fork(), options).join();
+        /* Submit submit = 1; */
+        if (message.submit)
+            Submit.internalBinaryWrite(message.submit, writer.tag(1, WireType.LengthDelimited).fork(), options).join();
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
@@ -562,67 +518,6 @@ class GetSubmitResponse$Type extends MessageType<GetSubmitResponse> {
  * @generated MessageType for protobuf message GetSubmitResponse
  */
 export const GetSubmitResponse = new GetSubmitResponse$Type();
-// @generated message type with reflection information, may provide speed optimized methods
-class GetSubmitResponse_TagProgress$Type extends MessageType<GetSubmitResponse_TagProgress> {
-    constructor() {
-        super("GetSubmitResponse.TagProgress", [
-            { no: 1, name: "submit_id", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
-            { no: 2, name: "score", kind: "scalar", T: 5 /*ScalarType.INT32*/ },
-            { no: 3, name: "name", kind: "scalar", T: 9 /*ScalarType.STRING*/ }
-        ]);
-    }
-    create(value?: PartialMessage<GetSubmitResponse_TagProgress>): GetSubmitResponse_TagProgress {
-        const message = { submitId: "", score: 0, name: "" };
-        globalThis.Object.defineProperty(message, MESSAGE_TYPE, { enumerable: false, value: this });
-        if (value !== undefined)
-            reflectionMergePartial<GetSubmitResponse_TagProgress>(this, message, value);
-        return message;
-    }
-    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: GetSubmitResponse_TagProgress): GetSubmitResponse_TagProgress {
-        let message = target ?? this.create(), end = reader.pos + length;
-        while (reader.pos < end) {
-            let [fieldNo, wireType] = reader.tag();
-            switch (fieldNo) {
-                case /* string submit_id */ 1:
-                    message.submitId = reader.string();
-                    break;
-                case /* int32 score */ 2:
-                    message.score = reader.int32();
-                    break;
-                case /* string name */ 3:
-                    message.name = reader.string();
-                    break;
-                default:
-                    let u = options.readUnknownField;
-                    if (u === "throw")
-                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
-                    let d = reader.skip(wireType);
-                    if (u !== false)
-                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
-            }
-        }
-        return message;
-    }
-    internalBinaryWrite(message: GetSubmitResponse_TagProgress, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
-        /* string submit_id = 1; */
-        if (message.submitId !== "")
-            writer.tag(1, WireType.LengthDelimited).string(message.submitId);
-        /* int32 score = 2; */
-        if (message.score !== 0)
-            writer.tag(2, WireType.Varint).int32(message.score);
-        /* string name = 3; */
-        if (message.name !== "")
-            writer.tag(3, WireType.LengthDelimited).string(message.name);
-        let u = options.writeUnknownFields;
-        if (u !== false)
-            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
-        return writer;
-    }
-}
-/**
- * @generated MessageType for protobuf message GetSubmitResponse.TagProgress
- */
-export const GetSubmitResponse_TagProgress = new GetSubmitResponse_TagProgress$Type();
 // @generated message type with reflection information, may provide speed optimized methods
 class GetRankingRequest$Type extends MessageType<GetRankingRequest> {
     constructor() {

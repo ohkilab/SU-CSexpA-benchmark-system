@@ -27,20 +27,10 @@ message PostSubmitResponse {
   google.protobuf.Timestamp submited_at = 4;
 }
 
-message GetSubmitRequest { string submit_id = 1; }
+message GetSubmitRequest { int32 submit_id = 1; }
 
 message GetSubmitResponse {
-  message TagProgress {
-    string submit_id = 1;
-    int32 score = 2;
-    string name = 3; // it may be secret_{i}
-  }
-  oneof result {
-    TagProgress tag_progress =
-        1; // if the submit is in progress, return this by server streaming.
-    Submit submit =
-        2; // if the submit has been finished, return this only once.
-  }
+  Submit submit = 1;
 }
 
 message GetRankingRequest {
