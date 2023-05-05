@@ -54,6 +54,7 @@ func (s *service) Execute(req *pb.ExecuteRequest, stream pb.BenchmarkService_Exe
 			TimeElapsed:       timeElapsed,
 			TotalRequests:     task.AttemptCount,
 			RequestsPerSecond: task.AttemptCount / int32(timeElapsed*1000),
+			Task:              task,
 		}); err != nil {
 			log.Println(err)
 			return err
