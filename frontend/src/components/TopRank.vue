@@ -4,7 +4,7 @@ defineProps<{ rank: number; score: number; name: string }>()
 </script>
 <template>
   <div
-    class="cursor-pointer text-xl w-full sm:w-[500px] rounded justify-around items-center shadow-md shadow-gray-950 bg-gray-700 flex p-5 gap-2 hover:scale-105 transition"
+    class="cursor-pointer text-xl w-full sm:w-[500px] rounded justify-around items-center shadow-md shadow-gray-950 flex p-5 gap-2 hover:scale-105 transition"
   >
     <div class="w-10 text-center justify-center">
       <div class="text-2xl">
