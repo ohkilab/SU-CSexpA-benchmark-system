@@ -23,13 +23,12 @@ enum HttpMethod {
   DELETE = 3;
 }
 
-// 冪等性がないと全ての body について validate しないといけなくなる
 message ExecuteResponse {
-  HttpRequest request = 1;
-  HttpResponse response = 2;
-  int32 requests_per_second = 3;
-  int32 thread_num = 6;    // the number of threads for a task
-  int32 attempt_count = 7; // the count of attempting for a task
+  bool ok = 1;
+  optional string error_message = 2; // if ok is false, this field is set
+  int32 time_elapsed = 3;  // in milliseconds
+  int32 total_requests = 4;
+  int32 requests_per_second = 5;
 }
 
 message HttpRequest {
@@ -37,10 +36,4 @@ message HttpRequest {
   HttpMethod method = 2;
   string content_type = 4;
   string body = 5;
-}
-
-message HttpResponse {
-  string status_code = 1;
-  string content_type = 2;
-  string body = 3;
 }
