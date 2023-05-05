@@ -19,6 +19,7 @@ func NewClient() *Client {
 		httpClient: &http.Client{
 			Timeout: 30 * time.Second,
 			Transport: &http.Transport{
+				MaxIdleConns:        500,
 				MaxIdleConnsPerHost: 100,
 			},
 		},
@@ -85,11 +86,12 @@ func (c *Client) Run(ctx context.Context, url string, options ...optionFunc) ([]
 func (c *Client) request(url string) (*http.Response, time.Duration, error) {
 	req, _ := http.NewRequest(http.MethodGet, url, nil)
 	now := time.Now()
-	resp, err := c.httpClient.Do(req)
-	if err != nil {
-		return nil, 0, err
+	for {
+		resp, err := c.httpClient.Do(req)
+		if err == nil {
+			return resp, time.Since(now), nil
+		}
 	}
-	return resp, time.Since(now), nil
 }
 
 type HttpResult struct {

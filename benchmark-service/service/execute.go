@@ -3,6 +3,7 @@ package service
 import (
 	"log"
 	"net/url"
+	"time"
 
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/benchmark-service/benchmark"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/benchmark-service/validation"
@@ -24,13 +25,14 @@ func (s *service) Execute(req *pb.ExecuteRequest, stream pb.BenchmarkService_Exe
 		if err != nil {
 			return status.Error(codes.InvalidArgument, "invalid url")
 		}
+		uri.RawQuery = uri.Query().Encode()
 
 		results, err := s.client.Run(stream.Context(), uri.String(), benchmark.OptThreadNum(int(task.ThreadNum)), benchmark.OptAttemptCount(int(task.AttemptCount)))
 		if err != nil {
 			return err
 		}
 
-		timeElapsed := int64(0)
+		timeElapsed := time.Duration(0)
 		for _, result := range results {
 			if err := validation.Validate2022(uri, result.Body); err != nil {
 				errMsg := err.Error()
@@ -47,14 +49,14 @@ func (s *service) Execute(req *pb.ExecuteRequest, stream pb.BenchmarkService_Exe
 				}
 				goto L1
 			}
-			timeElapsed += result.ResponseTime.Milliseconds()
+			timeElapsed += result.ResponseTime
 		}
 
 		if err := stream.Send(&pb.ExecuteResponse{
 			Ok:                true,
-			TimeElapsed:       timeElapsed,
+			TimeElapsed:       timeElapsed.Microseconds(),
 			TotalRequests:     task.AttemptCount,
-			RequestsPerSecond: task.AttemptCount / int32(timeElapsed*1000),
+			RequestsPerSecond: int32(float64(task.AttemptCount) / timeElapsed.Seconds()),
 			Task:              task,
 		}); err != nil {
 			log.Println(err)
