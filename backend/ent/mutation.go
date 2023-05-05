@@ -1586,31 +1586,31 @@ func (m *GroupMutation) ResetEdge(name string) error {
 // SubmitMutation represents an operation that mutates the Submit nodes in the graph.
 type SubmitMutation struct {
 	config
-	op                Op
-	typ               string
-	id                *int
-	ip_addr           *string
-	year              *int
-	addyear           *int
-	score             *int
-	addscore          *int
-	language          *submit.Language
-	submited_at       *time.Time
-	completed_at      *time.Time
-	updated_at        *time.Time
-	clearedFields     map[string]struct{}
-	tagResults        map[int]struct{}
-	removedtagResults map[int]struct{}
-	clearedtagResults bool
-	groups            map[int]struct{}
-	removedgroups     map[int]struct{}
-	clearedgroups     bool
-	contests          map[int]struct{}
-	removedcontests   map[int]struct{}
-	clearedcontests   bool
-	done              bool
-	oldValue          func(context.Context) (*Submit, error)
-	predicates        []predicate.Submit
+	op                 Op
+	typ                string
+	id                 *int
+	ip_addr            *string
+	year               *int
+	addyear            *int
+	score              *int
+	addscore           *int
+	language           *submit.Language
+	submited_at        *time.Time
+	completed_at       *time.Time
+	updated_at         *time.Time
+	clearedFields      map[string]struct{}
+	taskResults        map[int]struct{}
+	removedtaskResults map[int]struct{}
+	clearedtaskResults bool
+	groups             map[int]struct{}
+	removedgroups      map[int]struct{}
+	clearedgroups      bool
+	contests           map[int]struct{}
+	removedcontests    map[int]struct{}
+	clearedcontests    bool
+	done               bool
+	oldValue           func(context.Context) (*Submit, error)
+	predicates         []predicate.Submit
 }
 
 var _ ent.Mutation = (*SubmitMutation)(nil)
@@ -2062,58 +2062,58 @@ func (m *SubmitMutation) ResetUpdatedAt() {
 	delete(m.clearedFields, submit.FieldUpdatedAt)
 }
 
-// AddTagResultIDs adds the "tagResults" edge to the TaskResult entity by ids.
-func (m *SubmitMutation) AddTagResultIDs(ids ...int) {
-	if m.tagResults == nil {
-		m.tagResults = make(map[int]struct{})
+// AddTaskResultIDs adds the "taskResults" edge to the TaskResult entity by ids.
+func (m *SubmitMutation) AddTaskResultIDs(ids ...int) {
+	if m.taskResults == nil {
+		m.taskResults = make(map[int]struct{})
 	}
 	for i := range ids {
-		m.tagResults[ids[i]] = struct{}{}
+		m.taskResults[ids[i]] = struct{}{}
 	}
 }
 
-// ClearTagResults clears the "tagResults" edge to the TaskResult entity.
-func (m *SubmitMutation) ClearTagResults() {
-	m.clearedtagResults = true
+// ClearTaskResults clears the "taskResults" edge to the TaskResult entity.
+func (m *SubmitMutation) ClearTaskResults() {
+	m.clearedtaskResults = true
 }
 
-// TagResultsCleared reports if the "tagResults" edge to the TaskResult entity was cleared.
-func (m *SubmitMutation) TagResultsCleared() bool {
-	return m.clearedtagResults
+// TaskResultsCleared reports if the "taskResults" edge to the TaskResult entity was cleared.
+func (m *SubmitMutation) TaskResultsCleared() bool {
+	return m.clearedtaskResults
 }
 
-// RemoveTagResultIDs removes the "tagResults" edge to the TaskResult entity by IDs.
-func (m *SubmitMutation) RemoveTagResultIDs(ids ...int) {
-	if m.removedtagResults == nil {
-		m.removedtagResults = make(map[int]struct{})
+// RemoveTaskResultIDs removes the "taskResults" edge to the TaskResult entity by IDs.
+func (m *SubmitMutation) RemoveTaskResultIDs(ids ...int) {
+	if m.removedtaskResults == nil {
+		m.removedtaskResults = make(map[int]struct{})
 	}
 	for i := range ids {
-		delete(m.tagResults, ids[i])
-		m.removedtagResults[ids[i]] = struct{}{}
+		delete(m.taskResults, ids[i])
+		m.removedtaskResults[ids[i]] = struct{}{}
 	}
 }
 
-// RemovedTagResults returns the removed IDs of the "tagResults" edge to the TaskResult entity.
-func (m *SubmitMutation) RemovedTagResultsIDs() (ids []int) {
-	for id := range m.removedtagResults {
+// RemovedTaskResults returns the removed IDs of the "taskResults" edge to the TaskResult entity.
+func (m *SubmitMutation) RemovedTaskResultsIDs() (ids []int) {
+	for id := range m.removedtaskResults {
 		ids = append(ids, id)
 	}
 	return
 }
 
-// TagResultsIDs returns the "tagResults" edge IDs in the mutation.
-func (m *SubmitMutation) TagResultsIDs() (ids []int) {
-	for id := range m.tagResults {
+// TaskResultsIDs returns the "taskResults" edge IDs in the mutation.
+func (m *SubmitMutation) TaskResultsIDs() (ids []int) {
+	for id := range m.taskResults {
 		ids = append(ids, id)
 	}
 	return
 }
 
-// ResetTagResults resets all changes to the "tagResults" edge.
-func (m *SubmitMutation) ResetTagResults() {
-	m.tagResults = nil
-	m.clearedtagResults = false
-	m.removedtagResults = nil
+// ResetTaskResults resets all changes to the "taskResults" edge.
+func (m *SubmitMutation) ResetTaskResults() {
+	m.taskResults = nil
+	m.clearedtaskResults = false
+	m.removedtaskResults = nil
 }
 
 // AddGroupIDs adds the "groups" edge to the Group entity by ids.
@@ -2514,8 +2514,8 @@ func (m *SubmitMutation) ResetField(name string) error {
 // AddedEdges returns all edge names that were set/added in this mutation.
 func (m *SubmitMutation) AddedEdges() []string {
 	edges := make([]string, 0, 3)
-	if m.tagResults != nil {
-		edges = append(edges, submit.EdgeTagResults)
+	if m.taskResults != nil {
+		edges = append(edges, submit.EdgeTaskResults)
 	}
 	if m.groups != nil {
 		edges = append(edges, submit.EdgeGroups)
@@ -2530,9 +2530,9 @@ func (m *SubmitMutation) AddedEdges() []string {
 // name in this mutation.
 func (m *SubmitMutation) AddedIDs(name string) []ent.Value {
 	switch name {
-	case submit.EdgeTagResults:
-		ids := make([]ent.Value, 0, len(m.tagResults))
-		for id := range m.tagResults {
+	case submit.EdgeTaskResults:
+		ids := make([]ent.Value, 0, len(m.taskResults))
+		for id := range m.taskResults {
 			ids = append(ids, id)
 		}
 		return ids
@@ -2555,8 +2555,8 @@ func (m *SubmitMutation) AddedIDs(name string) []ent.Value {
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *SubmitMutation) RemovedEdges() []string {
 	edges := make([]string, 0, 3)
-	if m.removedtagResults != nil {
-		edges = append(edges, submit.EdgeTagResults)
+	if m.removedtaskResults != nil {
+		edges = append(edges, submit.EdgeTaskResults)
 	}
 	if m.removedgroups != nil {
 		edges = append(edges, submit.EdgeGroups)
@@ -2571,9 +2571,9 @@ func (m *SubmitMutation) RemovedEdges() []string {
 // the given name in this mutation.
 func (m *SubmitMutation) RemovedIDs(name string) []ent.Value {
 	switch name {
-	case submit.EdgeTagResults:
-		ids := make([]ent.Value, 0, len(m.removedtagResults))
-		for id := range m.removedtagResults {
+	case submit.EdgeTaskResults:
+		ids := make([]ent.Value, 0, len(m.removedtaskResults))
+		for id := range m.removedtaskResults {
 			ids = append(ids, id)
 		}
 		return ids
@@ -2596,8 +2596,8 @@ func (m *SubmitMutation) RemovedIDs(name string) []ent.Value {
 // ClearedEdges returns all edge names that were cleared in this mutation.
 func (m *SubmitMutation) ClearedEdges() []string {
 	edges := make([]string, 0, 3)
-	if m.clearedtagResults {
-		edges = append(edges, submit.EdgeTagResults)
+	if m.clearedtaskResults {
+		edges = append(edges, submit.EdgeTaskResults)
 	}
 	if m.clearedgroups {
 		edges = append(edges, submit.EdgeGroups)
@@ -2612,8 +2612,8 @@ func (m *SubmitMutation) ClearedEdges() []string {
 // was cleared in this mutation.
 func (m *SubmitMutation) EdgeCleared(name string) bool {
 	switch name {
-	case submit.EdgeTagResults:
-		return m.clearedtagResults
+	case submit.EdgeTaskResults:
+		return m.clearedtaskResults
 	case submit.EdgeGroups:
 		return m.clearedgroups
 	case submit.EdgeContests:
@@ -2634,8 +2634,8 @@ func (m *SubmitMutation) ClearEdge(name string) error {
 // It returns an error if the edge is not defined in the schema.
 func (m *SubmitMutation) ResetEdge(name string) error {
 	switch name {
-	case submit.EdgeTagResults:
-		m.ResetTagResults()
+	case submit.EdgeTaskResults:
+		m.ResetTaskResults()
 		return nil
 	case submit.EdgeGroups:
 		m.ResetGroups()

@@ -28,21 +28,21 @@ const (
 	FieldCompletedAt = "completed_at"
 	// FieldUpdatedAt holds the string denoting the updated_at field in the database.
 	FieldUpdatedAt = "updated_at"
-	// EdgeTagResults holds the string denoting the tagresults edge name in mutations.
-	EdgeTagResults = "tagResults"
+	// EdgeTaskResults holds the string denoting the taskresults edge name in mutations.
+	EdgeTaskResults = "taskResults"
 	// EdgeGroups holds the string denoting the groups edge name in mutations.
 	EdgeGroups = "groups"
 	// EdgeContests holds the string denoting the contests edge name in mutations.
 	EdgeContests = "contests"
 	// Table holds the table name of the submit in the database.
 	Table = "submits"
-	// TagResultsTable is the table that holds the tagResults relation/edge.
-	TagResultsTable = "task_results"
-	// TagResultsInverseTable is the table name for the TaskResult entity.
+	// TaskResultsTable is the table that holds the taskResults relation/edge.
+	TaskResultsTable = "task_results"
+	// TaskResultsInverseTable is the table name for the TaskResult entity.
 	// It exists in this package in order to avoid circular dependency with the "taskresult" package.
-	TagResultsInverseTable = "task_results"
-	// TagResultsColumn is the table column denoting the tagResults relation/edge.
-	TagResultsColumn = "submit_tag_results"
+	TaskResultsInverseTable = "task_results"
+	// TaskResultsColumn is the table column denoting the taskResults relation/edge.
+	TaskResultsColumn = "submit_task_results"
 	// GroupsTable is the table that holds the groups relation/edge. The primary key declared below.
 	GroupsTable = "group_submits"
 	// GroupsInverseTable is the table name for the Group entity.
@@ -165,17 +165,17 @@ func ByUpdatedAt(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldUpdatedAt, opts...).ToFunc()
 }
 
-// ByTagResultsCount orders the results by tagResults count.
-func ByTagResultsCount(opts ...sql.OrderTermOption) OrderOption {
+// ByTaskResultsCount orders the results by taskResults count.
+func ByTaskResultsCount(opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborsCount(s, newTagResultsStep(), opts...)
+		sqlgraph.OrderByNeighborsCount(s, newTaskResultsStep(), opts...)
 	}
 }
 
-// ByTagResults orders the results by tagResults terms.
-func ByTagResults(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+// ByTaskResults orders the results by taskResults terms.
+func ByTaskResults(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
 	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborTerms(s, newTagResultsStep(), append([]sql.OrderTerm{term}, terms...)...)
+		sqlgraph.OrderByNeighborTerms(s, newTaskResultsStep(), append([]sql.OrderTerm{term}, terms...)...)
 	}
 }
 
@@ -206,11 +206,11 @@ func ByContests(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
 		sqlgraph.OrderByNeighborTerms(s, newContestsStep(), append([]sql.OrderTerm{term}, terms...)...)
 	}
 }
-func newTagResultsStep() *sqlgraph.Step {
+func newTaskResultsStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
-		sqlgraph.To(TagResultsInverseTable, FieldID),
-		sqlgraph.Edge(sqlgraph.O2M, false, TagResultsTable, TagResultsColumn),
+		sqlgraph.To(TaskResultsInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.O2M, false, TaskResultsTable, TaskResultsColumn),
 	)
 }
 func newGroupsStep() *sqlgraph.Step {

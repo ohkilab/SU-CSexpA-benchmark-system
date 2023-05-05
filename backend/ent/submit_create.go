@@ -103,19 +103,19 @@ func (sc *SubmitCreate) SetID(i int) *SubmitCreate {
 	return sc
 }
 
-// AddTagResultIDs adds the "tagResults" edge to the TaskResult entity by IDs.
-func (sc *SubmitCreate) AddTagResultIDs(ids ...int) *SubmitCreate {
-	sc.mutation.AddTagResultIDs(ids...)
+// AddTaskResultIDs adds the "taskResults" edge to the TaskResult entity by IDs.
+func (sc *SubmitCreate) AddTaskResultIDs(ids ...int) *SubmitCreate {
+	sc.mutation.AddTaskResultIDs(ids...)
 	return sc
 }
 
-// AddTagResults adds the "tagResults" edges to the TaskResult entity.
-func (sc *SubmitCreate) AddTagResults(t ...*TaskResult) *SubmitCreate {
+// AddTaskResults adds the "taskResults" edges to the TaskResult entity.
+func (sc *SubmitCreate) AddTaskResults(t ...*TaskResult) *SubmitCreate {
 	ids := make([]int, len(t))
 	for i := range t {
 		ids[i] = t[i].ID
 	}
-	return sc.AddTagResultIDs(ids...)
+	return sc.AddTaskResultIDs(ids...)
 }
 
 // AddGroupIDs adds the "groups" edge to the Group entity by IDs.
@@ -266,12 +266,12 @@ func (sc *SubmitCreate) createSpec() (*Submit, *sqlgraph.CreateSpec) {
 		_spec.SetField(submit.FieldUpdatedAt, field.TypeTime, value)
 		_node.UpdatedAt = value
 	}
-	if nodes := sc.mutation.TagResultsIDs(); len(nodes) > 0 {
+	if nodes := sc.mutation.TaskResultsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
-			Table:   submit.TagResultsTable,
-			Columns: []string{submit.TagResultsColumn},
+			Table:   submit.TaskResultsTable,
+			Columns: []string{submit.TaskResultsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(taskresult.FieldID, field.TypeInt),

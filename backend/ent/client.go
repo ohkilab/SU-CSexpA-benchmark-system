@@ -579,15 +579,15 @@ func (c *SubmitClient) GetX(ctx context.Context, id int) *Submit {
 	return obj
 }
 
-// QueryTagResults queries the tagResults edge of a Submit.
-func (c *SubmitClient) QueryTagResults(s *Submit) *TaskResultQuery {
+// QueryTaskResults queries the taskResults edge of a Submit.
+func (c *SubmitClient) QueryTaskResults(s *Submit) *TaskResultQuery {
 	query := (&TaskResultClient{config: c.config}).Query()
 	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
 		id := s.ID
 		step := sqlgraph.NewStep(
 			sqlgraph.From(submit.Table, submit.FieldID, id),
 			sqlgraph.To(taskresult.Table, taskresult.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, submit.TagResultsTable, submit.TagResultsColumn),
+			sqlgraph.Edge(sqlgraph.O2M, false, submit.TaskResultsTable, submit.TaskResultsColumn),
 		)
 		fromV = sqlgraph.Neighbors(s.driver.Dialect(), step)
 		return fromV, nil

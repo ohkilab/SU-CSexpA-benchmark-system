@@ -410,21 +410,21 @@ func UpdatedAtNotNil() predicate.Submit {
 	return predicate.Submit(sql.FieldNotNull(FieldUpdatedAt))
 }
 
-// HasTagResults applies the HasEdge predicate on the "tagResults" edge.
-func HasTagResults() predicate.Submit {
+// HasTaskResults applies the HasEdge predicate on the "taskResults" edge.
+func HasTaskResults() predicate.Submit {
 	return predicate.Submit(func(s *sql.Selector) {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(Table, FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, TagResultsTable, TagResultsColumn),
+			sqlgraph.Edge(sqlgraph.O2M, false, TaskResultsTable, TaskResultsColumn),
 		)
 		sqlgraph.HasNeighbors(s, step)
 	})
 }
 
-// HasTagResultsWith applies the HasEdge predicate on the "tagResults" edge with a given conditions (other predicates).
-func HasTagResultsWith(preds ...predicate.TaskResult) predicate.Submit {
+// HasTaskResultsWith applies the HasEdge predicate on the "taskResults" edge with a given conditions (other predicates).
+func HasTaskResultsWith(preds ...predicate.TaskResult) predicate.Submit {
 	return predicate.Submit(func(s *sql.Selector) {
-		step := newTagResultsStep()
+		step := newTaskResultsStep()
 		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
 			for _, p := range preds {
 				p(s)

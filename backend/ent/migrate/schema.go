@@ -80,7 +80,7 @@ var (
 		{Name: "attempt_time", Type: field.TypeInt},
 		{Name: "created_at", Type: field.TypeTime},
 		{Name: "deleted_at", Type: field.TypeTime, Nullable: true},
-		{Name: "submit_tag_results", Type: field.TypeInt, Nullable: true},
+		{Name: "submit_task_results", Type: field.TypeInt, Nullable: true},
 	}
 	// TaskResultsTable holds the schema information for the "task_results" table.
 	TaskResultsTable = &schema.Table{
@@ -89,7 +89,7 @@ var (
 		PrimaryKey: []*schema.Column{TaskResultsColumns[0]},
 		ForeignKeys: []*schema.ForeignKey{
 			{
-				Symbol:     "task_results_submits_tagResults",
+				Symbol:     "task_results_submits_taskResults",
 				Columns:    []*schema.Column{TaskResultsColumns[14]},
 				RefColumns: []*schema.Column{SubmitsColumns[0]},
 				OnDelete:   schema.SetNull,
