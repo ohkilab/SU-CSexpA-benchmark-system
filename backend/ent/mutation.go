@@ -1602,11 +1602,9 @@ type SubmitMutation struct {
 	taskResults        map[int]struct{}
 	removedtaskResults map[int]struct{}
 	clearedtaskResults bool
-	groups             map[int]struct{}
-	removedgroups      map[int]struct{}
+	groups             *int
 	clearedgroups      bool
-	contests           map[int]struct{}
-	removedcontests    map[int]struct{}
+	contests           *int
 	clearedcontests    bool
 	done               bool
 	oldValue           func(context.Context) (*Submit, error)
@@ -2116,14 +2114,9 @@ func (m *SubmitMutation) ResetTaskResults() {
 	m.removedtaskResults = nil
 }
 
-// AddGroupIDs adds the "groups" edge to the Group entity by ids.
-func (m *SubmitMutation) AddGroupIDs(ids ...int) {
-	if m.groups == nil {
-		m.groups = make(map[int]struct{})
-	}
-	for i := range ids {
-		m.groups[ids[i]] = struct{}{}
-	}
+// SetGroupsID sets the "groups" edge to the Group entity by id.
+func (m *SubmitMutation) SetGroupsID(id int) {
+	m.groups = &id
 }
 
 // ClearGroups clears the "groups" edge to the Group entity.
@@ -2136,29 +2129,20 @@ func (m *SubmitMutation) GroupsCleared() bool {
 	return m.clearedgroups
 }
 
-// RemoveGroupIDs removes the "groups" edge to the Group entity by IDs.
-func (m *SubmitMutation) RemoveGroupIDs(ids ...int) {
-	if m.removedgroups == nil {
-		m.removedgroups = make(map[int]struct{})
-	}
-	for i := range ids {
-		delete(m.groups, ids[i])
-		m.removedgroups[ids[i]] = struct{}{}
-	}
-}
-
-// RemovedGroups returns the removed IDs of the "groups" edge to the Group entity.
-func (m *SubmitMutation) RemovedGroupsIDs() (ids []int) {
-	for id := range m.removedgroups {
-		ids = append(ids, id)
+// GroupsID returns the "groups" edge ID in the mutation.
+func (m *SubmitMutation) GroupsID() (id int, exists bool) {
+	if m.groups != nil {
+		return *m.groups, true
 	}
 	return
 }
 
 // GroupsIDs returns the "groups" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// GroupsID instead. It exists only for internal usage by the builders.
 func (m *SubmitMutation) GroupsIDs() (ids []int) {
-	for id := range m.groups {
-		ids = append(ids, id)
+	if id := m.groups; id != nil {
+		ids = append(ids, *id)
 	}
 	return
 }
@@ -2167,17 +2151,11 @@ func (m *SubmitMutation) GroupsIDs() (ids []int) {
 func (m *SubmitMutation) ResetGroups() {
 	m.groups = nil
 	m.clearedgroups = false
-	m.removedgroups = nil
 }
 
-// AddContestIDs adds the "contests" edge to the Contest entity by ids.
-func (m *SubmitMutation) AddContestIDs(ids ...int) {
-	if m.contests == nil {
-		m.contests = make(map[int]struct{})
-	}
-	for i := range ids {
-		m.contests[ids[i]] = struct{}{}
-	}
+// SetContestsID sets the "contests" edge to the Contest entity by id.
+func (m *SubmitMutation) SetContestsID(id int) {
+	m.contests = &id
 }
 
 // ClearContests clears the "contests" edge to the Contest entity.
@@ -2190,29 +2168,20 @@ func (m *SubmitMutation) ContestsCleared() bool {
 	return m.clearedcontests
 }
 
-// RemoveContestIDs removes the "contests" edge to the Contest entity by IDs.
-func (m *SubmitMutation) RemoveContestIDs(ids ...int) {
-	if m.removedcontests == nil {
-		m.removedcontests = make(map[int]struct{})
-	}
-	for i := range ids {
-		delete(m.contests, ids[i])
-		m.removedcontests[ids[i]] = struct{}{}
-	}
-}
-
-// RemovedContests returns the removed IDs of the "contests" edge to the Contest entity.
-func (m *SubmitMutation) RemovedContestsIDs() (ids []int) {
-	for id := range m.removedcontests {
-		ids = append(ids, id)
+// ContestsID returns the "contests" edge ID in the mutation.
+func (m *SubmitMutation) ContestsID() (id int, exists bool) {
+	if m.contests != nil {
+		return *m.contests, true
 	}
 	return
 }
 
 // ContestsIDs returns the "contests" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// ContestsID instead. It exists only for internal usage by the builders.
 func (m *SubmitMutation) ContestsIDs() (ids []int) {
-	for id := range m.contests {
-		ids = append(ids, id)
+	if id := m.contests; id != nil {
+		ids = append(ids, *id)
 	}
 	return
 }
@@ -2221,7 +2190,6 @@ func (m *SubmitMutation) ContestsIDs() (ids []int) {
 func (m *SubmitMutation) ResetContests() {
 	m.contests = nil
 	m.clearedcontests = false
-	m.removedcontests = nil
 }
 
 // Where appends a list predicates to the SubmitMutation builder.
@@ -2537,17 +2505,13 @@ func (m *SubmitMutation) AddedIDs(name string) []ent.Value {
 		}
 		return ids
 	case submit.EdgeGroups:
-		ids := make([]ent.Value, 0, len(m.groups))
-		for id := range m.groups {
-			ids = append(ids, id)
+		if id := m.groups; id != nil {
+			return []ent.Value{*id}
 		}
-		return ids
 	case submit.EdgeContests:
-		ids := make([]ent.Value, 0, len(m.contests))
-		for id := range m.contests {
-			ids = append(ids, id)
+		if id := m.contests; id != nil {
+			return []ent.Value{*id}
 		}
-		return ids
 	}
 	return nil
 }
@@ -2557,12 +2521,6 @@ func (m *SubmitMutation) RemovedEdges() []string {
 	edges := make([]string, 0, 3)
 	if m.removedtaskResults != nil {
 		edges = append(edges, submit.EdgeTaskResults)
-	}
-	if m.removedgroups != nil {
-		edges = append(edges, submit.EdgeGroups)
-	}
-	if m.removedcontests != nil {
-		edges = append(edges, submit.EdgeContests)
 	}
 	return edges
 }
@@ -2574,18 +2532,6 @@ func (m *SubmitMutation) RemovedIDs(name string) []ent.Value {
 	case submit.EdgeTaskResults:
 		ids := make([]ent.Value, 0, len(m.removedtaskResults))
 		for id := range m.removedtaskResults {
-			ids = append(ids, id)
-		}
-		return ids
-	case submit.EdgeGroups:
-		ids := make([]ent.Value, 0, len(m.removedgroups))
-		for id := range m.removedgroups {
-			ids = append(ids, id)
-		}
-		return ids
-	case submit.EdgeContests:
-		ids := make([]ent.Value, 0, len(m.removedcontests))
-		for id := range m.removedcontests {
 			ids = append(ids, id)
 		}
 		return ids
@@ -2626,6 +2572,12 @@ func (m *SubmitMutation) EdgeCleared(name string) bool {
 // if that edge is not defined in the schema.
 func (m *SubmitMutation) ClearEdge(name string) error {
 	switch name {
+	case submit.EdgeGroups:
+		m.ClearGroups()
+		return nil
+	case submit.EdgeContests:
+		m.ClearContests()
+		return nil
 	}
 	return fmt.Errorf("unknown Submit unique edge %s", name)
 }

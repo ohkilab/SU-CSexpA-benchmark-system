@@ -9,6 +9,8 @@ import (
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
+	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/ent/contest"
+	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/ent/group"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/ent/submit"
 )
 
@@ -33,8 +35,10 @@ type Submit struct {
 	UpdatedAt time.Time `json:"updated_at,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the SubmitQuery when eager-loading is set.
-	Edges        SubmitEdges `json:"edges"`
-	selectValues sql.SelectValues
+	Edges           SubmitEdges `json:"edges"`
+	contest_submits *int
+	group_submits   *int
+	selectValues    sql.SelectValues
 }
 
 // SubmitEdges holds the relations/edges for other nodes in the graph.
@@ -42,9 +46,9 @@ type SubmitEdges struct {
 	// TaskResults holds the value of the taskResults edge.
 	TaskResults []*TaskResult `json:"taskResults,omitempty"`
 	// Groups holds the value of the groups edge.
-	Groups []*Group `json:"groups,omitempty"`
+	Groups *Group `json:"groups,omitempty"`
 	// Contests holds the value of the contests edge.
-	Contests []*Contest `json:"contests,omitempty"`
+	Contests *Contest `json:"contests,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
 	loadedTypes [3]bool
@@ -60,18 +64,26 @@ func (e SubmitEdges) TaskResultsOrErr() ([]*TaskResult, error) {
 }
 
 // GroupsOrErr returns the Groups value or an error if the edge
-// was not loaded in eager-loading.
-func (e SubmitEdges) GroupsOrErr() ([]*Group, error) {
+// was not loaded in eager-loading, or loaded but was not found.
+func (e SubmitEdges) GroupsOrErr() (*Group, error) {
 	if e.loadedTypes[1] {
+		if e.Groups == nil {
+			// Edge was loaded but was not found.
+			return nil, &NotFoundError{label: group.Label}
+		}
 		return e.Groups, nil
 	}
 	return nil, &NotLoadedError{edge: "groups"}
 }
 
 // ContestsOrErr returns the Contests value or an error if the edge
-// was not loaded in eager-loading.
-func (e SubmitEdges) ContestsOrErr() ([]*Contest, error) {
+// was not loaded in eager-loading, or loaded but was not found.
+func (e SubmitEdges) ContestsOrErr() (*Contest, error) {
 	if e.loadedTypes[2] {
+		if e.Contests == nil {
+			// Edge was loaded but was not found.
+			return nil, &NotFoundError{label: contest.Label}
+		}
 		return e.Contests, nil
 	}
 	return nil, &NotLoadedError{edge: "contests"}
@@ -88,6 +100,10 @@ func (*Submit) scanValues(columns []string) ([]any, error) {
 			values[i] = new(sql.NullString)
 		case submit.FieldSubmitedAt, submit.FieldCompletedAt, submit.FieldUpdatedAt:
 			values[i] = new(sql.NullTime)
+		case submit.ForeignKeys[0]: // contest_submits
+			values[i] = new(sql.NullInt64)
+		case submit.ForeignKeys[1]: // group_submits
+			values[i] = new(sql.NullInt64)
 		default:
 			values[i] = new(sql.UnknownType)
 		}
@@ -150,6 +166,20 @@ func (s *Submit) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field updated_at", values[i])
 			} else if value.Valid {
 				s.UpdatedAt = value.Time
+			}
+		case submit.ForeignKeys[0]:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for edge-field contest_submits", value)
+			} else if value.Valid {
+				s.contest_submits = new(int)
+				*s.contest_submits = int(value.Int64)
+			}
+		case submit.ForeignKeys[1]:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for edge-field group_submits", value)
+			} else if value.Valid {
+				s.group_submits = new(int)
+				*s.group_submits = int(value.Int64)
 			}
 		default:
 			s.selectValues.Set(columns[i], values[i])

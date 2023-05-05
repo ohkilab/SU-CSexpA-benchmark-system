@@ -31,7 +31,7 @@ func (Submit) Fields() []ent.Field {
 func (Submit) Edges() []ent.Edge {
 	return []ent.Edge{
 		edge.To("taskResults", TaskResult.Type),
-		edge.From("groups", Group.Type).Ref("submits"),
-		edge.From("contests", Contest.Type).Ref("submits"),
+		edge.From("groups", Group.Type).Ref("submits").Unique(),
+		edge.From("contests", Contest.Type).Ref("submits").Unique(),
 	}
 }

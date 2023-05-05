@@ -57,12 +57,28 @@ var (
 		{Name: "submited_at", Type: field.TypeTime},
 		{Name: "completed_at", Type: field.TypeTime, Nullable: true},
 		{Name: "updated_at", Type: field.TypeTime, Nullable: true},
+		{Name: "contest_submits", Type: field.TypeInt, Nullable: true},
+		{Name: "group_submits", Type: field.TypeInt, Nullable: true},
 	}
 	// SubmitsTable holds the schema information for the "submits" table.
 	SubmitsTable = &schema.Table{
 		Name:       "submits",
 		Columns:    SubmitsColumns,
 		PrimaryKey: []*schema.Column{SubmitsColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "submits_contests_submits",
+				Columns:    []*schema.Column{SubmitsColumns[8]},
+				RefColumns: []*schema.Column{ContestsColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+			{
+				Symbol:     "submits_groups_submits",
+				Columns:    []*schema.Column{SubmitsColumns[9]},
+				RefColumns: []*schema.Column{GroupsColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+		},
 	}
 	// TaskResultsColumns holds the columns for the "task_results" table.
 	TaskResultsColumns = []*schema.Column{
@@ -95,71 +111,17 @@ var (
 			},
 		},
 	}
-	// ContestSubmitsColumns holds the columns for the "contest_submits" table.
-	ContestSubmitsColumns = []*schema.Column{
-		{Name: "contest_id", Type: field.TypeInt},
-		{Name: "submit_id", Type: field.TypeInt},
-	}
-	// ContestSubmitsTable holds the schema information for the "contest_submits" table.
-	ContestSubmitsTable = &schema.Table{
-		Name:       "contest_submits",
-		Columns:    ContestSubmitsColumns,
-		PrimaryKey: []*schema.Column{ContestSubmitsColumns[0], ContestSubmitsColumns[1]},
-		ForeignKeys: []*schema.ForeignKey{
-			{
-				Symbol:     "contest_submits_contest_id",
-				Columns:    []*schema.Column{ContestSubmitsColumns[0]},
-				RefColumns: []*schema.Column{ContestsColumns[0]},
-				OnDelete:   schema.Cascade,
-			},
-			{
-				Symbol:     "contest_submits_submit_id",
-				Columns:    []*schema.Column{ContestSubmitsColumns[1]},
-				RefColumns: []*schema.Column{SubmitsColumns[0]},
-				OnDelete:   schema.Cascade,
-			},
-		},
-	}
-	// GroupSubmitsColumns holds the columns for the "group_submits" table.
-	GroupSubmitsColumns = []*schema.Column{
-		{Name: "group_id", Type: field.TypeInt},
-		{Name: "submit_id", Type: field.TypeInt},
-	}
-	// GroupSubmitsTable holds the schema information for the "group_submits" table.
-	GroupSubmitsTable = &schema.Table{
-		Name:       "group_submits",
-		Columns:    GroupSubmitsColumns,
-		PrimaryKey: []*schema.Column{GroupSubmitsColumns[0], GroupSubmitsColumns[1]},
-		ForeignKeys: []*schema.ForeignKey{
-			{
-				Symbol:     "group_submits_group_id",
-				Columns:    []*schema.Column{GroupSubmitsColumns[0]},
-				RefColumns: []*schema.Column{GroupsColumns[0]},
-				OnDelete:   schema.Cascade,
-			},
-			{
-				Symbol:     "group_submits_submit_id",
-				Columns:    []*schema.Column{GroupSubmitsColumns[1]},
-				RefColumns: []*schema.Column{SubmitsColumns[0]},
-				OnDelete:   schema.Cascade,
-			},
-		},
-	}
 	// Tables holds all the tables in the schema.
 	Tables = []*schema.Table{
 		ContestsTable,
 		GroupsTable,
 		SubmitsTable,
 		TaskResultsTable,
-		ContestSubmitsTable,
-		GroupSubmitsTable,
 	}
 )
 
 func init() {
+	SubmitsTable.ForeignKeys[0].RefTable = ContestsTable
+	SubmitsTable.ForeignKeys[1].RefTable = GroupsTable
 	TaskResultsTable.ForeignKeys[0].RefTable = SubmitsTable
-	ContestSubmitsTable.ForeignKeys[0].RefTable = ContestsTable
-	ContestSubmitsTable.ForeignKeys[1].RefTable = SubmitsTable
-	GroupSubmitsTable.ForeignKeys[0].RefTable = GroupsTable
-	GroupSubmitsTable.ForeignKeys[1].RefTable = SubmitsTable
 }

@@ -118,34 +118,42 @@ func (sc *SubmitCreate) AddTaskResults(t ...*TaskResult) *SubmitCreate {
 	return sc.AddTaskResultIDs(ids...)
 }
 
-// AddGroupIDs adds the "groups" edge to the Group entity by IDs.
-func (sc *SubmitCreate) AddGroupIDs(ids ...int) *SubmitCreate {
-	sc.mutation.AddGroupIDs(ids...)
+// SetGroupsID sets the "groups" edge to the Group entity by ID.
+func (sc *SubmitCreate) SetGroupsID(id int) *SubmitCreate {
+	sc.mutation.SetGroupsID(id)
 	return sc
 }
 
-// AddGroups adds the "groups" edges to the Group entity.
-func (sc *SubmitCreate) AddGroups(g ...*Group) *SubmitCreate {
-	ids := make([]int, len(g))
-	for i := range g {
-		ids[i] = g[i].ID
+// SetNillableGroupsID sets the "groups" edge to the Group entity by ID if the given value is not nil.
+func (sc *SubmitCreate) SetNillableGroupsID(id *int) *SubmitCreate {
+	if id != nil {
+		sc = sc.SetGroupsID(*id)
 	}
-	return sc.AddGroupIDs(ids...)
-}
-
-// AddContestIDs adds the "contests" edge to the Contest entity by IDs.
-func (sc *SubmitCreate) AddContestIDs(ids ...int) *SubmitCreate {
-	sc.mutation.AddContestIDs(ids...)
 	return sc
 }
 
-// AddContests adds the "contests" edges to the Contest entity.
-func (sc *SubmitCreate) AddContests(c ...*Contest) *SubmitCreate {
-	ids := make([]int, len(c))
-	for i := range c {
-		ids[i] = c[i].ID
+// SetGroups sets the "groups" edge to the Group entity.
+func (sc *SubmitCreate) SetGroups(g *Group) *SubmitCreate {
+	return sc.SetGroupsID(g.ID)
+}
+
+// SetContestsID sets the "contests" edge to the Contest entity by ID.
+func (sc *SubmitCreate) SetContestsID(id int) *SubmitCreate {
+	sc.mutation.SetContestsID(id)
+	return sc
+}
+
+// SetNillableContestsID sets the "contests" edge to the Contest entity by ID if the given value is not nil.
+func (sc *SubmitCreate) SetNillableContestsID(id *int) *SubmitCreate {
+	if id != nil {
+		sc = sc.SetContestsID(*id)
 	}
-	return sc.AddContestIDs(ids...)
+	return sc
+}
+
+// SetContests sets the "contests" edge to the Contest entity.
+func (sc *SubmitCreate) SetContests(c *Contest) *SubmitCreate {
+	return sc.SetContestsID(c.ID)
 }
 
 // Mutation returns the SubmitMutation object of the builder.
@@ -284,10 +292,10 @@ func (sc *SubmitCreate) createSpec() (*Submit, *sqlgraph.CreateSpec) {
 	}
 	if nodes := sc.mutation.GroupsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.M2O,
 			Inverse: true,
 			Table:   submit.GroupsTable,
-			Columns: submit.GroupsPrimaryKey,
+			Columns: []string{submit.GroupsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(group.FieldID, field.TypeInt),
@@ -296,14 +304,15 @@ func (sc *SubmitCreate) createSpec() (*Submit, *sqlgraph.CreateSpec) {
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
+		_node.group_submits = &nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	if nodes := sc.mutation.ContestsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.M2O,
 			Inverse: true,
 			Table:   submit.ContestsTable,
-			Columns: submit.ContestsPrimaryKey,
+			Columns: []string{submit.ContestsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(contest.FieldID, field.TypeInt),
@@ -312,6 +321,7 @@ func (sc *SubmitCreate) createSpec() (*Submit, *sqlgraph.CreateSpec) {
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
+		_node.contest_submits = &nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec

@@ -319,7 +319,7 @@ func (c *ContestClient) QuerySubmits(co *Contest) *SubmitQuery {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(contest.Table, contest.FieldID, id),
 			sqlgraph.To(submit.Table, submit.FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, false, contest.SubmitsTable, contest.SubmitsPrimaryKey...),
+			sqlgraph.Edge(sqlgraph.O2M, false, contest.SubmitsTable, contest.SubmitsColumn),
 		)
 		fromV = sqlgraph.Neighbors(co.driver.Dialect(), step)
 		return fromV, nil
@@ -453,7 +453,7 @@ func (c *GroupClient) QuerySubmits(gr *Group) *SubmitQuery {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(group.Table, group.FieldID, id),
 			sqlgraph.To(submit.Table, submit.FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, false, group.SubmitsTable, group.SubmitsPrimaryKey...),
+			sqlgraph.Edge(sqlgraph.O2M, false, group.SubmitsTable, group.SubmitsColumn),
 		)
 		fromV = sqlgraph.Neighbors(gr.driver.Dialect(), step)
 		return fromV, nil
@@ -603,7 +603,7 @@ func (c *SubmitClient) QueryGroups(s *Submit) *GroupQuery {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(submit.Table, submit.FieldID, id),
 			sqlgraph.To(group.Table, group.FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, true, submit.GroupsTable, submit.GroupsPrimaryKey...),
+			sqlgraph.Edge(sqlgraph.M2O, true, submit.GroupsTable, submit.GroupsColumn),
 		)
 		fromV = sqlgraph.Neighbors(s.driver.Dialect(), step)
 		return fromV, nil
@@ -619,7 +619,7 @@ func (c *SubmitClient) QueryContests(s *Submit) *ContestQuery {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(submit.Table, submit.FieldID, id),
 			sqlgraph.To(contest.Table, contest.FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, true, submit.ContestsTable, submit.ContestsPrimaryKey...),
+			sqlgraph.Edge(sqlgraph.M2O, true, submit.ContestsTable, submit.ContestsColumn),
 		)
 		fromV = sqlgraph.Neighbors(s.driver.Dialect(), step)
 		return fromV, nil

@@ -43,16 +43,20 @@ const (
 	TaskResultsInverseTable = "task_results"
 	// TaskResultsColumn is the table column denoting the taskResults relation/edge.
 	TaskResultsColumn = "submit_task_results"
-	// GroupsTable is the table that holds the groups relation/edge. The primary key declared below.
-	GroupsTable = "group_submits"
+	// GroupsTable is the table that holds the groups relation/edge.
+	GroupsTable = "submits"
 	// GroupsInverseTable is the table name for the Group entity.
 	// It exists in this package in order to avoid circular dependency with the "group" package.
 	GroupsInverseTable = "groups"
-	// ContestsTable is the table that holds the contests relation/edge. The primary key declared below.
-	ContestsTable = "contest_submits"
+	// GroupsColumn is the table column denoting the groups relation/edge.
+	GroupsColumn = "group_submits"
+	// ContestsTable is the table that holds the contests relation/edge.
+	ContestsTable = "submits"
 	// ContestsInverseTable is the table name for the Contest entity.
 	// It exists in this package in order to avoid circular dependency with the "contest" package.
 	ContestsInverseTable = "contests"
+	// ContestsColumn is the table column denoting the contests relation/edge.
+	ContestsColumn = "contest_submits"
 )
 
 // Columns holds all SQL columns for submit fields.
@@ -67,19 +71,22 @@ var Columns = []string{
 	FieldUpdatedAt,
 }
 
-var (
-	// GroupsPrimaryKey and GroupsColumn2 are the table columns denoting the
-	// primary key for the groups relation (M2M).
-	GroupsPrimaryKey = []string{"group_id", "submit_id"}
-	// ContestsPrimaryKey and ContestsColumn2 are the table columns denoting the
-	// primary key for the contests relation (M2M).
-	ContestsPrimaryKey = []string{"contest_id", "submit_id"}
-)
+// ForeignKeys holds the SQL foreign-keys that are owned by the "submits"
+// table and are not defined as standalone fields in the schema.
+var ForeignKeys = []string{
+	"contest_submits",
+	"group_submits",
+}
 
 // ValidColumn reports if the column name is valid (part of the table columns).
 func ValidColumn(column string) bool {
 	for i := range Columns {
 		if column == Columns[i] {
+			return true
+		}
+	}
+	for i := range ForeignKeys {
+		if column == ForeignKeys[i] {
 			return true
 		}
 	}
@@ -179,31 +186,17 @@ func ByTaskResults(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
 	}
 }
 
-// ByGroupsCount orders the results by groups count.
-func ByGroupsCount(opts ...sql.OrderTermOption) OrderOption {
+// ByGroupsField orders the results by groups field.
+func ByGroupsField(field string, opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborsCount(s, newGroupsStep(), opts...)
+		sqlgraph.OrderByNeighborTerms(s, newGroupsStep(), sql.OrderByField(field, opts...))
 	}
 }
 
-// ByGroups orders the results by groups terms.
-func ByGroups(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+// ByContestsField orders the results by contests field.
+func ByContestsField(field string, opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborTerms(s, newGroupsStep(), append([]sql.OrderTerm{term}, terms...)...)
-	}
-}
-
-// ByContestsCount orders the results by contests count.
-func ByContestsCount(opts ...sql.OrderTermOption) OrderOption {
-	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborsCount(s, newContestsStep(), opts...)
-	}
-}
-
-// ByContests orders the results by contests terms.
-func ByContests(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
-	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborTerms(s, newContestsStep(), append([]sql.OrderTerm{term}, terms...)...)
+		sqlgraph.OrderByNeighborTerms(s, newContestsStep(), sql.OrderByField(field, opts...))
 	}
 }
 func newTaskResultsStep() *sqlgraph.Step {
@@ -217,13 +210,13 @@ func newGroupsStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
 		sqlgraph.To(GroupsInverseTable, FieldID),
-		sqlgraph.Edge(sqlgraph.M2M, true, GroupsTable, GroupsPrimaryKey...),
+		sqlgraph.Edge(sqlgraph.M2O, true, GroupsTable, GroupsColumn),
 	)
 }
 func newContestsStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
 		sqlgraph.To(ContestsInverseTable, FieldID),
-		sqlgraph.Edge(sqlgraph.M2M, true, ContestsTable, ContestsPrimaryKey...),
+		sqlgraph.Edge(sqlgraph.M2O, true, ContestsTable, ContestsColumn),
 	)
 }
