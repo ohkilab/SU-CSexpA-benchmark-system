@@ -15,6 +15,7 @@ require (
 	github.com/samber/lo v1.38.1
 	github.com/stretchr/testify v1.8.2
 	golang.org/x/crypto v0.0.0-20220517005047-85d78b3ac167
+	golang.org/x/exp v0.0.0-20230425010034-47ecfdc1ba53
 	golang.org/x/net v0.9.0
 	golang.org/x/sync v0.1.0
 	google.golang.org/grpc v1.54.0
@@ -34,7 +35,6 @@ require (
 	github.com/mitchellh/go-wordwrap v0.0.0-20150314170334-ad45545899c7 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/zclconf/go-cty v1.8.0 // indirect
-	golang.org/x/exp v0.0.0-20220303212507-bbda1eaf7a17 // indirect
 	golang.org/x/mod v0.8.0 // indirect
 	golang.org/x/sys v0.7.0 // indirect
 	golang.org/x/text v0.9.0 // indirect

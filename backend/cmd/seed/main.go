@@ -16,14 +16,14 @@ func main() {
 	// config from env
 	config, err := newConfig()
 	if err != nil {
-		log.Fatal(err)
+		panic(err)
 	}
 
 	// mysql client
 	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8&parseTime=True&loc=Local", config.DBUser, config.DBPass, config.DBHost, config.DBPort, config.DBName)
 	entClient, err := ent.Open("mysql", dsn)
 	if err != nil {
-		log.Fatal(err)
+		panic(err)
 	}
 
 	ctx := context.Background()
