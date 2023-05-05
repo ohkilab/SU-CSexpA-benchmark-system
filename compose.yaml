@@ -48,3 +48,5 @@ services:
       - "9901:9901"
     volumes:
       - ./frontend/envoy_docker.yaml:/etc/envoy/envoy.yaml
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
