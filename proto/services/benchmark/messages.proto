@@ -14,7 +14,6 @@ message Task {
 
   int32 thread_num = 6;    // the number of threads for a task
   int32 attempt_count = 7; // the count of attempting for a task
-  int32 attempt_time = 8;  // the duration of attempting
 }
 
 enum HttpMethod {
