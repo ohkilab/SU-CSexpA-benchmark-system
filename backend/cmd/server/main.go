@@ -44,7 +44,7 @@ func main() {
 	go benchmarkWorker.Run()
 
 	// build grpc server
-	grpcServer := grpc.NewServer(grpc.WithEntClient(entClient))
+	grpcServer := grpc.NewServer(grpc.WithEntClient(entClient), grpc.WithJwtSecret(config.JwtSecret), grpc.WithWorker(benchmarkWorker))
 
 	// launch grpc server
 	listener, err := net.Listen("tcp", ":"+config.GrpcPort)
