@@ -21,8 +21,8 @@ func (s *service) Execute(req *pb.ExecuteRequest, stream pb.BenchmarkService_Exe
 
 	for _, task := range req.Tasks {
 		uri, err := url.ParseRequestURI(task.Request.Url)
-		if err == nil {
-			return status.Error(codes.InvalidArgument, "invalid ip address")
+		if err != nil {
+			return status.Error(codes.InvalidArgument, "invalid url")
 		}
 
 		results, err := s.client.Run(stream.Context(), uri.String(), validation.Validate2022, benchmark.OptThreadNum(int(task.ThreadNum)), benchmark.OptAttemptCount(int(task.AttemptCount)))
@@ -43,9 +43,8 @@ func (s *service) Execute(req *pb.ExecuteRequest, stream pb.BenchmarkService_Exe
 					RequestsPerSecond: 0,
 				}); err != nil {
 					log.Println(err)
-					return err
 				}
-				return nil
+				goto L1
 			}
 			timeElapsed += result.ResponseTime.Milliseconds()
 		}
@@ -59,6 +58,7 @@ func (s *service) Execute(req *pb.ExecuteRequest, stream pb.BenchmarkService_Exe
 			log.Println(err)
 			return err
 		}
+	L1:
 	}
 
 	return nil
