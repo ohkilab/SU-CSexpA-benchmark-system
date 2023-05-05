@@ -9,6 +9,7 @@ import (
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/ent/group"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/api/grpc"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/core/auth"
+	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/test/utils"
 	mock_worker "github.com/ohkilab/SU-CSexpA-benchmark-system/backend/worker/mock"
 	pb "github.com/ohkilab/SU-CSexpA-benchmark-system/proto-gen/go/backend"
 	"github.com/stretchr/testify/assert"
@@ -18,14 +19,14 @@ import (
 
 func Test_PostSubmit(t *testing.T) {
 	ctx := context.Background()
-	entClient, cleanupFunc := enttestOpen(ctx, t)
+	entClient, cleanupFunc := utils.EnttestOpen(ctx, t)
 	defer cleanupFunc(t)
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 	worker := mock_worker.NewMockWorker(ctrl)
 	worker.EXPECT().Push(gomock.Any()).AnyTimes()
 	secret := []byte("secret")
-	conn, closeFunc := launchGrpcServer(t, grpc.WithJwtSecret("secret"), grpc.WithEntClient(entClient), grpc.WithWorker(worker))
+	conn, closeFunc := utils.LaunchGrpcServer(t, grpc.WithJwtSecret("secret"), grpc.WithEntClient(entClient), grpc.WithWorker(worker))
 	defer closeFunc()
 	client := pb.NewBackendServiceClient(conn)
 

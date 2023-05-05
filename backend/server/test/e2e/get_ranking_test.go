@@ -7,6 +7,7 @@ import (
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/ent/group"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/api/grpc"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/core/auth"
+	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/test/utils"
 	pb "github.com/ohkilab/SU-CSexpA-benchmark-system/proto-gen/go/backend"
 	"github.com/stretchr/testify/assert"
 	"golang.org/x/crypto/bcrypt"
@@ -15,10 +16,10 @@ import (
 
 func Test_GetRanking(t *testing.T) {
 	ctx := context.Background()
-	entClient, cleanupFunc := enttestOpen(ctx, t)
+	entClient, cleanupFunc := utils.EnttestOpen(ctx, t)
 	defer cleanupFunc(t)
 	secret := []byte("secret")
-	conn, closeFunc := launchGrpcServer(t, grpc.WithJwtSecret("secret"), grpc.WithEntClient(entClient))
+	conn, closeFunc := utils.LaunchGrpcServer(t, grpc.WithJwtSecret("secret"), grpc.WithEntClient(entClient))
 	defer closeFunc()
 	client := pb.NewBackendServiceClient(conn)
 

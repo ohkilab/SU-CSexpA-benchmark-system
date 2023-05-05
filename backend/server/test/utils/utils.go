@@ -1,4 +1,4 @@
-package e2e
+package utils
 
 import (
 	"context"
@@ -18,7 +18,7 @@ import (
 	"google.golang.org/grpc/credentials/insecure"
 )
 
-func launchGrpcServer(t *testing.T, optionFuncs ...grpc.OptionFunc) (*pkggrpc.ClientConn, func()) {
+func LaunchGrpcServer(t *testing.T, optionFuncs ...grpc.OptionFunc) (*pkggrpc.ClientConn, func()) {
 	t.Helper()
 	server := grpc.NewServer(optionFuncs...)
 	lsnr, err := net.Listen("tcp", ":3776")
@@ -42,7 +42,7 @@ func launchGrpcServer(t *testing.T, optionFuncs ...grpc.OptionFunc) (*pkggrpc.Cl
 
 type cleanupFunc func(t *testing.T)
 
-func enttestOpen(ctx context.Context, t *testing.T) (*ent.Client, cleanupFunc) {
+func EnttestOpen(ctx context.Context, t *testing.T) (*ent.Client, cleanupFunc) {
 	dsn := fmt.Sprintf("root:%s@tcp(localhost:%s)/%s?parseTime=true", os.Getenv("MYSQL_ROOT_PASSWORD"), os.Getenv("TEST_MYSQL_PORT"), os.Getenv("MYSQL_DATABASE"))
 	db, err := sql.Open("mysql", dsn)
 	if err != nil {
