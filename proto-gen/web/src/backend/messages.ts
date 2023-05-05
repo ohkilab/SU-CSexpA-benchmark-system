@@ -45,9 +45,9 @@ export interface PostLoginResponse {
  */
 export interface PostSubmitRequest {
     /**
-     * @generated from protobuf field: string ip_addr = 1;
+     * @generated from protobuf field: string url = 1;
      */
-    ipAddr: string;
+    url: string;
     /**
      * @generated from protobuf field: int32 contest_id = 2;
      */
@@ -62,9 +62,9 @@ export interface PostSubmitResponse {
      */
     id: number;
     /**
-     * @generated from protobuf field: string ip_addr = 2;
+     * @generated from protobuf field: string url = 2;
      */
-    ipAddr: string;
+    url: string;
     /**
      * @generated from protobuf field: int32 contest_id = 3;
      */
@@ -306,12 +306,12 @@ export const PostLoginResponse = new PostLoginResponse$Type();
 class PostSubmitRequest$Type extends MessageType<PostSubmitRequest> {
     constructor() {
         super("PostSubmitRequest", [
-            { no: 1, name: "ip_addr", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 1, name: "url", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
             { no: 2, name: "contest_id", kind: "scalar", T: 5 /*ScalarType.INT32*/ }
         ]);
     }
     create(value?: PartialMessage<PostSubmitRequest>): PostSubmitRequest {
-        const message = { ipAddr: "", contestId: 0 };
+        const message = { url: "", contestId: 0 };
         globalThis.Object.defineProperty(message, MESSAGE_TYPE, { enumerable: false, value: this });
         if (value !== undefined)
             reflectionMergePartial<PostSubmitRequest>(this, message, value);
@@ -322,8 +322,8 @@ class PostSubmitRequest$Type extends MessageType<PostSubmitRequest> {
         while (reader.pos < end) {
             let [fieldNo, wireType] = reader.tag();
             switch (fieldNo) {
-                case /* string ip_addr */ 1:
-                    message.ipAddr = reader.string();
+                case /* string url */ 1:
+                    message.url = reader.string();
                     break;
                 case /* int32 contest_id */ 2:
                     message.contestId = reader.int32();
@@ -340,9 +340,9 @@ class PostSubmitRequest$Type extends MessageType<PostSubmitRequest> {
         return message;
     }
     internalBinaryWrite(message: PostSubmitRequest, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
-        /* string ip_addr = 1; */
-        if (message.ipAddr !== "")
-            writer.tag(1, WireType.LengthDelimited).string(message.ipAddr);
+        /* string url = 1; */
+        if (message.url !== "")
+            writer.tag(1, WireType.LengthDelimited).string(message.url);
         /* int32 contest_id = 2; */
         if (message.contestId !== 0)
             writer.tag(2, WireType.Varint).int32(message.contestId);
@@ -361,13 +361,13 @@ class PostSubmitResponse$Type extends MessageType<PostSubmitResponse> {
     constructor() {
         super("PostSubmitResponse", [
             { no: 1, name: "id", kind: "scalar", T: 5 /*ScalarType.INT32*/ },
-            { no: 2, name: "ip_addr", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 2, name: "url", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
             { no: 3, name: "contest_id", kind: "scalar", T: 5 /*ScalarType.INT32*/ },
             { no: 4, name: "submited_at", kind: "message", T: () => Timestamp }
         ]);
     }
     create(value?: PartialMessage<PostSubmitResponse>): PostSubmitResponse {
-        const message = { id: 0, ipAddr: "", contestId: 0 };
+        const message = { id: 0, url: "", contestId: 0 };
         globalThis.Object.defineProperty(message, MESSAGE_TYPE, { enumerable: false, value: this });
         if (value !== undefined)
             reflectionMergePartial<PostSubmitResponse>(this, message, value);
@@ -381,8 +381,8 @@ class PostSubmitResponse$Type extends MessageType<PostSubmitResponse> {
                 case /* int32 id */ 1:
                     message.id = reader.int32();
                     break;
-                case /* string ip_addr */ 2:
-                    message.ipAddr = reader.string();
+                case /* string url */ 2:
+                    message.url = reader.string();
                     break;
                 case /* int32 contest_id */ 3:
                     message.contestId = reader.int32();
@@ -405,9 +405,9 @@ class PostSubmitResponse$Type extends MessageType<PostSubmitResponse> {
         /* int32 id = 1; */
         if (message.id !== 0)
             writer.tag(1, WireType.Varint).int32(message.id);
-        /* string ip_addr = 2; */
-        if (message.ipAddr !== "")
-            writer.tag(2, WireType.LengthDelimited).string(message.ipAddr);
+        /* string url = 2; */
+        if (message.url !== "")
+            writer.tag(2, WireType.LengthDelimited).string(message.url);
         /* int32 contest_id = 3; */
         if (message.contestId !== 0)
             writer.tag(3, WireType.Varint).int32(message.contestId);
