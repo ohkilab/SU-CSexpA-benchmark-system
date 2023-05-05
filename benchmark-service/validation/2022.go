@@ -21,7 +21,10 @@ type Response2022 struct {
 }
 
 func Validate2022(uri *url.URL, r io.ReadCloser) error {
-	defer r.Close()
+	defer func() {
+		_, _ = io.Copy(io.Discard, r)
+		r.Close()
+	}()
 	var resp Response2022
 	if err := json.NewDecoder(r).Decode(&resp); err != nil {
 		log.Println(err)
@@ -41,8 +44,8 @@ func Validate2022(uri *url.URL, r io.ReadCloser) error {
 		left, _ := time.Parse("2006-01-02UTC", resp.Geotags[i].Date)
 		right, _ := time.Parse("2006-01-02UTC", resp.Geotags[i+1].Date)
 		// left, right := resp.Geotags[i].Date, resp.Geotags[i+1].Date
-		if left.Before(right) {
-			return errors.New("Geotags: the order of Geotags must be desc by date")
+		if left.After(right) {
+			return errors.New("Geotags: the order of Geotags must be desc by asc")
 		}
 	}
 	for _, res := range resp.Geotags {
