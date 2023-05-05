@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"io"
+	"log"
 	"net/url"
 	"time"
 )
@@ -12,17 +13,18 @@ import (
 type Response2022 struct {
 	Tag     string `json:"tag"`
 	Geotags []struct {
-		Lat  float64   `json:"lat"`
-		Lon  float64   `json:"lon"`
-		Date time.Time `json:"date"`
-		Url  string    `json:"url"`
+		Lat  float64 `json:"lat"`
+		Lon  float64 `json:"lon"`
+		Date string  `json:"date"`
+		Url  string  `json:"url"`
 	} `json:"geotags"`
 }
 
 func Validate2022(uri *url.URL, r io.ReadCloser) error {
 	defer r.Close()
-	var resp *Response2022
-	if err := json.NewDecoder(r).Decode(resp); err != nil {
+	var resp Response2022
+	if err := json.NewDecoder(r).Decode(&resp); err != nil {
+		log.Println(err)
 		return errors.New("json: invalid json format")
 	}
 	tag := uri.Query().Get("tag")
@@ -36,7 +38,10 @@ func Validate2022(uri *url.URL, r io.ReadCloser) error {
 		return errors.New("Geotags: the length of Geotags must be less than 100 or 100")
 	}
 	for i := range resp.Geotags[:len(resp.Geotags)-1] {
-		if resp.Geotags[i].Date.Before(resp.Geotags[i+1].Date) {
+		left, _ := time.Parse("2006-01-02UTC", resp.Geotags[i].Date)
+		right, _ := time.Parse("2006-01-02UTC", resp.Geotags[i+1].Date)
+		// left, right := resp.Geotags[i].Date, resp.Geotags[i+1].Date
+		if left.Before(right) {
 			return errors.New("Geotags: the order of Geotags must be desc by date")
 		}
 	}
