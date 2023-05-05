@@ -28,6 +28,8 @@ message ExecuteResponse {
   HttpRequest request = 1;
   HttpResponse response = 2;
   int32 requests_per_second = 3;
+  int32 thread_num = 6;    // the number of threads for a task
+  int32 attempt_count = 7; // the count of attempting for a task
 }
 
 message HttpRequest {
