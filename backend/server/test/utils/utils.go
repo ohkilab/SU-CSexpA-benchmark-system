@@ -14,9 +14,37 @@ import (
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/ent"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/ent/migrate"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/api/grpc"
+	"github.com/ohkilab/SU-CSexpA-benchmark-system/benchmark-service/benchmark"
+	"github.com/ohkilab/SU-CSexpA-benchmark-system/benchmark-service/service"
+	pb "github.com/ohkilab/SU-CSexpA-benchmark-system/proto-gen/go/benchmark"
 	pkggrpc "google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 )
+
+func LaunchBenchmarkGrpcServer(t *testing.T) (*pkggrpc.ClientConn, func()) {
+	t.Helper()
+	server := pkggrpc.NewServer()
+	client := benchmark.NewClient()
+	benchmarkService := service.New(client)
+	server.RegisterService(&pb.BenchmarkService_ServiceDesc, benchmarkService)
+	lsnr, err := net.Listen("tcp", ":3777")
+	if err != nil {
+		t.Fatal(err)
+	}
+	go func() {
+		if err := server.Serve(lsnr); err != nil {
+			t.Log(err)
+		}
+	}()
+	conn, err := pkggrpc.Dial("localhost:3777", pkggrpc.WithTransportCredentials(insecure.NewCredentials()))
+	if err != nil {
+		t.Fatal(err)
+	}
+	return conn, func() {
+		server.GracefulStop()
+		conn.Close()
+	}
+}
 
 func LaunchGrpcServer(t *testing.T, optionFuncs ...grpc.OptionFunc) (*pkggrpc.ClientConn, func()) {
 	t.Helper()

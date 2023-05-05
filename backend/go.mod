@@ -4,6 +4,8 @@ go 1.20
 
 replace github.com/ohkilab/SU-CSexpA-benchmark-system/proto-gen/go => ../proto-gen/go
 
+replace github.com/ohkilab/SU-CSexpA-benchmark-system/benchmark-service => ../benchmark-service
+
 require (
 	entgo.io/ent v0.12.1
 	github.com/go-sql-driver/mysql v1.7.0
@@ -11,6 +13,7 @@ require (
 	github.com/golang/mock v1.6.0
 	github.com/grpc-ecosystem/go-grpc-middleware/v2 v2.0.0-rc.5
 	github.com/kelseyhightower/envconfig v1.4.0
+	github.com/ohkilab/SU-CSexpA-benchmark-system/benchmark-service v0.0.0-00010101000000-000000000000
 	github.com/ohkilab/SU-CSexpA-benchmark-system/proto-gen/go v0.0.0-00010101000000-000000000000
 	github.com/pkg/errors v0.9.1
 	github.com/samber/lo v1.38.1
