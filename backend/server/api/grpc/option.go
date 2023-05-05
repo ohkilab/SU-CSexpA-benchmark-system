@@ -25,7 +25,7 @@ func WithJwtSecret(jwtSecret string) OptionFunc {
 	}
 }
 
-func WithWoker(worker worker.Worker) OptionFunc {
+func WithWorker(worker worker.Worker) OptionFunc {
 	return func(o *option) {
 		o.worker = worker
 	}
