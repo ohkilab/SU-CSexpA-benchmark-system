@@ -2666,8 +2666,6 @@ type TaskResultMutation struct {
 	addthread_num         *int
 	attempt_count         *int
 	addattempt_count      *int
-	attempt_time          *int
-	addattempt_time       *int
 	created_at            *time.Time
 	deleted_at            *time.Time
 	clearedFields         map[string]struct{}
@@ -3213,62 +3211,6 @@ func (m *TaskResultMutation) ResetAttemptCount() {
 	m.addattempt_count = nil
 }
 
-// SetAttemptTime sets the "attempt_time" field.
-func (m *TaskResultMutation) SetAttemptTime(i int) {
-	m.attempt_time = &i
-	m.addattempt_time = nil
-}
-
-// AttemptTime returns the value of the "attempt_time" field in the mutation.
-func (m *TaskResultMutation) AttemptTime() (r int, exists bool) {
-	v := m.attempt_time
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldAttemptTime returns the old "attempt_time" field's value of the TaskResult entity.
-// If the TaskResult object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *TaskResultMutation) OldAttemptTime(ctx context.Context) (v int, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldAttemptTime is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldAttemptTime requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldAttemptTime: %w", err)
-	}
-	return oldValue.AttemptTime, nil
-}
-
-// AddAttemptTime adds i to the "attempt_time" field.
-func (m *TaskResultMutation) AddAttemptTime(i int) {
-	if m.addattempt_time != nil {
-		*m.addattempt_time += i
-	} else {
-		m.addattempt_time = &i
-	}
-}
-
-// AddedAttemptTime returns the value that was added to the "attempt_time" field in this mutation.
-func (m *TaskResultMutation) AddedAttemptTime() (r int, exists bool) {
-	v := m.addattempt_time
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// ResetAttemptTime resets all changes to the "attempt_time" field.
-func (m *TaskResultMutation) ResetAttemptTime() {
-	m.attempt_time = nil
-	m.addattempt_time = nil
-}
-
 // SetCreatedAt sets the "created_at" field.
 func (m *TaskResultMutation) SetCreatedAt(t time.Time) {
 	m.created_at = &t
@@ -3388,7 +3330,7 @@ func (m *TaskResultMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *TaskResultMutation) Fields() []string {
-	fields := make([]string, 0, 13)
+	fields := make([]string, 0, 12)
 	if m.request_per_sec != nil {
 		fields = append(fields, taskresult.FieldRequestPerSec)
 	}
@@ -3418,9 +3360,6 @@ func (m *TaskResultMutation) Fields() []string {
 	}
 	if m.attempt_count != nil {
 		fields = append(fields, taskresult.FieldAttemptCount)
-	}
-	if m.attempt_time != nil {
-		fields = append(fields, taskresult.FieldAttemptTime)
 	}
 	if m.created_at != nil {
 		fields = append(fields, taskresult.FieldCreatedAt)
@@ -3456,8 +3395,6 @@ func (m *TaskResultMutation) Field(name string) (ent.Value, bool) {
 		return m.ThreadNum()
 	case taskresult.FieldAttemptCount:
 		return m.AttemptCount()
-	case taskresult.FieldAttemptTime:
-		return m.AttemptTime()
 	case taskresult.FieldCreatedAt:
 		return m.CreatedAt()
 	case taskresult.FieldDeletedAt:
@@ -3491,8 +3428,6 @@ func (m *TaskResultMutation) OldField(ctx context.Context, name string) (ent.Val
 		return m.OldThreadNum(ctx)
 	case taskresult.FieldAttemptCount:
 		return m.OldAttemptCount(ctx)
-	case taskresult.FieldAttemptTime:
-		return m.OldAttemptTime(ctx)
 	case taskresult.FieldCreatedAt:
 		return m.OldCreatedAt(ctx)
 	case taskresult.FieldDeletedAt:
@@ -3576,13 +3511,6 @@ func (m *TaskResultMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetAttemptCount(v)
 		return nil
-	case taskresult.FieldAttemptTime:
-		v, ok := value.(int)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetAttemptTime(v)
-		return nil
 	case taskresult.FieldCreatedAt:
 		v, ok := value.(time.Time)
 		if !ok {
@@ -3614,9 +3542,6 @@ func (m *TaskResultMutation) AddedFields() []string {
 	if m.addattempt_count != nil {
 		fields = append(fields, taskresult.FieldAttemptCount)
 	}
-	if m.addattempt_time != nil {
-		fields = append(fields, taskresult.FieldAttemptTime)
-	}
 	return fields
 }
 
@@ -3631,8 +3556,6 @@ func (m *TaskResultMutation) AddedField(name string) (ent.Value, bool) {
 		return m.AddedThreadNum()
 	case taskresult.FieldAttemptCount:
 		return m.AddedAttemptCount()
-	case taskresult.FieldAttemptTime:
-		return m.AddedAttemptTime()
 	}
 	return nil, false
 }
@@ -3662,13 +3585,6 @@ func (m *TaskResultMutation) AddField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.AddAttemptCount(v)
-		return nil
-	case taskresult.FieldAttemptTime:
-		v, ok := value.(int)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.AddAttemptTime(v)
 		return nil
 	}
 	return fmt.Errorf("unknown TaskResult numeric field %s", name)
@@ -3741,9 +3657,6 @@ func (m *TaskResultMutation) ResetField(name string) error {
 		return nil
 	case taskresult.FieldAttemptCount:
 		m.ResetAttemptCount()
-		return nil
-	case taskresult.FieldAttemptTime:
-		m.ResetAttemptTime()
 		return nil
 	case taskresult.FieldCreatedAt:
 		m.ResetCreatedAt()

@@ -88,12 +88,6 @@ func (trc *TaskResultCreate) SetAttemptCount(i int) *TaskResultCreate {
 	return trc
 }
 
-// SetAttemptTime sets the "attempt_time" field.
-func (trc *TaskResultCreate) SetAttemptTime(i int) *TaskResultCreate {
-	trc.mutation.SetAttemptTime(i)
-	return trc
-}
-
 // SetCreatedAt sets the "created_at" field.
 func (trc *TaskResultCreate) SetCreatedAt(t time.Time) *TaskResultCreate {
 	trc.mutation.SetCreatedAt(t)
@@ -181,9 +175,6 @@ func (trc *TaskResultCreate) check() error {
 	if _, ok := trc.mutation.AttemptCount(); !ok {
 		return &ValidationError{Name: "attempt_count", err: errors.New(`ent: missing required field "TaskResult.attempt_count"`)}
 	}
-	if _, ok := trc.mutation.AttemptTime(); !ok {
-		return &ValidationError{Name: "attempt_time", err: errors.New(`ent: missing required field "TaskResult.attempt_time"`)}
-	}
 	if _, ok := trc.mutation.CreatedAt(); !ok {
 		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "TaskResult.created_at"`)}
 	}
@@ -258,10 +249,6 @@ func (trc *TaskResultCreate) createSpec() (*TaskResult, *sqlgraph.CreateSpec) {
 	if value, ok := trc.mutation.AttemptCount(); ok {
 		_spec.SetField(taskresult.FieldAttemptCount, field.TypeInt, value)
 		_node.AttemptCount = value
-	}
-	if value, ok := trc.mutation.AttemptTime(); ok {
-		_spec.SetField(taskresult.FieldAttemptTime, field.TypeInt, value)
-		_node.AttemptTime = value
 	}
 	if value, ok := trc.mutation.CreatedAt(); ok {
 		_spec.SetField(taskresult.FieldCreatedAt, field.TypeTime, value)

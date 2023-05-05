@@ -123,19 +123,6 @@ func (tru *TaskResultUpdate) AddAttemptCount(i int) *TaskResultUpdate {
 	return tru
 }
 
-// SetAttemptTime sets the "attempt_time" field.
-func (tru *TaskResultUpdate) SetAttemptTime(i int) *TaskResultUpdate {
-	tru.mutation.ResetAttemptTime()
-	tru.mutation.SetAttemptTime(i)
-	return tru
-}
-
-// AddAttemptTime adds i to the "attempt_time" field.
-func (tru *TaskResultUpdate) AddAttemptTime(i int) *TaskResultUpdate {
-	tru.mutation.AddAttemptTime(i)
-	return tru
-}
-
 // SetCreatedAt sets the "created_at" field.
 func (tru *TaskResultUpdate) SetCreatedAt(t time.Time) *TaskResultUpdate {
 	tru.mutation.SetCreatedAt(t)
@@ -244,12 +231,6 @@ func (tru *TaskResultUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if value, ok := tru.mutation.AddedAttemptCount(); ok {
 		_spec.AddField(taskresult.FieldAttemptCount, field.TypeInt, value)
-	}
-	if value, ok := tru.mutation.AttemptTime(); ok {
-		_spec.SetField(taskresult.FieldAttemptTime, field.TypeInt, value)
-	}
-	if value, ok := tru.mutation.AddedAttemptTime(); ok {
-		_spec.AddField(taskresult.FieldAttemptTime, field.TypeInt, value)
 	}
 	if value, ok := tru.mutation.CreatedAt(); ok {
 		_spec.SetField(taskresult.FieldCreatedAt, field.TypeTime, value)
@@ -372,19 +353,6 @@ func (truo *TaskResultUpdateOne) SetAttemptCount(i int) *TaskResultUpdateOne {
 // AddAttemptCount adds i to the "attempt_count" field.
 func (truo *TaskResultUpdateOne) AddAttemptCount(i int) *TaskResultUpdateOne {
 	truo.mutation.AddAttemptCount(i)
-	return truo
-}
-
-// SetAttemptTime sets the "attempt_time" field.
-func (truo *TaskResultUpdateOne) SetAttemptTime(i int) *TaskResultUpdateOne {
-	truo.mutation.ResetAttemptTime()
-	truo.mutation.SetAttemptTime(i)
-	return truo
-}
-
-// AddAttemptTime adds i to the "attempt_time" field.
-func (truo *TaskResultUpdateOne) AddAttemptTime(i int) *TaskResultUpdateOne {
-	truo.mutation.AddAttemptTime(i)
 	return truo
 }
 
@@ -526,12 +494,6 @@ func (truo *TaskResultUpdateOne) sqlSave(ctx context.Context) (_node *TaskResult
 	}
 	if value, ok := truo.mutation.AddedAttemptCount(); ok {
 		_spec.AddField(taskresult.FieldAttemptCount, field.TypeInt, value)
-	}
-	if value, ok := truo.mutation.AttemptTime(); ok {
-		_spec.SetField(taskresult.FieldAttemptTime, field.TypeInt, value)
-	}
-	if value, ok := truo.mutation.AddedAttemptTime(); ok {
-		_spec.AddField(taskresult.FieldAttemptTime, field.TypeInt, value)
 	}
 	if value, ok := truo.mutation.CreatedAt(); ok {
 		_spec.SetField(taskresult.FieldCreatedAt, field.TypeTime, value)

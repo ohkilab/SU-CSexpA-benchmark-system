@@ -104,11 +104,6 @@ func AttemptCount(v int) predicate.TaskResult {
 	return predicate.TaskResult(sql.FieldEQ(FieldAttemptCount, v))
 }
 
-// AttemptTime applies equality check predicate on the "attempt_time" field. It's identical to AttemptTimeEQ.
-func AttemptTime(v int) predicate.TaskResult {
-	return predicate.TaskResult(sql.FieldEQ(FieldAttemptTime, v))
-}
-
 // CreatedAt applies equality check predicate on the "created_at" field. It's identical to CreatedAtEQ.
 func CreatedAt(v time.Time) predicate.TaskResult {
 	return predicate.TaskResult(sql.FieldEQ(FieldCreatedAt, v))
@@ -702,46 +697,6 @@ func AttemptCountLT(v int) predicate.TaskResult {
 // AttemptCountLTE applies the LTE predicate on the "attempt_count" field.
 func AttemptCountLTE(v int) predicate.TaskResult {
 	return predicate.TaskResult(sql.FieldLTE(FieldAttemptCount, v))
-}
-
-// AttemptTimeEQ applies the EQ predicate on the "attempt_time" field.
-func AttemptTimeEQ(v int) predicate.TaskResult {
-	return predicate.TaskResult(sql.FieldEQ(FieldAttemptTime, v))
-}
-
-// AttemptTimeNEQ applies the NEQ predicate on the "attempt_time" field.
-func AttemptTimeNEQ(v int) predicate.TaskResult {
-	return predicate.TaskResult(sql.FieldNEQ(FieldAttemptTime, v))
-}
-
-// AttemptTimeIn applies the In predicate on the "attempt_time" field.
-func AttemptTimeIn(vs ...int) predicate.TaskResult {
-	return predicate.TaskResult(sql.FieldIn(FieldAttemptTime, vs...))
-}
-
-// AttemptTimeNotIn applies the NotIn predicate on the "attempt_time" field.
-func AttemptTimeNotIn(vs ...int) predicate.TaskResult {
-	return predicate.TaskResult(sql.FieldNotIn(FieldAttemptTime, vs...))
-}
-
-// AttemptTimeGT applies the GT predicate on the "attempt_time" field.
-func AttemptTimeGT(v int) predicate.TaskResult {
-	return predicate.TaskResult(sql.FieldGT(FieldAttemptTime, v))
-}
-
-// AttemptTimeGTE applies the GTE predicate on the "attempt_time" field.
-func AttemptTimeGTE(v int) predicate.TaskResult {
-	return predicate.TaskResult(sql.FieldGTE(FieldAttemptTime, v))
-}
-
-// AttemptTimeLT applies the LT predicate on the "attempt_time" field.
-func AttemptTimeLT(v int) predicate.TaskResult {
-	return predicate.TaskResult(sql.FieldLT(FieldAttemptTime, v))
-}
-
-// AttemptTimeLTE applies the LTE predicate on the "attempt_time" field.
-func AttemptTimeLTE(v int) predicate.TaskResult {
-	return predicate.TaskResult(sql.FieldLTE(FieldAttemptTime, v))
 }
 
 // CreatedAtEQ applies the EQ predicate on the "created_at" field.

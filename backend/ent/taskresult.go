@@ -37,8 +37,6 @@ type TaskResult struct {
 	ThreadNum int `json:"thread_num,omitempty"`
 	// AttemptCount holds the value of the "attempt_count" field.
 	AttemptCount int `json:"attempt_count,omitempty"`
-	// AttemptTime holds the value of the "attempt_time" field.
-	AttemptTime int `json:"attempt_time,omitempty"`
 	// CreatedAt holds the value of the "created_at" field.
 	CreatedAt time.Time `json:"created_at,omitempty"`
 	// DeletedAt holds the value of the "deleted_at" field.
@@ -52,7 +50,7 @@ func (*TaskResult) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case taskresult.FieldID, taskresult.FieldRequestPerSec, taskresult.FieldThreadNum, taskresult.FieldAttemptCount, taskresult.FieldAttemptTime:
+		case taskresult.FieldID, taskresult.FieldRequestPerSec, taskresult.FieldThreadNum, taskresult.FieldAttemptCount:
 			values[i] = new(sql.NullInt64)
 		case taskresult.FieldURL, taskresult.FieldMethod, taskresult.FieldRequestContentType, taskresult.FieldRequestBody, taskresult.FieldResponseCode, taskresult.FieldResponseContentType, taskresult.FieldResponseBody:
 			values[i] = new(sql.NullString)
@@ -141,12 +139,6 @@ func (tr *TaskResult) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				tr.AttemptCount = int(value.Int64)
 			}
-		case taskresult.FieldAttemptTime:
-			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for field attempt_time", values[i])
-			} else if value.Valid {
-				tr.AttemptTime = int(value.Int64)
-			}
 		case taskresult.FieldCreatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field created_at", values[i])
@@ -231,9 +223,6 @@ func (tr *TaskResult) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("attempt_count=")
 	builder.WriteString(fmt.Sprintf("%v", tr.AttemptCount))
-	builder.WriteString(", ")
-	builder.WriteString("attempt_time=")
-	builder.WriteString(fmt.Sprintf("%v", tr.AttemptTime))
 	builder.WriteString(", ")
 	builder.WriteString("created_at=")
 	builder.WriteString(tr.CreatedAt.Format(time.ANSIC))

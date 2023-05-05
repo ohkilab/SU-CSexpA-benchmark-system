@@ -31,8 +31,6 @@ const (
 	FieldThreadNum = "thread_num"
 	// FieldAttemptCount holds the string denoting the attempt_count field in the database.
 	FieldAttemptCount = "attempt_count"
-	// FieldAttemptTime holds the string denoting the attempt_time field in the database.
-	FieldAttemptTime = "attempt_time"
 	// FieldCreatedAt holds the string denoting the created_at field in the database.
 	FieldCreatedAt = "created_at"
 	// FieldDeletedAt holds the string denoting the deleted_at field in the database.
@@ -54,7 +52,6 @@ var Columns = []string{
 	FieldResponseBody,
 	FieldThreadNum,
 	FieldAttemptCount,
-	FieldAttemptTime,
 	FieldCreatedAt,
 	FieldDeletedAt,
 }
@@ -136,11 +133,6 @@ func ByThreadNum(opts ...sql.OrderTermOption) OrderOption {
 // ByAttemptCount orders the results by the attempt_count field.
 func ByAttemptCount(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldAttemptCount, opts...).ToFunc()
-}
-
-// ByAttemptTime orders the results by the attempt_time field.
-func ByAttemptTime(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldAttemptTime, opts...).ToFunc()
 }
 
 // ByCreatedAt orders the results by the created_at field.

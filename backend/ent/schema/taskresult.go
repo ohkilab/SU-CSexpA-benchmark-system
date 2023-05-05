@@ -27,7 +27,6 @@ func (TaskResult) Fields() []ent.Field {
 		// config
 		field.Int("thread_num"),
 		field.Int("attempt_count"),
-		field.Int("attempt_time"),
 		field.Time("created_at"),
 		field.Time("deleted_at").Optional(),
 	}
