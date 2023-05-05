@@ -3,6 +3,7 @@ package e2e
 import (
 	"context"
 	"io"
+	"strconv"
 	"testing"
 	"time"
 
@@ -24,7 +25,10 @@ func Test_GetSubmit(t *testing.T) {
 	connBenchmark, closeBenchmark := utils.LaunchBenchmarkGrpcServer(t)
 	defer closeBenchmark()
 	benchmarkClient := benchmarkpb.NewBenchmarkServiceClient(connBenchmark)
+	testServerPort := utils.LaunchTestServer(t)
 	worker := worker.New(entClient, benchmarkClient)
+	go worker.Run()
+
 	conn, closeFunc := utils.LaunchGrpcServer(t, grpc.WithEntClient(entClient), grpc.WithJwtSecret("secret"), grpc.WithWorker(worker))
 	defer closeFunc()
 	client := pb.NewBackendServiceClient(conn)
@@ -53,7 +57,7 @@ func Test_GetSubmit(t *testing.T) {
 	meta := metadata.New(map[string]string{"authorization": "Bearer " + jwtToken})
 	ctx = metadata.NewOutgoingContext(ctx, meta)
 	submit, err := client.PostSubmit(ctx, &pb.PostSubmitRequest{
-		IpAddr:    "10.255.255.255",
+		IpAddr:    "0.0.0.0:" + strconv.Itoa(testServerPort),
 		ContestId: int32(contest.ID),
 	})
 	if err != nil {
@@ -79,7 +83,6 @@ func Test_GetSubmit(t *testing.T) {
 			if err != nil {
 				t.Fatal(err)
 			}
-
 			assert.Equal(t, dbtaskRes.RequestPerSec, int(taskRes.RequestPerSec))
 		}
 

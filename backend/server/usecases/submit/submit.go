@@ -55,7 +55,7 @@ func (i *Interactor) PostSubmit(ctx context.Context, req *backendpb.PostSubmitRe
 	}
 
 	// add a task to worker
-	executeRequest := buildExecuteRequest(submit.IPAddr, strconv.Itoa(claims.GroupID))
+	executeRequest := buildTask(submit.IPAddr, strconv.Itoa(claims.GroupID), submit.ID)
 	i.worker.Push(executeRequest)
 
 	return &backendpb.PostSubmitResponse{
@@ -66,22 +66,25 @@ func (i *Interactor) PostSubmit(ctx context.Context, req *backendpb.PostSubmitRe
 	}, nil
 }
 
-func buildExecuteRequest(ipAddr, groupID string) *benchmarkpb.ExecuteRequest {
+func buildTask(ipAddr, groupID string, submitID int) *worker.Task {
 	tags := generateRandomTags(50)
-	return &benchmarkpb.ExecuteRequest{
-		GroupId: groupID,
-		Tasks: lo.Map(tags, func(tag string, _ int) *benchmarkpb.Task {
-			return &benchmarkpb.Task{
-				Request: &benchmarkpb.HttpRequest{
-					Url:         fmt.Sprintf("http://%s?tag=%s", ipAddr, tag),
-					Method:      benchmarkpb.HttpMethod_GET,
-					ContentType: "application/x-www-form-urlencoded",
-					Body:        "",
-				},
-				ThreadNum:    int32(threadNum),
-				AttemptCount: int32(attemptCount),
-			}
-		}),
+	return &worker.Task{
+		Req: &benchmarkpb.ExecuteRequest{
+			GroupId: groupID,
+			Tasks: lo.Map(tags, func(tag string, _ int) *benchmarkpb.Task {
+				return &benchmarkpb.Task{
+					Request: &benchmarkpb.HttpRequest{
+						Url:         fmt.Sprintf("http://%s?tag=%s", ipAddr, tag),
+						Method:      benchmarkpb.HttpMethod_GET,
+						ContentType: "application/x-www-form-urlencoded",
+						Body:        "",
+					},
+					ThreadNum:    int32(threadNum),
+					AttemptCount: int32(attemptCount),
+				}
+			}),
+		},
+		SubmitID: submitID,
 	}
 }
 

@@ -8,7 +8,7 @@ import (
 	reflect "reflect"
 
 	gomock "github.com/golang/mock/gomock"
-	benchmark "github.com/ohkilab/SU-CSexpA-benchmark-system/proto-gen/go/benchmark"
+	worker "github.com/ohkilab/SU-CSexpA-benchmark-system/backend/worker"
 )
 
 // MockWorker is a mock of Worker interface.
@@ -35,7 +35,7 @@ func (m *MockWorker) EXPECT() *MockWorkerMockRecorder {
 }
 
 // Push mocks base method.
-func (m *MockWorker) Push(arg0 *benchmark.ExecuteRequest) {
+func (m *MockWorker) Push(arg0 *worker.Task) {
 	m.ctrl.T.Helper()
 	m.ctrl.Call(m, "Push", arg0)
 }

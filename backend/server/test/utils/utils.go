@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"fmt"
 	"net"
+	"net/http"
 	"os"
 	"testing"
 	"time"
@@ -66,6 +67,24 @@ func LaunchGrpcServer(t *testing.T, optionFuncs ...grpc.OptionFunc) (*pkggrpc.Cl
 		server.GracefulStop()
 		conn.Close()
 	}
+}
+
+func LaunchTestServer(t *testing.T) int {
+	t.Helper()
+
+	lsnr, err := net.Listen("tcp", ":0")
+	if err != nil {
+		t.Fatal(err)
+	}
+	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusOK)
+	})
+	go func() {
+		if err := http.Serve(lsnr, nil); err != nil {
+			t.Log(err)
+		}
+	}()
+	return lsnr.Addr().(*net.TCPAddr).Port
 }
 
 type cleanupFunc func(t *testing.T)
