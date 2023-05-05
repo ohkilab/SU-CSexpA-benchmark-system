@@ -2607,6 +2607,7 @@ type TaskResultMutation struct {
 	id                   *int
 	request_per_sec      *int
 	addrequest_per_sec   *int
+	error_message        *string
 	url                  *string
 	method               *string
 	request_content_type *string
@@ -2781,6 +2782,55 @@ func (m *TaskResultMutation) AddedRequestPerSec() (r int, exists bool) {
 func (m *TaskResultMutation) ResetRequestPerSec() {
 	m.request_per_sec = nil
 	m.addrequest_per_sec = nil
+}
+
+// SetErrorMessage sets the "error_message" field.
+func (m *TaskResultMutation) SetErrorMessage(s string) {
+	m.error_message = &s
+}
+
+// ErrorMessage returns the value of the "error_message" field in the mutation.
+func (m *TaskResultMutation) ErrorMessage() (r string, exists bool) {
+	v := m.error_message
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldErrorMessage returns the old "error_message" field's value of the TaskResult entity.
+// If the TaskResult object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *TaskResultMutation) OldErrorMessage(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldErrorMessage is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldErrorMessage requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldErrorMessage: %w", err)
+	}
+	return oldValue.ErrorMessage, nil
+}
+
+// ClearErrorMessage clears the value of the "error_message" field.
+func (m *TaskResultMutation) ClearErrorMessage() {
+	m.error_message = nil
+	m.clearedFields[taskresult.FieldErrorMessage] = struct{}{}
+}
+
+// ErrorMessageCleared returns if the "error_message" field was cleared in this mutation.
+func (m *TaskResultMutation) ErrorMessageCleared() bool {
+	_, ok := m.clearedFields[taskresult.FieldErrorMessage]
+	return ok
+}
+
+// ResetErrorMessage resets all changes to the "error_message" field.
+func (m *TaskResultMutation) ResetErrorMessage() {
+	m.error_message = nil
+	delete(m.clearedFields, taskresult.FieldErrorMessage)
 }
 
 // SetURL sets the "url" field.
@@ -3171,9 +3221,12 @@ func (m *TaskResultMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *TaskResultMutation) Fields() []string {
-	fields := make([]string, 0, 9)
+	fields := make([]string, 0, 10)
 	if m.request_per_sec != nil {
 		fields = append(fields, taskresult.FieldRequestPerSec)
+	}
+	if m.error_message != nil {
+		fields = append(fields, taskresult.FieldErrorMessage)
 	}
 	if m.url != nil {
 		fields = append(fields, taskresult.FieldURL)
@@ -3209,6 +3262,8 @@ func (m *TaskResultMutation) Field(name string) (ent.Value, bool) {
 	switch name {
 	case taskresult.FieldRequestPerSec:
 		return m.RequestPerSec()
+	case taskresult.FieldErrorMessage:
+		return m.ErrorMessage()
 	case taskresult.FieldURL:
 		return m.URL()
 	case taskresult.FieldMethod:
@@ -3236,6 +3291,8 @@ func (m *TaskResultMutation) OldField(ctx context.Context, name string) (ent.Val
 	switch name {
 	case taskresult.FieldRequestPerSec:
 		return m.OldRequestPerSec(ctx)
+	case taskresult.FieldErrorMessage:
+		return m.OldErrorMessage(ctx)
 	case taskresult.FieldURL:
 		return m.OldURL(ctx)
 	case taskresult.FieldMethod:
@@ -3267,6 +3324,13 @@ func (m *TaskResultMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetRequestPerSec(v)
+		return nil
+	case taskresult.FieldErrorMessage:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetErrorMessage(v)
 		return nil
 	case taskresult.FieldURL:
 		v, ok := value.(string)
@@ -3393,6 +3457,9 @@ func (m *TaskResultMutation) AddField(name string, value ent.Value) error {
 // mutation.
 func (m *TaskResultMutation) ClearedFields() []string {
 	var fields []string
+	if m.FieldCleared(taskresult.FieldErrorMessage) {
+		fields = append(fields, taskresult.FieldErrorMessage)
+	}
 	if m.FieldCleared(taskresult.FieldRequestBody) {
 		fields = append(fields, taskresult.FieldRequestBody)
 	}
@@ -3413,6 +3480,9 @@ func (m *TaskResultMutation) FieldCleared(name string) bool {
 // error if the field is not defined in the schema.
 func (m *TaskResultMutation) ClearField(name string) error {
 	switch name {
+	case taskresult.FieldErrorMessage:
+		m.ClearErrorMessage()
+		return nil
 	case taskresult.FieldRequestBody:
 		m.ClearRequestBody()
 		return nil
@@ -3429,6 +3499,9 @@ func (m *TaskResultMutation) ResetField(name string) error {
 	switch name {
 	case taskresult.FieldRequestPerSec:
 		m.ResetRequestPerSec()
+		return nil
+	case taskresult.FieldErrorMessage:
+		m.ResetErrorMessage()
 		return nil
 	case taskresult.FieldURL:
 		m.ResetURL()

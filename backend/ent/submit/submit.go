@@ -96,8 +96,6 @@ func ValidColumn(column string) bool {
 var (
 	// YearValidator is a validator for the "year" field. It is called by the builders before save.
 	YearValidator func(int) error
-	// ScoreValidator is a validator for the "score" field. It is called by the builders before save.
-	ScoreValidator func(int) error
 )
 
 // Language defines the type for the "language" enum field.

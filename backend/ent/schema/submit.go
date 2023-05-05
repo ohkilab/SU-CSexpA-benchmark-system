@@ -19,7 +19,7 @@ func (Submit) Fields() []ent.Field {
 		field.Int("id"),
 		field.String("ip_addr"),
 		field.Int("year").Positive(),
-		field.Int("score").Positive().Optional(),
+		field.Int("score").Optional(),
 		field.Enum("language").Values(languages...).Optional(),
 		field.Time("submited_at"),
 		field.Time("completed_at").Optional(),

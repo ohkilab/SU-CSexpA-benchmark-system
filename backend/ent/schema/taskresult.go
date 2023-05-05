@@ -15,6 +15,7 @@ func (TaskResult) Fields() []ent.Field {
 	return []ent.Field{
 		field.Int("id"),
 		field.Int("request_per_sec"),
+		field.String("error_message").Optional(),
 		// request
 		field.String("url"),
 		field.String("method"),

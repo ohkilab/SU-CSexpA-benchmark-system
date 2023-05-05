@@ -201,11 +201,6 @@ func (sc *SubmitCreate) check() error {
 			return &ValidationError{Name: "year", err: fmt.Errorf(`ent: validator failed for field "Submit.year": %w`, err)}
 		}
 	}
-	if v, ok := sc.mutation.Score(); ok {
-		if err := submit.ScoreValidator(v); err != nil {
-			return &ValidationError{Name: "score", err: fmt.Errorf(`ent: validator failed for field "Submit.score": %w`, err)}
-		}
-	}
 	if v, ok := sc.mutation.Language(); ok {
 		if err := submit.LanguageValidator(v); err != nil {
 			return &ValidationError{Name: "language", err: fmt.Errorf(`ent: validator failed for field "Submit.language": %w`, err)}

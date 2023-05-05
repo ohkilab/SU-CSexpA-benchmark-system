@@ -26,6 +26,20 @@ func (trc *TaskResultCreate) SetRequestPerSec(i int) *TaskResultCreate {
 	return trc
 }
 
+// SetErrorMessage sets the "error_message" field.
+func (trc *TaskResultCreate) SetErrorMessage(s string) *TaskResultCreate {
+	trc.mutation.SetErrorMessage(s)
+	return trc
+}
+
+// SetNillableErrorMessage sets the "error_message" field if the given value is not nil.
+func (trc *TaskResultCreate) SetNillableErrorMessage(s *string) *TaskResultCreate {
+	if s != nil {
+		trc.SetErrorMessage(*s)
+	}
+	return trc
+}
+
 // SetURL sets the "url" field.
 func (trc *TaskResultCreate) SetURL(s string) *TaskResultCreate {
 	trc.mutation.SetURL(s)
@@ -186,6 +200,10 @@ func (trc *TaskResultCreate) createSpec() (*TaskResult, *sqlgraph.CreateSpec) {
 	if value, ok := trc.mutation.RequestPerSec(); ok {
 		_spec.SetField(taskresult.FieldRequestPerSec, field.TypeInt, value)
 		_node.RequestPerSec = value
+	}
+	if value, ok := trc.mutation.ErrorMessage(); ok {
+		_spec.SetField(taskresult.FieldErrorMessage, field.TypeString, value)
+		_node.ErrorMessage = value
 	}
 	if value, ok := trc.mutation.URL(); ok {
 		_spec.SetField(taskresult.FieldURL, field.TypeString, value)

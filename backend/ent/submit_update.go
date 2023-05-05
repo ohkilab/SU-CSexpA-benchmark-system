@@ -268,11 +268,6 @@ func (su *SubmitUpdate) check() error {
 			return &ValidationError{Name: "year", err: fmt.Errorf(`ent: validator failed for field "Submit.year": %w`, err)}
 		}
 	}
-	if v, ok := su.mutation.Score(); ok {
-		if err := submit.ScoreValidator(v); err != nil {
-			return &ValidationError{Name: "score", err: fmt.Errorf(`ent: validator failed for field "Submit.score": %w`, err)}
-		}
-	}
 	if v, ok := su.mutation.Language(); ok {
 		if err := submit.LanguageValidator(v); err != nil {
 			return &ValidationError{Name: "language", err: fmt.Errorf(`ent: validator failed for field "Submit.language": %w`, err)}
@@ -703,11 +698,6 @@ func (suo *SubmitUpdateOne) check() error {
 	if v, ok := suo.mutation.Year(); ok {
 		if err := submit.YearValidator(v); err != nil {
 			return &ValidationError{Name: "year", err: fmt.Errorf(`ent: validator failed for field "Submit.year": %w`, err)}
-		}
-	}
-	if v, ok := suo.mutation.Score(); ok {
-		if err := submit.ScoreValidator(v); err != nil {
-			return &ValidationError{Name: "score", err: fmt.Errorf(`ent: validator failed for field "Submit.score": %w`, err)}
 		}
 	}
 	if v, ok := suo.mutation.Language(); ok {

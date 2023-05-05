@@ -84,6 +84,7 @@ var (
 	TaskResultsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
 		{Name: "request_per_sec", Type: field.TypeInt},
+		{Name: "error_message", Type: field.TypeString, Nullable: true},
 		{Name: "url", Type: field.TypeString},
 		{Name: "method", Type: field.TypeString},
 		{Name: "request_content_type", Type: field.TypeString},
@@ -102,7 +103,7 @@ var (
 		ForeignKeys: []*schema.ForeignKey{
 			{
 				Symbol:     "task_results_submits_taskResults",
-				Columns:    []*schema.Column{TaskResultsColumns[10]},
+				Columns:    []*schema.Column{TaskResultsColumns[11]},
 				RefColumns: []*schema.Column{SubmitsColumns[0]},
 				OnDelete:   schema.SetNull,
 			},

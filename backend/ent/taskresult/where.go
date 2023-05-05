@@ -59,6 +59,11 @@ func RequestPerSec(v int) predicate.TaskResult {
 	return predicate.TaskResult(sql.FieldEQ(FieldRequestPerSec, v))
 }
 
+// ErrorMessage applies equality check predicate on the "error_message" field. It's identical to ErrorMessageEQ.
+func ErrorMessage(v string) predicate.TaskResult {
+	return predicate.TaskResult(sql.FieldEQ(FieldErrorMessage, v))
+}
+
 // URL applies equality check predicate on the "url" field. It's identical to URLEQ.
 func URL(v string) predicate.TaskResult {
 	return predicate.TaskResult(sql.FieldEQ(FieldURL, v))
@@ -137,6 +142,81 @@ func RequestPerSecLT(v int) predicate.TaskResult {
 // RequestPerSecLTE applies the LTE predicate on the "request_per_sec" field.
 func RequestPerSecLTE(v int) predicate.TaskResult {
 	return predicate.TaskResult(sql.FieldLTE(FieldRequestPerSec, v))
+}
+
+// ErrorMessageEQ applies the EQ predicate on the "error_message" field.
+func ErrorMessageEQ(v string) predicate.TaskResult {
+	return predicate.TaskResult(sql.FieldEQ(FieldErrorMessage, v))
+}
+
+// ErrorMessageNEQ applies the NEQ predicate on the "error_message" field.
+func ErrorMessageNEQ(v string) predicate.TaskResult {
+	return predicate.TaskResult(sql.FieldNEQ(FieldErrorMessage, v))
+}
+
+// ErrorMessageIn applies the In predicate on the "error_message" field.
+func ErrorMessageIn(vs ...string) predicate.TaskResult {
+	return predicate.TaskResult(sql.FieldIn(FieldErrorMessage, vs...))
+}
+
+// ErrorMessageNotIn applies the NotIn predicate on the "error_message" field.
+func ErrorMessageNotIn(vs ...string) predicate.TaskResult {
+	return predicate.TaskResult(sql.FieldNotIn(FieldErrorMessage, vs...))
+}
+
+// ErrorMessageGT applies the GT predicate on the "error_message" field.
+func ErrorMessageGT(v string) predicate.TaskResult {
+	return predicate.TaskResult(sql.FieldGT(FieldErrorMessage, v))
+}
+
+// ErrorMessageGTE applies the GTE predicate on the "error_message" field.
+func ErrorMessageGTE(v string) predicate.TaskResult {
+	return predicate.TaskResult(sql.FieldGTE(FieldErrorMessage, v))
+}
+
+// ErrorMessageLT applies the LT predicate on the "error_message" field.
+func ErrorMessageLT(v string) predicate.TaskResult {
+	return predicate.TaskResult(sql.FieldLT(FieldErrorMessage, v))
+}
+
+// ErrorMessageLTE applies the LTE predicate on the "error_message" field.
+func ErrorMessageLTE(v string) predicate.TaskResult {
+	return predicate.TaskResult(sql.FieldLTE(FieldErrorMessage, v))
+}
+
+// ErrorMessageContains applies the Contains predicate on the "error_message" field.
+func ErrorMessageContains(v string) predicate.TaskResult {
+	return predicate.TaskResult(sql.FieldContains(FieldErrorMessage, v))
+}
+
+// ErrorMessageHasPrefix applies the HasPrefix predicate on the "error_message" field.
+func ErrorMessageHasPrefix(v string) predicate.TaskResult {
+	return predicate.TaskResult(sql.FieldHasPrefix(FieldErrorMessage, v))
+}
+
+// ErrorMessageHasSuffix applies the HasSuffix predicate on the "error_message" field.
+func ErrorMessageHasSuffix(v string) predicate.TaskResult {
+	return predicate.TaskResult(sql.FieldHasSuffix(FieldErrorMessage, v))
+}
+
+// ErrorMessageIsNil applies the IsNil predicate on the "error_message" field.
+func ErrorMessageIsNil() predicate.TaskResult {
+	return predicate.TaskResult(sql.FieldIsNull(FieldErrorMessage))
+}
+
+// ErrorMessageNotNil applies the NotNil predicate on the "error_message" field.
+func ErrorMessageNotNil() predicate.TaskResult {
+	return predicate.TaskResult(sql.FieldNotNull(FieldErrorMessage))
+}
+
+// ErrorMessageEqualFold applies the EqualFold predicate on the "error_message" field.
+func ErrorMessageEqualFold(v string) predicate.TaskResult {
+	return predicate.TaskResult(sql.FieldEqualFold(FieldErrorMessage, v))
+}
+
+// ErrorMessageContainsFold applies the ContainsFold predicate on the "error_message" field.
+func ErrorMessageContainsFold(v string) predicate.TaskResult {
+	return predicate.TaskResult(sql.FieldContainsFold(FieldErrorMessage, v))
 }
 
 // URLEQ applies the EQ predicate on the "url" field.

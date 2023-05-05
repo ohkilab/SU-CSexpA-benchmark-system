@@ -13,6 +13,8 @@ const (
 	FieldID = "id"
 	// FieldRequestPerSec holds the string denoting the request_per_sec field in the database.
 	FieldRequestPerSec = "request_per_sec"
+	// FieldErrorMessage holds the string denoting the error_message field in the database.
+	FieldErrorMessage = "error_message"
 	// FieldURL holds the string denoting the url field in the database.
 	FieldURL = "url"
 	// FieldMethod holds the string denoting the method field in the database.
@@ -37,6 +39,7 @@ const (
 var Columns = []string{
 	FieldID,
 	FieldRequestPerSec,
+	FieldErrorMessage,
 	FieldURL,
 	FieldMethod,
 	FieldRequestContentType,
@@ -79,6 +82,11 @@ func ByID(opts ...sql.OrderTermOption) OrderOption {
 // ByRequestPerSec orders the results by the request_per_sec field.
 func ByRequestPerSec(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldRequestPerSec, opts...).ToFunc()
+}
+
+// ByErrorMessage orders the results by the error_message field.
+func ByErrorMessage(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldErrorMessage, opts...).ToFunc()
 }
 
 // ByURL orders the results by the url field.

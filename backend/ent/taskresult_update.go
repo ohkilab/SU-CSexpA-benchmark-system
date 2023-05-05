@@ -41,6 +41,26 @@ func (tru *TaskResultUpdate) AddRequestPerSec(i int) *TaskResultUpdate {
 	return tru
 }
 
+// SetErrorMessage sets the "error_message" field.
+func (tru *TaskResultUpdate) SetErrorMessage(s string) *TaskResultUpdate {
+	tru.mutation.SetErrorMessage(s)
+	return tru
+}
+
+// SetNillableErrorMessage sets the "error_message" field if the given value is not nil.
+func (tru *TaskResultUpdate) SetNillableErrorMessage(s *string) *TaskResultUpdate {
+	if s != nil {
+		tru.SetErrorMessage(*s)
+	}
+	return tru
+}
+
+// ClearErrorMessage clears the value of the "error_message" field.
+func (tru *TaskResultUpdate) ClearErrorMessage() *TaskResultUpdate {
+	tru.mutation.ClearErrorMessage()
+	return tru
+}
+
 // SetURL sets the "url" field.
 func (tru *TaskResultUpdate) SetURL(s string) *TaskResultUpdate {
 	tru.mutation.SetURL(s)
@@ -178,6 +198,12 @@ func (tru *TaskResultUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if value, ok := tru.mutation.AddedRequestPerSec(); ok {
 		_spec.AddField(taskresult.FieldRequestPerSec, field.TypeInt, value)
 	}
+	if value, ok := tru.mutation.ErrorMessage(); ok {
+		_spec.SetField(taskresult.FieldErrorMessage, field.TypeString, value)
+	}
+	if tru.mutation.ErrorMessageCleared() {
+		_spec.ClearField(taskresult.FieldErrorMessage, field.TypeString)
+	}
 	if value, ok := tru.mutation.URL(); ok {
 		_spec.SetField(taskresult.FieldURL, field.TypeString, value)
 	}
@@ -244,6 +270,26 @@ func (truo *TaskResultUpdateOne) SetRequestPerSec(i int) *TaskResultUpdateOne {
 // AddRequestPerSec adds i to the "request_per_sec" field.
 func (truo *TaskResultUpdateOne) AddRequestPerSec(i int) *TaskResultUpdateOne {
 	truo.mutation.AddRequestPerSec(i)
+	return truo
+}
+
+// SetErrorMessage sets the "error_message" field.
+func (truo *TaskResultUpdateOne) SetErrorMessage(s string) *TaskResultUpdateOne {
+	truo.mutation.SetErrorMessage(s)
+	return truo
+}
+
+// SetNillableErrorMessage sets the "error_message" field if the given value is not nil.
+func (truo *TaskResultUpdateOne) SetNillableErrorMessage(s *string) *TaskResultUpdateOne {
+	if s != nil {
+		truo.SetErrorMessage(*s)
+	}
+	return truo
+}
+
+// ClearErrorMessage clears the value of the "error_message" field.
+func (truo *TaskResultUpdateOne) ClearErrorMessage() *TaskResultUpdateOne {
+	truo.mutation.ClearErrorMessage()
 	return truo
 }
 
@@ -413,6 +459,12 @@ func (truo *TaskResultUpdateOne) sqlSave(ctx context.Context) (_node *TaskResult
 	}
 	if value, ok := truo.mutation.AddedRequestPerSec(); ok {
 		_spec.AddField(taskresult.FieldRequestPerSec, field.TypeInt, value)
+	}
+	if value, ok := truo.mutation.ErrorMessage(); ok {
+		_spec.SetField(taskresult.FieldErrorMessage, field.TypeString, value)
+	}
+	if truo.mutation.ErrorMessageCleared() {
+		_spec.ClearField(taskresult.FieldErrorMessage, field.TypeString)
 	}
 	if value, ok := truo.mutation.URL(); ok {
 		_spec.SetField(taskresult.FieldURL, field.TypeString, value)
