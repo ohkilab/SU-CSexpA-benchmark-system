@@ -9,6 +9,7 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/ent"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/ent/group"
+	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/core/timejst"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -51,6 +52,8 @@ func main() {
 		SetStartAt(time.Date(2023, time.January, 1, 0, 0, 0, 0, time.UTC)).
 		SetEndAt(time.Date(2023, time.December, 31, 23, 59, 59, 0, time.UTC)).
 		SetSubmitLimit(9999).
+		SetYear(2023).
+		SetCreatedAt(timejst.Now()).
 		Save(ctx)
 	if err != nil {
 		log.Println(err)
