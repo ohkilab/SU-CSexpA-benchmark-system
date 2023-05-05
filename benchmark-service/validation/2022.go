@@ -11,12 +11,12 @@ import (
 // https://ohkilab.github.io/SU-CSexpA/content/part3/part3_final_assignment/final_assignment_details.html#geotag-csv
 type Response2022 struct {
 	Tag     string `json:"tag"`
-	Results []struct {
+	Geotags []struct {
 		Lat  float64   `json:"lat"`
 		Lon  float64   `json:"lon"`
 		Date time.Time `json:"date"`
 		Url  string    `json:"url"`
-	} `json:"results"`
+	} `json:"geotags"`
 }
 
 func Validate2022(uri *url.URL, r io.ReadCloser) error {
@@ -29,18 +29,18 @@ func Validate2022(uri *url.URL, r io.ReadCloser) error {
 	if resp.Tag != tag {
 		return errors.New("tag: incorrect tag name")
 	}
-	if len(resp.Results) == 0 {
-		return errors.New("results: the length of results must not be 0")
+	if len(resp.Geotags) == 0 {
+		return errors.New("Geotags: the length of Geotags must not be 0")
 	}
-	if len(resp.Results) > 100 {
-		return errors.New("results: the length of results must be less than 100 or 100")
+	if len(resp.Geotags) > 100 {
+		return errors.New("Geotags: the length of Geotags must be less than 100 or 100")
 	}
-	for i := range resp.Results[:len(resp.Results)-1] {
-		if resp.Results[i].Date.Before(resp.Results[i+1].Date) {
-			return errors.New("results: the order of results must be desc by date")
+	for i := range resp.Geotags[:len(resp.Geotags)-1] {
+		if resp.Geotags[i].Date.Before(resp.Geotags[i+1].Date) {
+			return errors.New("Geotags: the order of Geotags must be desc by date")
 		}
 	}
-	for _, res := range resp.Results {
+	for _, res := range resp.Geotags {
 		if _, err := url.ParseRequestURI(res.Url); err != nil {
 			return errors.New("url: invalid url")
 		}
