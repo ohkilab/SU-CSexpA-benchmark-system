@@ -96,7 +96,7 @@ func generateRandomTags(n int) []string {
 	// }
 	// return tags
 
-	return []string{
+	return lo.Shuffle([]string{
 		"陸上自衛隊",
 		"陸光麵館",
 		"陸前高田ボランティア",
@@ -114,7 +114,8 @@ func generateRandomTags(n int) []string {
 		"陽明山公園",
 		"陽明山前山公園",
 		"陽明山國家公園",
-	}
+	})
+
 }
 
 func (i *Interactor) GetSubmit(req *backendpb.GetSubmitRequest, stream backendpb.BackendService_GetSubmitServer) error {
