@@ -63,18 +63,14 @@ func (w *worker) Run() {
 			score += int(resp.RequestsPerSecond)
 			eg.Go(func() error {
 				resp := resp
-				// TODO: validation
 				_, err := w.entClient.TaskResult.Create().
 					SetRequestPerSec(int(resp.RequestsPerSecond)).
-					SetURL(resp.Request.Url).
-					SetMethod(resp.Request.Method.String()).
-					SetRequestContentType(resp.Request.ContentType).
-					SetRequestBody(resp.Request.Body).
-					SetResponseCode(resp.Response.StatusCode).
-					SetResponseContentType(resp.Response.ContentType).
-					SetResponseBody(resp.Response.Body).
-					SetThreadNum(int(resp.ThreadNum)).
-					SetAttemptCount(int(resp.AttemptCount)).
+					SetURL(resp.Task.Request.Url).
+					SetMethod(resp.Task.Request.Method.String()).
+					SetRequestContentType(resp.Task.Request.ContentType).
+					SetRequestBody(resp.Task.Request.Body).
+					SetThreadNum(int(resp.Task.ThreadNum)).
+					SetAttemptCount(int(resp.Task.AttemptCount)).
 					SetCreatedAt(timejst.Now()).
 					Save(ctx)
 				return err
