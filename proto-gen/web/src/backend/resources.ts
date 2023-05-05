@@ -71,13 +71,13 @@ export interface Group {
  */
 export interface Submit {
     /**
-     * @generated from protobuf field: string id = 1;
+     * @generated from protobuf field: int32 id = 1;
      */
-    id: string;
+    id: number;
     /**
-     * @generated from protobuf field: string group_id = 2;
+     * @generated from protobuf field: int32 group_id = 2;
      */
-    groupId: string;
+    groupId: number;
     /**
      * @generated from protobuf field: int32 year = 3;
      */
@@ -375,8 +375,8 @@ export const Group = new Group$Type();
 class Submit$Type extends MessageType<Submit> {
     constructor() {
         super("Submit", [
-            { no: 1, name: "id", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
-            { no: 2, name: "group_id", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 1, name: "id", kind: "scalar", T: 5 /*ScalarType.INT32*/ },
+            { no: 2, name: "group_id", kind: "scalar", T: 5 /*ScalarType.INT32*/ },
             { no: 3, name: "year", kind: "scalar", T: 5 /*ScalarType.INT32*/ },
             { no: 4, name: "score", kind: "scalar", T: 5 /*ScalarType.INT32*/ },
             { no: 5, name: "language", kind: "enum", T: () => ["Language", Language] },
@@ -386,7 +386,7 @@ class Submit$Type extends MessageType<Submit> {
         ]);
     }
     create(value?: PartialMessage<Submit>): Submit {
-        const message = { id: "", groupId: "", year: 0, score: 0, language: 0, taskResults: [] };
+        const message = { id: 0, groupId: 0, year: 0, score: 0, language: 0, taskResults: [] };
         globalThis.Object.defineProperty(message, MESSAGE_TYPE, { enumerable: false, value: this });
         if (value !== undefined)
             reflectionMergePartial<Submit>(this, message, value);
@@ -397,11 +397,11 @@ class Submit$Type extends MessageType<Submit> {
         while (reader.pos < end) {
             let [fieldNo, wireType] = reader.tag();
             switch (fieldNo) {
-                case /* string id */ 1:
-                    message.id = reader.string();
+                case /* int32 id */ 1:
+                    message.id = reader.int32();
                     break;
-                case /* string group_id */ 2:
-                    message.groupId = reader.string();
+                case /* int32 group_id */ 2:
+                    message.groupId = reader.int32();
                     break;
                 case /* int32 year */ 3:
                     message.year = reader.int32();
@@ -433,12 +433,12 @@ class Submit$Type extends MessageType<Submit> {
         return message;
     }
     internalBinaryWrite(message: Submit, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
-        /* string id = 1; */
-        if (message.id !== "")
-            writer.tag(1, WireType.LengthDelimited).string(message.id);
-        /* string group_id = 2; */
-        if (message.groupId !== "")
-            writer.tag(2, WireType.LengthDelimited).string(message.groupId);
+        /* int32 id = 1; */
+        if (message.id !== 0)
+            writer.tag(1, WireType.Varint).int32(message.id);
+        /* int32 group_id = 2; */
+        if (message.groupId !== 0)
+            writer.tag(2, WireType.Varint).int32(message.groupId);
         /* int32 year = 3; */
         if (message.year !== 0)
             writer.tag(3, WireType.Varint).int32(message.year);

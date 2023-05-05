@@ -42,8 +42,7 @@ func (s *backendServiceServer) PostSubmit(ctx context.Context, req *pb.PostSubmi
 }
 
 func (s *backendServiceServer) GetSubmit(req *pb.GetSubmitRequest, stream pb.BackendService_GetSubmitServer) error {
-	// !!!unimplemented!!!
-	return nil
+	return s.submitInteractor.GetSubmit(req, stream)
 }
 
 func (s *backendServiceServer) PostLogin(ctx context.Context, req *pb.PostLoginRequest) (*pb.PostLoginResponse, error) {
