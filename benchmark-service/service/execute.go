@@ -41,6 +41,7 @@ func (s *service) Execute(req *pb.ExecuteRequest, stream pb.BenchmarkService_Exe
 					TimeElapsed:       0,
 					TotalRequests:     0,
 					RequestsPerSecond: 0,
+					Task:              task,
 				}); err != nil {
 					log.Println(err)
 				}
