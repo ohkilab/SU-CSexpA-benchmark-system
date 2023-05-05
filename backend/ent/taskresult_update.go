@@ -12,6 +12,7 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/ent/predicate"
+	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/ent/submit"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/ent/taskresult"
 )
 
@@ -151,9 +152,34 @@ func (tru *TaskResultUpdate) ClearDeletedAt() *TaskResultUpdate {
 	return tru
 }
 
+// SetSubmitsID sets the "submits" edge to the Submit entity by ID.
+func (tru *TaskResultUpdate) SetSubmitsID(id int) *TaskResultUpdate {
+	tru.mutation.SetSubmitsID(id)
+	return tru
+}
+
+// SetNillableSubmitsID sets the "submits" edge to the Submit entity by ID if the given value is not nil.
+func (tru *TaskResultUpdate) SetNillableSubmitsID(id *int) *TaskResultUpdate {
+	if id != nil {
+		tru = tru.SetSubmitsID(*id)
+	}
+	return tru
+}
+
+// SetSubmits sets the "submits" edge to the Submit entity.
+func (tru *TaskResultUpdate) SetSubmits(s *Submit) *TaskResultUpdate {
+	return tru.SetSubmitsID(s.ID)
+}
+
 // Mutation returns the TaskResultMutation object of the builder.
 func (tru *TaskResultUpdate) Mutation() *TaskResultMutation {
 	return tru.mutation
+}
+
+// ClearSubmits clears the "submits" edge to the Submit entity.
+func (tru *TaskResultUpdate) ClearSubmits() *TaskResultUpdate {
+	tru.mutation.ClearSubmits()
+	return tru
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
@@ -239,6 +265,35 @@ func (tru *TaskResultUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if tru.mutation.DeletedAtCleared() {
 		_spec.ClearField(taskresult.FieldDeletedAt, field.TypeTime)
+	}
+	if tru.mutation.SubmitsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   taskresult.SubmitsTable,
+			Columns: []string{taskresult.SubmitsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(submit.FieldID, field.TypeInt),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := tru.mutation.SubmitsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   taskresult.SubmitsTable,
+			Columns: []string{taskresult.SubmitsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(submit.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
 	if n, err = sqlgraph.UpdateNodes(ctx, tru.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
@@ -383,9 +438,34 @@ func (truo *TaskResultUpdateOne) ClearDeletedAt() *TaskResultUpdateOne {
 	return truo
 }
 
+// SetSubmitsID sets the "submits" edge to the Submit entity by ID.
+func (truo *TaskResultUpdateOne) SetSubmitsID(id int) *TaskResultUpdateOne {
+	truo.mutation.SetSubmitsID(id)
+	return truo
+}
+
+// SetNillableSubmitsID sets the "submits" edge to the Submit entity by ID if the given value is not nil.
+func (truo *TaskResultUpdateOne) SetNillableSubmitsID(id *int) *TaskResultUpdateOne {
+	if id != nil {
+		truo = truo.SetSubmitsID(*id)
+	}
+	return truo
+}
+
+// SetSubmits sets the "submits" edge to the Submit entity.
+func (truo *TaskResultUpdateOne) SetSubmits(s *Submit) *TaskResultUpdateOne {
+	return truo.SetSubmitsID(s.ID)
+}
+
 // Mutation returns the TaskResultMutation object of the builder.
 func (truo *TaskResultUpdateOne) Mutation() *TaskResultMutation {
 	return truo.mutation
+}
+
+// ClearSubmits clears the "submits" edge to the Submit entity.
+func (truo *TaskResultUpdateOne) ClearSubmits() *TaskResultUpdateOne {
+	truo.mutation.ClearSubmits()
+	return truo
 }
 
 // Where appends a list predicates to the TaskResultUpdate builder.
@@ -501,6 +581,35 @@ func (truo *TaskResultUpdateOne) sqlSave(ctx context.Context) (_node *TaskResult
 	}
 	if truo.mutation.DeletedAtCleared() {
 		_spec.ClearField(taskresult.FieldDeletedAt, field.TypeTime)
+	}
+	if truo.mutation.SubmitsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   taskresult.SubmitsTable,
+			Columns: []string{taskresult.SubmitsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(submit.FieldID, field.TypeInt),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := truo.mutation.SubmitsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   taskresult.SubmitsTable,
+			Columns: []string{taskresult.SubmitsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(submit.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
 	_node = &TaskResult{config: truo.config}
 	_spec.Assign = _node.assignValues

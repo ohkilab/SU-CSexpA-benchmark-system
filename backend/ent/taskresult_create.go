@@ -10,6 +10,7 @@ import (
 
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/ent/submit"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/ent/taskresult"
 )
 
@@ -108,6 +109,25 @@ func (trc *TaskResultCreate) SetNillableDeletedAt(t *time.Time) *TaskResultCreat
 func (trc *TaskResultCreate) SetID(i int) *TaskResultCreate {
 	trc.mutation.SetID(i)
 	return trc
+}
+
+// SetSubmitsID sets the "submits" edge to the Submit entity by ID.
+func (trc *TaskResultCreate) SetSubmitsID(id int) *TaskResultCreate {
+	trc.mutation.SetSubmitsID(id)
+	return trc
+}
+
+// SetNillableSubmitsID sets the "submits" edge to the Submit entity by ID if the given value is not nil.
+func (trc *TaskResultCreate) SetNillableSubmitsID(id *int) *TaskResultCreate {
+	if id != nil {
+		trc = trc.SetSubmitsID(*id)
+	}
+	return trc
+}
+
+// SetSubmits sets the "submits" edge to the Submit entity.
+func (trc *TaskResultCreate) SetSubmits(s *Submit) *TaskResultCreate {
+	return trc.SetSubmitsID(s.ID)
 }
 
 // Mutation returns the TaskResultMutation object of the builder.
@@ -236,6 +256,23 @@ func (trc *TaskResultCreate) createSpec() (*TaskResult, *sqlgraph.CreateSpec) {
 	if value, ok := trc.mutation.DeletedAt(); ok {
 		_spec.SetField(taskresult.FieldDeletedAt, field.TypeTime, value)
 		_node.DeletedAt = value
+	}
+	if nodes := trc.mutation.SubmitsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   taskresult.SubmitsTable,
+			Columns: []string{taskresult.SubmitsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(submit.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_node.submit_task_results = &nodes[0]
+		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec
 }

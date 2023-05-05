@@ -745,6 +745,22 @@ func (c *TaskResultClient) GetX(ctx context.Context, id int) *TaskResult {
 	return obj
 }
 
+// QuerySubmits queries the submits edge of a TaskResult.
+func (c *TaskResultClient) QuerySubmits(tr *TaskResult) *SubmitQuery {
+	query := (&SubmitClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := tr.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(taskresult.Table, taskresult.FieldID, id),
+			sqlgraph.To(submit.Table, submit.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, taskresult.SubmitsTable, taskresult.SubmitsColumn),
+		)
+		fromV = sqlgraph.Neighbors(tr.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
 // Hooks returns the client hooks.
 func (c *TaskResultClient) Hooks() []Hook {
 	return c.hooks.TaskResult

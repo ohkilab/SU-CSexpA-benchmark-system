@@ -11,17 +11,19 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/ent/predicate"
+	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/ent/submit"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/ent/taskresult"
 )
 
 // TaskResultQuery is the builder for querying TaskResult entities.
 type TaskResultQuery struct {
 	config
-	ctx        *QueryContext
-	order      []taskresult.OrderOption
-	inters     []Interceptor
-	predicates []predicate.TaskResult
-	withFKs    bool
+	ctx         *QueryContext
+	order       []taskresult.OrderOption
+	inters      []Interceptor
+	predicates  []predicate.TaskResult
+	withSubmits *SubmitQuery
+	withFKs     bool
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -56,6 +58,28 @@ func (trq *TaskResultQuery) Unique(unique bool) *TaskResultQuery {
 func (trq *TaskResultQuery) Order(o ...taskresult.OrderOption) *TaskResultQuery {
 	trq.order = append(trq.order, o...)
 	return trq
+}
+
+// QuerySubmits chains the current query on the "submits" edge.
+func (trq *TaskResultQuery) QuerySubmits() *SubmitQuery {
+	query := (&SubmitClient{config: trq.config}).Query()
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := trq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := trq.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(taskresult.Table, taskresult.FieldID, selector),
+			sqlgraph.To(submit.Table, submit.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, taskresult.SubmitsTable, taskresult.SubmitsColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(trq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
 }
 
 // First returns the first TaskResult entity from the query.
@@ -245,15 +269,27 @@ func (trq *TaskResultQuery) Clone() *TaskResultQuery {
 		return nil
 	}
 	return &TaskResultQuery{
-		config:     trq.config,
-		ctx:        trq.ctx.Clone(),
-		order:      append([]taskresult.OrderOption{}, trq.order...),
-		inters:     append([]Interceptor{}, trq.inters...),
-		predicates: append([]predicate.TaskResult{}, trq.predicates...),
+		config:      trq.config,
+		ctx:         trq.ctx.Clone(),
+		order:       append([]taskresult.OrderOption{}, trq.order...),
+		inters:      append([]Interceptor{}, trq.inters...),
+		predicates:  append([]predicate.TaskResult{}, trq.predicates...),
+		withSubmits: trq.withSubmits.Clone(),
 		// clone intermediate query.
 		sql:  trq.sql.Clone(),
 		path: trq.path,
 	}
+}
+
+// WithSubmits tells the query-builder to eager-load the nodes that are connected to
+// the "submits" edge. The optional arguments are used to configure the query builder of the edge.
+func (trq *TaskResultQuery) WithSubmits(opts ...func(*SubmitQuery)) *TaskResultQuery {
+	query := (&SubmitClient{config: trq.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	trq.withSubmits = query
+	return trq
 }
 
 // GroupBy is used to group vertices by one or more fields/columns.
@@ -332,10 +368,16 @@ func (trq *TaskResultQuery) prepareQuery(ctx context.Context) error {
 
 func (trq *TaskResultQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*TaskResult, error) {
 	var (
-		nodes   = []*TaskResult{}
-		withFKs = trq.withFKs
-		_spec   = trq.querySpec()
+		nodes       = []*TaskResult{}
+		withFKs     = trq.withFKs
+		_spec       = trq.querySpec()
+		loadedTypes = [1]bool{
+			trq.withSubmits != nil,
+		}
 	)
+	if trq.withSubmits != nil {
+		withFKs = true
+	}
 	if withFKs {
 		_spec.Node.Columns = append(_spec.Node.Columns, taskresult.ForeignKeys...)
 	}
@@ -345,6 +387,7 @@ func (trq *TaskResultQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*
 	_spec.Assign = func(columns []string, values []any) error {
 		node := &TaskResult{config: trq.config}
 		nodes = append(nodes, node)
+		node.Edges.loadedTypes = loadedTypes
 		return node.assignValues(columns, values)
 	}
 	for i := range hooks {
@@ -356,7 +399,46 @@ func (trq *TaskResultQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*
 	if len(nodes) == 0 {
 		return nodes, nil
 	}
+	if query := trq.withSubmits; query != nil {
+		if err := trq.loadSubmits(ctx, query, nodes, nil,
+			func(n *TaskResult, e *Submit) { n.Edges.Submits = e }); err != nil {
+			return nil, err
+		}
+	}
 	return nodes, nil
+}
+
+func (trq *TaskResultQuery) loadSubmits(ctx context.Context, query *SubmitQuery, nodes []*TaskResult, init func(*TaskResult), assign func(*TaskResult, *Submit)) error {
+	ids := make([]int, 0, len(nodes))
+	nodeids := make(map[int][]*TaskResult)
+	for i := range nodes {
+		if nodes[i].submit_task_results == nil {
+			continue
+		}
+		fk := *nodes[i].submit_task_results
+		if _, ok := nodeids[fk]; !ok {
+			ids = append(ids, fk)
+		}
+		nodeids[fk] = append(nodeids[fk], nodes[i])
+	}
+	if len(ids) == 0 {
+		return nil
+	}
+	query.Where(submit.IDIn(ids...))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		nodes, ok := nodeids[n.ID]
+		if !ok {
+			return fmt.Errorf(`unexpected foreign-key "submit_task_results" returned %v`, n.ID)
+		}
+		for i := range nodes {
+			assign(nodes[i], n)
+		}
+	}
+	return nil
 }
 
 func (trq *TaskResultQuery) sqlCount(ctx context.Context) (int, error) {

@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"entgo.io/ent/dialect/sql"
+	"entgo.io/ent/dialect/sql/sqlgraph"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/ent/predicate"
 )
 
@@ -657,6 +658,29 @@ func DeletedAtIsNil() predicate.TaskResult {
 // DeletedAtNotNil applies the NotNil predicate on the "deleted_at" field.
 func DeletedAtNotNil() predicate.TaskResult {
 	return predicate.TaskResult(sql.FieldNotNull(FieldDeletedAt))
+}
+
+// HasSubmits applies the HasEdge predicate on the "submits" edge.
+func HasSubmits() predicate.TaskResult {
+	return predicate.TaskResult(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, SubmitsTable, SubmitsColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasSubmitsWith applies the HasEdge predicate on the "submits" edge with a given conditions (other predicates).
+func HasSubmitsWith(preds ...predicate.Submit) predicate.TaskResult {
+	return predicate.TaskResult(func(s *sql.Selector) {
+		step := newSubmitsStep()
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
 }
 
 // And groups predicates with the AND operator between them.

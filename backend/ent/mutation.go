@@ -2619,6 +2619,8 @@ type TaskResultMutation struct {
 	created_at           *time.Time
 	deleted_at           *time.Time
 	clearedFields        map[string]struct{}
+	submits              *int
+	clearedsubmits       bool
 	done                 bool
 	oldValue             func(context.Context) (*TaskResult, error)
 	predicates           []predicate.TaskResult
@@ -3187,6 +3189,45 @@ func (m *TaskResultMutation) ResetDeletedAt() {
 	delete(m.clearedFields, taskresult.FieldDeletedAt)
 }
 
+// SetSubmitsID sets the "submits" edge to the Submit entity by id.
+func (m *TaskResultMutation) SetSubmitsID(id int) {
+	m.submits = &id
+}
+
+// ClearSubmits clears the "submits" edge to the Submit entity.
+func (m *TaskResultMutation) ClearSubmits() {
+	m.clearedsubmits = true
+}
+
+// SubmitsCleared reports if the "submits" edge to the Submit entity was cleared.
+func (m *TaskResultMutation) SubmitsCleared() bool {
+	return m.clearedsubmits
+}
+
+// SubmitsID returns the "submits" edge ID in the mutation.
+func (m *TaskResultMutation) SubmitsID() (id int, exists bool) {
+	if m.submits != nil {
+		return *m.submits, true
+	}
+	return
+}
+
+// SubmitsIDs returns the "submits" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// SubmitsID instead. It exists only for internal usage by the builders.
+func (m *TaskResultMutation) SubmitsIDs() (ids []int) {
+	if id := m.submits; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetSubmits resets all changes to the "submits" edge.
+func (m *TaskResultMutation) ResetSubmits() {
+	m.submits = nil
+	m.clearedsubmits = false
+}
+
 // Where appends a list predicates to the TaskResultMutation builder.
 func (m *TaskResultMutation) Where(ps ...predicate.TaskResult) {
 	m.predicates = append(m.predicates, ps...)
@@ -3533,19 +3574,28 @@ func (m *TaskResultMutation) ResetField(name string) error {
 
 // AddedEdges returns all edge names that were set/added in this mutation.
 func (m *TaskResultMutation) AddedEdges() []string {
-	edges := make([]string, 0, 0)
+	edges := make([]string, 0, 1)
+	if m.submits != nil {
+		edges = append(edges, taskresult.EdgeSubmits)
+	}
 	return edges
 }
 
 // AddedIDs returns all IDs (to other nodes) that were added for the given edge
 // name in this mutation.
 func (m *TaskResultMutation) AddedIDs(name string) []ent.Value {
+	switch name {
+	case taskresult.EdgeSubmits:
+		if id := m.submits; id != nil {
+			return []ent.Value{*id}
+		}
+	}
 	return nil
 }
 
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *TaskResultMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 0)
+	edges := make([]string, 0, 1)
 	return edges
 }
 
@@ -3557,24 +3607,41 @@ func (m *TaskResultMutation) RemovedIDs(name string) []ent.Value {
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
 func (m *TaskResultMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 0)
+	edges := make([]string, 0, 1)
+	if m.clearedsubmits {
+		edges = append(edges, taskresult.EdgeSubmits)
+	}
 	return edges
 }
 
 // EdgeCleared returns a boolean which indicates if the edge with the given name
 // was cleared in this mutation.
 func (m *TaskResultMutation) EdgeCleared(name string) bool {
+	switch name {
+	case taskresult.EdgeSubmits:
+		return m.clearedsubmits
+	}
 	return false
 }
 
 // ClearEdge clears the value of the edge with the given name. It returns an error
 // if that edge is not defined in the schema.
 func (m *TaskResultMutation) ClearEdge(name string) error {
+	switch name {
+	case taskresult.EdgeSubmits:
+		m.ClearSubmits()
+		return nil
+	}
 	return fmt.Errorf("unknown TaskResult unique edge %s", name)
 }
 
 // ResetEdge resets all changes to the edge with the given name in this mutation.
 // It returns an error if the edge is not defined in the schema.
 func (m *TaskResultMutation) ResetEdge(name string) error {
+	switch name {
+	case taskresult.EdgeSubmits:
+		m.ResetSubmits()
+		return nil
+	}
 	return fmt.Errorf("unknown TaskResult edge %s", name)
 }

@@ -4,6 +4,7 @@ package taskresult
 
 import (
 	"entgo.io/ent/dialect/sql"
+	"entgo.io/ent/dialect/sql/sqlgraph"
 )
 
 const (
@@ -31,8 +32,17 @@ const (
 	FieldCreatedAt = "created_at"
 	// FieldDeletedAt holds the string denoting the deleted_at field in the database.
 	FieldDeletedAt = "deleted_at"
+	// EdgeSubmits holds the string denoting the submits edge name in mutations.
+	EdgeSubmits = "submits"
 	// Table holds the table name of the taskresult in the database.
 	Table = "task_results"
+	// SubmitsTable is the table that holds the submits relation/edge.
+	SubmitsTable = "task_results"
+	// SubmitsInverseTable is the table name for the Submit entity.
+	// It exists in this package in order to avoid circular dependency with the "submit" package.
+	SubmitsInverseTable = "submits"
+	// SubmitsColumn is the table column denoting the submits relation/edge.
+	SubmitsColumn = "submit_task_results"
 )
 
 // Columns holds all SQL columns for taskresult fields.
@@ -127,4 +137,18 @@ func ByCreatedAt(opts ...sql.OrderTermOption) OrderOption {
 // ByDeletedAt orders the results by the deleted_at field.
 func ByDeletedAt(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldDeletedAt, opts...).ToFunc()
+}
+
+// BySubmitsField orders the results by submits field.
+func BySubmitsField(field string, opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newSubmitsStep(), sql.OrderByField(field, opts...))
+	}
+}
+func newSubmitsStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(SubmitsInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.M2O, true, SubmitsTable, SubmitsColumn),
+	)
 }

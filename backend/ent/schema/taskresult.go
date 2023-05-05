@@ -2,6 +2,7 @@ package schema
 
 import (
 	"entgo.io/ent"
+	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
 )
 
@@ -31,5 +32,7 @@ func (TaskResult) Fields() []ent.Field {
 
 // Edges of the TagResult.
 func (TaskResult) Edges() []ent.Edge {
-	return nil
+	return []ent.Edge{
+		edge.From("submits", Submit.Type).Ref("taskResults").Unique(),
+	}
 }
