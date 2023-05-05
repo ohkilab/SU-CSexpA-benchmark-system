@@ -20,7 +20,7 @@ type backendServiceServer struct {
 	submitInteractor  *submit.Interactor
 }
 
-func NewBackendService(secret []byte, entClient *ent.Client, worker *worker.Worker) pb.BackendServiceServer {
+func NewBackendService(secret []byte, entClient *ent.Client, worker worker.Worker) pb.BackendServiceServer {
 	authInteractor := auth.NewInteractor(secret, entClient)
 	rankingInteractor := ranking.NewInteractor(entClient)
 	submitInteractor := submit.NewInteractor(entClient, worker)

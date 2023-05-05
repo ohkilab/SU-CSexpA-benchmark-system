@@ -26,10 +26,10 @@ const (
 
 type Interactor struct {
 	entClient *ent.Client
-	worker    *worker.Worker
+	worker    worker.Worker
 }
 
-func NewInteractor(entClient *ent.Client, worker *worker.Worker) *Interactor {
+func NewInteractor(entClient *ent.Client, worker worker.Worker) *Interactor {
 	return &Interactor{entClient, worker}
 }
 

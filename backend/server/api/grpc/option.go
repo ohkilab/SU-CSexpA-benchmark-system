@@ -8,7 +8,7 @@ import (
 type option struct {
 	entClient *ent.Client
 	jwtSecret []byte
-	worker    *worker.Worker
+	worker    worker.Worker
 }
 
 type OptionFunc func(*option)
@@ -25,7 +25,7 @@ func WithJwtSecret(jwtSecret string) OptionFunc {
 	}
 }
 
-func WithWoker(worker *worker.Worker) OptionFunc {
+func WithWoker(worker worker.Worker) OptionFunc {
 	return func(o *option) {
 		o.worker = worker
 	}
