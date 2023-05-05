@@ -76,7 +76,7 @@ onMounted(() => {
   let opt = {meta: {'authorization' : 'Bearer ' + state.token}}
 
   backend.getSubmit({
-    submitId: 'test'
+    submitId: 1
   },opt).then(res => {
     console.log(res)
   })
