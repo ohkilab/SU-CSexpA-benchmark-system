@@ -29,6 +29,7 @@ message ExecuteResponse {
   int64 time_elapsed = 3;  // in milliseconds
   int32 total_requests = 4;
   int32 requests_per_second = 5;
+  Task task = 6;
 }
 
 message HttpRequest {
