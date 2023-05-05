@@ -12,21 +12,26 @@ import (
 	"golang.org/x/sync/errgroup"
 )
 
-type Worker struct {
+type Worker interface {
+	Push(*pb.ExecuteRequest)
+	Run()
+}
+
+type worker struct {
 	entClient       *ent.Client
 	benchmarkClient pb.BenchmarkServiceClient
 	queue           *Queue[pb.ExecuteRequest]
 }
 
-func New(entClient *ent.Client, benchmarkClient pb.BenchmarkServiceClient) *Worker {
-	return &Worker{entClient, benchmarkClient, &Queue[pb.ExecuteRequest]{}}
+func New(entClient *ent.Client, benchmarkClient pb.BenchmarkServiceClient) *worker {
+	return &worker{entClient, benchmarkClient, &Queue[pb.ExecuteRequest]{}}
 }
 
-func (w *Worker) Push(task *pb.ExecuteRequest) {
+func (w *worker) Push(task *pb.ExecuteRequest) {
 	w.queue.Push(task)
 }
 
-func (w *Worker) Run() {
+func (w *worker) Run() {
 	for {
 		time.Sleep(100 * time.Millisecond)
 
