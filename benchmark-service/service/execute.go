@@ -2,9 +2,10 @@ package service
 
 import (
 	"log"
-	"net/http"
 	"net/url"
 
+	"github.com/ohkilab/SU-CSexpA-benchmark-system/benchmark-service/benchmark"
+	"github.com/ohkilab/SU-CSexpA-benchmark-system/benchmark-service/validation"
 	pb "github.com/ohkilab/SU-CSexpA-benchmark-system/proto-gen/go/benchmark"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -24,16 +25,39 @@ func (s *service) Execute(req *pb.ExecuteRequest, stream pb.BenchmarkService_Exe
 			return status.Error(codes.InvalidArgument, "invalid ip address")
 		}
 
-		interceptor := func(req *http.Request) {}
-		resultChan := s.client.Run(stream.Context(), uri.String(), interceptor)
+		results, err := s.client.Run(stream.Context(), uri.String(), validation.Validate2022, benchmark.OptThreadNum(int(task.ThreadNum)), benchmark.OptAttemptCount(int(task.AttemptCount)))
+		if err != nil {
+			return err
+		}
 
-		for result := range resultChan {
-			log.Println(result.HttpResult)
-			if err := stream.Send(&pb.ExecuteResponse{
-				Response: &pb.HttpResponse{},
-			}); err != nil {
-				return err
+		timeElapsed := int64(0)
+		for _, result := range results {
+			if err := validation.Validate2022(uri, result.Body); err != nil {
+				errMsg := err.Error()
+				validationErr := &errMsg
+				if err := stream.Send(&pb.ExecuteResponse{
+					Ok:                false,
+					ErrorMessage:      validationErr,
+					TimeElapsed:       0,
+					TotalRequests:     0,
+					RequestsPerSecond: 0,
+				}); err != nil {
+					log.Println(err)
+					return err
+				}
+				return nil
 			}
+			timeElapsed += result.ResponseTime.Milliseconds()
+		}
+
+		if err := stream.Send(&pb.ExecuteResponse{
+			Ok:                true,
+			TimeElapsed:       timeElapsed,
+			TotalRequests:     task.AttemptCount,
+			RequestsPerSecond: task.AttemptCount / int32(timeElapsed*1000),
+		}); err != nil {
+			log.Println(err)
+			return err
 		}
 	}
 
