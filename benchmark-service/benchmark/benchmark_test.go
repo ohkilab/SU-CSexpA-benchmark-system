@@ -3,9 +3,7 @@ package benchmark
 import (
 	"context"
 	"fmt"
-	"io"
 	"log"
-	"net/url"
 	"testing"
 	"time"
 
@@ -16,9 +14,7 @@ func Test_Run(t *testing.T) {
 	port := utils.LaunchTestServer(t)
 	time.Sleep(time.Second)
 	c := NewClient()
-	results, err := c.Run(context.Background(), fmt.Sprintf("http://0.0.0.0:%v", port), func(uri *url.URL, body io.ReadCloser) error {
-		return nil
-	})
+	results, err := c.Run(context.Background(), fmt.Sprintf("http://0.0.0.0:%v", port))
 	if err != nil {
 		t.Fatal(err)
 	}

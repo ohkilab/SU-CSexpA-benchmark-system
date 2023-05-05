@@ -4,7 +4,6 @@ import (
 	"context"
 	"io"
 	"net/http"
-	"net/url"
 	"sync"
 	"time"
 
@@ -26,7 +25,7 @@ func NewClient() *Client {
 	}
 }
 
-func (c *Client) Run(ctx context.Context, url string, validate func(uri *url.URL, body io.ReadCloser) error, options ...optionFunc) ([]*HttpResult, error) {
+func (c *Client) Run(ctx context.Context, url string, options ...optionFunc) ([]*HttpResult, error) {
 	option := &option{
 		threadNum:   5,
 		attmptCount: 500,

@@ -25,7 +25,7 @@ func (s *service) Execute(req *pb.ExecuteRequest, stream pb.BenchmarkService_Exe
 			return status.Error(codes.InvalidArgument, "invalid url")
 		}
 
-		results, err := s.client.Run(stream.Context(), uri.String(), validation.Validate2022, benchmark.OptThreadNum(int(task.ThreadNum)), benchmark.OptAttemptCount(int(task.AttemptCount)))
+		results, err := s.client.Run(stream.Context(), uri.String(), benchmark.OptThreadNum(int(task.ThreadNum)), benchmark.OptAttemptCount(int(task.AttemptCount)))
 		if err != nil {
 			return err
 		}
