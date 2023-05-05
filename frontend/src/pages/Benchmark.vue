@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { computed, onMounted, reactive, ref } from 'vue'
-import { useStateStore } from '../stores/state'
+import { useStateStore, IState } from '../stores/state'
 
 import type { Ref } from 'vue'
 
@@ -12,7 +12,7 @@ import type { GetRankingRequest, GetSubmitRequest } from 'proto-gen-web/src/back
 import type { Group } from 'proto-gen-web/src/backend/resources'
 import { Role } from 'proto-gen-web/src/backend/resources'
 
-const state = useStateStore()
+const state:IState = useStateStore()
 
 const backend = new BackendServiceClient(
   new GrpcWebFetchTransport({
@@ -72,12 +72,6 @@ onMounted(() => {
     idx
   }
 })
-
-  const group: Group = {
-    id: 'a01',
-    year: 2023,
-    role: Role.CONTESTANT
-  }
 
   let opt = {meta: {'authorization' : 'Bearer ' + state.token}}
 

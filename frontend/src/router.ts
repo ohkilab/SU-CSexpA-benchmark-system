@@ -1,4 +1,3 @@
-import Home from './pages/Home.vue'
 import Benchmark from './pages/Benchmark.vue'
 import Ranking from './pages/Ranking.vue'
 import { createRouter, createWebHistory } from 'vue-router'
