@@ -18,8 +18,8 @@ type Tx struct {
 	Group *GroupClient
 	// Submit is the client for interacting with the Submit builders.
 	Submit *SubmitClient
-	// TagResult is the client for interacting with the TagResult builders.
-	TagResult *TagResultClient
+	// TaskResult is the client for interacting with the TaskResult builders.
+	TaskResult *TaskResultClient
 
 	// lazily loaded.
 	client     *Client
@@ -154,7 +154,7 @@ func (tx *Tx) init() {
 	tx.Contest = NewContestClient(tx.config)
 	tx.Group = NewGroupClient(tx.config)
 	tx.Submit = NewSubmitClient(tx.config)
-	tx.TagResult = NewTagResultClient(tx.config)
+	tx.TaskResult = NewTaskResultClient(tx.config)
 }
 
 // txDriver wraps the given dialect.Tx with a nop dialect.Driver implementation.

@@ -7,6 +7,7 @@ import (
 
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/ent/group"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/api/grpc"
+	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/test/utils"
 	pb "github.com/ohkilab/SU-CSexpA-benchmark-system/proto-gen/go/backend"
 	"github.com/stretchr/testify/assert"
 	"golang.org/x/crypto/bcrypt"
@@ -16,17 +17,16 @@ import (
 
 func Test_PostLogin(t *testing.T) {
 	ctx := context.Background()
-	entClient := enttestOpen(ctx, t)
-	defer entClient.Close()
-	server, conn := launchGrpcServer(t, grpc.WithJwtSecret("secret"), grpc.WithEntClient(entClient))
-	defer server.GracefulStop()
-	defer conn.Close()
+	entClient, cleanupFunc := utils.EnttestOpen(ctx, t)
+	defer cleanupFunc(t)
+	conn, closeFunc := utils.LaunchGrpcServer(t, grpc.WithJwtSecret("secret"), grpc.WithEntClient(entClient))
+	defer closeFunc()
 	client := pb.NewBackendServiceClient(conn)
 
 	// prepare
 	encryptedPassword, _ := bcrypt.GenerateFromPassword([]byte("test"), bcrypt.DefaultCost)
 	g, _ := entClient.Group.Create().
-		SetID("test").
+		SetName("test").
 		SetEncryptedPassword(string(encryptedPassword)).
 		SetRole(group.RoleContestant).
 		SetScore(12345).
@@ -35,8 +35,10 @@ func Test_PostLogin(t *testing.T) {
 
 	// success
 	resp, err := client.PostLogin(ctx, &pb.PostLoginRequest{Id: "test", Password: "test"})
-	assert.NoError(t, err)
-	assert.Equal(t, g.ID, resp.Group.Id)
+	if err != nil {
+		t.Fatal(err)
+	}
+	assert.Equal(t, g.Name, resp.Group.Id)
 	assert.Equal(t, int32(g.Year), resp.Group.Year)
 	assert.Equal(t, int32(g.Score), resp.Group.Score)
 	assert.Equal(t, g.Role, group.Role(strings.ToLower(pb.Role_name[int32(resp.Group.Role)])))

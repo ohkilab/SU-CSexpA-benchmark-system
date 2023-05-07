@@ -14,6 +14,8 @@ const (
 	Label = "submit"
 	// FieldID holds the string denoting the id field in the database.
 	FieldID = "id"
+	// FieldURL holds the string denoting the url field in the database.
+	FieldURL = "url"
 	// FieldYear holds the string denoting the year field in the database.
 	FieldYear = "year"
 	// FieldScore holds the string denoting the score field in the database.
@@ -26,29 +28,41 @@ const (
 	FieldCompletedAt = "completed_at"
 	// FieldUpdatedAt holds the string denoting the updated_at field in the database.
 	FieldUpdatedAt = "updated_at"
-	// EdgeTagResults holds the string denoting the tagresults edge name in mutations.
-	EdgeTagResults = "tagResults"
-	// EdgeGroup holds the string denoting the group edge name in mutations.
-	EdgeGroup = "group"
+	// EdgeTaskResults holds the string denoting the taskresults edge name in mutations.
+	EdgeTaskResults = "taskResults"
+	// EdgeGroups holds the string denoting the groups edge name in mutations.
+	EdgeGroups = "groups"
+	// EdgeContests holds the string denoting the contests edge name in mutations.
+	EdgeContests = "contests"
 	// Table holds the table name of the submit in the database.
 	Table = "submits"
-	// TagResultsTable is the table that holds the tagResults relation/edge.
-	TagResultsTable = "tag_results"
-	// TagResultsInverseTable is the table name for the TagResult entity.
-	// It exists in this package in order to avoid circular dependency with the "tagresult" package.
-	TagResultsInverseTable = "tag_results"
-	// TagResultsColumn is the table column denoting the tagResults relation/edge.
-	TagResultsColumn = "submit_tag_results"
-	// GroupTable is the table that holds the group relation/edge. The primary key declared below.
-	GroupTable = "group_submits"
-	// GroupInverseTable is the table name for the Group entity.
+	// TaskResultsTable is the table that holds the taskResults relation/edge.
+	TaskResultsTable = "task_results"
+	// TaskResultsInverseTable is the table name for the TaskResult entity.
+	// It exists in this package in order to avoid circular dependency with the "taskresult" package.
+	TaskResultsInverseTable = "task_results"
+	// TaskResultsColumn is the table column denoting the taskResults relation/edge.
+	TaskResultsColumn = "submit_task_results"
+	// GroupsTable is the table that holds the groups relation/edge.
+	GroupsTable = "submits"
+	// GroupsInverseTable is the table name for the Group entity.
 	// It exists in this package in order to avoid circular dependency with the "group" package.
-	GroupInverseTable = "groups"
+	GroupsInverseTable = "groups"
+	// GroupsColumn is the table column denoting the groups relation/edge.
+	GroupsColumn = "group_submits"
+	// ContestsTable is the table that holds the contests relation/edge.
+	ContestsTable = "submits"
+	// ContestsInverseTable is the table name for the Contest entity.
+	// It exists in this package in order to avoid circular dependency with the "contest" package.
+	ContestsInverseTable = "contests"
+	// ContestsColumn is the table column denoting the contests relation/edge.
+	ContestsColumn = "contest_submits"
 )
 
 // Columns holds all SQL columns for submit fields.
 var Columns = []string{
 	FieldID,
+	FieldURL,
 	FieldYear,
 	FieldScore,
 	FieldLanguage,
@@ -57,16 +71,22 @@ var Columns = []string{
 	FieldUpdatedAt,
 }
 
-var (
-	// GroupPrimaryKey and GroupColumn2 are the table columns denoting the
-	// primary key for the group relation (M2M).
-	GroupPrimaryKey = []string{"group_id", "submit_id"}
-)
+// ForeignKeys holds the SQL foreign-keys that are owned by the "submits"
+// table and are not defined as standalone fields in the schema.
+var ForeignKeys = []string{
+	"contest_submits",
+	"group_submits",
+}
 
 // ValidColumn reports if the column name is valid (part of the table columns).
 func ValidColumn(column string) bool {
 	for i := range Columns {
 		if column == Columns[i] {
+			return true
+		}
+	}
+	for i := range ForeignKeys {
+		if column == ForeignKeys[i] {
 			return true
 		}
 	}
@@ -76,8 +96,6 @@ func ValidColumn(column string) bool {
 var (
 	// YearValidator is a validator for the "year" field. It is called by the builders before save.
 	YearValidator func(int) error
-	// ScoreValidator is a validator for the "score" field. It is called by the builders before save.
-	ScoreValidator func(int) error
 )
 
 // Language defines the type for the "language" enum field.
@@ -117,6 +135,11 @@ func ByID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldID, opts...).ToFunc()
 }
 
+// ByURL orders the results by the url field.
+func ByURL(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldURL, opts...).ToFunc()
+}
+
 // ByYear orders the results by the year field.
 func ByYear(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldYear, opts...).ToFunc()
@@ -147,44 +170,51 @@ func ByUpdatedAt(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldUpdatedAt, opts...).ToFunc()
 }
 
-// ByTagResultsCount orders the results by tagResults count.
-func ByTagResultsCount(opts ...sql.OrderTermOption) OrderOption {
+// ByTaskResultsCount orders the results by taskResults count.
+func ByTaskResultsCount(opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborsCount(s, newTagResultsStep(), opts...)
+		sqlgraph.OrderByNeighborsCount(s, newTaskResultsStep(), opts...)
 	}
 }
 
-// ByTagResults orders the results by tagResults terms.
-func ByTagResults(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+// ByTaskResults orders the results by taskResults terms.
+func ByTaskResults(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
 	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborTerms(s, newTagResultsStep(), append([]sql.OrderTerm{term}, terms...)...)
+		sqlgraph.OrderByNeighborTerms(s, newTaskResultsStep(), append([]sql.OrderTerm{term}, terms...)...)
 	}
 }
 
-// ByGroupCount orders the results by group count.
-func ByGroupCount(opts ...sql.OrderTermOption) OrderOption {
+// ByGroupsField orders the results by groups field.
+func ByGroupsField(field string, opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborsCount(s, newGroupStep(), opts...)
+		sqlgraph.OrderByNeighborTerms(s, newGroupsStep(), sql.OrderByField(field, opts...))
 	}
 }
 
-// ByGroup orders the results by group terms.
-func ByGroup(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+// ByContestsField orders the results by contests field.
+func ByContestsField(field string, opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborTerms(s, newGroupStep(), append([]sql.OrderTerm{term}, terms...)...)
+		sqlgraph.OrderByNeighborTerms(s, newContestsStep(), sql.OrderByField(field, opts...))
 	}
 }
-func newTagResultsStep() *sqlgraph.Step {
+func newTaskResultsStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
-		sqlgraph.To(TagResultsInverseTable, FieldID),
-		sqlgraph.Edge(sqlgraph.O2M, false, TagResultsTable, TagResultsColumn),
+		sqlgraph.To(TaskResultsInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.O2M, false, TaskResultsTable, TaskResultsColumn),
 	)
 }
-func newGroupStep() *sqlgraph.Step {
+func newGroupsStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
-		sqlgraph.To(GroupInverseTable, FieldID),
-		sqlgraph.Edge(sqlgraph.M2M, true, GroupTable, GroupPrimaryKey...),
+		sqlgraph.To(GroupsInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.M2O, true, GroupsTable, GroupsColumn),
+	)
+}
+func newContestsStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(ContestsInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.M2O, true, ContestsTable, ContestsColumn),
 	)
 }

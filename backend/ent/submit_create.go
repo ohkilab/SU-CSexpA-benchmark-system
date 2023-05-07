@@ -10,9 +10,10 @@ import (
 
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/ent/contest"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/ent/group"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/ent/submit"
-	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/ent/tagresult"
+	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/ent/taskresult"
 )
 
 // SubmitCreate is the builder for creating a Submit entity.
@@ -20,6 +21,12 @@ type SubmitCreate struct {
 	config
 	mutation *SubmitMutation
 	hooks    []Hook
+}
+
+// SetURL sets the "url" field.
+func (sc *SubmitCreate) SetURL(s string) *SubmitCreate {
+	sc.mutation.SetURL(s)
+	return sc
 }
 
 // SetYear sets the "year" field.
@@ -34,9 +41,25 @@ func (sc *SubmitCreate) SetScore(i int) *SubmitCreate {
 	return sc
 }
 
+// SetNillableScore sets the "score" field if the given value is not nil.
+func (sc *SubmitCreate) SetNillableScore(i *int) *SubmitCreate {
+	if i != nil {
+		sc.SetScore(*i)
+	}
+	return sc
+}
+
 // SetLanguage sets the "language" field.
 func (sc *SubmitCreate) SetLanguage(s submit.Language) *SubmitCreate {
 	sc.mutation.SetLanguage(s)
+	return sc
+}
+
+// SetNillableLanguage sets the "language" field if the given value is not nil.
+func (sc *SubmitCreate) SetNillableLanguage(s *submit.Language) *SubmitCreate {
+	if s != nil {
+		sc.SetLanguage(*s)
+	}
 	return sc
 }
 
@@ -75,39 +98,62 @@ func (sc *SubmitCreate) SetNillableUpdatedAt(t *time.Time) *SubmitCreate {
 }
 
 // SetID sets the "id" field.
-func (sc *SubmitCreate) SetID(s string) *SubmitCreate {
-	sc.mutation.SetID(s)
+func (sc *SubmitCreate) SetID(i int) *SubmitCreate {
+	sc.mutation.SetID(i)
 	return sc
 }
 
-// AddTagResultIDs adds the "tagResults" edge to the TagResult entity by IDs.
-func (sc *SubmitCreate) AddTagResultIDs(ids ...int) *SubmitCreate {
-	sc.mutation.AddTagResultIDs(ids...)
+// AddTaskResultIDs adds the "taskResults" edge to the TaskResult entity by IDs.
+func (sc *SubmitCreate) AddTaskResultIDs(ids ...int) *SubmitCreate {
+	sc.mutation.AddTaskResultIDs(ids...)
 	return sc
 }
 
-// AddTagResults adds the "tagResults" edges to the TagResult entity.
-func (sc *SubmitCreate) AddTagResults(t ...*TagResult) *SubmitCreate {
+// AddTaskResults adds the "taskResults" edges to the TaskResult entity.
+func (sc *SubmitCreate) AddTaskResults(t ...*TaskResult) *SubmitCreate {
 	ids := make([]int, len(t))
 	for i := range t {
 		ids[i] = t[i].ID
 	}
-	return sc.AddTagResultIDs(ids...)
+	return sc.AddTaskResultIDs(ids...)
 }
 
-// AddGroupIDs adds the "group" edge to the Group entity by IDs.
-func (sc *SubmitCreate) AddGroupIDs(ids ...string) *SubmitCreate {
-	sc.mutation.AddGroupIDs(ids...)
+// SetGroupsID sets the "groups" edge to the Group entity by ID.
+func (sc *SubmitCreate) SetGroupsID(id int) *SubmitCreate {
+	sc.mutation.SetGroupsID(id)
 	return sc
 }
 
-// AddGroup adds the "group" edges to the Group entity.
-func (sc *SubmitCreate) AddGroup(g ...*Group) *SubmitCreate {
-	ids := make([]string, len(g))
-	for i := range g {
-		ids[i] = g[i].ID
+// SetNillableGroupsID sets the "groups" edge to the Group entity by ID if the given value is not nil.
+func (sc *SubmitCreate) SetNillableGroupsID(id *int) *SubmitCreate {
+	if id != nil {
+		sc = sc.SetGroupsID(*id)
 	}
-	return sc.AddGroupIDs(ids...)
+	return sc
+}
+
+// SetGroups sets the "groups" edge to the Group entity.
+func (sc *SubmitCreate) SetGroups(g *Group) *SubmitCreate {
+	return sc.SetGroupsID(g.ID)
+}
+
+// SetContestsID sets the "contests" edge to the Contest entity by ID.
+func (sc *SubmitCreate) SetContestsID(id int) *SubmitCreate {
+	sc.mutation.SetContestsID(id)
+	return sc
+}
+
+// SetNillableContestsID sets the "contests" edge to the Contest entity by ID if the given value is not nil.
+func (sc *SubmitCreate) SetNillableContestsID(id *int) *SubmitCreate {
+	if id != nil {
+		sc = sc.SetContestsID(*id)
+	}
+	return sc
+}
+
+// SetContests sets the "contests" edge to the Contest entity.
+func (sc *SubmitCreate) SetContests(c *Contest) *SubmitCreate {
+	return sc.SetContestsID(c.ID)
 }
 
 // Mutation returns the SubmitMutation object of the builder.
@@ -144,6 +190,9 @@ func (sc *SubmitCreate) ExecX(ctx context.Context) {
 
 // check runs all checks and user-defined validators on the builder.
 func (sc *SubmitCreate) check() error {
+	if _, ok := sc.mutation.URL(); !ok {
+		return &ValidationError{Name: "url", err: errors.New(`ent: missing required field "Submit.url"`)}
+	}
 	if _, ok := sc.mutation.Year(); !ok {
 		return &ValidationError{Name: "year", err: errors.New(`ent: missing required field "Submit.year"`)}
 	}
@@ -151,17 +200,6 @@ func (sc *SubmitCreate) check() error {
 		if err := submit.YearValidator(v); err != nil {
 			return &ValidationError{Name: "year", err: fmt.Errorf(`ent: validator failed for field "Submit.year": %w`, err)}
 		}
-	}
-	if _, ok := sc.mutation.Score(); !ok {
-		return &ValidationError{Name: "score", err: errors.New(`ent: missing required field "Submit.score"`)}
-	}
-	if v, ok := sc.mutation.Score(); ok {
-		if err := submit.ScoreValidator(v); err != nil {
-			return &ValidationError{Name: "score", err: fmt.Errorf(`ent: validator failed for field "Submit.score": %w`, err)}
-		}
-	}
-	if _, ok := sc.mutation.Language(); !ok {
-		return &ValidationError{Name: "language", err: errors.New(`ent: missing required field "Submit.language"`)}
 	}
 	if v, ok := sc.mutation.Language(); ok {
 		if err := submit.LanguageValidator(v); err != nil {
@@ -185,12 +223,9 @@ func (sc *SubmitCreate) sqlSave(ctx context.Context) (*Submit, error) {
 		}
 		return nil, err
 	}
-	if _spec.ID.Value != nil {
-		if id, ok := _spec.ID.Value.(string); ok {
-			_node.ID = id
-		} else {
-			return nil, fmt.Errorf("unexpected Submit.ID type: %T", _spec.ID.Value)
-		}
+	if _spec.ID.Value != _node.ID {
+		id := _spec.ID.Value.(int64)
+		_node.ID = int(id)
 	}
 	sc.mutation.id = &_node.ID
 	sc.mutation.done = true
@@ -200,11 +235,15 @@ func (sc *SubmitCreate) sqlSave(ctx context.Context) (*Submit, error) {
 func (sc *SubmitCreate) createSpec() (*Submit, *sqlgraph.CreateSpec) {
 	var (
 		_node = &Submit{config: sc.config}
-		_spec = sqlgraph.NewCreateSpec(submit.Table, sqlgraph.NewFieldSpec(submit.FieldID, field.TypeString))
+		_spec = sqlgraph.NewCreateSpec(submit.Table, sqlgraph.NewFieldSpec(submit.FieldID, field.TypeInt))
 	)
 	if id, ok := sc.mutation.ID(); ok {
 		_node.ID = id
 		_spec.ID.Value = id
+	}
+	if value, ok := sc.mutation.URL(); ok {
+		_spec.SetField(submit.FieldURL, field.TypeString, value)
+		_node.URL = value
 	}
 	if value, ok := sc.mutation.Year(); ok {
 		_spec.SetField(submit.FieldYear, field.TypeInt, value)
@@ -230,15 +269,15 @@ func (sc *SubmitCreate) createSpec() (*Submit, *sqlgraph.CreateSpec) {
 		_spec.SetField(submit.FieldUpdatedAt, field.TypeTime, value)
 		_node.UpdatedAt = value
 	}
-	if nodes := sc.mutation.TagResultsIDs(); len(nodes) > 0 {
+	if nodes := sc.mutation.TaskResultsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
-			Table:   submit.TagResultsTable,
-			Columns: []string{submit.TagResultsColumn},
+			Table:   submit.TaskResultsTable,
+			Columns: []string{submit.TaskResultsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(tagresult.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(taskresult.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {
@@ -246,20 +285,38 @@ func (sc *SubmitCreate) createSpec() (*Submit, *sqlgraph.CreateSpec) {
 		}
 		_spec.Edges = append(_spec.Edges, edge)
 	}
-	if nodes := sc.mutation.GroupIDs(); len(nodes) > 0 {
+	if nodes := sc.mutation.GroupsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.M2O,
 			Inverse: true,
-			Table:   submit.GroupTable,
-			Columns: submit.GroupPrimaryKey,
+			Table:   submit.GroupsTable,
+			Columns: []string{submit.GroupsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(group.FieldID, field.TypeString),
+				IDSpec: sqlgraph.NewFieldSpec(group.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
+		_node.group_submits = &nodes[0]
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := sc.mutation.ContestsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   submit.ContestsTable,
+			Columns: []string{submit.ContestsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(contest.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_node.contest_submits = &nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec
@@ -305,6 +362,10 @@ func (scb *SubmitCreateBulk) Save(ctx context.Context) ([]*Submit, error) {
 					return nil, err
 				}
 				mutation.id = &nodes[i].ID
+				if specs[i].ID.Value != nil && nodes[i].ID == 0 {
+					id := specs[i].ID.Value.(int64)
+					nodes[i].ID = int(id)
+				}
 				mutation.done = true
 				return nodes[i], nil
 			})

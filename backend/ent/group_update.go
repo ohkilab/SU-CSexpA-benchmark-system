@@ -28,6 +28,12 @@ func (gu *GroupUpdate) Where(ps ...predicate.Group) *GroupUpdate {
 	return gu
 }
 
+// SetName sets the "name" field.
+func (gu *GroupUpdate) SetName(s string) *GroupUpdate {
+	gu.mutation.SetName(s)
+	return gu
+}
+
 // SetYear sets the "year" field.
 func (gu *GroupUpdate) SetYear(i int) *GroupUpdate {
 	gu.mutation.ResetYear()
@@ -67,14 +73,14 @@ func (gu *GroupUpdate) SetEncryptedPassword(s string) *GroupUpdate {
 }
 
 // AddSubmitIDs adds the "submits" edge to the Submit entity by IDs.
-func (gu *GroupUpdate) AddSubmitIDs(ids ...string) *GroupUpdate {
+func (gu *GroupUpdate) AddSubmitIDs(ids ...int) *GroupUpdate {
 	gu.mutation.AddSubmitIDs(ids...)
 	return gu
 }
 
 // AddSubmits adds the "submits" edges to the Submit entity.
 func (gu *GroupUpdate) AddSubmits(s ...*Submit) *GroupUpdate {
-	ids := make([]string, len(s))
+	ids := make([]int, len(s))
 	for i := range s {
 		ids[i] = s[i].ID
 	}
@@ -93,14 +99,14 @@ func (gu *GroupUpdate) ClearSubmits() *GroupUpdate {
 }
 
 // RemoveSubmitIDs removes the "submits" edge to Submit entities by IDs.
-func (gu *GroupUpdate) RemoveSubmitIDs(ids ...string) *GroupUpdate {
+func (gu *GroupUpdate) RemoveSubmitIDs(ids ...int) *GroupUpdate {
 	gu.mutation.RemoveSubmitIDs(ids...)
 	return gu
 }
 
 // RemoveSubmits removes "submits" edges to Submit entities.
 func (gu *GroupUpdate) RemoveSubmits(s ...*Submit) *GroupUpdate {
-	ids := make([]string, len(s))
+	ids := make([]int, len(s))
 	for i := range s {
 		ids[i] = s[i].ID
 	}
@@ -158,13 +164,16 @@ func (gu *GroupUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if err := gu.check(); err != nil {
 		return n, err
 	}
-	_spec := sqlgraph.NewUpdateSpec(group.Table, group.Columns, sqlgraph.NewFieldSpec(group.FieldID, field.TypeString))
+	_spec := sqlgraph.NewUpdateSpec(group.Table, group.Columns, sqlgraph.NewFieldSpec(group.FieldID, field.TypeInt))
 	if ps := gu.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
+	}
+	if value, ok := gu.mutation.Name(); ok {
+		_spec.SetField(group.FieldName, field.TypeString, value)
 	}
 	if value, ok := gu.mutation.Year(); ok {
 		_spec.SetField(group.FieldYear, field.TypeInt, value)
@@ -186,26 +195,26 @@ func (gu *GroupUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if gu.mutation.SubmitsCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.O2M,
 			Inverse: false,
 			Table:   group.SubmitsTable,
-			Columns: group.SubmitsPrimaryKey,
+			Columns: []string{group.SubmitsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(submit.FieldID, field.TypeString),
+				IDSpec: sqlgraph.NewFieldSpec(submit.FieldID, field.TypeInt),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
 	if nodes := gu.mutation.RemovedSubmitsIDs(); len(nodes) > 0 && !gu.mutation.SubmitsCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.O2M,
 			Inverse: false,
 			Table:   group.SubmitsTable,
-			Columns: group.SubmitsPrimaryKey,
+			Columns: []string{group.SubmitsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(submit.FieldID, field.TypeString),
+				IDSpec: sqlgraph.NewFieldSpec(submit.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {
@@ -215,13 +224,13 @@ func (gu *GroupUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if nodes := gu.mutation.SubmitsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.O2M,
 			Inverse: false,
 			Table:   group.SubmitsTable,
-			Columns: group.SubmitsPrimaryKey,
+			Columns: []string{group.SubmitsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(submit.FieldID, field.TypeString),
+				IDSpec: sqlgraph.NewFieldSpec(submit.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {
@@ -247,6 +256,12 @@ type GroupUpdateOne struct {
 	fields   []string
 	hooks    []Hook
 	mutation *GroupMutation
+}
+
+// SetName sets the "name" field.
+func (guo *GroupUpdateOne) SetName(s string) *GroupUpdateOne {
+	guo.mutation.SetName(s)
+	return guo
 }
 
 // SetYear sets the "year" field.
@@ -288,14 +303,14 @@ func (guo *GroupUpdateOne) SetEncryptedPassword(s string) *GroupUpdateOne {
 }
 
 // AddSubmitIDs adds the "submits" edge to the Submit entity by IDs.
-func (guo *GroupUpdateOne) AddSubmitIDs(ids ...string) *GroupUpdateOne {
+func (guo *GroupUpdateOne) AddSubmitIDs(ids ...int) *GroupUpdateOne {
 	guo.mutation.AddSubmitIDs(ids...)
 	return guo
 }
 
 // AddSubmits adds the "submits" edges to the Submit entity.
 func (guo *GroupUpdateOne) AddSubmits(s ...*Submit) *GroupUpdateOne {
-	ids := make([]string, len(s))
+	ids := make([]int, len(s))
 	for i := range s {
 		ids[i] = s[i].ID
 	}
@@ -314,14 +329,14 @@ func (guo *GroupUpdateOne) ClearSubmits() *GroupUpdateOne {
 }
 
 // RemoveSubmitIDs removes the "submits" edge to Submit entities by IDs.
-func (guo *GroupUpdateOne) RemoveSubmitIDs(ids ...string) *GroupUpdateOne {
+func (guo *GroupUpdateOne) RemoveSubmitIDs(ids ...int) *GroupUpdateOne {
 	guo.mutation.RemoveSubmitIDs(ids...)
 	return guo
 }
 
 // RemoveSubmits removes "submits" edges to Submit entities.
 func (guo *GroupUpdateOne) RemoveSubmits(s ...*Submit) *GroupUpdateOne {
-	ids := make([]string, len(s))
+	ids := make([]int, len(s))
 	for i := range s {
 		ids[i] = s[i].ID
 	}
@@ -392,7 +407,7 @@ func (guo *GroupUpdateOne) sqlSave(ctx context.Context) (_node *Group, err error
 	if err := guo.check(); err != nil {
 		return _node, err
 	}
-	_spec := sqlgraph.NewUpdateSpec(group.Table, group.Columns, sqlgraph.NewFieldSpec(group.FieldID, field.TypeString))
+	_spec := sqlgraph.NewUpdateSpec(group.Table, group.Columns, sqlgraph.NewFieldSpec(group.FieldID, field.TypeInt))
 	id, ok := guo.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "Group.id" for update`)}
@@ -417,6 +432,9 @@ func (guo *GroupUpdateOne) sqlSave(ctx context.Context) (_node *Group, err error
 			}
 		}
 	}
+	if value, ok := guo.mutation.Name(); ok {
+		_spec.SetField(group.FieldName, field.TypeString, value)
+	}
 	if value, ok := guo.mutation.Year(); ok {
 		_spec.SetField(group.FieldYear, field.TypeInt, value)
 	}
@@ -437,26 +455,26 @@ func (guo *GroupUpdateOne) sqlSave(ctx context.Context) (_node *Group, err error
 	}
 	if guo.mutation.SubmitsCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.O2M,
 			Inverse: false,
 			Table:   group.SubmitsTable,
-			Columns: group.SubmitsPrimaryKey,
+			Columns: []string{group.SubmitsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(submit.FieldID, field.TypeString),
+				IDSpec: sqlgraph.NewFieldSpec(submit.FieldID, field.TypeInt),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
 	if nodes := guo.mutation.RemovedSubmitsIDs(); len(nodes) > 0 && !guo.mutation.SubmitsCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.O2M,
 			Inverse: false,
 			Table:   group.SubmitsTable,
-			Columns: group.SubmitsPrimaryKey,
+			Columns: []string{group.SubmitsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(submit.FieldID, field.TypeString),
+				IDSpec: sqlgraph.NewFieldSpec(submit.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {
@@ -466,13 +484,13 @@ func (guo *GroupUpdateOne) sqlSave(ctx context.Context) (_node *Group, err error
 	}
 	if nodes := guo.mutation.SubmitsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.O2M,
 			Inverse: false,
 			Table:   group.SubmitsTable,
-			Columns: group.SubmitsPrimaryKey,
+			Columns: []string{group.SubmitsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(submit.FieldID, field.TypeString),
+				IDSpec: sqlgraph.NewFieldSpec(submit.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {

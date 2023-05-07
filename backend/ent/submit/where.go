@@ -11,58 +11,53 @@ import (
 )
 
 // ID filters vertices based on their ID field.
-func ID(id string) predicate.Submit {
+func ID(id int) predicate.Submit {
 	return predicate.Submit(sql.FieldEQ(FieldID, id))
 }
 
 // IDEQ applies the EQ predicate on the ID field.
-func IDEQ(id string) predicate.Submit {
+func IDEQ(id int) predicate.Submit {
 	return predicate.Submit(sql.FieldEQ(FieldID, id))
 }
 
 // IDNEQ applies the NEQ predicate on the ID field.
-func IDNEQ(id string) predicate.Submit {
+func IDNEQ(id int) predicate.Submit {
 	return predicate.Submit(sql.FieldNEQ(FieldID, id))
 }
 
 // IDIn applies the In predicate on the ID field.
-func IDIn(ids ...string) predicate.Submit {
+func IDIn(ids ...int) predicate.Submit {
 	return predicate.Submit(sql.FieldIn(FieldID, ids...))
 }
 
 // IDNotIn applies the NotIn predicate on the ID field.
-func IDNotIn(ids ...string) predicate.Submit {
+func IDNotIn(ids ...int) predicate.Submit {
 	return predicate.Submit(sql.FieldNotIn(FieldID, ids...))
 }
 
 // IDGT applies the GT predicate on the ID field.
-func IDGT(id string) predicate.Submit {
+func IDGT(id int) predicate.Submit {
 	return predicate.Submit(sql.FieldGT(FieldID, id))
 }
 
 // IDGTE applies the GTE predicate on the ID field.
-func IDGTE(id string) predicate.Submit {
+func IDGTE(id int) predicate.Submit {
 	return predicate.Submit(sql.FieldGTE(FieldID, id))
 }
 
 // IDLT applies the LT predicate on the ID field.
-func IDLT(id string) predicate.Submit {
+func IDLT(id int) predicate.Submit {
 	return predicate.Submit(sql.FieldLT(FieldID, id))
 }
 
 // IDLTE applies the LTE predicate on the ID field.
-func IDLTE(id string) predicate.Submit {
+func IDLTE(id int) predicate.Submit {
 	return predicate.Submit(sql.FieldLTE(FieldID, id))
 }
 
-// IDEqualFold applies the EqualFold predicate on the ID field.
-func IDEqualFold(id string) predicate.Submit {
-	return predicate.Submit(sql.FieldEqualFold(FieldID, id))
-}
-
-// IDContainsFold applies the ContainsFold predicate on the ID field.
-func IDContainsFold(id string) predicate.Submit {
-	return predicate.Submit(sql.FieldContainsFold(FieldID, id))
+// URL applies equality check predicate on the "url" field. It's identical to URLEQ.
+func URL(v string) predicate.Submit {
+	return predicate.Submit(sql.FieldEQ(FieldURL, v))
 }
 
 // Year applies equality check predicate on the "year" field. It's identical to YearEQ.
@@ -88,6 +83,71 @@ func CompletedAt(v time.Time) predicate.Submit {
 // UpdatedAt applies equality check predicate on the "updated_at" field. It's identical to UpdatedAtEQ.
 func UpdatedAt(v time.Time) predicate.Submit {
 	return predicate.Submit(sql.FieldEQ(FieldUpdatedAt, v))
+}
+
+// URLEQ applies the EQ predicate on the "url" field.
+func URLEQ(v string) predicate.Submit {
+	return predicate.Submit(sql.FieldEQ(FieldURL, v))
+}
+
+// URLNEQ applies the NEQ predicate on the "url" field.
+func URLNEQ(v string) predicate.Submit {
+	return predicate.Submit(sql.FieldNEQ(FieldURL, v))
+}
+
+// URLIn applies the In predicate on the "url" field.
+func URLIn(vs ...string) predicate.Submit {
+	return predicate.Submit(sql.FieldIn(FieldURL, vs...))
+}
+
+// URLNotIn applies the NotIn predicate on the "url" field.
+func URLNotIn(vs ...string) predicate.Submit {
+	return predicate.Submit(sql.FieldNotIn(FieldURL, vs...))
+}
+
+// URLGT applies the GT predicate on the "url" field.
+func URLGT(v string) predicate.Submit {
+	return predicate.Submit(sql.FieldGT(FieldURL, v))
+}
+
+// URLGTE applies the GTE predicate on the "url" field.
+func URLGTE(v string) predicate.Submit {
+	return predicate.Submit(sql.FieldGTE(FieldURL, v))
+}
+
+// URLLT applies the LT predicate on the "url" field.
+func URLLT(v string) predicate.Submit {
+	return predicate.Submit(sql.FieldLT(FieldURL, v))
+}
+
+// URLLTE applies the LTE predicate on the "url" field.
+func URLLTE(v string) predicate.Submit {
+	return predicate.Submit(sql.FieldLTE(FieldURL, v))
+}
+
+// URLContains applies the Contains predicate on the "url" field.
+func URLContains(v string) predicate.Submit {
+	return predicate.Submit(sql.FieldContains(FieldURL, v))
+}
+
+// URLHasPrefix applies the HasPrefix predicate on the "url" field.
+func URLHasPrefix(v string) predicate.Submit {
+	return predicate.Submit(sql.FieldHasPrefix(FieldURL, v))
+}
+
+// URLHasSuffix applies the HasSuffix predicate on the "url" field.
+func URLHasSuffix(v string) predicate.Submit {
+	return predicate.Submit(sql.FieldHasSuffix(FieldURL, v))
+}
+
+// URLEqualFold applies the EqualFold predicate on the "url" field.
+func URLEqualFold(v string) predicate.Submit {
+	return predicate.Submit(sql.FieldEqualFold(FieldURL, v))
+}
+
+// URLContainsFold applies the ContainsFold predicate on the "url" field.
+func URLContainsFold(v string) predicate.Submit {
+	return predicate.Submit(sql.FieldContainsFold(FieldURL, v))
 }
 
 // YearEQ applies the EQ predicate on the "year" field.
@@ -170,6 +230,16 @@ func ScoreLTE(v int) predicate.Submit {
 	return predicate.Submit(sql.FieldLTE(FieldScore, v))
 }
 
+// ScoreIsNil applies the IsNil predicate on the "score" field.
+func ScoreIsNil() predicate.Submit {
+	return predicate.Submit(sql.FieldIsNull(FieldScore))
+}
+
+// ScoreNotNil applies the NotNil predicate on the "score" field.
+func ScoreNotNil() predicate.Submit {
+	return predicate.Submit(sql.FieldNotNull(FieldScore))
+}
+
 // LanguageEQ applies the EQ predicate on the "language" field.
 func LanguageEQ(v Language) predicate.Submit {
 	return predicate.Submit(sql.FieldEQ(FieldLanguage, v))
@@ -188,6 +258,16 @@ func LanguageIn(vs ...Language) predicate.Submit {
 // LanguageNotIn applies the NotIn predicate on the "language" field.
 func LanguageNotIn(vs ...Language) predicate.Submit {
 	return predicate.Submit(sql.FieldNotIn(FieldLanguage, vs...))
+}
+
+// LanguageIsNil applies the IsNil predicate on the "language" field.
+func LanguageIsNil() predicate.Submit {
+	return predicate.Submit(sql.FieldIsNull(FieldLanguage))
+}
+
+// LanguageNotNil applies the NotNil predicate on the "language" field.
+func LanguageNotNil() predicate.Submit {
+	return predicate.Submit(sql.FieldNotNull(FieldLanguage))
 }
 
 // SubmitedAtEQ applies the EQ predicate on the "submited_at" field.
@@ -330,21 +410,21 @@ func UpdatedAtNotNil() predicate.Submit {
 	return predicate.Submit(sql.FieldNotNull(FieldUpdatedAt))
 }
 
-// HasTagResults applies the HasEdge predicate on the "tagResults" edge.
-func HasTagResults() predicate.Submit {
+// HasTaskResults applies the HasEdge predicate on the "taskResults" edge.
+func HasTaskResults() predicate.Submit {
 	return predicate.Submit(func(s *sql.Selector) {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(Table, FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, TagResultsTable, TagResultsColumn),
+			sqlgraph.Edge(sqlgraph.O2M, false, TaskResultsTable, TaskResultsColumn),
 		)
 		sqlgraph.HasNeighbors(s, step)
 	})
 }
 
-// HasTagResultsWith applies the HasEdge predicate on the "tagResults" edge with a given conditions (other predicates).
-func HasTagResultsWith(preds ...predicate.TagResult) predicate.Submit {
+// HasTaskResultsWith applies the HasEdge predicate on the "taskResults" edge with a given conditions (other predicates).
+func HasTaskResultsWith(preds ...predicate.TaskResult) predicate.Submit {
 	return predicate.Submit(func(s *sql.Selector) {
-		step := newTagResultsStep()
+		step := newTaskResultsStep()
 		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
 			for _, p := range preds {
 				p(s)
@@ -353,21 +433,44 @@ func HasTagResultsWith(preds ...predicate.TagResult) predicate.Submit {
 	})
 }
 
-// HasGroup applies the HasEdge predicate on the "group" edge.
-func HasGroup() predicate.Submit {
+// HasGroups applies the HasEdge predicate on the "groups" edge.
+func HasGroups() predicate.Submit {
 	return predicate.Submit(func(s *sql.Selector) {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(Table, FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, true, GroupTable, GroupPrimaryKey...),
+			sqlgraph.Edge(sqlgraph.M2O, true, GroupsTable, GroupsColumn),
 		)
 		sqlgraph.HasNeighbors(s, step)
 	})
 }
 
-// HasGroupWith applies the HasEdge predicate on the "group" edge with a given conditions (other predicates).
-func HasGroupWith(preds ...predicate.Group) predicate.Submit {
+// HasGroupsWith applies the HasEdge predicate on the "groups" edge with a given conditions (other predicates).
+func HasGroupsWith(preds ...predicate.Group) predicate.Submit {
 	return predicate.Submit(func(s *sql.Selector) {
-		step := newGroupStep()
+		step := newGroupsStep()
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
+// HasContests applies the HasEdge predicate on the "contests" edge.
+func HasContests() predicate.Submit {
+	return predicate.Submit(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, ContestsTable, ContestsColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasContestsWith applies the HasEdge predicate on the "contests" edge with a given conditions (other predicates).
+func HasContestsWith(preds ...predicate.Contest) predicate.Submit {
+	return predicate.Submit(func(s *sql.Selector) {
+		step := newContestsStep()
 		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
 			for _, p := range preds {
 				p(s)

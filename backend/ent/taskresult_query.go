@@ -11,68 +11,92 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/ent/predicate"
-	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/ent/tagresult"
+	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/ent/submit"
+	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/ent/taskresult"
 )
 
-// TagResultQuery is the builder for querying TagResult entities.
-type TagResultQuery struct {
+// TaskResultQuery is the builder for querying TaskResult entities.
+type TaskResultQuery struct {
 	config
-	ctx        *QueryContext
-	order      []tagresult.OrderOption
-	inters     []Interceptor
-	predicates []predicate.TagResult
-	withFKs    bool
+	ctx         *QueryContext
+	order       []taskresult.OrderOption
+	inters      []Interceptor
+	predicates  []predicate.TaskResult
+	withSubmits *SubmitQuery
+	withFKs     bool
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
 }
 
-// Where adds a new predicate for the TagResultQuery builder.
-func (trq *TagResultQuery) Where(ps ...predicate.TagResult) *TagResultQuery {
+// Where adds a new predicate for the TaskResultQuery builder.
+func (trq *TaskResultQuery) Where(ps ...predicate.TaskResult) *TaskResultQuery {
 	trq.predicates = append(trq.predicates, ps...)
 	return trq
 }
 
 // Limit the number of records to be returned by this query.
-func (trq *TagResultQuery) Limit(limit int) *TagResultQuery {
+func (trq *TaskResultQuery) Limit(limit int) *TaskResultQuery {
 	trq.ctx.Limit = &limit
 	return trq
 }
 
 // Offset to start from.
-func (trq *TagResultQuery) Offset(offset int) *TagResultQuery {
+func (trq *TaskResultQuery) Offset(offset int) *TaskResultQuery {
 	trq.ctx.Offset = &offset
 	return trq
 }
 
 // Unique configures the query builder to filter duplicate records on query.
 // By default, unique is set to true, and can be disabled using this method.
-func (trq *TagResultQuery) Unique(unique bool) *TagResultQuery {
+func (trq *TaskResultQuery) Unique(unique bool) *TaskResultQuery {
 	trq.ctx.Unique = &unique
 	return trq
 }
 
 // Order specifies how the records should be ordered.
-func (trq *TagResultQuery) Order(o ...tagresult.OrderOption) *TagResultQuery {
+func (trq *TaskResultQuery) Order(o ...taskresult.OrderOption) *TaskResultQuery {
 	trq.order = append(trq.order, o...)
 	return trq
 }
 
-// First returns the first TagResult entity from the query.
-// Returns a *NotFoundError when no TagResult was found.
-func (trq *TagResultQuery) First(ctx context.Context) (*TagResult, error) {
+// QuerySubmits chains the current query on the "submits" edge.
+func (trq *TaskResultQuery) QuerySubmits() *SubmitQuery {
+	query := (&SubmitClient{config: trq.config}).Query()
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := trq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := trq.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(taskresult.Table, taskresult.FieldID, selector),
+			sqlgraph.To(submit.Table, submit.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, taskresult.SubmitsTable, taskresult.SubmitsColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(trq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// First returns the first TaskResult entity from the query.
+// Returns a *NotFoundError when no TaskResult was found.
+func (trq *TaskResultQuery) First(ctx context.Context) (*TaskResult, error) {
 	nodes, err := trq.Limit(1).All(setContextOp(ctx, trq.ctx, "First"))
 	if err != nil {
 		return nil, err
 	}
 	if len(nodes) == 0 {
-		return nil, &NotFoundError{tagresult.Label}
+		return nil, &NotFoundError{taskresult.Label}
 	}
 	return nodes[0], nil
 }
 
 // FirstX is like First, but panics if an error occurs.
-func (trq *TagResultQuery) FirstX(ctx context.Context) *TagResult {
+func (trq *TaskResultQuery) FirstX(ctx context.Context) *TaskResult {
 	node, err := trq.First(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
@@ -80,22 +104,22 @@ func (trq *TagResultQuery) FirstX(ctx context.Context) *TagResult {
 	return node
 }
 
-// FirstID returns the first TagResult ID from the query.
-// Returns a *NotFoundError when no TagResult ID was found.
-func (trq *TagResultQuery) FirstID(ctx context.Context) (id int, err error) {
+// FirstID returns the first TaskResult ID from the query.
+// Returns a *NotFoundError when no TaskResult ID was found.
+func (trq *TaskResultQuery) FirstID(ctx context.Context) (id int, err error) {
 	var ids []int
 	if ids, err = trq.Limit(1).IDs(setContextOp(ctx, trq.ctx, "FirstID")); err != nil {
 		return
 	}
 	if len(ids) == 0 {
-		err = &NotFoundError{tagresult.Label}
+		err = &NotFoundError{taskresult.Label}
 		return
 	}
 	return ids[0], nil
 }
 
 // FirstIDX is like FirstID, but panics if an error occurs.
-func (trq *TagResultQuery) FirstIDX(ctx context.Context) int {
+func (trq *TaskResultQuery) FirstIDX(ctx context.Context) int {
 	id, err := trq.FirstID(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
@@ -103,10 +127,10 @@ func (trq *TagResultQuery) FirstIDX(ctx context.Context) int {
 	return id
 }
 
-// Only returns a single TagResult entity found by the query, ensuring it only returns one.
-// Returns a *NotSingularError when more than one TagResult entity is found.
-// Returns a *NotFoundError when no TagResult entities are found.
-func (trq *TagResultQuery) Only(ctx context.Context) (*TagResult, error) {
+// Only returns a single TaskResult entity found by the query, ensuring it only returns one.
+// Returns a *NotSingularError when more than one TaskResult entity is found.
+// Returns a *NotFoundError when no TaskResult entities are found.
+func (trq *TaskResultQuery) Only(ctx context.Context) (*TaskResult, error) {
 	nodes, err := trq.Limit(2).All(setContextOp(ctx, trq.ctx, "Only"))
 	if err != nil {
 		return nil, err
@@ -115,14 +139,14 @@ func (trq *TagResultQuery) Only(ctx context.Context) (*TagResult, error) {
 	case 1:
 		return nodes[0], nil
 	case 0:
-		return nil, &NotFoundError{tagresult.Label}
+		return nil, &NotFoundError{taskresult.Label}
 	default:
-		return nil, &NotSingularError{tagresult.Label}
+		return nil, &NotSingularError{taskresult.Label}
 	}
 }
 
 // OnlyX is like Only, but panics if an error occurs.
-func (trq *TagResultQuery) OnlyX(ctx context.Context) *TagResult {
+func (trq *TaskResultQuery) OnlyX(ctx context.Context) *TaskResult {
 	node, err := trq.Only(ctx)
 	if err != nil {
 		panic(err)
@@ -130,10 +154,10 @@ func (trq *TagResultQuery) OnlyX(ctx context.Context) *TagResult {
 	return node
 }
 
-// OnlyID is like Only, but returns the only TagResult ID in the query.
-// Returns a *NotSingularError when more than one TagResult ID is found.
+// OnlyID is like Only, but returns the only TaskResult ID in the query.
+// Returns a *NotSingularError when more than one TaskResult ID is found.
 // Returns a *NotFoundError when no entities are found.
-func (trq *TagResultQuery) OnlyID(ctx context.Context) (id int, err error) {
+func (trq *TaskResultQuery) OnlyID(ctx context.Context) (id int, err error) {
 	var ids []int
 	if ids, err = trq.Limit(2).IDs(setContextOp(ctx, trq.ctx, "OnlyID")); err != nil {
 		return
@@ -142,15 +166,15 @@ func (trq *TagResultQuery) OnlyID(ctx context.Context) (id int, err error) {
 	case 1:
 		id = ids[0]
 	case 0:
-		err = &NotFoundError{tagresult.Label}
+		err = &NotFoundError{taskresult.Label}
 	default:
-		err = &NotSingularError{tagresult.Label}
+		err = &NotSingularError{taskresult.Label}
 	}
 	return
 }
 
 // OnlyIDX is like OnlyID, but panics if an error occurs.
-func (trq *TagResultQuery) OnlyIDX(ctx context.Context) int {
+func (trq *TaskResultQuery) OnlyIDX(ctx context.Context) int {
 	id, err := trq.OnlyID(ctx)
 	if err != nil {
 		panic(err)
@@ -158,18 +182,18 @@ func (trq *TagResultQuery) OnlyIDX(ctx context.Context) int {
 	return id
 }
 
-// All executes the query and returns a list of TagResults.
-func (trq *TagResultQuery) All(ctx context.Context) ([]*TagResult, error) {
+// All executes the query and returns a list of TaskResults.
+func (trq *TaskResultQuery) All(ctx context.Context) ([]*TaskResult, error) {
 	ctx = setContextOp(ctx, trq.ctx, "All")
 	if err := trq.prepareQuery(ctx); err != nil {
 		return nil, err
 	}
-	qr := querierAll[[]*TagResult, *TagResultQuery]()
-	return withInterceptors[[]*TagResult](ctx, trq, qr, trq.inters)
+	qr := querierAll[[]*TaskResult, *TaskResultQuery]()
+	return withInterceptors[[]*TaskResult](ctx, trq, qr, trq.inters)
 }
 
 // AllX is like All, but panics if an error occurs.
-func (trq *TagResultQuery) AllX(ctx context.Context) []*TagResult {
+func (trq *TaskResultQuery) AllX(ctx context.Context) []*TaskResult {
 	nodes, err := trq.All(ctx)
 	if err != nil {
 		panic(err)
@@ -177,20 +201,20 @@ func (trq *TagResultQuery) AllX(ctx context.Context) []*TagResult {
 	return nodes
 }
 
-// IDs executes the query and returns a list of TagResult IDs.
-func (trq *TagResultQuery) IDs(ctx context.Context) (ids []int, err error) {
+// IDs executes the query and returns a list of TaskResult IDs.
+func (trq *TaskResultQuery) IDs(ctx context.Context) (ids []int, err error) {
 	if trq.ctx.Unique == nil && trq.path != nil {
 		trq.Unique(true)
 	}
 	ctx = setContextOp(ctx, trq.ctx, "IDs")
-	if err = trq.Select(tagresult.FieldID).Scan(ctx, &ids); err != nil {
+	if err = trq.Select(taskresult.FieldID).Scan(ctx, &ids); err != nil {
 		return nil, err
 	}
 	return ids, nil
 }
 
 // IDsX is like IDs, but panics if an error occurs.
-func (trq *TagResultQuery) IDsX(ctx context.Context) []int {
+func (trq *TaskResultQuery) IDsX(ctx context.Context) []int {
 	ids, err := trq.IDs(ctx)
 	if err != nil {
 		panic(err)
@@ -199,16 +223,16 @@ func (trq *TagResultQuery) IDsX(ctx context.Context) []int {
 }
 
 // Count returns the count of the given query.
-func (trq *TagResultQuery) Count(ctx context.Context) (int, error) {
+func (trq *TaskResultQuery) Count(ctx context.Context) (int, error) {
 	ctx = setContextOp(ctx, trq.ctx, "Count")
 	if err := trq.prepareQuery(ctx); err != nil {
 		return 0, err
 	}
-	return withInterceptors[int](ctx, trq, querierCount[*TagResultQuery](), trq.inters)
+	return withInterceptors[int](ctx, trq, querierCount[*TaskResultQuery](), trq.inters)
 }
 
 // CountX is like Count, but panics if an error occurs.
-func (trq *TagResultQuery) CountX(ctx context.Context) int {
+func (trq *TaskResultQuery) CountX(ctx context.Context) int {
 	count, err := trq.Count(ctx)
 	if err != nil {
 		panic(err)
@@ -217,7 +241,7 @@ func (trq *TagResultQuery) CountX(ctx context.Context) int {
 }
 
 // Exist returns true if the query has elements in the graph.
-func (trq *TagResultQuery) Exist(ctx context.Context) (bool, error) {
+func (trq *TaskResultQuery) Exist(ctx context.Context) (bool, error) {
 	ctx = setContextOp(ctx, trq.ctx, "Exist")
 	switch _, err := trq.FirstID(ctx); {
 	case IsNotFound(err):
@@ -230,7 +254,7 @@ func (trq *TagResultQuery) Exist(ctx context.Context) (bool, error) {
 }
 
 // ExistX is like Exist, but panics if an error occurs.
-func (trq *TagResultQuery) ExistX(ctx context.Context) bool {
+func (trq *TaskResultQuery) ExistX(ctx context.Context) bool {
 	exist, err := trq.Exist(ctx)
 	if err != nil {
 		panic(err)
@@ -238,22 +262,34 @@ func (trq *TagResultQuery) ExistX(ctx context.Context) bool {
 	return exist
 }
 
-// Clone returns a duplicate of the TagResultQuery builder, including all associated steps. It can be
+// Clone returns a duplicate of the TaskResultQuery builder, including all associated steps. It can be
 // used to prepare common query builders and use them differently after the clone is made.
-func (trq *TagResultQuery) Clone() *TagResultQuery {
+func (trq *TaskResultQuery) Clone() *TaskResultQuery {
 	if trq == nil {
 		return nil
 	}
-	return &TagResultQuery{
-		config:     trq.config,
-		ctx:        trq.ctx.Clone(),
-		order:      append([]tagresult.OrderOption{}, trq.order...),
-		inters:     append([]Interceptor{}, trq.inters...),
-		predicates: append([]predicate.TagResult{}, trq.predicates...),
+	return &TaskResultQuery{
+		config:      trq.config,
+		ctx:         trq.ctx.Clone(),
+		order:       append([]taskresult.OrderOption{}, trq.order...),
+		inters:      append([]Interceptor{}, trq.inters...),
+		predicates:  append([]predicate.TaskResult{}, trq.predicates...),
+		withSubmits: trq.withSubmits.Clone(),
 		// clone intermediate query.
 		sql:  trq.sql.Clone(),
 		path: trq.path,
 	}
+}
+
+// WithSubmits tells the query-builder to eager-load the nodes that are connected to
+// the "submits" edge. The optional arguments are used to configure the query builder of the edge.
+func (trq *TaskResultQuery) WithSubmits(opts ...func(*SubmitQuery)) *TaskResultQuery {
+	query := (&SubmitClient{config: trq.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	trq.withSubmits = query
+	return trq
 }
 
 // GroupBy is used to group vertices by one or more fields/columns.
@@ -262,19 +298,19 @@ func (trq *TagResultQuery) Clone() *TagResultQuery {
 // Example:
 //
 //	var v []struct {
-//		Name string `json:"name,omitempty"`
+//		RequestPerSec int `json:"request_per_sec,omitempty"`
 //		Count int `json:"count,omitempty"`
 //	}
 //
-//	client.TagResult.Query().
-//		GroupBy(tagresult.FieldName).
+//	client.TaskResult.Query().
+//		GroupBy(taskresult.FieldRequestPerSec).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
-func (trq *TagResultQuery) GroupBy(field string, fields ...string) *TagResultGroupBy {
+func (trq *TaskResultQuery) GroupBy(field string, fields ...string) *TaskResultGroupBy {
 	trq.ctx.Fields = append([]string{field}, fields...)
-	grbuild := &TagResultGroupBy{build: trq}
+	grbuild := &TaskResultGroupBy{build: trq}
 	grbuild.flds = &trq.ctx.Fields
-	grbuild.label = tagresult.Label
+	grbuild.label = taskresult.Label
 	grbuild.scan = grbuild.Scan
 	return grbuild
 }
@@ -285,26 +321,26 @@ func (trq *TagResultQuery) GroupBy(field string, fields ...string) *TagResultGro
 // Example:
 //
 //	var v []struct {
-//		Name string `json:"name,omitempty"`
+//		RequestPerSec int `json:"request_per_sec,omitempty"`
 //	}
 //
-//	client.TagResult.Query().
-//		Select(tagresult.FieldName).
+//	client.TaskResult.Query().
+//		Select(taskresult.FieldRequestPerSec).
 //		Scan(ctx, &v)
-func (trq *TagResultQuery) Select(fields ...string) *TagResultSelect {
+func (trq *TaskResultQuery) Select(fields ...string) *TaskResultSelect {
 	trq.ctx.Fields = append(trq.ctx.Fields, fields...)
-	sbuild := &TagResultSelect{TagResultQuery: trq}
-	sbuild.label = tagresult.Label
+	sbuild := &TaskResultSelect{TaskResultQuery: trq}
+	sbuild.label = taskresult.Label
 	sbuild.flds, sbuild.scan = &trq.ctx.Fields, sbuild.Scan
 	return sbuild
 }
 
-// Aggregate returns a TagResultSelect configured with the given aggregations.
-func (trq *TagResultQuery) Aggregate(fns ...AggregateFunc) *TagResultSelect {
+// Aggregate returns a TaskResultSelect configured with the given aggregations.
+func (trq *TaskResultQuery) Aggregate(fns ...AggregateFunc) *TaskResultSelect {
 	return trq.Select().Aggregate(fns...)
 }
 
-func (trq *TagResultQuery) prepareQuery(ctx context.Context) error {
+func (trq *TaskResultQuery) prepareQuery(ctx context.Context) error {
 	for _, inter := range trq.inters {
 		if inter == nil {
 			return fmt.Errorf("ent: uninitialized interceptor (forgotten import ent/runtime?)")
@@ -316,7 +352,7 @@ func (trq *TagResultQuery) prepareQuery(ctx context.Context) error {
 		}
 	}
 	for _, f := range trq.ctx.Fields {
-		if !tagresult.ValidColumn(f) {
+		if !taskresult.ValidColumn(f) {
 			return &ValidationError{Name: f, err: fmt.Errorf("ent: invalid field %q for query", f)}
 		}
 	}
@@ -330,21 +366,28 @@ func (trq *TagResultQuery) prepareQuery(ctx context.Context) error {
 	return nil
 }
 
-func (trq *TagResultQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*TagResult, error) {
+func (trq *TaskResultQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*TaskResult, error) {
 	var (
-		nodes   = []*TagResult{}
-		withFKs = trq.withFKs
-		_spec   = trq.querySpec()
+		nodes       = []*TaskResult{}
+		withFKs     = trq.withFKs
+		_spec       = trq.querySpec()
+		loadedTypes = [1]bool{
+			trq.withSubmits != nil,
+		}
 	)
+	if trq.withSubmits != nil {
+		withFKs = true
+	}
 	if withFKs {
-		_spec.Node.Columns = append(_spec.Node.Columns, tagresult.ForeignKeys...)
+		_spec.Node.Columns = append(_spec.Node.Columns, taskresult.ForeignKeys...)
 	}
 	_spec.ScanValues = func(columns []string) ([]any, error) {
-		return (*TagResult).scanValues(nil, columns)
+		return (*TaskResult).scanValues(nil, columns)
 	}
 	_spec.Assign = func(columns []string, values []any) error {
-		node := &TagResult{config: trq.config}
+		node := &TaskResult{config: trq.config}
 		nodes = append(nodes, node)
+		node.Edges.loadedTypes = loadedTypes
 		return node.assignValues(columns, values)
 	}
 	for i := range hooks {
@@ -356,10 +399,49 @@ func (trq *TagResultQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*T
 	if len(nodes) == 0 {
 		return nodes, nil
 	}
+	if query := trq.withSubmits; query != nil {
+		if err := trq.loadSubmits(ctx, query, nodes, nil,
+			func(n *TaskResult, e *Submit) { n.Edges.Submits = e }); err != nil {
+			return nil, err
+		}
+	}
 	return nodes, nil
 }
 
-func (trq *TagResultQuery) sqlCount(ctx context.Context) (int, error) {
+func (trq *TaskResultQuery) loadSubmits(ctx context.Context, query *SubmitQuery, nodes []*TaskResult, init func(*TaskResult), assign func(*TaskResult, *Submit)) error {
+	ids := make([]int, 0, len(nodes))
+	nodeids := make(map[int][]*TaskResult)
+	for i := range nodes {
+		if nodes[i].submit_task_results == nil {
+			continue
+		}
+		fk := *nodes[i].submit_task_results
+		if _, ok := nodeids[fk]; !ok {
+			ids = append(ids, fk)
+		}
+		nodeids[fk] = append(nodeids[fk], nodes[i])
+	}
+	if len(ids) == 0 {
+		return nil
+	}
+	query.Where(submit.IDIn(ids...))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		nodes, ok := nodeids[n.ID]
+		if !ok {
+			return fmt.Errorf(`unexpected foreign-key "submit_task_results" returned %v`, n.ID)
+		}
+		for i := range nodes {
+			assign(nodes[i], n)
+		}
+	}
+	return nil
+}
+
+func (trq *TaskResultQuery) sqlCount(ctx context.Context) (int, error) {
 	_spec := trq.querySpec()
 	_spec.Node.Columns = trq.ctx.Fields
 	if len(trq.ctx.Fields) > 0 {
@@ -368,8 +450,8 @@ func (trq *TagResultQuery) sqlCount(ctx context.Context) (int, error) {
 	return sqlgraph.CountNodes(ctx, trq.driver, _spec)
 }
 
-func (trq *TagResultQuery) querySpec() *sqlgraph.QuerySpec {
-	_spec := sqlgraph.NewQuerySpec(tagresult.Table, tagresult.Columns, sqlgraph.NewFieldSpec(tagresult.FieldID, field.TypeInt))
+func (trq *TaskResultQuery) querySpec() *sqlgraph.QuerySpec {
+	_spec := sqlgraph.NewQuerySpec(taskresult.Table, taskresult.Columns, sqlgraph.NewFieldSpec(taskresult.FieldID, field.TypeInt))
 	_spec.From = trq.sql
 	if unique := trq.ctx.Unique; unique != nil {
 		_spec.Unique = *unique
@@ -378,9 +460,9 @@ func (trq *TagResultQuery) querySpec() *sqlgraph.QuerySpec {
 	}
 	if fields := trq.ctx.Fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
-		_spec.Node.Columns = append(_spec.Node.Columns, tagresult.FieldID)
+		_spec.Node.Columns = append(_spec.Node.Columns, taskresult.FieldID)
 		for i := range fields {
-			if fields[i] != tagresult.FieldID {
+			if fields[i] != taskresult.FieldID {
 				_spec.Node.Columns = append(_spec.Node.Columns, fields[i])
 			}
 		}
@@ -408,12 +490,12 @@ func (trq *TagResultQuery) querySpec() *sqlgraph.QuerySpec {
 	return _spec
 }
 
-func (trq *TagResultQuery) sqlQuery(ctx context.Context) *sql.Selector {
+func (trq *TaskResultQuery) sqlQuery(ctx context.Context) *sql.Selector {
 	builder := sql.Dialect(trq.driver.Dialect())
-	t1 := builder.Table(tagresult.Table)
+	t1 := builder.Table(taskresult.Table)
 	columns := trq.ctx.Fields
 	if len(columns) == 0 {
-		columns = tagresult.Columns
+		columns = taskresult.Columns
 	}
 	selector := builder.Select(t1.Columns(columns...)...).From(t1)
 	if trq.sql != nil {
@@ -440,28 +522,28 @@ func (trq *TagResultQuery) sqlQuery(ctx context.Context) *sql.Selector {
 	return selector
 }
 
-// TagResultGroupBy is the group-by builder for TagResult entities.
-type TagResultGroupBy struct {
+// TaskResultGroupBy is the group-by builder for TaskResult entities.
+type TaskResultGroupBy struct {
 	selector
-	build *TagResultQuery
+	build *TaskResultQuery
 }
 
 // Aggregate adds the given aggregation functions to the group-by query.
-func (trgb *TagResultGroupBy) Aggregate(fns ...AggregateFunc) *TagResultGroupBy {
+func (trgb *TaskResultGroupBy) Aggregate(fns ...AggregateFunc) *TaskResultGroupBy {
 	trgb.fns = append(trgb.fns, fns...)
 	return trgb
 }
 
 // Scan applies the selector query and scans the result into the given value.
-func (trgb *TagResultGroupBy) Scan(ctx context.Context, v any) error {
+func (trgb *TaskResultGroupBy) Scan(ctx context.Context, v any) error {
 	ctx = setContextOp(ctx, trgb.build.ctx, "GroupBy")
 	if err := trgb.build.prepareQuery(ctx); err != nil {
 		return err
 	}
-	return scanWithInterceptors[*TagResultQuery, *TagResultGroupBy](ctx, trgb.build, trgb, trgb.build.inters, v)
+	return scanWithInterceptors[*TaskResultQuery, *TaskResultGroupBy](ctx, trgb.build, trgb, trgb.build.inters, v)
 }
 
-func (trgb *TagResultGroupBy) sqlScan(ctx context.Context, root *TagResultQuery, v any) error {
+func (trgb *TaskResultGroupBy) sqlScan(ctx context.Context, root *TaskResultQuery, v any) error {
 	selector := root.sqlQuery(ctx).Select()
 	aggregation := make([]string, 0, len(trgb.fns))
 	for _, fn := range trgb.fns {
@@ -488,28 +570,28 @@ func (trgb *TagResultGroupBy) sqlScan(ctx context.Context, root *TagResultQuery,
 	return sql.ScanSlice(rows, v)
 }
 
-// TagResultSelect is the builder for selecting fields of TagResult entities.
-type TagResultSelect struct {
-	*TagResultQuery
+// TaskResultSelect is the builder for selecting fields of TaskResult entities.
+type TaskResultSelect struct {
+	*TaskResultQuery
 	selector
 }
 
 // Aggregate adds the given aggregation functions to the selector query.
-func (trs *TagResultSelect) Aggregate(fns ...AggregateFunc) *TagResultSelect {
+func (trs *TaskResultSelect) Aggregate(fns ...AggregateFunc) *TaskResultSelect {
 	trs.fns = append(trs.fns, fns...)
 	return trs
 }
 
 // Scan applies the selector query and scans the result into the given value.
-func (trs *TagResultSelect) Scan(ctx context.Context, v any) error {
+func (trs *TaskResultSelect) Scan(ctx context.Context, v any) error {
 	ctx = setContextOp(ctx, trs.ctx, "Select")
 	if err := trs.prepareQuery(ctx); err != nil {
 		return err
 	}
-	return scanWithInterceptors[*TagResultQuery, *TagResultSelect](ctx, trs.TagResultQuery, trs, trs.inters, v)
+	return scanWithInterceptors[*TaskResultQuery, *TaskResultSelect](ctx, trs.TaskResultQuery, trs, trs.inters, v)
 }
 
-func (trs *TagResultSelect) sqlScan(ctx context.Context, root *TagResultQuery, v any) error {
+func (trs *TaskResultSelect) sqlScan(ctx context.Context, root *TaskResultQuery, v any) error {
 	selector := root.sqlQuery(ctx)
 	aggregation := make([]string, 0, len(trs.fns))
 	for _, fn := range trs.fns {

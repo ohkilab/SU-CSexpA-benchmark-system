@@ -14,6 +14,8 @@ const (
 	Label = "group"
 	// FieldID holds the string denoting the id field in the database.
 	FieldID = "id"
+	// FieldName holds the string denoting the name field in the database.
+	FieldName = "name"
 	// FieldYear holds the string denoting the year field in the database.
 	FieldYear = "year"
 	// FieldScore holds the string denoting the score field in the database.
@@ -26,27 +28,24 @@ const (
 	EdgeSubmits = "submits"
 	// Table holds the table name of the group in the database.
 	Table = "groups"
-	// SubmitsTable is the table that holds the submits relation/edge. The primary key declared below.
-	SubmitsTable = "group_submits"
+	// SubmitsTable is the table that holds the submits relation/edge.
+	SubmitsTable = "submits"
 	// SubmitsInverseTable is the table name for the Submit entity.
 	// It exists in this package in order to avoid circular dependency with the "submit" package.
 	SubmitsInverseTable = "submits"
+	// SubmitsColumn is the table column denoting the submits relation/edge.
+	SubmitsColumn = "group_submits"
 )
 
 // Columns holds all SQL columns for group fields.
 var Columns = []string{
 	FieldID,
+	FieldName,
 	FieldYear,
 	FieldScore,
 	FieldRole,
 	FieldEncryptedPassword,
 }
-
-var (
-	// SubmitsPrimaryKey and SubmitsColumn2 are the table columns denoting the
-	// primary key for the submits relation (M2M).
-	SubmitsPrimaryKey = []string{"group_id", "submit_id"}
-)
 
 // ValidColumn reports if the column name is valid (part of the table columns).
 func ValidColumn(column string) bool {
@@ -96,6 +95,11 @@ func ByID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldID, opts...).ToFunc()
 }
 
+// ByName orders the results by the name field.
+func ByName(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldName, opts...).ToFunc()
+}
+
 // ByYear orders the results by the year field.
 func ByYear(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldYear, opts...).ToFunc()
@@ -133,6 +137,6 @@ func newSubmitsStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
 		sqlgraph.To(SubmitsInverseTable, FieldID),
-		sqlgraph.Edge(sqlgraph.M2M, false, SubmitsTable, SubmitsPrimaryKey...),
+		sqlgraph.Edge(sqlgraph.O2M, false, SubmitsTable, SubmitsColumn),
 	)
 }

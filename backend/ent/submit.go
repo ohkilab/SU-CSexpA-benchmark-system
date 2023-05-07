@@ -9,6 +9,8 @@ import (
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
+	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/ent/contest"
+	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/ent/group"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/ent/submit"
 )
 
@@ -16,7 +18,9 @@ import (
 type Submit struct {
 	config `json:"-"`
 	// ID of the ent.
-	ID string `json:"id,omitempty"`
+	ID int `json:"id,omitempty"`
+	// URL holds the value of the "url" field.
+	URL string `json:"url,omitempty"`
 	// Year holds the value of the "year" field.
 	Year int `json:"year,omitempty"`
 	// Score holds the value of the "score" field.
@@ -31,37 +35,58 @@ type Submit struct {
 	UpdatedAt time.Time `json:"updated_at,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the SubmitQuery when eager-loading is set.
-	Edges        SubmitEdges `json:"edges"`
-	selectValues sql.SelectValues
+	Edges           SubmitEdges `json:"edges"`
+	contest_submits *int
+	group_submits   *int
+	selectValues    sql.SelectValues
 }
 
 // SubmitEdges holds the relations/edges for other nodes in the graph.
 type SubmitEdges struct {
-	// TagResults holds the value of the tagResults edge.
-	TagResults []*TagResult `json:"tagResults,omitempty"`
-	// Group holds the value of the group edge.
-	Group []*Group `json:"group,omitempty"`
+	// TaskResults holds the value of the taskResults edge.
+	TaskResults []*TaskResult `json:"taskResults,omitempty"`
+	// Groups holds the value of the groups edge.
+	Groups *Group `json:"groups,omitempty"`
+	// Contests holds the value of the contests edge.
+	Contests *Contest `json:"contests,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [2]bool
+	loadedTypes [3]bool
 }
 
-// TagResultsOrErr returns the TagResults value or an error if the edge
+// TaskResultsOrErr returns the TaskResults value or an error if the edge
 // was not loaded in eager-loading.
-func (e SubmitEdges) TagResultsOrErr() ([]*TagResult, error) {
+func (e SubmitEdges) TaskResultsOrErr() ([]*TaskResult, error) {
 	if e.loadedTypes[0] {
-		return e.TagResults, nil
+		return e.TaskResults, nil
 	}
-	return nil, &NotLoadedError{edge: "tagResults"}
+	return nil, &NotLoadedError{edge: "taskResults"}
 }
 
-// GroupOrErr returns the Group value or an error if the edge
-// was not loaded in eager-loading.
-func (e SubmitEdges) GroupOrErr() ([]*Group, error) {
+// GroupsOrErr returns the Groups value or an error if the edge
+// was not loaded in eager-loading, or loaded but was not found.
+func (e SubmitEdges) GroupsOrErr() (*Group, error) {
 	if e.loadedTypes[1] {
-		return e.Group, nil
+		if e.Groups == nil {
+			// Edge was loaded but was not found.
+			return nil, &NotFoundError{label: group.Label}
+		}
+		return e.Groups, nil
 	}
-	return nil, &NotLoadedError{edge: "group"}
+	return nil, &NotLoadedError{edge: "groups"}
+}
+
+// ContestsOrErr returns the Contests value or an error if the edge
+// was not loaded in eager-loading, or loaded but was not found.
+func (e SubmitEdges) ContestsOrErr() (*Contest, error) {
+	if e.loadedTypes[2] {
+		if e.Contests == nil {
+			// Edge was loaded but was not found.
+			return nil, &NotFoundError{label: contest.Label}
+		}
+		return e.Contests, nil
+	}
+	return nil, &NotLoadedError{edge: "contests"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -69,12 +94,16 @@ func (*Submit) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case submit.FieldYear, submit.FieldScore:
+		case submit.FieldID, submit.FieldYear, submit.FieldScore:
 			values[i] = new(sql.NullInt64)
-		case submit.FieldID, submit.FieldLanguage:
+		case submit.FieldURL, submit.FieldLanguage:
 			values[i] = new(sql.NullString)
 		case submit.FieldSubmitedAt, submit.FieldCompletedAt, submit.FieldUpdatedAt:
 			values[i] = new(sql.NullTime)
+		case submit.ForeignKeys[0]: // contest_submits
+			values[i] = new(sql.NullInt64)
+		case submit.ForeignKeys[1]: // group_submits
+			values[i] = new(sql.NullInt64)
 		default:
 			values[i] = new(sql.UnknownType)
 		}
@@ -91,10 +120,16 @@ func (s *Submit) assignValues(columns []string, values []any) error {
 	for i := range columns {
 		switch columns[i] {
 		case submit.FieldID:
+			value, ok := values[i].(*sql.NullInt64)
+			if !ok {
+				return fmt.Errorf("unexpected type %T for field id", value)
+			}
+			s.ID = int(value.Int64)
+		case submit.FieldURL:
 			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field id", values[i])
+				return fmt.Errorf("unexpected type %T for field url", values[i])
 			} else if value.Valid {
-				s.ID = value.String
+				s.URL = value.String
 			}
 		case submit.FieldYear:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
@@ -132,6 +167,20 @@ func (s *Submit) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				s.UpdatedAt = value.Time
 			}
+		case submit.ForeignKeys[0]:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for edge-field contest_submits", value)
+			} else if value.Valid {
+				s.contest_submits = new(int)
+				*s.contest_submits = int(value.Int64)
+			}
+		case submit.ForeignKeys[1]:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for edge-field group_submits", value)
+			} else if value.Valid {
+				s.group_submits = new(int)
+				*s.group_submits = int(value.Int64)
+			}
 		default:
 			s.selectValues.Set(columns[i], values[i])
 		}
@@ -145,14 +194,19 @@ func (s *Submit) Value(name string) (ent.Value, error) {
 	return s.selectValues.Get(name)
 }
 
-// QueryTagResults queries the "tagResults" edge of the Submit entity.
-func (s *Submit) QueryTagResults() *TagResultQuery {
-	return NewSubmitClient(s.config).QueryTagResults(s)
+// QueryTaskResults queries the "taskResults" edge of the Submit entity.
+func (s *Submit) QueryTaskResults() *TaskResultQuery {
+	return NewSubmitClient(s.config).QueryTaskResults(s)
 }
 
-// QueryGroup queries the "group" edge of the Submit entity.
-func (s *Submit) QueryGroup() *GroupQuery {
-	return NewSubmitClient(s.config).QueryGroup(s)
+// QueryGroups queries the "groups" edge of the Submit entity.
+func (s *Submit) QueryGroups() *GroupQuery {
+	return NewSubmitClient(s.config).QueryGroups(s)
+}
+
+// QueryContests queries the "contests" edge of the Submit entity.
+func (s *Submit) QueryContests() *ContestQuery {
+	return NewSubmitClient(s.config).QueryContests(s)
 }
 
 // Update returns a builder for updating this Submit.
@@ -178,6 +232,9 @@ func (s *Submit) String() string {
 	var builder strings.Builder
 	builder.WriteString("Submit(")
 	builder.WriteString(fmt.Sprintf("id=%v, ", s.ID))
+	builder.WriteString("url=")
+	builder.WriteString(s.URL)
+	builder.WriteString(", ")
 	builder.WriteString("year=")
 	builder.WriteString(fmt.Sprintf("%v", s.Year))
 	builder.WriteString(", ")

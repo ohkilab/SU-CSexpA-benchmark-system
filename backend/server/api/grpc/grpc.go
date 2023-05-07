@@ -18,7 +18,7 @@ func NewServer(optionFuncs ...OptionFunc) *grpc.Server {
 		grpc.UnaryInterceptor(interceptor.Auth(opt.jwtSecret)),
 	)
 
-	backendService := interfaces.NewBackendService(opt.jwtSecret, opt.entClient)
+	backendService := interfaces.NewBackendService(opt.jwtSecret, opt.entClient, opt.worker)
 	backend.RegisterBackendServiceServer(grpcServer, backendService)
 	healthcheckService := interfaces.NewHealthcheckService()
 	backend.RegisterHealthcheckServiceServer(grpcServer, healthcheckService)

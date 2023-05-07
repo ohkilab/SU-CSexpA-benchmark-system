@@ -4,6 +4,7 @@ package ent
 
 import (
 	"context"
+	"database/sql/driver"
 	"fmt"
 	"math"
 
@@ -12,15 +13,17 @@ import (
 	"entgo.io/ent/schema/field"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/ent/contest"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/ent/predicate"
+	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/ent/submit"
 )
 
 // ContestQuery is the builder for querying Contest entities.
 type ContestQuery struct {
 	config
-	ctx        *QueryContext
-	order      []contest.OrderOption
-	inters     []Interceptor
-	predicates []predicate.Contest
+	ctx         *QueryContext
+	order       []contest.OrderOption
+	inters      []Interceptor
+	predicates  []predicate.Contest
+	withSubmits *SubmitQuery
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -55,6 +58,28 @@ func (cq *ContestQuery) Unique(unique bool) *ContestQuery {
 func (cq *ContestQuery) Order(o ...contest.OrderOption) *ContestQuery {
 	cq.order = append(cq.order, o...)
 	return cq
+}
+
+// QuerySubmits chains the current query on the "submits" edge.
+func (cq *ContestQuery) QuerySubmits() *SubmitQuery {
+	query := (&SubmitClient{config: cq.config}).Query()
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := cq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := cq.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(contest.Table, contest.FieldID, selector),
+			sqlgraph.To(submit.Table, submit.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, contest.SubmitsTable, contest.SubmitsColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(cq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
 }
 
 // First returns the first Contest entity from the query.
@@ -244,15 +269,27 @@ func (cq *ContestQuery) Clone() *ContestQuery {
 		return nil
 	}
 	return &ContestQuery{
-		config:     cq.config,
-		ctx:        cq.ctx.Clone(),
-		order:      append([]contest.OrderOption{}, cq.order...),
-		inters:     append([]Interceptor{}, cq.inters...),
-		predicates: append([]predicate.Contest{}, cq.predicates...),
+		config:      cq.config,
+		ctx:         cq.ctx.Clone(),
+		order:       append([]contest.OrderOption{}, cq.order...),
+		inters:      append([]Interceptor{}, cq.inters...),
+		predicates:  append([]predicate.Contest{}, cq.predicates...),
+		withSubmits: cq.withSubmits.Clone(),
 		// clone intermediate query.
 		sql:  cq.sql.Clone(),
 		path: cq.path,
 	}
+}
+
+// WithSubmits tells the query-builder to eager-load the nodes that are connected to
+// the "submits" edge. The optional arguments are used to configure the query builder of the edge.
+func (cq *ContestQuery) WithSubmits(opts ...func(*SubmitQuery)) *ContestQuery {
+	query := (&SubmitClient{config: cq.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	cq.withSubmits = query
+	return cq
 }
 
 // GroupBy is used to group vertices by one or more fields/columns.
@@ -261,12 +298,12 @@ func (cq *ContestQuery) Clone() *ContestQuery {
 // Example:
 //
 //	var v []struct {
-//		QualifierStartAt time.Time `json:"qualifier_start_at,omitempty"`
+//		Title string `json:"title,omitempty"`
 //		Count int `json:"count,omitempty"`
 //	}
 //
 //	client.Contest.Query().
-//		GroupBy(contest.FieldQualifierStartAt).
+//		GroupBy(contest.FieldTitle).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
 func (cq *ContestQuery) GroupBy(field string, fields ...string) *ContestGroupBy {
@@ -284,11 +321,11 @@ func (cq *ContestQuery) GroupBy(field string, fields ...string) *ContestGroupBy 
 // Example:
 //
 //	var v []struct {
-//		QualifierStartAt time.Time `json:"qualifier_start_at,omitempty"`
+//		Title string `json:"title,omitempty"`
 //	}
 //
 //	client.Contest.Query().
-//		Select(contest.FieldQualifierStartAt).
+//		Select(contest.FieldTitle).
 //		Scan(ctx, &v)
 func (cq *ContestQuery) Select(fields ...string) *ContestSelect {
 	cq.ctx.Fields = append(cq.ctx.Fields, fields...)
@@ -331,8 +368,11 @@ func (cq *ContestQuery) prepareQuery(ctx context.Context) error {
 
 func (cq *ContestQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Contest, error) {
 	var (
-		nodes = []*Contest{}
-		_spec = cq.querySpec()
+		nodes       = []*Contest{}
+		_spec       = cq.querySpec()
+		loadedTypes = [1]bool{
+			cq.withSubmits != nil,
+		}
 	)
 	_spec.ScanValues = func(columns []string) ([]any, error) {
 		return (*Contest).scanValues(nil, columns)
@@ -340,6 +380,7 @@ func (cq *ContestQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Cont
 	_spec.Assign = func(columns []string, values []any) error {
 		node := &Contest{config: cq.config}
 		nodes = append(nodes, node)
+		node.Edges.loadedTypes = loadedTypes
 		return node.assignValues(columns, values)
 	}
 	for i := range hooks {
@@ -351,7 +392,46 @@ func (cq *ContestQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Cont
 	if len(nodes) == 0 {
 		return nodes, nil
 	}
+	if query := cq.withSubmits; query != nil {
+		if err := cq.loadSubmits(ctx, query, nodes,
+			func(n *Contest) { n.Edges.Submits = []*Submit{} },
+			func(n *Contest, e *Submit) { n.Edges.Submits = append(n.Edges.Submits, e) }); err != nil {
+			return nil, err
+		}
+	}
 	return nodes, nil
+}
+
+func (cq *ContestQuery) loadSubmits(ctx context.Context, query *SubmitQuery, nodes []*Contest, init func(*Contest), assign func(*Contest, *Submit)) error {
+	fks := make([]driver.Value, 0, len(nodes))
+	nodeids := make(map[int]*Contest)
+	for i := range nodes {
+		fks = append(fks, nodes[i].ID)
+		nodeids[nodes[i].ID] = nodes[i]
+		if init != nil {
+			init(nodes[i])
+		}
+	}
+	query.withFKs = true
+	query.Where(predicate.Submit(func(s *sql.Selector) {
+		s.Where(sql.InValues(s.C(contest.SubmitsColumn), fks...))
+	}))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		fk := n.contest_submits
+		if fk == nil {
+			return fmt.Errorf(`foreign-key "contest_submits" is nil for node %v`, n.ID)
+		}
+		node, ok := nodeids[*fk]
+		if !ok {
+			return fmt.Errorf(`unexpected foreign-key "contest_submits" returned %v for node %v`, *fk, n.ID)
+		}
+		assign(node, n)
+	}
+	return nil
 }
 
 func (cq *ContestQuery) sqlCount(ctx context.Context) (int, error) {

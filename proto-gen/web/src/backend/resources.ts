@@ -71,13 +71,13 @@ export interface Group {
  */
 export interface Submit {
     /**
-     * @generated from protobuf field: string id = 1;
+     * @generated from protobuf field: int32 id = 1;
      */
-    id: string;
+    id: number;
     /**
-     * @generated from protobuf field: string group_id = 2;
+     * @generated from protobuf field: int32 group_id = 2;
      */
-    groupId: string;
+    groupId: number;
     /**
      * @generated from protobuf field: int32 year = 3;
      */
@@ -95,26 +95,78 @@ export interface Submit {
      */
     submitedAt?: Timestamp;
     /**
-     * @generated from protobuf field: repeated TagResult tag_results = 7;
+     * @generated from protobuf field: optional google.protobuf.Timestamp completed_at = 7;
      */
-    tagResults: TagResult[];
+    completedAt?: Timestamp; // it this field is not null, this submit is completed
+    /**
+     * @generated from protobuf field: repeated TaskResult task_results = 8;
+     */
+    taskResults: TaskResult[];
 }
 /**
- * @generated from protobuf message TagResult
+ * @generated from protobuf message TaskResult
  */
-export interface TagResult {
+export interface TaskResult {
     /**
-     * @generated from protobuf field: string submit_id = 1;
+     * @generated from protobuf field: int32 id = 1;
      */
-    submitId: string;
+    id: number;
     /**
-     * @generated from protobuf field: string name = 2;
+     * @generated from protobuf field: int32 request_per_sec = 2;
      */
-    name: string;
+    requestPerSec: number;
     /**
-     * @generated from protobuf field: int32 score = 3;
+     * @generated from protobuf field: string url = 3;
      */
-    score: number;
+    url: string;
+    /**
+     * @generated from protobuf field: string method = 4;
+     */
+    method: string;
+    /**
+     * @generated from protobuf field: string request_content_type = 5;
+     */
+    requestContentType: string;
+    /**
+     * @generated from protobuf field: optional string request_body = 6;
+     */
+    requestBody?: string;
+    /**
+     * @generated from protobuf field: string response_code = 7;
+     */
+    responseCode: string;
+    /**
+     * @generated from protobuf field: string response_content_type = 8;
+     */
+    responseContentType: string;
+    /**
+     * @generated from protobuf field: string response_body = 9;
+     */
+    responseBody: string;
+    /**
+     * @generated from protobuf field: int32 thread_num = 10;
+     */
+    threadNum: number;
+    /**
+     * @generated from protobuf field: int32 attempt_count = 11;
+     */
+    attemptCount: number;
+    /**
+     * @generated from protobuf field: int32 attempt_time = 12;
+     */
+    attemptTime: number;
+    /**
+     * @generated from protobuf field: google.protobuf.Timestamp created_at = 13;
+     */
+    createdAt?: Timestamp;
+    /**
+     * @generated from protobuf field: optional google.protobuf.Timestamp deleted_at = 14;
+     */
+    deletedAt?: Timestamp;
+    /**
+     * @generated from protobuf field: optional string error_message = 15;
+     */
+    errorMessage?: string;
 }
 /**
  * @generated from protobuf enum Language
@@ -327,17 +379,18 @@ export const Group = new Group$Type();
 class Submit$Type extends MessageType<Submit> {
     constructor() {
         super("Submit", [
-            { no: 1, name: "id", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
-            { no: 2, name: "group_id", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 1, name: "id", kind: "scalar", T: 5 /*ScalarType.INT32*/ },
+            { no: 2, name: "group_id", kind: "scalar", T: 5 /*ScalarType.INT32*/ },
             { no: 3, name: "year", kind: "scalar", T: 5 /*ScalarType.INT32*/ },
             { no: 4, name: "score", kind: "scalar", T: 5 /*ScalarType.INT32*/ },
             { no: 5, name: "language", kind: "enum", T: () => ["Language", Language] },
             { no: 6, name: "submited_at", kind: "message", T: () => Timestamp },
-            { no: 7, name: "tag_results", kind: "message", repeat: 1 /*RepeatType.PACKED*/, T: () => TagResult }
+            { no: 7, name: "completed_at", kind: "message", T: () => Timestamp },
+            { no: 8, name: "task_results", kind: "message", repeat: 1 /*RepeatType.PACKED*/, T: () => TaskResult }
         ]);
     }
     create(value?: PartialMessage<Submit>): Submit {
-        const message = { id: "", groupId: "", year: 0, score: 0, language: 0, tagResults: [] };
+        const message = { id: 0, groupId: 0, year: 0, score: 0, language: 0, taskResults: [] };
         globalThis.Object.defineProperty(message, MESSAGE_TYPE, { enumerable: false, value: this });
         if (value !== undefined)
             reflectionMergePartial<Submit>(this, message, value);
@@ -348,11 +401,11 @@ class Submit$Type extends MessageType<Submit> {
         while (reader.pos < end) {
             let [fieldNo, wireType] = reader.tag();
             switch (fieldNo) {
-                case /* string id */ 1:
-                    message.id = reader.string();
+                case /* int32 id */ 1:
+                    message.id = reader.int32();
                     break;
-                case /* string group_id */ 2:
-                    message.groupId = reader.string();
+                case /* int32 group_id */ 2:
+                    message.groupId = reader.int32();
                     break;
                 case /* int32 year */ 3:
                     message.year = reader.int32();
@@ -366,8 +419,11 @@ class Submit$Type extends MessageType<Submit> {
                 case /* google.protobuf.Timestamp submited_at */ 6:
                     message.submitedAt = Timestamp.internalBinaryRead(reader, reader.uint32(), options, message.submitedAt);
                     break;
-                case /* repeated TagResult tag_results */ 7:
-                    message.tagResults.push(TagResult.internalBinaryRead(reader, reader.uint32(), options));
+                case /* optional google.protobuf.Timestamp completed_at */ 7:
+                    message.completedAt = Timestamp.internalBinaryRead(reader, reader.uint32(), options, message.completedAt);
+                    break;
+                case /* repeated TaskResult task_results */ 8:
+                    message.taskResults.push(TaskResult.internalBinaryRead(reader, reader.uint32(), options));
                     break;
                 default:
                     let u = options.readUnknownField;
@@ -381,12 +437,12 @@ class Submit$Type extends MessageType<Submit> {
         return message;
     }
     internalBinaryWrite(message: Submit, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
-        /* string id = 1; */
-        if (message.id !== "")
-            writer.tag(1, WireType.LengthDelimited).string(message.id);
-        /* string group_id = 2; */
-        if (message.groupId !== "")
-            writer.tag(2, WireType.LengthDelimited).string(message.groupId);
+        /* int32 id = 1; */
+        if (message.id !== 0)
+            writer.tag(1, WireType.Varint).int32(message.id);
+        /* int32 group_id = 2; */
+        if (message.groupId !== 0)
+            writer.tag(2, WireType.Varint).int32(message.groupId);
         /* int32 year = 3; */
         if (message.year !== 0)
             writer.tag(3, WireType.Varint).int32(message.year);
@@ -399,9 +455,12 @@ class Submit$Type extends MessageType<Submit> {
         /* google.protobuf.Timestamp submited_at = 6; */
         if (message.submitedAt)
             Timestamp.internalBinaryWrite(message.submitedAt, writer.tag(6, WireType.LengthDelimited).fork(), options).join();
-        /* repeated TagResult tag_results = 7; */
-        for (let i = 0; i < message.tagResults.length; i++)
-            TagResult.internalBinaryWrite(message.tagResults[i], writer.tag(7, WireType.LengthDelimited).fork(), options).join();
+        /* optional google.protobuf.Timestamp completed_at = 7; */
+        if (message.completedAt)
+            Timestamp.internalBinaryWrite(message.completedAt, writer.tag(7, WireType.LengthDelimited).fork(), options).join();
+        /* repeated TaskResult task_results = 8; */
+        for (let i = 0; i < message.taskResults.length; i++)
+            TaskResult.internalBinaryWrite(message.taskResults[i], writer.tag(8, WireType.LengthDelimited).fork(), options).join();
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
@@ -413,34 +472,82 @@ class Submit$Type extends MessageType<Submit> {
  */
 export const Submit = new Submit$Type();
 // @generated message type with reflection information, may provide speed optimized methods
-class TagResult$Type extends MessageType<TagResult> {
+class TaskResult$Type extends MessageType<TaskResult> {
     constructor() {
-        super("TagResult", [
-            { no: 1, name: "submit_id", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
-            { no: 2, name: "name", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
-            { no: 3, name: "score", kind: "scalar", T: 5 /*ScalarType.INT32*/ }
+        super("TaskResult", [
+            { no: 1, name: "id", kind: "scalar", T: 5 /*ScalarType.INT32*/ },
+            { no: 2, name: "request_per_sec", kind: "scalar", T: 5 /*ScalarType.INT32*/ },
+            { no: 3, name: "url", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 4, name: "method", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 5, name: "request_content_type", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 6, name: "request_body", kind: "scalar", opt: true, T: 9 /*ScalarType.STRING*/ },
+            { no: 7, name: "response_code", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 8, name: "response_content_type", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 9, name: "response_body", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 10, name: "thread_num", kind: "scalar", T: 5 /*ScalarType.INT32*/ },
+            { no: 11, name: "attempt_count", kind: "scalar", T: 5 /*ScalarType.INT32*/ },
+            { no: 12, name: "attempt_time", kind: "scalar", T: 5 /*ScalarType.INT32*/ },
+            { no: 13, name: "created_at", kind: "message", T: () => Timestamp },
+            { no: 14, name: "deleted_at", kind: "message", T: () => Timestamp },
+            { no: 15, name: "error_message", kind: "scalar", opt: true, T: 9 /*ScalarType.STRING*/ }
         ]);
     }
-    create(value?: PartialMessage<TagResult>): TagResult {
-        const message = { submitId: "", name: "", score: 0 };
+    create(value?: PartialMessage<TaskResult>): TaskResult {
+        const message = { id: 0, requestPerSec: 0, url: "", method: "", requestContentType: "", responseCode: "", responseContentType: "", responseBody: "", threadNum: 0, attemptCount: 0, attemptTime: 0 };
         globalThis.Object.defineProperty(message, MESSAGE_TYPE, { enumerable: false, value: this });
         if (value !== undefined)
-            reflectionMergePartial<TagResult>(this, message, value);
+            reflectionMergePartial<TaskResult>(this, message, value);
         return message;
     }
-    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: TagResult): TagResult {
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: TaskResult): TaskResult {
         let message = target ?? this.create(), end = reader.pos + length;
         while (reader.pos < end) {
             let [fieldNo, wireType] = reader.tag();
             switch (fieldNo) {
-                case /* string submit_id */ 1:
-                    message.submitId = reader.string();
+                case /* int32 id */ 1:
+                    message.id = reader.int32();
                     break;
-                case /* string name */ 2:
-                    message.name = reader.string();
+                case /* int32 request_per_sec */ 2:
+                    message.requestPerSec = reader.int32();
                     break;
-                case /* int32 score */ 3:
-                    message.score = reader.int32();
+                case /* string url */ 3:
+                    message.url = reader.string();
+                    break;
+                case /* string method */ 4:
+                    message.method = reader.string();
+                    break;
+                case /* string request_content_type */ 5:
+                    message.requestContentType = reader.string();
+                    break;
+                case /* optional string request_body */ 6:
+                    message.requestBody = reader.string();
+                    break;
+                case /* string response_code */ 7:
+                    message.responseCode = reader.string();
+                    break;
+                case /* string response_content_type */ 8:
+                    message.responseContentType = reader.string();
+                    break;
+                case /* string response_body */ 9:
+                    message.responseBody = reader.string();
+                    break;
+                case /* int32 thread_num */ 10:
+                    message.threadNum = reader.int32();
+                    break;
+                case /* int32 attempt_count */ 11:
+                    message.attemptCount = reader.int32();
+                    break;
+                case /* int32 attempt_time */ 12:
+                    message.attemptTime = reader.int32();
+                    break;
+                case /* google.protobuf.Timestamp created_at */ 13:
+                    message.createdAt = Timestamp.internalBinaryRead(reader, reader.uint32(), options, message.createdAt);
+                    break;
+                case /* optional google.protobuf.Timestamp deleted_at */ 14:
+                    message.deletedAt = Timestamp.internalBinaryRead(reader, reader.uint32(), options, message.deletedAt);
+                    break;
+                case /* optional string error_message */ 15:
+                    message.errorMessage = reader.string();
                     break;
                 default:
                     let u = options.readUnknownField;
@@ -453,16 +560,52 @@ class TagResult$Type extends MessageType<TagResult> {
         }
         return message;
     }
-    internalBinaryWrite(message: TagResult, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
-        /* string submit_id = 1; */
-        if (message.submitId !== "")
-            writer.tag(1, WireType.LengthDelimited).string(message.submitId);
-        /* string name = 2; */
-        if (message.name !== "")
-            writer.tag(2, WireType.LengthDelimited).string(message.name);
-        /* int32 score = 3; */
-        if (message.score !== 0)
-            writer.tag(3, WireType.Varint).int32(message.score);
+    internalBinaryWrite(message: TaskResult, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* int32 id = 1; */
+        if (message.id !== 0)
+            writer.tag(1, WireType.Varint).int32(message.id);
+        /* int32 request_per_sec = 2; */
+        if (message.requestPerSec !== 0)
+            writer.tag(2, WireType.Varint).int32(message.requestPerSec);
+        /* string url = 3; */
+        if (message.url !== "")
+            writer.tag(3, WireType.LengthDelimited).string(message.url);
+        /* string method = 4; */
+        if (message.method !== "")
+            writer.tag(4, WireType.LengthDelimited).string(message.method);
+        /* string request_content_type = 5; */
+        if (message.requestContentType !== "")
+            writer.tag(5, WireType.LengthDelimited).string(message.requestContentType);
+        /* optional string request_body = 6; */
+        if (message.requestBody !== undefined)
+            writer.tag(6, WireType.LengthDelimited).string(message.requestBody);
+        /* string response_code = 7; */
+        if (message.responseCode !== "")
+            writer.tag(7, WireType.LengthDelimited).string(message.responseCode);
+        /* string response_content_type = 8; */
+        if (message.responseContentType !== "")
+            writer.tag(8, WireType.LengthDelimited).string(message.responseContentType);
+        /* string response_body = 9; */
+        if (message.responseBody !== "")
+            writer.tag(9, WireType.LengthDelimited).string(message.responseBody);
+        /* int32 thread_num = 10; */
+        if (message.threadNum !== 0)
+            writer.tag(10, WireType.Varint).int32(message.threadNum);
+        /* int32 attempt_count = 11; */
+        if (message.attemptCount !== 0)
+            writer.tag(11, WireType.Varint).int32(message.attemptCount);
+        /* int32 attempt_time = 12; */
+        if (message.attemptTime !== 0)
+            writer.tag(12, WireType.Varint).int32(message.attemptTime);
+        /* google.protobuf.Timestamp created_at = 13; */
+        if (message.createdAt)
+            Timestamp.internalBinaryWrite(message.createdAt, writer.tag(13, WireType.LengthDelimited).fork(), options).join();
+        /* optional google.protobuf.Timestamp deleted_at = 14; */
+        if (message.deletedAt)
+            Timestamp.internalBinaryWrite(message.deletedAt, writer.tag(14, WireType.LengthDelimited).fork(), options).join();
+        /* optional string error_message = 15; */
+        if (message.errorMessage !== undefined)
+            writer.tag(15, WireType.LengthDelimited).string(message.errorMessage);
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
@@ -470,6 +613,6 @@ class TagResult$Type extends MessageType<TagResult> {
     }
 }
 /**
- * @generated MessageType for protobuf message TagResult
+ * @generated MessageType for protobuf message TaskResult
  */
-export const TagResult = new TagResult$Type();
+export const TaskResult = new TaskResult$Type();

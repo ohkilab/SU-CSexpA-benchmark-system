@@ -15,7 +15,7 @@ import (
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/ent/contest"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/ent/group"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/ent/submit"
-	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/ent/tagresult"
+	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/ent/taskresult"
 )
 
 // ent aliases to avoid import conflicts in user's code.
@@ -76,10 +76,10 @@ var (
 func checkColumn(table, column string) error {
 	initCheck.Do(func() {
 		columnCheck = sql.NewColumnCheck(map[string]func(string) bool{
-			contest.Table:   contest.ValidColumn,
-			group.Table:     group.ValidColumn,
-			submit.Table:    submit.ValidColumn,
-			tagresult.Table: tagresult.ValidColumn,
+			contest.Table:    contest.ValidColumn,
+			group.Table:      group.ValidColumn,
+			submit.Table:     submit.ValidColumn,
+			taskresult.Table: taskresult.ValidColumn,
 		})
 	})
 	return columnCheck(table, column)

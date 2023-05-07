@@ -4,40 +4,50 @@ package contest
 
 import (
 	"entgo.io/ent/dialect/sql"
+	"entgo.io/ent/dialect/sql/sqlgraph"
 )
 
 const (
 	// Label holds the string label denoting the contest type in the database.
 	Label = "contest"
 	// FieldID holds the string denoting the id field in the database.
-	FieldID = "year"
-	// FieldQualifierStartAt holds the string denoting the qualifier_start_at field in the database.
-	FieldQualifierStartAt = "qualifier_start_at"
-	// FieldQualifierEndAt holds the string denoting the qualifier_end_at field in the database.
-	FieldQualifierEndAt = "qualifier_end_at"
-	// FieldQualifierSubmitLimit holds the string denoting the qualifier_submit_limit field in the database.
-	FieldQualifierSubmitLimit = "qualifier_submit_limit"
-	// FieldFinalStartAt holds the string denoting the final_start_at field in the database.
-	FieldFinalStartAt = "final_start_at"
-	// FieldFinalEndAt holds the string denoting the final_end_at field in the database.
-	FieldFinalEndAt = "final_end_at"
-	// FieldFinalSubmitLimit holds the string denoting the final_submit_limit field in the database.
-	FieldFinalSubmitLimit = "final_submit_limit"
+	FieldID = "id"
+	// FieldTitle holds the string denoting the title field in the database.
+	FieldTitle = "title"
+	// FieldStartAt holds the string denoting the start_at field in the database.
+	FieldStartAt = "start_at"
+	// FieldEndAt holds the string denoting the end_at field in the database.
+	FieldEndAt = "end_at"
+	// FieldSubmitLimit holds the string denoting the submit_limit field in the database.
+	FieldSubmitLimit = "submit_limit"
+	// FieldYear holds the string denoting the year field in the database.
+	FieldYear = "year"
+	// FieldCreatedAt holds the string denoting the created_at field in the database.
+	FieldCreatedAt = "created_at"
 	// FieldUpdatedAt holds the string denoting the updated_at field in the database.
 	FieldUpdatedAt = "updated_at"
+	// EdgeSubmits holds the string denoting the submits edge name in mutations.
+	EdgeSubmits = "submits"
 	// Table holds the table name of the contest in the database.
 	Table = "contests"
+	// SubmitsTable is the table that holds the submits relation/edge.
+	SubmitsTable = "submits"
+	// SubmitsInverseTable is the table name for the Submit entity.
+	// It exists in this package in order to avoid circular dependency with the "submit" package.
+	SubmitsInverseTable = "submits"
+	// SubmitsColumn is the table column denoting the submits relation/edge.
+	SubmitsColumn = "contest_submits"
 )
 
 // Columns holds all SQL columns for contest fields.
 var Columns = []string{
 	FieldID,
-	FieldQualifierStartAt,
-	FieldQualifierEndAt,
-	FieldQualifierSubmitLimit,
-	FieldFinalStartAt,
-	FieldFinalEndAt,
-	FieldFinalSubmitLimit,
+	FieldTitle,
+	FieldStartAt,
+	FieldEndAt,
+	FieldSubmitLimit,
+	FieldYear,
+	FieldCreatedAt,
 	FieldUpdatedAt,
 }
 
@@ -52,8 +62,8 @@ func ValidColumn(column string) bool {
 }
 
 var (
-	// IDValidator is a validator for the "id" field. It is called by the builders before save.
-	IDValidator func(int) error
+	// YearValidator is a validator for the "year" field. It is called by the builders before save.
+	YearValidator func(int) error
 )
 
 // OrderOption defines the ordering options for the Contest queries.
@@ -64,37 +74,58 @@ func ByID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldID, opts...).ToFunc()
 }
 
-// ByQualifierStartAt orders the results by the qualifier_start_at field.
-func ByQualifierStartAt(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldQualifierStartAt, opts...).ToFunc()
+// ByTitle orders the results by the title field.
+func ByTitle(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldTitle, opts...).ToFunc()
 }
 
-// ByQualifierEndAt orders the results by the qualifier_end_at field.
-func ByQualifierEndAt(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldQualifierEndAt, opts...).ToFunc()
+// ByStartAt orders the results by the start_at field.
+func ByStartAt(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldStartAt, opts...).ToFunc()
 }
 
-// ByQualifierSubmitLimit orders the results by the qualifier_submit_limit field.
-func ByQualifierSubmitLimit(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldQualifierSubmitLimit, opts...).ToFunc()
+// ByEndAt orders the results by the end_at field.
+func ByEndAt(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldEndAt, opts...).ToFunc()
 }
 
-// ByFinalStartAt orders the results by the final_start_at field.
-func ByFinalStartAt(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldFinalStartAt, opts...).ToFunc()
+// BySubmitLimit orders the results by the submit_limit field.
+func BySubmitLimit(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldSubmitLimit, opts...).ToFunc()
 }
 
-// ByFinalEndAt orders the results by the final_end_at field.
-func ByFinalEndAt(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldFinalEndAt, opts...).ToFunc()
+// ByYear orders the results by the year field.
+func ByYear(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldYear, opts...).ToFunc()
 }
 
-// ByFinalSubmitLimit orders the results by the final_submit_limit field.
-func ByFinalSubmitLimit(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldFinalSubmitLimit, opts...).ToFunc()
+// ByCreatedAt orders the results by the created_at field.
+func ByCreatedAt(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldCreatedAt, opts...).ToFunc()
 }
 
 // ByUpdatedAt orders the results by the updated_at field.
 func ByUpdatedAt(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldUpdatedAt, opts...).ToFunc()
+}
+
+// BySubmitsCount orders the results by submits count.
+func BySubmitsCount(opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborsCount(s, newSubmitsStep(), opts...)
+	}
+}
+
+// BySubmits orders the results by submits terms.
+func BySubmits(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newSubmitsStep(), append([]sql.OrderTerm{term}, terms...)...)
+	}
+}
+func newSubmitsStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(SubmitsInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.O2M, false, SubmitsTable, SubmitsColumn),
+	)
 }

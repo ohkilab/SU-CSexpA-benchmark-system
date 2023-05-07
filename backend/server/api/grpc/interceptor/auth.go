@@ -14,6 +14,7 @@ import (
 var claimsKey struct{}
 var excludeMethodSet = map[string]struct{}{
 	backend.BackendService_PostLogin_FullMethodName:                   {},
+	backend.BackendService_GetSubmit_FullMethodName:                   {},
 	backend.HealthcheckService_PingUnary_FullMethodName:               {},
 	backend.HealthcheckService_PingServerSideStreaming_FullMethodName: {},
 }
@@ -40,4 +41,8 @@ func Auth(secret []byte) grpc.UnaryServerInterceptor {
 		}
 		return context.WithValue(ctx, claimsKey, claims), nil
 	})
+}
+
+func GetClaimsFromContext(ctx context.Context) *auth.Claims {
+	return ctx.Value(claimsKey).(*auth.Claims)
 }

@@ -11,21 +11,24 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/ent/contest"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/ent/group"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/ent/predicate"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/ent/submit"
-	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/ent/tagresult"
+	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/ent/taskresult"
 )
 
 // SubmitQuery is the builder for querying Submit entities.
 type SubmitQuery struct {
 	config
-	ctx            *QueryContext
-	order          []submit.OrderOption
-	inters         []Interceptor
-	predicates     []predicate.Submit
-	withTagResults *TagResultQuery
-	withGroup      *GroupQuery
+	ctx             *QueryContext
+	order           []submit.OrderOption
+	inters          []Interceptor
+	predicates      []predicate.Submit
+	withTaskResults *TaskResultQuery
+	withGroups      *GroupQuery
+	withContests    *ContestQuery
+	withFKs         bool
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -62,9 +65,9 @@ func (sq *SubmitQuery) Order(o ...submit.OrderOption) *SubmitQuery {
 	return sq
 }
 
-// QueryTagResults chains the current query on the "tagResults" edge.
-func (sq *SubmitQuery) QueryTagResults() *TagResultQuery {
-	query := (&TagResultClient{config: sq.config}).Query()
+// QueryTaskResults chains the current query on the "taskResults" edge.
+func (sq *SubmitQuery) QueryTaskResults() *TaskResultQuery {
+	query := (&TaskResultClient{config: sq.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
 		if err := sq.prepareQuery(ctx); err != nil {
 			return nil, err
@@ -75,8 +78,8 @@ func (sq *SubmitQuery) QueryTagResults() *TagResultQuery {
 		}
 		step := sqlgraph.NewStep(
 			sqlgraph.From(submit.Table, submit.FieldID, selector),
-			sqlgraph.To(tagresult.Table, tagresult.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, submit.TagResultsTable, submit.TagResultsColumn),
+			sqlgraph.To(taskresult.Table, taskresult.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, submit.TaskResultsTable, submit.TaskResultsColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(sq.driver.Dialect(), step)
 		return fromU, nil
@@ -84,8 +87,8 @@ func (sq *SubmitQuery) QueryTagResults() *TagResultQuery {
 	return query
 }
 
-// QueryGroup chains the current query on the "group" edge.
-func (sq *SubmitQuery) QueryGroup() *GroupQuery {
+// QueryGroups chains the current query on the "groups" edge.
+func (sq *SubmitQuery) QueryGroups() *GroupQuery {
 	query := (&GroupClient{config: sq.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
 		if err := sq.prepareQuery(ctx); err != nil {
@@ -98,7 +101,29 @@ func (sq *SubmitQuery) QueryGroup() *GroupQuery {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(submit.Table, submit.FieldID, selector),
 			sqlgraph.To(group.Table, group.FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, true, submit.GroupTable, submit.GroupPrimaryKey...),
+			sqlgraph.Edge(sqlgraph.M2O, true, submit.GroupsTable, submit.GroupsColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(sq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryContests chains the current query on the "contests" edge.
+func (sq *SubmitQuery) QueryContests() *ContestQuery {
+	query := (&ContestClient{config: sq.config}).Query()
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := sq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := sq.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(submit.Table, submit.FieldID, selector),
+			sqlgraph.To(contest.Table, contest.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, submit.ContestsTable, submit.ContestsColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(sq.driver.Dialect(), step)
 		return fromU, nil
@@ -130,8 +155,8 @@ func (sq *SubmitQuery) FirstX(ctx context.Context) *Submit {
 
 // FirstID returns the first Submit ID from the query.
 // Returns a *NotFoundError when no Submit ID was found.
-func (sq *SubmitQuery) FirstID(ctx context.Context) (id string, err error) {
-	var ids []string
+func (sq *SubmitQuery) FirstID(ctx context.Context) (id int, err error) {
+	var ids []int
 	if ids, err = sq.Limit(1).IDs(setContextOp(ctx, sq.ctx, "FirstID")); err != nil {
 		return
 	}
@@ -143,7 +168,7 @@ func (sq *SubmitQuery) FirstID(ctx context.Context) (id string, err error) {
 }
 
 // FirstIDX is like FirstID, but panics if an error occurs.
-func (sq *SubmitQuery) FirstIDX(ctx context.Context) string {
+func (sq *SubmitQuery) FirstIDX(ctx context.Context) int {
 	id, err := sq.FirstID(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
@@ -181,8 +206,8 @@ func (sq *SubmitQuery) OnlyX(ctx context.Context) *Submit {
 // OnlyID is like Only, but returns the only Submit ID in the query.
 // Returns a *NotSingularError when more than one Submit ID is found.
 // Returns a *NotFoundError when no entities are found.
-func (sq *SubmitQuery) OnlyID(ctx context.Context) (id string, err error) {
-	var ids []string
+func (sq *SubmitQuery) OnlyID(ctx context.Context) (id int, err error) {
+	var ids []int
 	if ids, err = sq.Limit(2).IDs(setContextOp(ctx, sq.ctx, "OnlyID")); err != nil {
 		return
 	}
@@ -198,7 +223,7 @@ func (sq *SubmitQuery) OnlyID(ctx context.Context) (id string, err error) {
 }
 
 // OnlyIDX is like OnlyID, but panics if an error occurs.
-func (sq *SubmitQuery) OnlyIDX(ctx context.Context) string {
+func (sq *SubmitQuery) OnlyIDX(ctx context.Context) int {
 	id, err := sq.OnlyID(ctx)
 	if err != nil {
 		panic(err)
@@ -226,7 +251,7 @@ func (sq *SubmitQuery) AllX(ctx context.Context) []*Submit {
 }
 
 // IDs executes the query and returns a list of Submit IDs.
-func (sq *SubmitQuery) IDs(ctx context.Context) (ids []string, err error) {
+func (sq *SubmitQuery) IDs(ctx context.Context) (ids []int, err error) {
 	if sq.ctx.Unique == nil && sq.path != nil {
 		sq.Unique(true)
 	}
@@ -238,7 +263,7 @@ func (sq *SubmitQuery) IDs(ctx context.Context) (ids []string, err error) {
 }
 
 // IDsX is like IDs, but panics if an error occurs.
-func (sq *SubmitQuery) IDsX(ctx context.Context) []string {
+func (sq *SubmitQuery) IDsX(ctx context.Context) []int {
 	ids, err := sq.IDs(ctx)
 	if err != nil {
 		panic(err)
@@ -293,38 +318,50 @@ func (sq *SubmitQuery) Clone() *SubmitQuery {
 		return nil
 	}
 	return &SubmitQuery{
-		config:         sq.config,
-		ctx:            sq.ctx.Clone(),
-		order:          append([]submit.OrderOption{}, sq.order...),
-		inters:         append([]Interceptor{}, sq.inters...),
-		predicates:     append([]predicate.Submit{}, sq.predicates...),
-		withTagResults: sq.withTagResults.Clone(),
-		withGroup:      sq.withGroup.Clone(),
+		config:          sq.config,
+		ctx:             sq.ctx.Clone(),
+		order:           append([]submit.OrderOption{}, sq.order...),
+		inters:          append([]Interceptor{}, sq.inters...),
+		predicates:      append([]predicate.Submit{}, sq.predicates...),
+		withTaskResults: sq.withTaskResults.Clone(),
+		withGroups:      sq.withGroups.Clone(),
+		withContests:    sq.withContests.Clone(),
 		// clone intermediate query.
 		sql:  sq.sql.Clone(),
 		path: sq.path,
 	}
 }
 
-// WithTagResults tells the query-builder to eager-load the nodes that are connected to
-// the "tagResults" edge. The optional arguments are used to configure the query builder of the edge.
-func (sq *SubmitQuery) WithTagResults(opts ...func(*TagResultQuery)) *SubmitQuery {
-	query := (&TagResultClient{config: sq.config}).Query()
+// WithTaskResults tells the query-builder to eager-load the nodes that are connected to
+// the "taskResults" edge. The optional arguments are used to configure the query builder of the edge.
+func (sq *SubmitQuery) WithTaskResults(opts ...func(*TaskResultQuery)) *SubmitQuery {
+	query := (&TaskResultClient{config: sq.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	sq.withTagResults = query
+	sq.withTaskResults = query
 	return sq
 }
 
-// WithGroup tells the query-builder to eager-load the nodes that are connected to
-// the "group" edge. The optional arguments are used to configure the query builder of the edge.
-func (sq *SubmitQuery) WithGroup(opts ...func(*GroupQuery)) *SubmitQuery {
+// WithGroups tells the query-builder to eager-load the nodes that are connected to
+// the "groups" edge. The optional arguments are used to configure the query builder of the edge.
+func (sq *SubmitQuery) WithGroups(opts ...func(*GroupQuery)) *SubmitQuery {
 	query := (&GroupClient{config: sq.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	sq.withGroup = query
+	sq.withGroups = query
+	return sq
+}
+
+// WithContests tells the query-builder to eager-load the nodes that are connected to
+// the "contests" edge. The optional arguments are used to configure the query builder of the edge.
+func (sq *SubmitQuery) WithContests(opts ...func(*ContestQuery)) *SubmitQuery {
+	query := (&ContestClient{config: sq.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	sq.withContests = query
 	return sq
 }
 
@@ -334,12 +371,12 @@ func (sq *SubmitQuery) WithGroup(opts ...func(*GroupQuery)) *SubmitQuery {
 // Example:
 //
 //	var v []struct {
-//		Year int `json:"year,omitempty"`
+//		URL string `json:"url,omitempty"`
 //		Count int `json:"count,omitempty"`
 //	}
 //
 //	client.Submit.Query().
-//		GroupBy(submit.FieldYear).
+//		GroupBy(submit.FieldURL).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
 func (sq *SubmitQuery) GroupBy(field string, fields ...string) *SubmitGroupBy {
@@ -357,11 +394,11 @@ func (sq *SubmitQuery) GroupBy(field string, fields ...string) *SubmitGroupBy {
 // Example:
 //
 //	var v []struct {
-//		Year int `json:"year,omitempty"`
+//		URL string `json:"url,omitempty"`
 //	}
 //
 //	client.Submit.Query().
-//		Select(submit.FieldYear).
+//		Select(submit.FieldURL).
 //		Scan(ctx, &v)
 func (sq *SubmitQuery) Select(fields ...string) *SubmitSelect {
 	sq.ctx.Fields = append(sq.ctx.Fields, fields...)
@@ -405,12 +442,20 @@ func (sq *SubmitQuery) prepareQuery(ctx context.Context) error {
 func (sq *SubmitQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Submit, error) {
 	var (
 		nodes       = []*Submit{}
+		withFKs     = sq.withFKs
 		_spec       = sq.querySpec()
-		loadedTypes = [2]bool{
-			sq.withTagResults != nil,
-			sq.withGroup != nil,
+		loadedTypes = [3]bool{
+			sq.withTaskResults != nil,
+			sq.withGroups != nil,
+			sq.withContests != nil,
 		}
 	)
+	if sq.withGroups != nil || sq.withContests != nil {
+		withFKs = true
+	}
+	if withFKs {
+		_spec.Node.Columns = append(_spec.Node.Columns, submit.ForeignKeys...)
+	}
 	_spec.ScanValues = func(columns []string) ([]any, error) {
 		return (*Submit).scanValues(nil, columns)
 	}
@@ -429,26 +474,31 @@ func (sq *SubmitQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Submi
 	if len(nodes) == 0 {
 		return nodes, nil
 	}
-	if query := sq.withTagResults; query != nil {
-		if err := sq.loadTagResults(ctx, query, nodes,
-			func(n *Submit) { n.Edges.TagResults = []*TagResult{} },
-			func(n *Submit, e *TagResult) { n.Edges.TagResults = append(n.Edges.TagResults, e) }); err != nil {
+	if query := sq.withTaskResults; query != nil {
+		if err := sq.loadTaskResults(ctx, query, nodes,
+			func(n *Submit) { n.Edges.TaskResults = []*TaskResult{} },
+			func(n *Submit, e *TaskResult) { n.Edges.TaskResults = append(n.Edges.TaskResults, e) }); err != nil {
 			return nil, err
 		}
 	}
-	if query := sq.withGroup; query != nil {
-		if err := sq.loadGroup(ctx, query, nodes,
-			func(n *Submit) { n.Edges.Group = []*Group{} },
-			func(n *Submit, e *Group) { n.Edges.Group = append(n.Edges.Group, e) }); err != nil {
+	if query := sq.withGroups; query != nil {
+		if err := sq.loadGroups(ctx, query, nodes, nil,
+			func(n *Submit, e *Group) { n.Edges.Groups = e }); err != nil {
+			return nil, err
+		}
+	}
+	if query := sq.withContests; query != nil {
+		if err := sq.loadContests(ctx, query, nodes, nil,
+			func(n *Submit, e *Contest) { n.Edges.Contests = e }); err != nil {
 			return nil, err
 		}
 	}
 	return nodes, nil
 }
 
-func (sq *SubmitQuery) loadTagResults(ctx context.Context, query *TagResultQuery, nodes []*Submit, init func(*Submit), assign func(*Submit, *TagResult)) error {
+func (sq *SubmitQuery) loadTaskResults(ctx context.Context, query *TaskResultQuery, nodes []*Submit, init func(*Submit), assign func(*Submit, *TaskResult)) error {
 	fks := make([]driver.Value, 0, len(nodes))
-	nodeids := make(map[string]*Submit)
+	nodeids := make(map[int]*Submit)
 	for i := range nodes {
 		fks = append(fks, nodes[i].ID)
 		nodeids[nodes[i].ID] = nodes[i]
@@ -457,83 +507,86 @@ func (sq *SubmitQuery) loadTagResults(ctx context.Context, query *TagResultQuery
 		}
 	}
 	query.withFKs = true
-	query.Where(predicate.TagResult(func(s *sql.Selector) {
-		s.Where(sql.InValues(s.C(submit.TagResultsColumn), fks...))
+	query.Where(predicate.TaskResult(func(s *sql.Selector) {
+		s.Where(sql.InValues(s.C(submit.TaskResultsColumn), fks...))
 	}))
 	neighbors, err := query.All(ctx)
 	if err != nil {
 		return err
 	}
 	for _, n := range neighbors {
-		fk := n.submit_tag_results
+		fk := n.submit_task_results
 		if fk == nil {
-			return fmt.Errorf(`foreign-key "submit_tag_results" is nil for node %v`, n.ID)
+			return fmt.Errorf(`foreign-key "submit_task_results" is nil for node %v`, n.ID)
 		}
 		node, ok := nodeids[*fk]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "submit_tag_results" returned %v for node %v`, *fk, n.ID)
+			return fmt.Errorf(`unexpected foreign-key "submit_task_results" returned %v for node %v`, *fk, n.ID)
 		}
 		assign(node, n)
 	}
 	return nil
 }
-func (sq *SubmitQuery) loadGroup(ctx context.Context, query *GroupQuery, nodes []*Submit, init func(*Submit), assign func(*Submit, *Group)) error {
-	edgeIDs := make([]driver.Value, len(nodes))
-	byID := make(map[string]*Submit)
-	nids := make(map[string]map[*Submit]struct{})
-	for i, node := range nodes {
-		edgeIDs[i] = node.ID
-		byID[node.ID] = node
-		if init != nil {
-			init(node)
+func (sq *SubmitQuery) loadGroups(ctx context.Context, query *GroupQuery, nodes []*Submit, init func(*Submit), assign func(*Submit, *Group)) error {
+	ids := make([]int, 0, len(nodes))
+	nodeids := make(map[int][]*Submit)
+	for i := range nodes {
+		if nodes[i].group_submits == nil {
+			continue
 		}
+		fk := *nodes[i].group_submits
+		if _, ok := nodeids[fk]; !ok {
+			ids = append(ids, fk)
+		}
+		nodeids[fk] = append(nodeids[fk], nodes[i])
 	}
-	query.Where(func(s *sql.Selector) {
-		joinT := sql.Table(submit.GroupTable)
-		s.Join(joinT).On(s.C(group.FieldID), joinT.C(submit.GroupPrimaryKey[0]))
-		s.Where(sql.InValues(joinT.C(submit.GroupPrimaryKey[1]), edgeIDs...))
-		columns := s.SelectedColumns()
-		s.Select(joinT.C(submit.GroupPrimaryKey[1]))
-		s.AppendSelect(columns...)
-		s.SetDistinct(false)
-	})
-	if err := query.prepareQuery(ctx); err != nil {
-		return err
+	if len(ids) == 0 {
+		return nil
 	}
-	qr := QuerierFunc(func(ctx context.Context, q Query) (Value, error) {
-		return query.sqlAll(ctx, func(_ context.Context, spec *sqlgraph.QuerySpec) {
-			assign := spec.Assign
-			values := spec.ScanValues
-			spec.ScanValues = func(columns []string) ([]any, error) {
-				values, err := values(columns[1:])
-				if err != nil {
-					return nil, err
-				}
-				return append([]any{new(sql.NullString)}, values...), nil
-			}
-			spec.Assign = func(columns []string, values []any) error {
-				outValue := values[0].(*sql.NullString).String
-				inValue := values[1].(*sql.NullString).String
-				if nids[inValue] == nil {
-					nids[inValue] = map[*Submit]struct{}{byID[outValue]: {}}
-					return assign(columns[1:], values[1:])
-				}
-				nids[inValue][byID[outValue]] = struct{}{}
-				return nil
-			}
-		})
-	})
-	neighbors, err := withInterceptors[[]*Group](ctx, query, qr, query.inters)
+	query.Where(group.IDIn(ids...))
+	neighbors, err := query.All(ctx)
 	if err != nil {
 		return err
 	}
 	for _, n := range neighbors {
-		nodes, ok := nids[n.ID]
+		nodes, ok := nodeids[n.ID]
 		if !ok {
-			return fmt.Errorf(`unexpected "group" node returned %v`, n.ID)
+			return fmt.Errorf(`unexpected foreign-key "group_submits" returned %v`, n.ID)
 		}
-		for kn := range nodes {
-			assign(kn, n)
+		for i := range nodes {
+			assign(nodes[i], n)
+		}
+	}
+	return nil
+}
+func (sq *SubmitQuery) loadContests(ctx context.Context, query *ContestQuery, nodes []*Submit, init func(*Submit), assign func(*Submit, *Contest)) error {
+	ids := make([]int, 0, len(nodes))
+	nodeids := make(map[int][]*Submit)
+	for i := range nodes {
+		if nodes[i].contest_submits == nil {
+			continue
+		}
+		fk := *nodes[i].contest_submits
+		if _, ok := nodeids[fk]; !ok {
+			ids = append(ids, fk)
+		}
+		nodeids[fk] = append(nodeids[fk], nodes[i])
+	}
+	if len(ids) == 0 {
+		return nil
+	}
+	query.Where(contest.IDIn(ids...))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		nodes, ok := nodeids[n.ID]
+		if !ok {
+			return fmt.Errorf(`unexpected foreign-key "contest_submits" returned %v`, n.ID)
+		}
+		for i := range nodes {
+			assign(nodes[i], n)
 		}
 	}
 	return nil
@@ -549,7 +602,7 @@ func (sq *SubmitQuery) sqlCount(ctx context.Context) (int, error) {
 }
 
 func (sq *SubmitQuery) querySpec() *sqlgraph.QuerySpec {
-	_spec := sqlgraph.NewQuerySpec(submit.Table, submit.Columns, sqlgraph.NewFieldSpec(submit.FieldID, field.TypeString))
+	_spec := sqlgraph.NewQuerySpec(submit.Table, submit.Columns, sqlgraph.NewFieldSpec(submit.FieldID, field.TypeInt))
 	_spec.From = sq.sql
 	if unique := sq.ctx.Unique; unique != nil {
 		_spec.Unique = *unique

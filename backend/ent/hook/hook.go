@@ -45,16 +45,16 @@ func (f SubmitFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, erro
 	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.SubmitMutation", m)
 }
 
-// The TagResultFunc type is an adapter to allow the use of ordinary
-// function as TagResult mutator.
-type TagResultFunc func(context.Context, *ent.TagResultMutation) (ent.Value, error)
+// The TaskResultFunc type is an adapter to allow the use of ordinary
+// function as TaskResult mutator.
+type TaskResultFunc func(context.Context, *ent.TaskResultMutation) (ent.Value, error)
 
 // Mutate calls f(ctx, m).
-func (f TagResultFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
-	if mv, ok := m.(*ent.TagResultMutation); ok {
+func (f TaskResultFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.TaskResultMutation); ok {
 		return f(ctx, mv)
 	}
-	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.TagResultMutation", m)
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.TaskResultMutation", m)
 }
 
 // Condition is a hook condition function.

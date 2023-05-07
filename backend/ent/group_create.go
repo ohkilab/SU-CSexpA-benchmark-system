@@ -20,6 +20,12 @@ type GroupCreate struct {
 	hooks    []Hook
 }
 
+// SetName sets the "name" field.
+func (gc *GroupCreate) SetName(s string) *GroupCreate {
+	gc.mutation.SetName(s)
+	return gc
+}
+
 // SetYear sets the "year" field.
 func (gc *GroupCreate) SetYear(i int) *GroupCreate {
 	gc.mutation.SetYear(i)
@@ -45,20 +51,20 @@ func (gc *GroupCreate) SetEncryptedPassword(s string) *GroupCreate {
 }
 
 // SetID sets the "id" field.
-func (gc *GroupCreate) SetID(s string) *GroupCreate {
-	gc.mutation.SetID(s)
+func (gc *GroupCreate) SetID(i int) *GroupCreate {
+	gc.mutation.SetID(i)
 	return gc
 }
 
 // AddSubmitIDs adds the "submits" edge to the Submit entity by IDs.
-func (gc *GroupCreate) AddSubmitIDs(ids ...string) *GroupCreate {
+func (gc *GroupCreate) AddSubmitIDs(ids ...int) *GroupCreate {
 	gc.mutation.AddSubmitIDs(ids...)
 	return gc
 }
 
 // AddSubmits adds the "submits" edges to the Submit entity.
 func (gc *GroupCreate) AddSubmits(s ...*Submit) *GroupCreate {
-	ids := make([]string, len(s))
+	ids := make([]int, len(s))
 	for i := range s {
 		ids[i] = s[i].ID
 	}
@@ -99,6 +105,9 @@ func (gc *GroupCreate) ExecX(ctx context.Context) {
 
 // check runs all checks and user-defined validators on the builder.
 func (gc *GroupCreate) check() error {
+	if _, ok := gc.mutation.Name(); !ok {
+		return &ValidationError{Name: "name", err: errors.New(`ent: missing required field "Group.name"`)}
+	}
 	if _, ok := gc.mutation.Year(); !ok {
 		return &ValidationError{Name: "year", err: errors.New(`ent: missing required field "Group.year"`)}
 	}
@@ -140,12 +149,9 @@ func (gc *GroupCreate) sqlSave(ctx context.Context) (*Group, error) {
 		}
 		return nil, err
 	}
-	if _spec.ID.Value != nil {
-		if id, ok := _spec.ID.Value.(string); ok {
-			_node.ID = id
-		} else {
-			return nil, fmt.Errorf("unexpected Group.ID type: %T", _spec.ID.Value)
-		}
+	if _spec.ID.Value != _node.ID {
+		id := _spec.ID.Value.(int64)
+		_node.ID = int(id)
 	}
 	gc.mutation.id = &_node.ID
 	gc.mutation.done = true
@@ -155,11 +161,15 @@ func (gc *GroupCreate) sqlSave(ctx context.Context) (*Group, error) {
 func (gc *GroupCreate) createSpec() (*Group, *sqlgraph.CreateSpec) {
 	var (
 		_node = &Group{config: gc.config}
-		_spec = sqlgraph.NewCreateSpec(group.Table, sqlgraph.NewFieldSpec(group.FieldID, field.TypeString))
+		_spec = sqlgraph.NewCreateSpec(group.Table, sqlgraph.NewFieldSpec(group.FieldID, field.TypeInt))
 	)
 	if id, ok := gc.mutation.ID(); ok {
 		_node.ID = id
 		_spec.ID.Value = id
+	}
+	if value, ok := gc.mutation.Name(); ok {
+		_spec.SetField(group.FieldName, field.TypeString, value)
+		_node.Name = value
 	}
 	if value, ok := gc.mutation.Year(); ok {
 		_spec.SetField(group.FieldYear, field.TypeInt, value)
@@ -179,13 +189,13 @@ func (gc *GroupCreate) createSpec() (*Group, *sqlgraph.CreateSpec) {
 	}
 	if nodes := gc.mutation.SubmitsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.O2M,
 			Inverse: false,
 			Table:   group.SubmitsTable,
-			Columns: group.SubmitsPrimaryKey,
+			Columns: []string{group.SubmitsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(submit.FieldID, field.TypeString),
+				IDSpec: sqlgraph.NewFieldSpec(submit.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {
@@ -236,6 +246,10 @@ func (gcb *GroupCreateBulk) Save(ctx context.Context) ([]*Group, error) {
 					return nil, err
 				}
 				mutation.id = &nodes[i].ID
+				if specs[i].ID.Value != nil && nodes[i].ID == 0 {
+					id := specs[i].ID.Value.(int64)
+					nodes[i].ID = int(id)
+				}
 				mutation.done = true
 				return nodes[i], nil
 			})
