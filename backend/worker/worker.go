@@ -7,10 +7,13 @@ import (
 	"time"
 
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/ent"
+	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/ent/submit"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/core/timejst"
 	pb "github.com/ohkilab/SU-CSexpA-benchmark-system/proto-gen/go/benchmark"
 	"golang.org/x/net/context"
 	"golang.org/x/sync/errgroup"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 )
 
 type Worker interface {
@@ -53,6 +56,13 @@ func (w *worker) Run() {
 		if err != nil {
 			log.Println(err)
 		}
+		_, err = w.entClient.Submit.UpdateOneID(task.SubmitID).
+			SetStatus(submit.StatusInProgress).
+			SetUpdatedAt(timejst.Now()).
+			Save(ctx)
+		if err != nil {
+			log.Println(err)
+		}
 
 		eg := &errgroup.Group{}
 		score := 0
@@ -69,9 +79,17 @@ func (w *worker) Run() {
 			log.Println("received", resp)
 			if err != nil {
 				log.Println(err)
+				var dbSt submit.Status
+				st, ok := status.FromError(err)
+				if ok && st.Code() == codes.FailedPrecondition {
+					dbSt = submit.StatusUserError
+				} else {
+					dbSt = submit.StatusInternalError
+				}
 				_, err = w.entClient.Submit.UpdateOneID(task.SubmitID).
 					SetScore(0).
 					SetMessage(err.Error()).
+					SetStatus(dbSt).
 					SetCompletedAt(timejst.Now()).
 					SetUpdatedAt(timejst.Now()).
 					Save(ctx)
@@ -120,6 +138,7 @@ func (w *worker) Run() {
 			SetCompletedAt(now).
 			SetUpdatedAt(now).
 			SetScore(score).
+			SetStatus(submit.StatusSuccess).
 			Save(ctx); err != nil {
 			log.Println("ERROR", err)
 		}

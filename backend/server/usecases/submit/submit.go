@@ -49,6 +49,7 @@ func (i *Interactor) PostSubmit(ctx context.Context, req *backendpb.PostSubmitRe
 		SetSubmitedAt(timejst.Now()).
 		SetContestsID(int(req.ContestId)).
 		SetGroupsID(claims.GroupID).
+		SetStatus(submit.StatusWait).
 		Save(ctx)
 	if err != nil {
 		return nil, status.Error(codes.Internal, err.Error())
