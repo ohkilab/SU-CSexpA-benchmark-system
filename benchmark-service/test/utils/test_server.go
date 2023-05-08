@@ -4,6 +4,7 @@ import (
 	"net"
 	"net/http"
 	"testing"
+	"time"
 )
 
 func LaunchTestServer(t *testing.T) int {
@@ -14,6 +15,7 @@ func LaunchTestServer(t *testing.T) int {
 		t.Fatal(err)
 	}
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		time.Sleep(100 * time.Millisecond)
 		w.WriteHeader(http.StatusOK)
 	})
 	go func() {

@@ -37,7 +37,7 @@ func (c *Client) Run(ctx context.Context, url string, options ...optionFunc) ([]
 		f(option)
 	}
 
-	ctx, cancel := context.WithTimeout(ctx, time.Minute)
+	ctx, cancel := context.WithTimeout(ctx, 30*time.Second)
 	defer cancel()
 
 	attemptCount := 0
