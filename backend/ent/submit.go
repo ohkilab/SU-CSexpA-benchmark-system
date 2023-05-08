@@ -29,6 +29,8 @@ type Submit struct {
 	Language submit.Language `json:"language,omitempty"`
 	// Message holds the value of the "message" field.
 	Message string `json:"message,omitempty"`
+	// Status holds the value of the "status" field.
+	Status submit.Status `json:"status,omitempty"`
 	// SubmitedAt holds the value of the "submited_at" field.
 	SubmitedAt time.Time `json:"submited_at,omitempty"`
 	// CompletedAt holds the value of the "completed_at" field.
@@ -98,7 +100,7 @@ func (*Submit) scanValues(columns []string) ([]any, error) {
 		switch columns[i] {
 		case submit.FieldID, submit.FieldYear, submit.FieldScore:
 			values[i] = new(sql.NullInt64)
-		case submit.FieldURL, submit.FieldLanguage, submit.FieldMessage:
+		case submit.FieldURL, submit.FieldLanguage, submit.FieldMessage, submit.FieldStatus:
 			values[i] = new(sql.NullString)
 		case submit.FieldSubmitedAt, submit.FieldCompletedAt, submit.FieldUpdatedAt:
 			values[i] = new(sql.NullTime)
@@ -156,6 +158,12 @@ func (s *Submit) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field message", values[i])
 			} else if value.Valid {
 				s.Message = value.String
+			}
+		case submit.FieldStatus:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field status", values[i])
+			} else if value.Valid {
+				s.Status = submit.Status(value.String)
 			}
 		case submit.FieldSubmitedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
@@ -254,6 +262,9 @@ func (s *Submit) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("message=")
 	builder.WriteString(s.Message)
+	builder.WriteString(", ")
+	builder.WriteString("status=")
+	builder.WriteString(fmt.Sprintf("%v", s.Status))
 	builder.WriteString(", ")
 	builder.WriteString("submited_at=")
 	builder.WriteString(s.SubmitedAt.Format(time.ANSIC))

@@ -350,6 +350,26 @@ func MessageContainsFold(v string) predicate.Submit {
 	return predicate.Submit(sql.FieldContainsFold(FieldMessage, v))
 }
 
+// StatusEQ applies the EQ predicate on the "status" field.
+func StatusEQ(v Status) predicate.Submit {
+	return predicate.Submit(sql.FieldEQ(FieldStatus, v))
+}
+
+// StatusNEQ applies the NEQ predicate on the "status" field.
+func StatusNEQ(v Status) predicate.Submit {
+	return predicate.Submit(sql.FieldNEQ(FieldStatus, v))
+}
+
+// StatusIn applies the In predicate on the "status" field.
+func StatusIn(vs ...Status) predicate.Submit {
+	return predicate.Submit(sql.FieldIn(FieldStatus, vs...))
+}
+
+// StatusNotIn applies the NotIn predicate on the "status" field.
+func StatusNotIn(vs ...Status) predicate.Submit {
+	return predicate.Submit(sql.FieldNotIn(FieldStatus, vs...))
+}
+
 // SubmitedAtEQ applies the EQ predicate on the "submited_at" field.
 func SubmitedAtEQ(v time.Time) predicate.Submit {
 	return predicate.Submit(sql.FieldEQ(FieldSubmitedAt, v))

@@ -24,6 +24,8 @@ const (
 	FieldLanguage = "language"
 	// FieldMessage holds the string denoting the message field in the database.
 	FieldMessage = "message"
+	// FieldStatus holds the string denoting the status field in the database.
+	FieldStatus = "status"
 	// FieldSubmitedAt holds the string denoting the submited_at field in the database.
 	FieldSubmitedAt = "submited_at"
 	// FieldCompletedAt holds the string denoting the completed_at field in the database.
@@ -69,6 +71,7 @@ var Columns = []string{
 	FieldScore,
 	FieldLanguage,
 	FieldMessage,
+	FieldStatus,
 	FieldSubmitedAt,
 	FieldCompletedAt,
 	FieldUpdatedAt,
@@ -130,6 +133,32 @@ func LanguageValidator(l Language) error {
 	}
 }
 
+// Status defines the type for the "status" enum field.
+type Status string
+
+// Status values.
+const (
+	StatusWait          Status = "wait"
+	StatusInProgress    Status = "in_progress"
+	StatusSuccess       Status = "success"
+	StatusUserError     Status = "user_error"
+	StatusInternalError Status = "internal_error"
+)
+
+func (s Status) String() string {
+	return string(s)
+}
+
+// StatusValidator is a validator for the "status" field enum values. It is called by the builders before save.
+func StatusValidator(s Status) error {
+	switch s {
+	case StatusWait, StatusInProgress, StatusSuccess, StatusUserError, StatusInternalError:
+		return nil
+	default:
+		return fmt.Errorf("submit: invalid enum value for status field: %q", s)
+	}
+}
+
 // OrderOption defines the ordering options for the Submit queries.
 type OrderOption func(*sql.Selector)
 
@@ -161,6 +190,11 @@ func ByLanguage(opts ...sql.OrderTermOption) OrderOption {
 // ByMessage orders the results by the message field.
 func ByMessage(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldMessage, opts...).ToFunc()
+}
+
+// ByStatus orders the results by the status field.
+func ByStatus(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldStatus, opts...).ToFunc()
 }
 
 // BySubmitedAt orders the results by the submited_at field.
