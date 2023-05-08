@@ -17,7 +17,6 @@ const handleLogout = () => {
   group.value = ''
 }
 
-
 const backend = new BackendServiceClient(
   new GrpcWebFetchTransport({
     baseUrl: "http://localhost:8080"
@@ -28,12 +27,9 @@ const errMsg = ref('')
 
 const handleLogin = (id:string, password:string) => {
   backend.postLogin({ id, password }).then(value => {
-    // console.log(value)
     token.value = value.response.token
     group.value = id
-    // state.group = id
     loggedIn.value = true
-    // emit('loggedIn', value.response.token)
   }).catch(err => {
     console.log(err)
     errMsg.value = err.message
@@ -64,26 +60,20 @@ onMounted(() => {
   if(localStorage.getItem('token')) {
     let opt = {meta: {'authorization' : 'Bearer ' + localStorage.getItem('token')}}
 
-    token.value = localStorage.getItem('token') ?? ''
-    group.value = localStorage.getItem('group') ?? ''
-
     backend.getRanking({
       year: 2023,
       containGuest: false
-    },opt).then(res => {
-      // successfully logged in with token
-
-      console.log(res)
-
-      console.log('state.token:' + state.token)
-      console.log('localStorage.token:' + localStorage.getItem('token'))
+    },opt).then(_ => {
+      // successfully logged in with token, load token and group name into app
+      token.value = localStorage.getItem('token') ?? ''
+      group.value = localStorage.getItem('group') ?? ''
       loggedIn.value = true
-    }).catch(e => {
+    }).catch(_ => {
       // login with token failed
-      console.log(e)
-      
       localStorage.removeItem('token')
       localStorage.removeItem('group')
+
+      errMsg.value = 'Session expired, please login again'
     })
   }
 })
