@@ -34,7 +34,7 @@ func main() {
 	}
 
 	// benchmark worker
-	conn, err := pkgrpc.Dial(config.BenchmarkHost, pkgrpc.WithInsecure())
+	conn, err := pkgrpc.Dial(fmt.Sprintf("%s:50051", config.BenchmarkHost), pkgrpc.WithInsecure())
 	if err != nil {
 		panic(err)
 	}

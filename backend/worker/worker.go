@@ -48,6 +48,7 @@ func (w *worker) Run() {
 
 		ctx, cancel := context.WithTimeout(context.Background(), 5*time.Minute)
 		defer cancel()
+		log.Println("Start benchmark", task.Req)
 		stream, err := w.benchmarkClient.Execute(ctx, task.Req)
 		if err != nil {
 			log.Println(err)
@@ -59,13 +60,19 @@ func (w *worker) Run() {
 		for {
 			resp, err := stream.Recv()
 			if err == io.EOF {
+				log.Println("received EOF")
 				if err := stream.CloseSend(); err != nil {
 					log.Println(err)
 				}
 				break
 			}
+			log.Println("received", resp)
 			if err != nil {
 				log.Println(err)
+				_, err = w.entClient.Submit.UpdateOneID(task.SubmitID).SetMessage(err.Error()).Save(ctx)
+				if err != nil {
+					log.Println(err)
+				}
 				return
 			}
 

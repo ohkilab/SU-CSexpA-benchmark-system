@@ -1595,6 +1595,7 @@ type SubmitMutation struct {
 	score              *int
 	addscore           *int
 	language           *submit.Language
+	message            *string
 	submited_at        *time.Time
 	completed_at       *time.Time
 	updated_at         *time.Time
@@ -1926,6 +1927,55 @@ func (m *SubmitMutation) ResetLanguage() {
 	delete(m.clearedFields, submit.FieldLanguage)
 }
 
+// SetMessage sets the "message" field.
+func (m *SubmitMutation) SetMessage(s string) {
+	m.message = &s
+}
+
+// Message returns the value of the "message" field in the mutation.
+func (m *SubmitMutation) Message() (r string, exists bool) {
+	v := m.message
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldMessage returns the old "message" field's value of the Submit entity.
+// If the Submit object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *SubmitMutation) OldMessage(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldMessage is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldMessage requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldMessage: %w", err)
+	}
+	return oldValue.Message, nil
+}
+
+// ClearMessage clears the value of the "message" field.
+func (m *SubmitMutation) ClearMessage() {
+	m.message = nil
+	m.clearedFields[submit.FieldMessage] = struct{}{}
+}
+
+// MessageCleared returns if the "message" field was cleared in this mutation.
+func (m *SubmitMutation) MessageCleared() bool {
+	_, ok := m.clearedFields[submit.FieldMessage]
+	return ok
+}
+
+// ResetMessage resets all changes to the "message" field.
+func (m *SubmitMutation) ResetMessage() {
+	m.message = nil
+	delete(m.clearedFields, submit.FieldMessage)
+}
+
 // SetSubmitedAt sets the "submited_at" field.
 func (m *SubmitMutation) SetSubmitedAt(t time.Time) {
 	m.submited_at = &t
@@ -2226,7 +2276,7 @@ func (m *SubmitMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *SubmitMutation) Fields() []string {
-	fields := make([]string, 0, 7)
+	fields := make([]string, 0, 8)
 	if m.url != nil {
 		fields = append(fields, submit.FieldURL)
 	}
@@ -2238,6 +2288,9 @@ func (m *SubmitMutation) Fields() []string {
 	}
 	if m.language != nil {
 		fields = append(fields, submit.FieldLanguage)
+	}
+	if m.message != nil {
+		fields = append(fields, submit.FieldMessage)
 	}
 	if m.submited_at != nil {
 		fields = append(fields, submit.FieldSubmitedAt)
@@ -2264,6 +2317,8 @@ func (m *SubmitMutation) Field(name string) (ent.Value, bool) {
 		return m.Score()
 	case submit.FieldLanguage:
 		return m.Language()
+	case submit.FieldMessage:
+		return m.Message()
 	case submit.FieldSubmitedAt:
 		return m.SubmitedAt()
 	case submit.FieldCompletedAt:
@@ -2287,6 +2342,8 @@ func (m *SubmitMutation) OldField(ctx context.Context, name string) (ent.Value, 
 		return m.OldScore(ctx)
 	case submit.FieldLanguage:
 		return m.OldLanguage(ctx)
+	case submit.FieldMessage:
+		return m.OldMessage(ctx)
 	case submit.FieldSubmitedAt:
 		return m.OldSubmitedAt(ctx)
 	case submit.FieldCompletedAt:
@@ -2329,6 +2386,13 @@ func (m *SubmitMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetLanguage(v)
+		return nil
+	case submit.FieldMessage:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetMessage(v)
 		return nil
 	case submit.FieldSubmitedAt:
 		v, ok := value.(time.Time)
@@ -2414,6 +2478,9 @@ func (m *SubmitMutation) ClearedFields() []string {
 	if m.FieldCleared(submit.FieldLanguage) {
 		fields = append(fields, submit.FieldLanguage)
 	}
+	if m.FieldCleared(submit.FieldMessage) {
+		fields = append(fields, submit.FieldMessage)
+	}
 	if m.FieldCleared(submit.FieldCompletedAt) {
 		fields = append(fields, submit.FieldCompletedAt)
 	}
@@ -2440,6 +2507,9 @@ func (m *SubmitMutation) ClearField(name string) error {
 	case submit.FieldLanguage:
 		m.ClearLanguage()
 		return nil
+	case submit.FieldMessage:
+		m.ClearMessage()
+		return nil
 	case submit.FieldCompletedAt:
 		m.ClearCompletedAt()
 		return nil
@@ -2465,6 +2535,9 @@ func (m *SubmitMutation) ResetField(name string) error {
 		return nil
 	case submit.FieldLanguage:
 		m.ResetLanguage()
+		return nil
+	case submit.FieldMessage:
+		m.ResetMessage()
 		return nil
 	case submit.FieldSubmitedAt:
 		m.ResetSubmitedAt()

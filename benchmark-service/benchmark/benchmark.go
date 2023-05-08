@@ -2,9 +2,11 @@ package benchmark
 
 import (
 	"context"
+	"errors"
 	"io"
 	"net/http"
 	"sync"
+	"syscall"
 	"time"
 
 	"golang.org/x/sync/errgroup"
@@ -88,6 +90,9 @@ func (c *Client) request(url string) (*http.Response, time.Duration, error) {
 	now := time.Now()
 	for {
 		resp, err := c.httpClient.Do(req)
+		if errors.Is(err, syscall.ECONNREFUSED) {
+			return nil, 0, err
+		}
 		if err == nil {
 			return resp, time.Since(now), nil
 		}

@@ -54,6 +54,7 @@ var (
 		{Name: "year", Type: field.TypeInt},
 		{Name: "score", Type: field.TypeInt, Nullable: true},
 		{Name: "language", Type: field.TypeEnum, Nullable: true, Enums: []string{"php", "go", "rust", "javascript", "csharp", "cpp", "ruby", "python"}},
+		{Name: "message", Type: field.TypeString, Nullable: true},
 		{Name: "submited_at", Type: field.TypeTime},
 		{Name: "completed_at", Type: field.TypeTime, Nullable: true},
 		{Name: "updated_at", Type: field.TypeTime, Nullable: true},
@@ -68,13 +69,13 @@ var (
 		ForeignKeys: []*schema.ForeignKey{
 			{
 				Symbol:     "submits_contests_submits",
-				Columns:    []*schema.Column{SubmitsColumns[8]},
+				Columns:    []*schema.Column{SubmitsColumns[9]},
 				RefColumns: []*schema.Column{ContestsColumns[0]},
 				OnDelete:   schema.SetNull,
 			},
 			{
 				Symbol:     "submits_groups_submits",
-				Columns:    []*schema.Column{SubmitsColumns[9]},
+				Columns:    []*schema.Column{SubmitsColumns[10]},
 				RefColumns: []*schema.Column{GroupsColumns[0]},
 				OnDelete:   schema.SetNull,
 			},

@@ -1,8 +1,10 @@
 package service
 
 import (
+	"errors"
 	"log"
 	"net/url"
+	"syscall"
 	"time"
 
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/benchmark-service/benchmark"
@@ -21,15 +23,22 @@ func (s *service) Execute(req *pb.ExecuteRequest, stream pb.BenchmarkService_Exe
 	}
 
 	for _, task := range req.Tasks {
+		log.Println(task)
 		uri, err := url.ParseRequestURI(task.Request.Url)
 		if err != nil {
+			log.Println(err)
 			return status.Error(codes.InvalidArgument, "invalid url")
 		}
 		uri.RawQuery = uri.Query().Encode()
 
 		results, err := s.client.Run(stream.Context(), uri.String(), benchmark.OptThreadNum(int(task.ThreadNum)), benchmark.OptAttemptCount(int(task.AttemptCount)))
 		if err != nil {
-			return err
+			log.Println(err)
+			if errors.Is(err, syscall.ECONNREFUSED) {
+				return status.Error(codes.FailedPrecondition, "サーバーとの接続ができませんでした")
+			} else {
+				return status.Error(codes.Internal, "Internal Server Error")
+			}
 		}
 
 		timeElapsed := time.Duration(0)

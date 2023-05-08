@@ -21,6 +21,7 @@ func (Submit) Fields() []ent.Field {
 		field.Int("year").Positive(),
 		field.Int("score").Optional(),
 		field.Enum("language").Values(languages...).Optional(),
+		field.String("message").Optional(),
 		field.Time("submited_at"),
 		field.Time("completed_at").Optional(),
 		field.Time("updated_at").Optional(),
