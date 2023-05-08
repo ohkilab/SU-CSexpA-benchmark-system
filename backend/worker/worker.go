@@ -69,7 +69,12 @@ func (w *worker) Run() {
 			log.Println("received", resp)
 			if err != nil {
 				log.Println(err)
-				_, err = w.entClient.Submit.UpdateOneID(task.SubmitID).SetMessage(err.Error()).Save(ctx)
+				_, err = w.entClient.Submit.UpdateOneID(task.SubmitID).
+					SetScore(0).
+					SetMessage(err.Error()).
+					SetCompletedAt(timejst.Now()).
+					SetUpdatedAt(timejst.Now()).
+					Save(ctx)
 				if err != nil {
 					log.Println(err)
 				}
