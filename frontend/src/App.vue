@@ -1,23 +1,92 @@
 <script setup lang="ts">
-import { reactive, Ref, ref } from 'vue';
+import { GrpcWebFetchTransport } from '@protobuf-ts/grpcweb-transport';
+import { BackendServiceClient } from 'proto-gen-web/src/backend/services.client';
+import { onMounted, Ref, ref, watch } from 'vue';
 import Login from './pages/Login.vue'
 import {useStateStore} from './stores/state'
 
 const loggedIn = ref(false)
 const token:Ref<string> = ref('')
-const msg:Ref<string> = ref('')
+const group:Ref<string> = ref('')
 const state = useStateStore()
 
-const handleLoggedIn = (t:string) => {
-  token.value = t
-  loggedIn.value = true
-  state.token = t
+const handleLogout = () => {
+  // clear all credentials
+  loggedIn.value = false
+  token.value = ''
+  group.value = ''
 }
 
-const handleLogout = () => {
-  loggedIn.value = false
-  state.token = ''
+
+const backend = new BackendServiceClient(
+  new GrpcWebFetchTransport({
+    baseUrl: "http://localhost:8080"
+  })
+)
+
+const errMsg = ref('')
+
+const handleLogin = (id:string, password:string) => {
+  backend.postLogin({ id, password }).then(value => {
+    // console.log(value)
+    token.value = value.response.token
+    group.value = id
+    // state.group = id
+    loggedIn.value = true
+    // emit('loggedIn', value.response.token)
+  }).catch(err => {
+    console.log(err)
+    errMsg.value = err.message
+  })
 }
+
+// update localStorage and state based on refs
+watch(
+  group,
+  group => {
+    state.group = group
+    localStorage.setItem('group', group)
+  },
+  {deep: true}
+)
+
+watch(
+  token,
+  token => {
+    state.token = token
+    localStorage.setItem('token', token)
+  },
+  {deep: true}
+)
+
+onMounted(() => {
+  // try login with token
+  if(localStorage.getItem('token')) {
+    let opt = {meta: {'authorization' : 'Bearer ' + localStorage.getItem('token')}}
+
+    token.value = localStorage.getItem('token') ?? ''
+    group.value = localStorage.getItem('group') ?? ''
+
+    backend.getRanking({
+      year: 2023,
+      containGuest: false
+    },opt).then(res => {
+      // successfully logged in with token
+
+      console.log(res)
+
+      console.log('state.token:' + state.token)
+      console.log('localStorage.token:' + localStorage.getItem('token'))
+      loggedIn.value = true
+    }).catch(e => {
+      // login with token failed
+      console.log(e)
+      
+      localStorage.removeItem('token')
+      localStorage.removeItem('group')
+    })
+  }
+})
 </script>
 <template>
   <div
@@ -49,7 +118,7 @@ const handleLogout = () => {
         >
       </div>
       <router-view v-if="loggedIn"></router-view>
-      <Login class="mt-auto" @logged-in="t => {handleLoggedIn(t)}" v-else></Login>
+      <Login class="mt-auto" :err-msg="errMsg" @login=" (id, password) => {handleLogin(id, password)}" v-else></Login>
     <!-- footer -->
     <div class="flex items-center justify-center bg-gray-700 w-full mt-auto">© 2023 Ohkilab. All rights reserved.</div>
   </div>

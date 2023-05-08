@@ -8,7 +8,7 @@ import type { Ref } from 'vue'
 import { GrpcWebFetchTransport } from '@protobuf-ts/grpcweb-transport'
 import { BackendServiceClient } from 'proto-gen-web/src/backend/services.client'
 
-import type { GetRankingRequest, GetSubmitRequest } from 'proto-gen-web/src/backend/messages'
+import type { GetRankingRequest, GetSubmitRequest, GetSubmitResponse } from 'proto-gen-web/src/backend/messages'
 import type { Group } from 'proto-gen-web/src/backend/resources'
 import { Role } from 'proto-gen-web/src/backend/resources'
 
@@ -38,8 +38,19 @@ const status: Status = reactive({
 
 const tags: Ref<Array<{tag: string, idx: number}>> = ref([])
 
+const submits: Ref<GetSubmitResponse> = ref({})
+
 const benchmark = () => {
   state.benchmarking = true
+
+  let opt = {meta: {'authorization' : 'Bearer ' + state.token}}
+
+  backend.postSubmit({
+    url: 'http://host.docker.internal:3001',
+    contestId: 1
+  },opt).then(res => {
+    console.log(res)
+  })
 
   state.benchmarkInterval = setInterval(() => {
     if(status.current < status.size) {
@@ -65,19 +76,18 @@ const handleStopBenchmark = () => {
 }
 
 onMounted(() => {
-  tags.value = Array.from(new Array(status.size)).map((_, idx) => {
-
-  return {
-    tag: 'tag_string ' + idx,
-    idx
-  }
-})
-
   let opt = {meta: {'authorization' : 'Bearer ' + state.token}}
+  
+  tags.value = Array.from(new Array(status.size)).map((_, idx) => {
+    return {
+      tag: 'tag_string ' + idx,
+      idx
+    }
+  })
 
   backend.getSubmit({
     submitId: 1
-  },opt).then(res => {
+  }, opt).then(res => {
     console.log(res)
   })
 })
@@ -85,8 +95,8 @@ onMounted(() => {
 const filteredTags = computed(() => tags.value.slice(status.current - 2, status.current + 2))
 </script>
 <template>
-  <div  class="flex flex-col mt-auto">
-    <div v-if="!state.benchmarking && state.lastResult != 0" class="border flex flex-col border-gray-500 text-center p-5 rounded mb-5">
+  <div class="flex flex-col mt-auto w-full items-center">
+    <div v-if="!state.benchmarking && state.lastResult != 0" class="border flex flex-col border-gray-500 text-center p-5 rounded mb-5 w-max">
       <div class="mb-2">最新結果</div>
       <div class="flex self-center">
         <div class="rounded bg-gray-500 px-2">{{state.lastResult}}</div>
@@ -120,8 +130,9 @@ const filteredTags = computed(() => tags.value.slice(status.current - 2, status.
         <button @click="handleStopBenchmark" class="p-5 bg-red-500 rounded shadow-black shadow-md hover:scale-105 transition">ベンチマーク停止</button>
       </div>
     </div>
-    <div v-else>
-      <button class="p-5 bg-blue-500 rounded text-xl shadow-md shadow-black hover:scale-105 transition" @click="benchmark">ベンチマーク開始</button>
+    <div class="flex flex-col gap-5 w-full items-center" v-else>
+      <input class="w-5/6 rounded bg-gray-700 p-2 hover:bg-gray-600 transition focus:outline-none focus:bg-gray-600" placeholder="Raspberry Pi の IPアドレス" type="text">
+      <button class="p-5 bg-blue-500 w-64 rounded text-xl shadow-md shadow-black hover:scale-105 transition" @click="benchmark">ベンチマーク開始</button>
     </div>
   </div>
 </template>
