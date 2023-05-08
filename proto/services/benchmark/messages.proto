@@ -24,12 +24,21 @@ enum HttpMethod {
 }
 
 message ExecuteResponse {
+  enum Status {
+    WAIT = 0;           // waiting for benchmark
+    IN_PROGRESS = 1;    // in progress
+    SUCCESS = 2;        // benchmark succeeded
+    USER_ERROR = 3;     // e.g.) connection refused
+    INTERNAL_ERROR = 4; // backend error 
+  }
+
   bool ok = 1;
   optional string error_message = 2; // if ok is false, this field is set
   int64 time_elapsed = 3;  // in milliseconds
   int32 total_requests = 4;
   int32 requests_per_second = 5;
   Task task = 6;
+  Status status = 7;
 }
 
 message HttpRequest {

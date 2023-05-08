@@ -24,6 +24,14 @@ message Group {
 }
 
 message Submit {
+  enum Status {
+    WAIT = 0;           // waiting for benchmark
+    IN_PROGRESS = 1;    // in progress
+    SUCCESS = 2;        // benchmark succeeded
+    USER_ERROR = 3;     // e.g.) connection refused
+    INTERNAL_ERROR = 4; // backend error 
+  }
+
   int32 id = 1;
   int32 group_id = 2;
   int32 year = 3;
@@ -36,6 +44,14 @@ message Submit {
 }
 
 message TaskResult {
+  enum TaskStatus {
+    SUCCESS = 0;
+    TIMEOUT = 1;
+    VALIDATION_ERROR = 2;
+    USER_ERROR = 3;
+    INTERNAL_ERROR = 4;
+  }
+
   int32 id = 1;
   int32 request_per_sec = 2;
   string url = 3;
@@ -51,6 +67,7 @@ message TaskResult {
   google.protobuf.Timestamp created_at = 13;
   optional google.protobuf.Timestamp deleted_at = 14;
   optional string error_message = 15;
+  TaskStatus status = 16;
 }
 
 enum Language {
@@ -67,12 +84,4 @@ enum Language {
 enum Role {
   CONTESTANT = 0;
   GUEST = 1;
-}
-
-enum Status {
-  WAIT = 0;           // waiting for benchmark
-  IN_PROGRESS = 1;    // in progress
-  SUCCESS = 2;        // benchmark succeeded
-  USER_ERROR = 3;     // e.g.) connection refused
-  INTERNAL_ERROR = 4; // backend error 
 }
