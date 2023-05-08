@@ -32,6 +32,7 @@ message Submit {
   google.protobuf.Timestamp submited_at = 6;
   optional google.protobuf.Timestamp completed_at = 7;  // it this field is not null, this submit is completed
   repeated TaskResult task_results = 8;
+  Status status = 9;
 }
 
 message TaskResult {
@@ -66,4 +67,12 @@ enum Language {
 enum Role {
   CONTESTANT = 0;
   GUEST = 1;
+}
+
+enum Status {
+  WAIT = 0;           // waiting for benchmark
+  IN_PROGRESS = 1;    // in progress
+  SUCCESS = 2;        // benchmark succeeded
+  USER_ERROR = 3;     // e.g.) connection refused
+  INTERNAL_ERROR = 4; // backend error 
 }

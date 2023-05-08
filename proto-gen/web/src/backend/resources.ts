@@ -102,6 +102,10 @@ export interface Submit {
      * @generated from protobuf field: repeated TaskResult task_results = 8;
      */
     taskResults: TaskResult[];
+    /**
+     * @generated from protobuf field: Status status = 9;
+     */
+    status: Status;
 }
 /**
  * @generated from protobuf message TaskResult
@@ -217,6 +221,41 @@ export enum Role {
      * @generated from protobuf enum value: GUEST = 1;
      */
     GUEST = 1
+}
+/**
+ * @generated from protobuf enum Status
+ */
+export enum Status {
+    /**
+     * waiting for benchmark
+     *
+     * @generated from protobuf enum value: WAIT = 0;
+     */
+    WAIT = 0,
+    /**
+     * in progress
+     *
+     * @generated from protobuf enum value: IN_PROGRESS = 1;
+     */
+    IN_PROGRESS = 1,
+    /**
+     * benchmark succeeded
+     *
+     * @generated from protobuf enum value: SUCCESS = 2;
+     */
+    SUCCESS = 2,
+    /**
+     * e.g.) connection refused
+     *
+     * @generated from protobuf enum value: USER_ERROR = 3;
+     */
+    USER_ERROR = 3,
+    /**
+     * backend error
+     *
+     * @generated from protobuf enum value: INTERNAL_ERROR = 4;
+     */
+    INTERNAL_ERROR = 4
 }
 // @generated message type with reflection information, may provide speed optimized methods
 class Contest$Type extends MessageType<Contest> {
@@ -386,11 +425,12 @@ class Submit$Type extends MessageType<Submit> {
             { no: 5, name: "language", kind: "enum", T: () => ["Language", Language] },
             { no: 6, name: "submited_at", kind: "message", T: () => Timestamp },
             { no: 7, name: "completed_at", kind: "message", T: () => Timestamp },
-            { no: 8, name: "task_results", kind: "message", repeat: 1 /*RepeatType.PACKED*/, T: () => TaskResult }
+            { no: 8, name: "task_results", kind: "message", repeat: 1 /*RepeatType.PACKED*/, T: () => TaskResult },
+            { no: 9, name: "status", kind: "enum", T: () => ["Status", Status] }
         ]);
     }
     create(value?: PartialMessage<Submit>): Submit {
-        const message = { id: 0, groupId: 0, year: 0, score: 0, language: 0, taskResults: [] };
+        const message = { id: 0, groupId: 0, year: 0, score: 0, language: 0, taskResults: [], status: 0 };
         globalThis.Object.defineProperty(message, MESSAGE_TYPE, { enumerable: false, value: this });
         if (value !== undefined)
             reflectionMergePartial<Submit>(this, message, value);
@@ -424,6 +464,9 @@ class Submit$Type extends MessageType<Submit> {
                     break;
                 case /* repeated TaskResult task_results */ 8:
                     message.taskResults.push(TaskResult.internalBinaryRead(reader, reader.uint32(), options));
+                    break;
+                case /* Status status */ 9:
+                    message.status = reader.int32();
                     break;
                 default:
                     let u = options.readUnknownField;
@@ -461,6 +504,9 @@ class Submit$Type extends MessageType<Submit> {
         /* repeated TaskResult task_results = 8; */
         for (let i = 0; i < message.taskResults.length; i++)
             TaskResult.internalBinaryWrite(message.taskResults[i], writer.tag(8, WireType.LengthDelimited).fork(), options).join();
+        /* Status status = 9; */
+        if (message.status !== 0)
+            writer.tag(9, WireType.Varint).int32(message.status);
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
