@@ -41,6 +41,7 @@ message Submit {
   optional google.protobuf.Timestamp completed_at = 7;  // it this field is not null, this submit is completed
   repeated TaskResult task_results = 8;
   Status status = 9;
+  optional string error_message = 10;  // if the connection error occurs, then this field is filled 
 }
 
 message TaskResult {
