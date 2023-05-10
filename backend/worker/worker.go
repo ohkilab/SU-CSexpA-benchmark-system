@@ -96,7 +96,7 @@ func (w *worker) Run() {
 				if err != nil {
 					log.Println(err)
 				}
-				return
+				break
 			}
 
 			eg.Go(func() error {

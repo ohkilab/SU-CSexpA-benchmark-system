@@ -3,6 +3,7 @@ package submit
 import (
 	"context"
 	"fmt"
+	"log"
 	"strconv"
 	"time"
 
@@ -133,10 +134,11 @@ func (i *Interactor) GetSubmit(req *backendpb.GetSubmitRequest, stream backendpb
 		}
 		// ベンチマーク処理が完了していたら結果を返す
 		if !s.CompletedAt.IsZero() {
+			log.Println("completed submit:", s)
 			break
 		}
 
-		time.Sleep(200 * time.Second)
+		time.Sleep(500 * time.Millisecond)
 	}
 
 	return nil
