@@ -136,7 +136,7 @@ func (i *Interactor) GetSubmit(req *backendpb.GetSubmitRequest, stream backendpb
 			break
 		}
 
-		time.Sleep(2 * time.Second)
+		time.Sleep(200 * time.Second)
 	}
 
 	return nil
@@ -154,8 +154,9 @@ func toGetSubmitResponse(submit *ent.Submit) *backendpb.GetSubmitResponse {
 			Year:    int32(submit.Year),
 			Score:   int32(submit.Score),
 			// Language: submit.Language,
-			SubmitedAt:  timestamppb.New(submit.SubmitedAt),
-			CompletedAt: completedAt,
+			ErrorMessage: &submit.Message,
+			SubmitedAt:   timestamppb.New(submit.SubmitedAt),
+			CompletedAt:  completedAt,
 			TaskResults: lo.Map(submit.Edges.TaskResults, func(taskResult *ent.TaskResult, _ int) *backendpb.TaskResult {
 				var requestBody *string
 				if taskResult.RequestBody != "" {
