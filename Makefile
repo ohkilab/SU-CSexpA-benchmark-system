@@ -13,6 +13,6 @@ prepare:
 build: prepare
 	docker compose build
 
-.PHONY: up
+.PHONY: up prepare
 up:
 	docker compose up --wait --build
