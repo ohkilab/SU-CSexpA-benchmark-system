@@ -96,6 +96,10 @@ func (c *Client) request(url string) (*http.Response, time.Duration, error) {
 		if err == nil {
 			return resp, time.Since(now), nil
 		}
+
+		// error occured, so close and discard response body
+		_, _ = io.Copy(io.Discard, resp.Body)
+		resp.Body.Close()
 	}
 }
 
