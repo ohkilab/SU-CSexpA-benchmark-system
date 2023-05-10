@@ -13,7 +13,7 @@ import (
 func main() {
 	client := benchmark.NewClient()
 
-	lsnr, err := net.Listen("tcp", ":50051")
+	lsnr, err := net.Listen("tcp", ":50052")
 	if err != nil {
 		log.Fatal(err)
 	}

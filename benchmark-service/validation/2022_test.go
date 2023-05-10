@@ -1,8 +1,6 @@
 package validation
 
 import (
-	"bytes"
-	"io"
 	"net/url"
 	"testing"
 
@@ -617,8 +615,7 @@ const testdata = `
 }`
 
 func Test_validate2022(t *testing.T) {
-	r := io.NopCloser(bytes.NewReader([]byte(testdata)))
 	uri, _ := url.ParseRequestURI("http://localhost:8080/program?tag=陸上自衛隊")
-	err := Validate2022(uri, r)
+	err := Validate2022(uri, []byte(testdata))
 	assert.NoError(t, err)
 }

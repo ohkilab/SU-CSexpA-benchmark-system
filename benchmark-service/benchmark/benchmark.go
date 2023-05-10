@@ -56,21 +56,30 @@ func (c *Client) Run(ctx context.Context, url string, options ...optionFunc) ([]
 						return err
 					}
 
-					done := func() bool {
+					done, err := func() (bool, error) {
+						b, err := io.ReadAll(resp.Body)
+						if err != nil {
+							return false, err
+						}
+						resp.Body.Close()
+
 						mu.Lock()
 						defer mu.Unlock()
 						results = append(results, &HttpResult{
 							StatusCode:   resp.StatusCode,
 							ContentType:  resp.Header.Get("Content-Type"),
-							Body:         resp.Body,
+							Body:         b,
 							ResponseTime: took,
 						})
 						attemptCount++
 						if attemptCount == option.attmptCount {
-							return true
+							return true, nil
 						}
-						return false
+						return false, nil
 					}()
+					if err != nil {
+						return err
+					}
 					if done {
 						cancel()
 					}
@@ -106,6 +115,6 @@ func (c *Client) request(url string) (*http.Response, time.Duration, error) {
 type HttpResult struct {
 	StatusCode   int
 	ContentType  string
-	Body         io.ReadCloser
+	Body         []byte
 	ResponseTime time.Duration
 }
