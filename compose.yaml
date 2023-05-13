@@ -4,7 +4,8 @@ services:
       context: backend
       dockerfile: Dockerfile
     env_file:
-      - backend/.env
+      - .env
+    network_mode: host
     restart: always
     depends_on:
       - db
@@ -14,12 +15,14 @@ services:
     build:
       context: benchmark-service
       dockerfile: Dockerfile
+    network_mode: host
 
   db:
     image: mysql:8.0
     restart: always
     env_file:
       - .env
+    network_mode: host
     volumes:
       - ./data:/var/lib/mysql
 
@@ -27,6 +30,7 @@ services:
     build:
       context: .
       dockerfile: frontend/Dockerfile
+    network_mode: host
     environment:
       - NGINX_PORT=80
     depends_on:
@@ -35,12 +39,8 @@ services:
 
   envoy:
     image: envoyproxy/envoy:v1.26-latest
+    network_mode: host
     volumes:
       - ./frontend/envoy_docker.yaml:/etc/envoy/envoy.yaml
     extra_hosts:
       - "host.docker.internal:host-gateway"
-
-networks:
-  default:
-    name: host
-    external: true
