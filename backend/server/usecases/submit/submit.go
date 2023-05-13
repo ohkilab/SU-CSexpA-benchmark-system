@@ -7,6 +7,7 @@ import (
 	"strconv"
 	"time"
 
+	"entgo.io/ent/dialect/sql"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/ent"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/ent/contest"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/ent/group"
@@ -186,7 +187,7 @@ func (i *Interactor) ListSubmits(ctx context.Context, groupID *string, status *b
 	if status != nil {
 		q.Where(submit.StatusEQ(submit.Status(status.String())))
 	}
-	submits, err := q.All(ctx)
+	submits, err := q.Order(submit.BySubmitedAt(sql.OrderDesc())).All(ctx)
 	if err != nil {
 		return nil, err
 	}
