@@ -11,6 +11,8 @@ import type { ServiceInfo } from "@protobuf-ts/runtime-rpc";
 import { BackendService } from "./services";
 import type { PostLoginResponse } from "./messages";
 import type { PostLoginRequest } from "./messages";
+import type { ListSubmitsResponse } from "./messages";
+import type { ListSubmitsRequest } from "./messages";
 import type { GetSubmitResponse } from "./messages";
 import type { GetSubmitRequest } from "./messages";
 import type { ServerStreamingCall } from "@protobuf-ts/runtime-rpc";
@@ -37,6 +39,10 @@ export interface IBackendServiceClient {
      * @generated from protobuf rpc: GetSubmit(GetSubmitRequest) returns (stream GetSubmitResponse);
      */
     getSubmit(input: GetSubmitRequest, options?: RpcOptions): ServerStreamingCall<GetSubmitRequest, GetSubmitResponse>;
+    /**
+     * @generated from protobuf rpc: ListSubmits(ListSubmitsRequest) returns (ListSubmitsResponse);
+     */
+    listSubmits(input: ListSubmitsRequest, options?: RpcOptions): UnaryCall<ListSubmitsRequest, ListSubmitsResponse>;
     /**
      * @generated from protobuf rpc: PostLogin(PostLoginRequest) returns (PostLoginResponse);
      */
@@ -73,10 +79,17 @@ export class BackendServiceClient implements IBackendServiceClient, ServiceInfo 
         return stackIntercept<GetSubmitRequest, GetSubmitResponse>("serverStreaming", this._transport, method, opt, input);
     }
     /**
+     * @generated from protobuf rpc: ListSubmits(ListSubmitsRequest) returns (ListSubmitsResponse);
+     */
+    listSubmits(input: ListSubmitsRequest, options?: RpcOptions): UnaryCall<ListSubmitsRequest, ListSubmitsResponse> {
+        const method = this.methods[3], opt = this._transport.mergeOptions(options);
+        return stackIntercept<ListSubmitsRequest, ListSubmitsResponse>("unary", this._transport, method, opt, input);
+    }
+    /**
      * @generated from protobuf rpc: PostLogin(PostLoginRequest) returns (PostLoginResponse);
      */
     postLogin(input: PostLoginRequest, options?: RpcOptions): UnaryCall<PostLoginRequest, PostLoginResponse> {
-        const method = this.methods[3], opt = this._transport.mergeOptions(options);
+        const method = this.methods[4], opt = this._transport.mergeOptions(options);
         return stackIntercept<PostLoginRequest, PostLoginResponse>("unary", this._transport, method, opt, input);
     }
 }

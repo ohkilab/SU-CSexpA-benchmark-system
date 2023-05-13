@@ -8,6 +8,7 @@ service BackendService {
   rpc GetRanking(GetRankingRequest) returns (GetRankingResponse);
   rpc PostSubmit(PostSubmitRequest) returns (PostSubmitResponse);
   rpc GetSubmit(GetSubmitRequest) returns (stream GetSubmitResponse);
+  rpc ListSubmits(ListSubmitsRequest) returns (ListSubmitsResponse);
   rpc PostLogin(PostLoginRequest) returns (PostLoginResponse);
 }
 

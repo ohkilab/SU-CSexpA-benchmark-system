@@ -19,10 +19,11 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	BackendService_GetRanking_FullMethodName = "/BackendService/GetRanking"
-	BackendService_PostSubmit_FullMethodName = "/BackendService/PostSubmit"
-	BackendService_GetSubmit_FullMethodName  = "/BackendService/GetSubmit"
-	BackendService_PostLogin_FullMethodName  = "/BackendService/PostLogin"
+	BackendService_GetRanking_FullMethodName  = "/BackendService/GetRanking"
+	BackendService_PostSubmit_FullMethodName  = "/BackendService/PostSubmit"
+	BackendService_GetSubmit_FullMethodName   = "/BackendService/GetSubmit"
+	BackendService_ListSubmits_FullMethodName = "/BackendService/ListSubmits"
+	BackendService_PostLogin_FullMethodName   = "/BackendService/PostLogin"
 )
 
 // BackendServiceClient is the client API for BackendService service.
@@ -32,6 +33,7 @@ type BackendServiceClient interface {
 	GetRanking(ctx context.Context, in *GetRankingRequest, opts ...grpc.CallOption) (*GetRankingResponse, error)
 	PostSubmit(ctx context.Context, in *PostSubmitRequest, opts ...grpc.CallOption) (*PostSubmitResponse, error)
 	GetSubmit(ctx context.Context, in *GetSubmitRequest, opts ...grpc.CallOption) (BackendService_GetSubmitClient, error)
+	ListSubmits(ctx context.Context, in *ListSubmitsRequest, opts ...grpc.CallOption) (*ListSubmitsResponse, error)
 	PostLogin(ctx context.Context, in *PostLoginRequest, opts ...grpc.CallOption) (*PostLoginResponse, error)
 }
 
@@ -93,6 +95,15 @@ func (x *backendServiceGetSubmitClient) Recv() (*GetSubmitResponse, error) {
 	return m, nil
 }
 
+func (c *backendServiceClient) ListSubmits(ctx context.Context, in *ListSubmitsRequest, opts ...grpc.CallOption) (*ListSubmitsResponse, error) {
+	out := new(ListSubmitsResponse)
+	err := c.cc.Invoke(ctx, BackendService_ListSubmits_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *backendServiceClient) PostLogin(ctx context.Context, in *PostLoginRequest, opts ...grpc.CallOption) (*PostLoginResponse, error) {
 	out := new(PostLoginResponse)
 	err := c.cc.Invoke(ctx, BackendService_PostLogin_FullMethodName, in, out, opts...)
@@ -109,6 +120,7 @@ type BackendServiceServer interface {
 	GetRanking(context.Context, *GetRankingRequest) (*GetRankingResponse, error)
 	PostSubmit(context.Context, *PostSubmitRequest) (*PostSubmitResponse, error)
 	GetSubmit(*GetSubmitRequest, BackendService_GetSubmitServer) error
+	ListSubmits(context.Context, *ListSubmitsRequest) (*ListSubmitsResponse, error)
 	PostLogin(context.Context, *PostLoginRequest) (*PostLoginResponse, error)
 }
 
@@ -124,6 +136,9 @@ func (UnimplementedBackendServiceServer) PostSubmit(context.Context, *PostSubmit
 }
 func (UnimplementedBackendServiceServer) GetSubmit(*GetSubmitRequest, BackendService_GetSubmitServer) error {
 	return status.Errorf(codes.Unimplemented, "method GetSubmit not implemented")
+}
+func (UnimplementedBackendServiceServer) ListSubmits(context.Context, *ListSubmitsRequest) (*ListSubmitsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ListSubmits not implemented")
 }
 func (UnimplementedBackendServiceServer) PostLogin(context.Context, *PostLoginRequest) (*PostLoginResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method PostLogin not implemented")
@@ -197,6 +212,24 @@ func (x *backendServiceGetSubmitServer) Send(m *GetSubmitResponse) error {
 	return x.ServerStream.SendMsg(m)
 }
 
+func _BackendService_ListSubmits_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListSubmitsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BackendServiceServer).ListSubmits(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: BackendService_ListSubmits_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BackendServiceServer).ListSubmits(ctx, req.(*ListSubmitsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _BackendService_PostLogin_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(PostLoginRequest)
 	if err := dec(in); err != nil {
@@ -229,6 +262,10 @@ var BackendService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "PostSubmit",
 			Handler:    _BackendService_PostSubmit_Handler,
+		},
+		{
+			MethodName: "ListSubmits",
+			Handler:    _BackendService_ListSubmits_Handler,
 		},
 		{
 			MethodName: "PostLogin",

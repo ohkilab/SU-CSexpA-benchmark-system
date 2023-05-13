@@ -103,48 +103,13 @@ export interface Submit {
      */
     taskResults: TaskResult[];
     /**
-     * @generated from protobuf field: Submit.Status status = 9;
+     * @generated from protobuf field: Status status = 9;
      */
-    status: Submit_Status;
+    status: Status;
     /**
      * @generated from protobuf field: optional string error_message = 10;
      */
     errorMessage?: string; // if the connection error occurs, then this field is filled 
-}
-/**
- * @generated from protobuf enum Submit.Status
- */
-export enum Submit_Status {
-    /**
-     * waiting for benchmark
-     *
-     * @generated from protobuf enum value: WAIT = 0;
-     */
-    WAIT = 0,
-    /**
-     * in progress
-     *
-     * @generated from protobuf enum value: IN_PROGRESS = 1;
-     */
-    IN_PROGRESS = 1,
-    /**
-     * benchmark succeeded
-     *
-     * @generated from protobuf enum value: SUCCESS = 2;
-     */
-    SUCCESS = 2,
-    /**
-     * e.g.) connection refused
-     *
-     * @generated from protobuf enum value: USER_ERROR = 3;
-     */
-    USER_ERROR = 3,
-    /**
-     * backend error
-     *
-     * @generated from protobuf enum value: INTERNAL_ERROR = 4;
-     */
-    INTERNAL_ERROR = 4
 }
 /**
  * @generated from protobuf message TaskResult
@@ -211,31 +176,41 @@ export interface TaskResult {
      */
     errorMessage?: string;
     /**
-     * @generated from protobuf field: TaskResult.TaskStatus status = 16;
+     * @generated from protobuf field: Status status = 16;
      */
-    status: TaskResult_TaskStatus;
+    status: Status;
 }
 /**
- * @generated from protobuf enum TaskResult.TaskStatus
+ * @generated from protobuf enum Status
  */
-export enum TaskResult_TaskStatus {
+export enum Status {
     /**
-     * @generated from protobuf enum value: SUCCESS = 0;
+     * waiting for benchmark
+     *
+     * @generated from protobuf enum value: WAITING = 0;
      */
-    SUCCESS = 0,
+    WAITING = 0,
     /**
-     * @generated from protobuf enum value: TIMEOUT = 1;
+     * in progress
+     *
+     * @generated from protobuf enum value: IN_PROGRESS = 1;
      */
-    TIMEOUT = 1,
+    IN_PROGRESS = 1,
     /**
-     * @generated from protobuf enum value: VALIDATION_ERROR = 2;
+     * benchmark succeeded
+     *
+     * @generated from protobuf enum value: SUCCESS = 2;
      */
-    VALIDATION_ERROR = 2,
+    SUCCESS = 2,
     /**
+     * e.g.) connection refused
+     *
      * @generated from protobuf enum value: USER_ERROR = 3;
      */
     USER_ERROR = 3,
     /**
+     * backend error
+     *
      * @generated from protobuf enum value: INTERNAL_ERROR = 4;
      */
     INTERNAL_ERROR = 4
@@ -459,7 +434,7 @@ class Submit$Type extends MessageType<Submit> {
             { no: 6, name: "submited_at", kind: "message", T: () => Timestamp },
             { no: 7, name: "completed_at", kind: "message", T: () => Timestamp },
             { no: 8, name: "task_results", kind: "message", repeat: 1 /*RepeatType.PACKED*/, T: () => TaskResult },
-            { no: 9, name: "status", kind: "enum", T: () => ["Submit.Status", Submit_Status] },
+            { no: 9, name: "status", kind: "enum", T: () => ["Status", Status] },
             { no: 10, name: "error_message", kind: "scalar", opt: true, T: 9 /*ScalarType.STRING*/ }
         ]);
     }
@@ -499,7 +474,7 @@ class Submit$Type extends MessageType<Submit> {
                 case /* repeated TaskResult task_results */ 8:
                     message.taskResults.push(TaskResult.internalBinaryRead(reader, reader.uint32(), options));
                     break;
-                case /* Submit.Status status */ 9:
+                case /* Status status */ 9:
                     message.status = reader.int32();
                     break;
                 case /* optional string error_message */ 10:
@@ -541,7 +516,7 @@ class Submit$Type extends MessageType<Submit> {
         /* repeated TaskResult task_results = 8; */
         for (let i = 0; i < message.taskResults.length; i++)
             TaskResult.internalBinaryWrite(message.taskResults[i], writer.tag(8, WireType.LengthDelimited).fork(), options).join();
-        /* Submit.Status status = 9; */
+        /* Status status = 9; */
         if (message.status !== 0)
             writer.tag(9, WireType.Varint).int32(message.status);
         /* optional string error_message = 10; */
@@ -576,7 +551,7 @@ class TaskResult$Type extends MessageType<TaskResult> {
             { no: 13, name: "created_at", kind: "message", T: () => Timestamp },
             { no: 14, name: "deleted_at", kind: "message", T: () => Timestamp },
             { no: 15, name: "error_message", kind: "scalar", opt: true, T: 9 /*ScalarType.STRING*/ },
-            { no: 16, name: "status", kind: "enum", T: () => ["TaskResult.TaskStatus", TaskResult_TaskStatus] }
+            { no: 16, name: "status", kind: "enum", T: () => ["Status", Status] }
         ]);
     }
     create(value?: PartialMessage<TaskResult>): TaskResult {
@@ -636,7 +611,7 @@ class TaskResult$Type extends MessageType<TaskResult> {
                 case /* optional string error_message */ 15:
                     message.errorMessage = reader.string();
                     break;
-                case /* TaskResult.TaskStatus status */ 16:
+                case /* Status status */ 16:
                     message.status = reader.int32();
                     break;
                 default:
@@ -696,7 +671,7 @@ class TaskResult$Type extends MessageType<TaskResult> {
         /* optional string error_message = 15; */
         if (message.errorMessage !== undefined)
             writer.tag(15, WireType.LengthDelimited).string(message.errorMessage);
-        /* TaskResult.TaskStatus status = 16; */
+        /* Status status = 16; */
         if (message.status !== 0)
             writer.tag(16, WireType.Varint).int32(message.status);
         let u = options.writeUnknownFields;
