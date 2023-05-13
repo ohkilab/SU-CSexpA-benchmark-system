@@ -109,7 +109,7 @@ export interface Submit {
     /**
      * @generated from protobuf field: optional string error_message = 10;
      */
-    errorMessage?: string; // if the connection error occurs, then this field is filled 
+    errorMessage?: string; // if the connection error occurs, then this field is filled
 }
 /**
  * @generated from protobuf message TaskResult
@@ -203,17 +203,23 @@ export enum Status {
      */
     SUCCESS = 2,
     /**
-     * e.g.) connection refused
+     * failed to connect
      *
-     * @generated from protobuf enum value: USER_ERROR = 3;
+     * @generated from protobuf enum value: CONNECTION_FAILED = 3;
      */
-    USER_ERROR = 3,
+    CONNECTION_FAILED = 3,
+    /**
+     * validation error
+     *
+     * @generated from protobuf enum value: VALIDATION_ERROR = 4;
+     */
+    VALIDATION_ERROR = 4,
     /**
      * backend error
      *
-     * @generated from protobuf enum value: INTERNAL_ERROR = 4;
+     * @generated from protobuf enum value: INTERNAL_ERROR = 5;
      */
-    INTERNAL_ERROR = 4
+    INTERNAL_ERROR = 5
 }
 /**
  * @generated from protobuf enum Language

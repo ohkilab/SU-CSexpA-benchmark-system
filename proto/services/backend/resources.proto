@@ -30,10 +30,12 @@ message Submit {
   int32 score = 4;
   Language language = 5;
   google.protobuf.Timestamp submited_at = 6;
-  optional google.protobuf.Timestamp completed_at = 7;  // it this field is not null, this submit is completed
+  optional google.protobuf.Timestamp completed_at =
+      7; // it this field is not null, this submit is completed
   repeated TaskResult task_results = 8;
   Status status = 9;
-  optional string error_message = 10;  // if the connection error occurs, then this field is filled 
+  optional string error_message =
+      10; // if the connection error occurs, then this field is filled
 }
 
 message TaskResult {
@@ -56,11 +58,12 @@ message TaskResult {
 }
 
 enum Status {
-  WAITING = 0;        // waiting for benchmark
-  IN_PROGRESS = 1;    // in progress
-  SUCCESS = 2;        // benchmark succeeded
-  USER_ERROR = 3;     // e.g.) connection refused
-  INTERNAL_ERROR = 4; // backend error 
+  WAITING = 0;           // waiting for benchmark
+  IN_PROGRESS = 1;       // in progress
+  SUCCESS = 2;           // benchmark succeeded
+  CONNECTION_FAILED = 3; // failed to connect
+  VALIDATION_ERROR = 4;  // validation error
+  INTERNAL_ERROR = 5;    // backend error
 }
 
 enum Language {
