@@ -54,6 +54,17 @@ func (w *worker) Run() {
 		stream, err := w.benchmarkClient.Execute(ctx, task.Req)
 		if err != nil {
 			log.Println(err)
+			_, err = w.entClient.Submit.UpdateOneID(task.SubmitID).
+				SetScore(0).
+				SetMessage("failed to connect to benchmark-service").
+				SetStatus(backend.Status_INTERNAL_ERROR.String()).
+				SetCompletedAt(timejst.Now()).
+				SetUpdatedAt(timejst.Now()).
+				Save(ctx)
+			if err != nil {
+				log.Println(err)
+			}
+			continue
 		}
 		_, err = w.entClient.Submit.UpdateOneID(task.SubmitID).
 			SetStatus(backendpb.Status_IN_PROGRESS.String()).
