@@ -173,6 +173,7 @@ func toPbSubmit(submit *ent.Submit) *backendpb.Submit {
 				ThreadNum:          int32(taskResult.ThreadNum),
 				AttemptCount:       int32(taskResult.AttemptCount),
 				Status:             backendpb.Status(backendpb.Status_value[taskResult.Status]),
+				ErrorMessage:       &taskResult.ErrorMessage,
 				CreatedAt:          timestamppb.New(taskResult.CreatedAt),
 			}
 		}),

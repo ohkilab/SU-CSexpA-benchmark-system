@@ -7,10 +7,12 @@ import (
 	"time"
 
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/ent"
+	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/ent/submit"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/core/timejst"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/proto-gen/go/backend"
 	backendpb "github.com/ohkilab/SU-CSexpA-benchmark-system/proto-gen/go/backend"
 	benchmarkpb "github.com/ohkilab/SU-CSexpA-benchmark-system/proto-gen/go/benchmark"
+	"github.com/samber/lo"
 	"golang.org/x/net/context"
 	"golang.org/x/sync/errgroup"
 )
@@ -84,6 +86,22 @@ func (w *worker) Run() {
 				if err := stream.CloseSend(); err != nil {
 					log.Println(err)
 				}
+				submit, err := w.entClient.Submit.Query().WithTaskResults().Where(submit.ID(task.SubmitID)).Only(ctx)
+				if err != nil {
+					log.Println(err)
+					break
+				}
+				if len(submit.Edges.TaskResults) == 0 {
+					break
+				}
+				if mp := lo.Associate(submit.Edges.TaskResults, func(tr *ent.TaskResult) (string, struct{}) {
+					return tr.ErrorMessage, struct{}{}
+				}); len(mp) == 1 {
+					if _, err := w.entClient.Submit.UpdateOneID(task.SubmitID).SetMessage(submit.Edges.TaskResults[0].ErrorMessage).Save(ctx); err != nil {
+						log.Println(err)
+						break
+					}
+				}
 				break
 			}
 			log.Println("received", resp)
@@ -111,7 +129,6 @@ func (w *worker) Run() {
 				}
 				mu.Unlock()
 
-				log.Println(resp.RequestsPerSecond)
 				var errorMessage string
 				if resp.ErrorMessage != nil {
 					errorMessage = *resp.ErrorMessage
