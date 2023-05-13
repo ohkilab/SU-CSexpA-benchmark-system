@@ -118,7 +118,7 @@ func (su *SubmitUpdate) ClearMessage() *SubmitUpdate {
 }
 
 // SetStatus sets the "status" field.
-func (su *SubmitUpdate) SetStatus(s submit.Status) *SubmitUpdate {
+func (su *SubmitUpdate) SetStatus(s string) *SubmitUpdate {
 	su.mutation.SetStatus(s)
 	return su
 }
@@ -299,11 +299,6 @@ func (su *SubmitUpdate) check() error {
 			return &ValidationError{Name: "language", err: fmt.Errorf(`ent: validator failed for field "Submit.language": %w`, err)}
 		}
 	}
-	if v, ok := su.mutation.Status(); ok {
-		if err := submit.StatusValidator(v); err != nil {
-			return &ValidationError{Name: "status", err: fmt.Errorf(`ent: validator failed for field "Submit.status": %w`, err)}
-		}
-	}
 	return nil
 }
 
@@ -350,7 +345,7 @@ func (su *SubmitUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		_spec.ClearField(submit.FieldMessage, field.TypeString)
 	}
 	if value, ok := su.mutation.Status(); ok {
-		_spec.SetField(submit.FieldStatus, field.TypeEnum, value)
+		_spec.SetField(submit.FieldStatus, field.TypeString, value)
 	}
 	if value, ok := su.mutation.SubmitedAt(); ok {
 		_spec.SetField(submit.FieldSubmitedAt, field.TypeTime, value)
@@ -577,7 +572,7 @@ func (suo *SubmitUpdateOne) ClearMessage() *SubmitUpdateOne {
 }
 
 // SetStatus sets the "status" field.
-func (suo *SubmitUpdateOne) SetStatus(s submit.Status) *SubmitUpdateOne {
+func (suo *SubmitUpdateOne) SetStatus(s string) *SubmitUpdateOne {
 	suo.mutation.SetStatus(s)
 	return suo
 }
@@ -771,11 +766,6 @@ func (suo *SubmitUpdateOne) check() error {
 			return &ValidationError{Name: "language", err: fmt.Errorf(`ent: validator failed for field "Submit.language": %w`, err)}
 		}
 	}
-	if v, ok := suo.mutation.Status(); ok {
-		if err := submit.StatusValidator(v); err != nil {
-			return &ValidationError{Name: "status", err: fmt.Errorf(`ent: validator failed for field "Submit.status": %w`, err)}
-		}
-	}
 	return nil
 }
 
@@ -839,7 +829,7 @@ func (suo *SubmitUpdateOne) sqlSave(ctx context.Context) (_node *Submit, err err
 		_spec.ClearField(submit.FieldMessage, field.TypeString)
 	}
 	if value, ok := suo.mutation.Status(); ok {
-		_spec.SetField(submit.FieldStatus, field.TypeEnum, value)
+		_spec.SetField(submit.FieldStatus, field.TypeString, value)
 	}
 	if value, ok := suo.mutation.SubmitedAt(); ok {
 		_spec.SetField(submit.FieldSubmitedAt, field.TypeTime, value)

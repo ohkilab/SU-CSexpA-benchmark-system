@@ -20,6 +20,8 @@ type TaskResult struct {
 	ID int `json:"id,omitempty"`
 	// RequestPerSec holds the value of the "request_per_sec" field.
 	RequestPerSec int `json:"request_per_sec,omitempty"`
+	// Status holds the value of the "status" field.
+	Status string `json:"status,omitempty"`
 	// ErrorMessage holds the value of the "error_message" field.
 	ErrorMessage string `json:"error_message,omitempty"`
 	// URL holds the value of the "url" field.
@@ -74,7 +76,7 @@ func (*TaskResult) scanValues(columns []string) ([]any, error) {
 		switch columns[i] {
 		case taskresult.FieldID, taskresult.FieldRequestPerSec, taskresult.FieldThreadNum, taskresult.FieldAttemptCount:
 			values[i] = new(sql.NullInt64)
-		case taskresult.FieldErrorMessage, taskresult.FieldURL, taskresult.FieldMethod, taskresult.FieldRequestContentType, taskresult.FieldRequestBody:
+		case taskresult.FieldStatus, taskresult.FieldErrorMessage, taskresult.FieldURL, taskresult.FieldMethod, taskresult.FieldRequestContentType, taskresult.FieldRequestBody:
 			values[i] = new(sql.NullString)
 		case taskresult.FieldCreatedAt, taskresult.FieldDeletedAt:
 			values[i] = new(sql.NullTime)
@@ -106,6 +108,12 @@ func (tr *TaskResult) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field request_per_sec", values[i])
 			} else if value.Valid {
 				tr.RequestPerSec = int(value.Int64)
+			}
+		case taskresult.FieldStatus:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field status", values[i])
+			} else if value.Valid {
+				tr.Status = value.String
 			}
 		case taskresult.FieldErrorMessage:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -211,6 +219,9 @@ func (tr *TaskResult) String() string {
 	builder.WriteString(fmt.Sprintf("id=%v, ", tr.ID))
 	builder.WriteString("request_per_sec=")
 	builder.WriteString(fmt.Sprintf("%v", tr.RequestPerSec))
+	builder.WriteString(", ")
+	builder.WriteString("status=")
+	builder.WriteString(tr.Status)
 	builder.WriteString(", ")
 	builder.WriteString("error_message=")
 	builder.WriteString(tr.ErrorMessage)

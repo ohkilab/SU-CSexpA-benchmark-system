@@ -133,32 +133,6 @@ func LanguageValidator(l Language) error {
 	}
 }
 
-// Status defines the type for the "status" enum field.
-type Status string
-
-// Status values.
-const (
-	StatusWait          Status = "wait"
-	StatusInProgress    Status = "in_progress"
-	StatusSuccess       Status = "success"
-	StatusUserError     Status = "user_error"
-	StatusInternalError Status = "internal_error"
-)
-
-func (s Status) String() string {
-	return string(s)
-}
-
-// StatusValidator is a validator for the "status" field enum values. It is called by the builders before save.
-func StatusValidator(s Status) error {
-	switch s {
-	case StatusWait, StatusInProgress, StatusSuccess, StatusUserError, StatusInternalError:
-		return nil
-	default:
-		return fmt.Errorf("submit: invalid enum value for status field: %q", s)
-	}
-}
-
 // OrderOption defines the ordering options for the Submit queries.
 type OrderOption func(*sql.Selector)
 

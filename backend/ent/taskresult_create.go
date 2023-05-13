@@ -27,6 +27,12 @@ func (trc *TaskResultCreate) SetRequestPerSec(i int) *TaskResultCreate {
 	return trc
 }
 
+// SetStatus sets the "status" field.
+func (trc *TaskResultCreate) SetStatus(s string) *TaskResultCreate {
+	trc.mutation.SetStatus(s)
+	return trc
+}
+
 // SetErrorMessage sets the "error_message" field.
 func (trc *TaskResultCreate) SetErrorMessage(s string) *TaskResultCreate {
 	trc.mutation.SetErrorMessage(s)
@@ -167,6 +173,9 @@ func (trc *TaskResultCreate) check() error {
 	if _, ok := trc.mutation.RequestPerSec(); !ok {
 		return &ValidationError{Name: "request_per_sec", err: errors.New(`ent: missing required field "TaskResult.request_per_sec"`)}
 	}
+	if _, ok := trc.mutation.Status(); !ok {
+		return &ValidationError{Name: "status", err: errors.New(`ent: missing required field "TaskResult.status"`)}
+	}
 	if _, ok := trc.mutation.URL(); !ok {
 		return &ValidationError{Name: "url", err: errors.New(`ent: missing required field "TaskResult.url"`)}
 	}
@@ -220,6 +229,10 @@ func (trc *TaskResultCreate) createSpec() (*TaskResult, *sqlgraph.CreateSpec) {
 	if value, ok := trc.mutation.RequestPerSec(); ok {
 		_spec.SetField(taskresult.FieldRequestPerSec, field.TypeInt, value)
 		_node.RequestPerSec = value
+	}
+	if value, ok := trc.mutation.Status(); ok {
+		_spec.SetField(taskresult.FieldStatus, field.TypeString, value)
+		_node.Status = value
 	}
 	if value, ok := trc.mutation.ErrorMessage(); ok {
 		_spec.SetField(taskresult.FieldErrorMessage, field.TypeString, value)
