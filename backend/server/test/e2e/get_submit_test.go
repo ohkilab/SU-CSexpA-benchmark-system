@@ -7,7 +7,6 @@ import (
 	"time"
 
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/ent/group"
-	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/ent/submit"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/api/grpc"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/core/auth"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/test/utils"
@@ -55,7 +54,7 @@ func Test_GetSubmit(t *testing.T) {
 		SetURL("http://localhost:8080/program").
 		SetContests(contest).
 		SetGroups(group).
-		SetStatus(submit.StatusSuccess).
+		SetStatus(pb.Status_SUCCESS.String()).
 		SetYear(2023).
 		SetSubmitedAt(time.Now()).
 		SetCompletedAt(time.Now()).

@@ -6,7 +6,6 @@ import (
 	"time"
 
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/ent/group"
-	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/ent/submit"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/api/grpc"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/core/auth"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/test/utils"
@@ -45,7 +44,7 @@ func Test_ListSubmits(t *testing.T) {
 		SetURL("http://localhost:8080/program").
 		SetContests(contest).
 		SetGroups(group).
-		SetStatus(submit.StatusSuccess).
+		SetStatus(pb.Status_SUCCESS.String()).
 		SetYear(2023).
 		SetSubmitedAt(now.AddDate(0, 0, -2)).
 		Save(ctx)
@@ -53,7 +52,7 @@ func Test_ListSubmits(t *testing.T) {
 		SetURL("http://localhost:8080/program").
 		SetContests(contest).
 		SetGroups(group).
-		SetStatus(submit.StatusSuccess).
+		SetStatus(pb.Status_SUCCESS.String()).
 		SetYear(2023).
 		SetSubmitedAt(now.AddDate(0, 0, -1)).
 		Save(ctx)
@@ -61,7 +60,7 @@ func Test_ListSubmits(t *testing.T) {
 		SetURL("http://localhost:8080/program").
 		SetContests(contest).
 		SetGroups(group).
-		SetStatus(submit.StatusSuccess).
+		SetStatus(pb.Status_SUCCESS.String()).
 		SetYear(2023).
 		SetSubmitedAt(now).
 		Save(ctx)

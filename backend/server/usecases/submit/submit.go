@@ -52,7 +52,7 @@ func (i *Interactor) PostSubmit(ctx context.Context, req *backendpb.PostSubmitRe
 		SetSubmitedAt(timejst.Now()).
 		SetContestsID(int(req.ContestId)).
 		SetGroupsID(claims.GroupID).
-		SetStatus(submit.StatusWait).
+		SetStatus(backendpb.Status_WAITING.String()).
 		Save(ctx)
 	if err != nil {
 		return nil, status.Error(codes.Internal, err.Error())
@@ -172,6 +172,7 @@ func toPbSubmit(submit *ent.Submit) *backendpb.Submit {
 				RequestBody:        requestBody,
 				ThreadNum:          int32(taskResult.ThreadNum),
 				AttemptCount:       int32(taskResult.AttemptCount),
+				Status:             backendpb.Status(backendpb.Status_value[taskResult.Status]),
 				CreatedAt:          timestamppb.New(taskResult.CreatedAt),
 			}
 		}),
@@ -185,7 +186,7 @@ func (i *Interactor) ListSubmits(ctx context.Context, groupID *string, status *b
 		}
 	})
 	if status != nil {
-		q.Where(submit.StatusEQ(submit.Status(status.String())))
+		q.Where(submit.StatusEQ(status.String()))
 	}
 	submits, err := q.Order(submit.BySubmitedAt(sql.OrderDesc())).All(ctx)
 	if err != nil {
