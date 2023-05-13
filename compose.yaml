@@ -5,11 +5,14 @@ services:
       dockerfile: Dockerfile
     env_file:
       - .env
-    network_mode: host
     restart: always
+    ports:
+      - 50051:50051
     depends_on:
       - db
       - benchmark-service
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
 
   benchmark-service:
     build:
@@ -17,14 +20,20 @@ services:
       dockerfile: Dockerfile
     env_file:
       - .env
-    network_mode: host
+    # TODO: benchmark-service を host と同一のネットワークに載せる(そうしないと benchmark-service から直接 IP アドレスにアクセスすることができない)
+    # network_mode: host
+    # expose:
+    #   - 50052
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
 
   db:
     image: mysql:8.0
     restart: always
     env_file:
       - .env
-    network_mode: host
+    ports:
+      - 3306:3306
     volumes:
       - ./data:/var/lib/mysql
 
@@ -32,16 +41,19 @@ services:
     build:
       context: .
       dockerfile: frontend/Dockerfile
-    network_mode: host
     environment:
       - NGINX_PORT=80
+    ports:
+      - "8000:80"
     depends_on:
       - envoy
       - backend
 
   envoy:
     image: envoyproxy/envoy:v1.26-latest
-    network_mode: host
+    ports:
+      - "8080:8080"
+      - "9901:9901"
     volumes:
       - ./frontend/envoy_docker.yaml:/etc/envoy/envoy.yaml
     extra_hosts:
