@@ -3,7 +3,7 @@ syntax = "proto3";
 import "backend/resources.proto";
 import "google/protobuf/timestamp.proto";
 
-option go_package = "./backend";
+option go_package = "github.com/ohkilab/SU-CSexpA-benchmark-system/proto-gen/go/backend";
 
 message PostLoginRequest {
   string id = 1; // it means group_id

@@ -3,7 +3,7 @@ syntax = "proto3";
 import "google/protobuf/timestamp.proto";
 import "backend/resources.proto";
 
-option go_package = "./benchmark";
+option go_package = "github.com/ohkilab/SU-CSexpA-benchmark-system/proto-gen/go/benchmark";
 
 message ExecuteRequest {
   repeated Task tasks = 1;
