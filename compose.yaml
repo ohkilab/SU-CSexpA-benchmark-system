@@ -6,8 +6,6 @@ services:
     env_file:
       - backend/.env
     restart: always
-    ports:
-      - "50051:50051"
     depends_on:
       - db
       - benchmark-service
@@ -24,15 +22,11 @@ services:
       - .env
     volumes:
       - ./data:/var/lib/mysql
-    ports:
-      - "3306:3306"
 
   frontend:
     build:
       context: .
       dockerfile: frontend/Dockerfile
-    ports:
-      - 8000:80
     environment:
       - NGINX_PORT=80
     depends_on:
@@ -41,10 +35,12 @@ services:
 
   envoy:
     image: envoyproxy/envoy:v1.26-latest
-    ports:
-      - "8080:8080"
-      - "9901:9901"
     volumes:
       - ./frontend/envoy_docker.yaml:/etc/envoy/envoy.yaml
     extra_hosts:
       - "host.docker.internal:host-gateway"
+
+networks:
+  default:
+    name: host
+    external: true
