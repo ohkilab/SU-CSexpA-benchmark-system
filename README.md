@@ -14,9 +14,17 @@ $ cp .env.sample .env
 $ make up
 ```
 
-## Seed
+3. if you want to test, generate seeds
 
 ```shell
 $ cd backend
 $ make seed
+```
+
+## test
+
+- e2e test
+
+```shell
+$ make e2e_test
 ```
