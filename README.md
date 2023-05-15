@@ -1,6 +1,6 @@
 # SU-CSexpA-benchmark-system
 
-## Build & Up
+## how to work
 
 1. create `.env`
 
@@ -8,21 +8,23 @@
 $ cp .env.sample .env
 ```
 
-2. docker compose build
-
-```shell
-$ make build
-```
-
-3. docker compose up
+2. run
 
 ```shell
 $ make up
 ```
 
-## Seed
+3. if you want to test, generate seeds
 
 ```shell
 $ cd backend
 $ make seed
+```
+
+## test
+
+- e2e test
+
+```shell
+$ make e2e_test
 ```

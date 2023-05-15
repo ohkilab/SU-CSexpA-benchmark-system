@@ -42,6 +42,12 @@ func (tru *TaskResultUpdate) AddRequestPerSec(i int) *TaskResultUpdate {
 	return tru
 }
 
+// SetStatus sets the "status" field.
+func (tru *TaskResultUpdate) SetStatus(s string) *TaskResultUpdate {
+	tru.mutation.SetStatus(s)
+	return tru
+}
+
 // SetErrorMessage sets the "error_message" field.
 func (tru *TaskResultUpdate) SetErrorMessage(s string) *TaskResultUpdate {
 	tru.mutation.SetErrorMessage(s)
@@ -224,6 +230,9 @@ func (tru *TaskResultUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if value, ok := tru.mutation.AddedRequestPerSec(); ok {
 		_spec.AddField(taskresult.FieldRequestPerSec, field.TypeInt, value)
 	}
+	if value, ok := tru.mutation.Status(); ok {
+		_spec.SetField(taskresult.FieldStatus, field.TypeString, value)
+	}
 	if value, ok := tru.mutation.ErrorMessage(); ok {
 		_spec.SetField(taskresult.FieldErrorMessage, field.TypeString, value)
 	}
@@ -325,6 +334,12 @@ func (truo *TaskResultUpdateOne) SetRequestPerSec(i int) *TaskResultUpdateOne {
 // AddRequestPerSec adds i to the "request_per_sec" field.
 func (truo *TaskResultUpdateOne) AddRequestPerSec(i int) *TaskResultUpdateOne {
 	truo.mutation.AddRequestPerSec(i)
+	return truo
+}
+
+// SetStatus sets the "status" field.
+func (truo *TaskResultUpdateOne) SetStatus(s string) *TaskResultUpdateOne {
+	truo.mutation.SetStatus(s)
 	return truo
 }
 
@@ -539,6 +554,9 @@ func (truo *TaskResultUpdateOne) sqlSave(ctx context.Context) (_node *TaskResult
 	}
 	if value, ok := truo.mutation.AddedRequestPerSec(); ok {
 		_spec.AddField(taskresult.FieldRequestPerSec, field.TypeInt, value)
+	}
+	if value, ok := truo.mutation.Status(); ok {
+		_spec.SetField(taskresult.FieldStatus, field.TypeString, value)
 	}
 	if value, ok := truo.mutation.ErrorMessage(); ok {
 		_spec.SetField(taskresult.FieldErrorMessage, field.TypeString, value)

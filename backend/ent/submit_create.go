@@ -78,7 +78,7 @@ func (sc *SubmitCreate) SetNillableMessage(s *string) *SubmitCreate {
 }
 
 // SetStatus sets the "status" field.
-func (sc *SubmitCreate) SetStatus(s submit.Status) *SubmitCreate {
+func (sc *SubmitCreate) SetStatus(s string) *SubmitCreate {
 	sc.mutation.SetStatus(s)
 	return sc
 }
@@ -229,11 +229,6 @@ func (sc *SubmitCreate) check() error {
 	if _, ok := sc.mutation.Status(); !ok {
 		return &ValidationError{Name: "status", err: errors.New(`ent: missing required field "Submit.status"`)}
 	}
-	if v, ok := sc.mutation.Status(); ok {
-		if err := submit.StatusValidator(v); err != nil {
-			return &ValidationError{Name: "status", err: fmt.Errorf(`ent: validator failed for field "Submit.status": %w`, err)}
-		}
-	}
 	if _, ok := sc.mutation.SubmitedAt(); !ok {
 		return &ValidationError{Name: "submited_at", err: errors.New(`ent: missing required field "Submit.submited_at"`)}
 	}
@@ -290,7 +285,7 @@ func (sc *SubmitCreate) createSpec() (*Submit, *sqlgraph.CreateSpec) {
 		_node.Message = value
 	}
 	if value, ok := sc.mutation.Status(); ok {
-		_spec.SetField(submit.FieldStatus, field.TypeEnum, value)
+		_spec.SetField(submit.FieldStatus, field.TypeString, value)
 		_node.Status = value
 	}
 	if value, ok := sc.mutation.SubmitedAt(); ok {

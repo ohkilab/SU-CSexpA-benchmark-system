@@ -11,6 +11,7 @@ import type { PartialMessage } from "@protobuf-ts/runtime";
 import { reflectionMergePartial } from "@protobuf-ts/runtime";
 import { MESSAGE_TYPE } from "@protobuf-ts/runtime";
 import { MessageType } from "@protobuf-ts/runtime";
+import { Status } from "./resources";
 import { Submit } from "./resources";
 import { Timestamp } from "../google/protobuf/timestamp";
 import { Group } from "./resources";
@@ -91,6 +92,28 @@ export interface GetSubmitResponse {
      * @generated from protobuf field: Submit submit = 1;
      */
     submit?: Submit;
+}
+/**
+ * @generated from protobuf message ListSubmitsRequest
+ */
+export interface ListSubmitsRequest {
+    /**
+     * @generated from protobuf field: optional string group_id = 2;
+     */
+    groupId?: string; // middle match
+    /**
+     * @generated from protobuf field: optional Status status = 3;
+     */
+    status?: Status;
+}
+/**
+ * @generated from protobuf message ListSubmitsResponse
+ */
+export interface ListSubmitsResponse {
+    /**
+     * @generated from protobuf field: repeated Submit submits = 1;
+     */
+    submits: Submit[]; // NOTE: task_results will be empty
 }
 /**
  * @generated from protobuf message GetRankingRequest
@@ -518,6 +541,107 @@ class GetSubmitResponse$Type extends MessageType<GetSubmitResponse> {
  * @generated MessageType for protobuf message GetSubmitResponse
  */
 export const GetSubmitResponse = new GetSubmitResponse$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class ListSubmitsRequest$Type extends MessageType<ListSubmitsRequest> {
+    constructor() {
+        super("ListSubmitsRequest", [
+            { no: 2, name: "group_id", kind: "scalar", opt: true, T: 9 /*ScalarType.STRING*/ },
+            { no: 3, name: "status", kind: "enum", opt: true, T: () => ["Status", Status] }
+        ]);
+    }
+    create(value?: PartialMessage<ListSubmitsRequest>): ListSubmitsRequest {
+        const message = {};
+        globalThis.Object.defineProperty(message, MESSAGE_TYPE, { enumerable: false, value: this });
+        if (value !== undefined)
+            reflectionMergePartial<ListSubmitsRequest>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: ListSubmitsRequest): ListSubmitsRequest {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* optional string group_id */ 2:
+                    message.groupId = reader.string();
+                    break;
+                case /* optional Status status */ 3:
+                    message.status = reader.int32();
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: ListSubmitsRequest, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* optional string group_id = 2; */
+        if (message.groupId !== undefined)
+            writer.tag(2, WireType.LengthDelimited).string(message.groupId);
+        /* optional Status status = 3; */
+        if (message.status !== undefined)
+            writer.tag(3, WireType.Varint).int32(message.status);
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message ListSubmitsRequest
+ */
+export const ListSubmitsRequest = new ListSubmitsRequest$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class ListSubmitsResponse$Type extends MessageType<ListSubmitsResponse> {
+    constructor() {
+        super("ListSubmitsResponse", [
+            { no: 1, name: "submits", kind: "message", repeat: 1 /*RepeatType.PACKED*/, T: () => Submit }
+        ]);
+    }
+    create(value?: PartialMessage<ListSubmitsResponse>): ListSubmitsResponse {
+        const message = { submits: [] };
+        globalThis.Object.defineProperty(message, MESSAGE_TYPE, { enumerable: false, value: this });
+        if (value !== undefined)
+            reflectionMergePartial<ListSubmitsResponse>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: ListSubmitsResponse): ListSubmitsResponse {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* repeated Submit submits */ 1:
+                    message.submits.push(Submit.internalBinaryRead(reader, reader.uint32(), options));
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: ListSubmitsResponse, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* repeated Submit submits = 1; */
+        for (let i = 0; i < message.submits.length; i++)
+            Submit.internalBinaryWrite(message.submits[i], writer.tag(1, WireType.LengthDelimited).fork(), options).join();
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message ListSubmitsResponse
+ */
+export const ListSubmitsResponse = new ListSubmitsResponse$Type();
 // @generated message type with reflection information, may provide speed optimized methods
 class GetRankingRequest$Type extends MessageType<GetRankingRequest> {
     constructor() {

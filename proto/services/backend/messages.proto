@@ -3,7 +3,7 @@ syntax = "proto3";
 import "backend/resources.proto";
 import "google/protobuf/timestamp.proto";
 
-option go_package = "./backend";
+option go_package = "github.com/ohkilab/SU-CSexpA-benchmark-system/proto-gen/go/backend";
 
 message PostLoginRequest {
   string id = 1; // it means group_id
@@ -15,7 +15,7 @@ message PostLoginResponse {
   string token = 2;
 }
 
-message PostSubmitRequest { 
+message PostSubmitRequest {
   string url = 1;
   int32 contest_id = 2;
 }
@@ -29,8 +29,15 @@ message PostSubmitResponse {
 
 message GetSubmitRequest { int32 submit_id = 1; }
 
-message GetSubmitResponse {
-  Submit submit = 1;
+message GetSubmitResponse { Submit submit = 1; }
+
+message ListSubmitsRequest {
+  optional string group_id = 2; // middle match
+  optional Status status = 3;
+}
+
+message ListSubmitsResponse {
+  repeated Submit submits = 1; // NOTE: task_results will be empty
 }
 
 message GetRankingRequest {

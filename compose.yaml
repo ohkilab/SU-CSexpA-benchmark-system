@@ -4,37 +4,47 @@ services:
       context: backend
       dockerfile: Dockerfile
     env_file:
-      - backend/.env
+      - .env
     restart: always
     ports:
-      - "50051:50051"
+      - 50051:50051
     depends_on:
       - db
       - benchmark-service
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
 
   benchmark-service:
     build:
       context: benchmark-service
       dockerfile: Dockerfile
+    env_file:
+      - .env
+    # TODO: benchmark-service を host と同一のネットワークに載せる(そうしないと benchmark-service から直接 IP アドレスにアクセスすることができない)
+    # network_mode: host
+    # expose:
+    #   - 50052
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
 
   db:
     image: mysql:8.0
     restart: always
     env_file:
       - .env
+    ports:
+      - 3306:3306
     volumes:
       - ./data:/var/lib/mysql
-    ports:
-      - "3306:3306"
 
   frontend:
     build:
       context: .
       dockerfile: frontend/Dockerfile
-    ports:
-      - 8000:80
     environment:
       - NGINX_PORT=80
+    ports:
+      - "8000:80"
     depends_on:
       - envoy
       - backend

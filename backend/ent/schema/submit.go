@@ -13,7 +13,6 @@ type Submit struct {
 
 var (
 	languages = []string{"php", "go", "rust", "javascript", "csharp", "cpp", "ruby", "python"}
-	statuses  = []string{"wait", "in_progress", "success", "user_error", "internal_error"}
 )
 
 // Fields of the Submit.
@@ -25,7 +24,7 @@ func (Submit) Fields() []ent.Field {
 		field.Int("score").Optional(),
 		field.Enum("language").Values(languages...).Optional(),
 		field.String("message").Optional(),
-		field.Enum("status").Values(statuses...),
+		field.String("status"), // enum は grpc で定義済み
 		field.Time("submited_at"),
 		field.Time("completed_at").Optional(),
 		field.Time("updated_at").Optional(),

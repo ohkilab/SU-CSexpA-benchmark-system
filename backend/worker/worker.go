@@ -9,11 +9,12 @@ import (
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/ent"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/ent/submit"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/core/timejst"
-	pb "github.com/ohkilab/SU-CSexpA-benchmark-system/proto-gen/go/benchmark"
+	"github.com/ohkilab/SU-CSexpA-benchmark-system/proto-gen/go/backend"
+	backendpb "github.com/ohkilab/SU-CSexpA-benchmark-system/proto-gen/go/backend"
+	benchmarkpb "github.com/ohkilab/SU-CSexpA-benchmark-system/proto-gen/go/benchmark"
+	"github.com/samber/lo"
 	"golang.org/x/net/context"
 	"golang.org/x/sync/errgroup"
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
 )
 
 type Worker interface {
@@ -22,17 +23,17 @@ type Worker interface {
 }
 
 type Task struct {
-	Req      *pb.ExecuteRequest
+	Req      *benchmarkpb.ExecuteRequest
 	SubmitID int
 }
 
 type worker struct {
 	entClient       *ent.Client
-	benchmarkClient pb.BenchmarkServiceClient
+	benchmarkClient benchmarkpb.BenchmarkServiceClient
 	queue           *Queue[Task]
 }
 
-func New(entClient *ent.Client, benchmarkClient pb.BenchmarkServiceClient) *worker {
+func New(entClient *ent.Client, benchmarkClient benchmarkpb.BenchmarkServiceClient) *worker {
 	return &worker{entClient, benchmarkClient, &Queue[Task]{}}
 }
 
@@ -55,9 +56,20 @@ func (w *worker) Run() {
 		stream, err := w.benchmarkClient.Execute(ctx, task.Req)
 		if err != nil {
 			log.Println(err)
+			_, err = w.entClient.Submit.UpdateOneID(task.SubmitID).
+				SetScore(0).
+				SetMessage("failed to connect to benchmark-service").
+				SetStatus(backend.Status_INTERNAL_ERROR.String()).
+				SetCompletedAt(timejst.Now()).
+				SetUpdatedAt(timejst.Now()).
+				Save(ctx)
+			if err != nil {
+				log.Println(err)
+			}
+			continue
 		}
 		_, err = w.entClient.Submit.UpdateOneID(task.SubmitID).
-			SetStatus(submit.StatusInProgress).
+			SetStatus(backendpb.Status_IN_PROGRESS.String()).
 			SetUpdatedAt(timejst.Now()).
 			Save(ctx)
 		if err != nil {
@@ -74,22 +86,31 @@ func (w *worker) Run() {
 				if err := stream.CloseSend(); err != nil {
 					log.Println(err)
 				}
+				submit, err := w.entClient.Submit.Query().WithTaskResults().Where(submit.ID(task.SubmitID)).Only(ctx)
+				if err != nil {
+					log.Println(err)
+					break
+				}
+				if len(submit.Edges.TaskResults) == 0 {
+					break
+				}
+				if mp := lo.Associate(submit.Edges.TaskResults, func(tr *ent.TaskResult) (string, struct{}) {
+					return tr.ErrorMessage, struct{}{}
+				}); len(mp) == 1 {
+					if _, err := w.entClient.Submit.UpdateOneID(task.SubmitID).SetMessage(submit.Edges.TaskResults[0].ErrorMessage).Save(ctx); err != nil {
+						log.Println(err)
+						break
+					}
+				}
 				break
 			}
 			log.Println("received", resp)
 			if err != nil {
 				log.Println(err)
-				var dbSt submit.Status
-				st, ok := status.FromError(err)
-				if ok && st.Code() == codes.FailedPrecondition {
-					dbSt = submit.StatusUserError
-				} else {
-					dbSt = submit.StatusInternalError
-				}
 				_, err = w.entClient.Submit.UpdateOneID(task.SubmitID).
 					SetScore(0).
 					SetMessage(err.Error()).
-					SetStatus(dbSt).
+					SetStatus(backend.Status_INTERNAL_ERROR.String()).
 					SetCompletedAt(timejst.Now()).
 					SetUpdatedAt(timejst.Now()).
 					Save(ctx)
@@ -108,7 +129,6 @@ func (w *worker) Run() {
 				}
 				mu.Unlock()
 
-				log.Println(resp.RequestsPerSecond)
 				var errorMessage string
 				if resp.ErrorMessage != nil {
 					errorMessage = *resp.ErrorMessage
@@ -122,6 +142,7 @@ func (w *worker) Run() {
 					SetRequestBody(resp.Task.Request.Body).
 					SetThreadNum(int(resp.Task.ThreadNum)).
 					SetAttemptCount(int(resp.Task.AttemptCount)).
+					SetStatus(resp.Status.String()).
 					SetCreatedAt(timejst.Now()).
 					SetSubmitsID(task.SubmitID).
 					Save(ctx)
@@ -138,7 +159,7 @@ func (w *worker) Run() {
 			SetCompletedAt(now).
 			SetUpdatedAt(now).
 			SetScore(score).
-			SetStatus(submit.StatusSuccess).
+			SetStatus(backendpb.Status_SUCCESS.String()).
 			Save(ctx); err != nil {
 			log.Println("ERROR", err)
 		}

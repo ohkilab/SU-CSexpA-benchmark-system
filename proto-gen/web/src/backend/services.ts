@@ -7,6 +7,8 @@ import { PingUnaryResponse } from "./messages";
 import { PingUnaryRequest } from "./messages";
 import { PostLoginResponse } from "./messages";
 import { PostLoginRequest } from "./messages";
+import { ListSubmitsResponse } from "./messages";
+import { ListSubmitsRequest } from "./messages";
 import { GetSubmitResponse } from "./messages";
 import { GetSubmitRequest } from "./messages";
 import { PostSubmitResponse } from "./messages";
@@ -21,6 +23,7 @@ export const BackendService = new ServiceType("BackendService", [
     { name: "GetRanking", options: {}, I: GetRankingRequest, O: GetRankingResponse },
     { name: "PostSubmit", options: {}, I: PostSubmitRequest, O: PostSubmitResponse },
     { name: "GetSubmit", serverStreaming: true, options: {}, I: GetSubmitRequest, O: GetSubmitResponse },
+    { name: "ListSubmits", options: {}, I: ListSubmitsRequest, O: ListSubmitsResponse },
     { name: "PostLogin", options: {}, I: PostLoginRequest, O: PostLoginResponse }
 ]);
 /**

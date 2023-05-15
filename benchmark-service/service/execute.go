@@ -9,6 +9,7 @@ import (
 
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/benchmark-service/benchmark"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/benchmark-service/validation"
+	backendpb "github.com/ohkilab/SU-CSexpA-benchmark-system/proto-gen/go/backend"
 	pb "github.com/ohkilab/SU-CSexpA-benchmark-system/proto-gen/go/benchmark"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -35,7 +36,16 @@ func (s *service) Execute(req *pb.ExecuteRequest, stream pb.BenchmarkService_Exe
 		if err != nil {
 			log.Println(err)
 			if errors.Is(err, syscall.ECONNREFUSED) {
-				return status.Error(codes.FailedPrecondition, "サーバーとの接続ができませんでした")
+				msg := "サーバーとの接続ができませんでした"
+				if err := stream.Send(&pb.ExecuteResponse{
+					Ok:           false,
+					ErrorMessage: &msg,
+					Task:         task,
+					Status:       backendpb.Status_CONNECTION_FAILED,
+				}); err != nil {
+					log.Println(err)
+				}
+				continue
 			} else {
 				return status.Error(codes.Internal, "Internal Server Error")
 			}
@@ -53,6 +63,7 @@ func (s *service) Execute(req *pb.ExecuteRequest, stream pb.BenchmarkService_Exe
 					TotalRequests:     0,
 					RequestsPerSecond: 0,
 					Task:              task,
+					Status:            backendpb.Status_VALIDATION_ERROR,
 				}); err != nil {
 					log.Println(err)
 				}
@@ -67,6 +78,7 @@ func (s *service) Execute(req *pb.ExecuteRequest, stream pb.BenchmarkService_Exe
 			TotalRequests:     task.AttemptCount,
 			RequestsPerSecond: int32(float64(task.AttemptCount) / timeElapsed.Seconds()),
 			Task:              task,
+			Status:            backendpb.Status_SUCCESS,
 		}); err != nil {
 			log.Println(err)
 			return err
