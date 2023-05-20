@@ -22,6 +22,10 @@ const (
 	FieldScore = "score"
 	// FieldLanguage holds the string denoting the language field in the database.
 	FieldLanguage = "language"
+	// FieldMessage holds the string denoting the message field in the database.
+	FieldMessage = "message"
+	// FieldStatus holds the string denoting the status field in the database.
+	FieldStatus = "status"
 	// FieldSubmitedAt holds the string denoting the submited_at field in the database.
 	FieldSubmitedAt = "submited_at"
 	// FieldCompletedAt holds the string denoting the completed_at field in the database.
@@ -66,6 +70,8 @@ var Columns = []string{
 	FieldYear,
 	FieldScore,
 	FieldLanguage,
+	FieldMessage,
+	FieldStatus,
 	FieldSubmitedAt,
 	FieldCompletedAt,
 	FieldUpdatedAt,
@@ -153,6 +159,16 @@ func ByScore(opts ...sql.OrderTermOption) OrderOption {
 // ByLanguage orders the results by the language field.
 func ByLanguage(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldLanguage, opts...).ToFunc()
+}
+
+// ByMessage orders the results by the message field.
+func ByMessage(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldMessage, opts...).ToFunc()
+}
+
+// ByStatus orders the results by the status field.
+func ByStatus(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldStatus, opts...).ToFunc()
 }
 
 // BySubmitedAt orders the results by the submited_at field.

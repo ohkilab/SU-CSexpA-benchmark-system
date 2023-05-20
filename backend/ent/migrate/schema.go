@@ -54,6 +54,8 @@ var (
 		{Name: "year", Type: field.TypeInt},
 		{Name: "score", Type: field.TypeInt, Nullable: true},
 		{Name: "language", Type: field.TypeEnum, Nullable: true, Enums: []string{"php", "go", "rust", "javascript", "csharp", "cpp", "ruby", "python"}},
+		{Name: "message", Type: field.TypeString, Nullable: true},
+		{Name: "status", Type: field.TypeString},
 		{Name: "submited_at", Type: field.TypeTime},
 		{Name: "completed_at", Type: field.TypeTime, Nullable: true},
 		{Name: "updated_at", Type: field.TypeTime, Nullable: true},
@@ -68,13 +70,13 @@ var (
 		ForeignKeys: []*schema.ForeignKey{
 			{
 				Symbol:     "submits_contests_submits",
-				Columns:    []*schema.Column{SubmitsColumns[8]},
+				Columns:    []*schema.Column{SubmitsColumns[10]},
 				RefColumns: []*schema.Column{ContestsColumns[0]},
 				OnDelete:   schema.SetNull,
 			},
 			{
 				Symbol:     "submits_groups_submits",
-				Columns:    []*schema.Column{SubmitsColumns[9]},
+				Columns:    []*schema.Column{SubmitsColumns[11]},
 				RefColumns: []*schema.Column{GroupsColumns[0]},
 				OnDelete:   schema.SetNull,
 			},
@@ -84,6 +86,7 @@ var (
 	TaskResultsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
 		{Name: "request_per_sec", Type: field.TypeInt},
+		{Name: "status", Type: field.TypeString},
 		{Name: "error_message", Type: field.TypeString, Nullable: true},
 		{Name: "url", Type: field.TypeString},
 		{Name: "method", Type: field.TypeString},
@@ -103,7 +106,7 @@ var (
 		ForeignKeys: []*schema.ForeignKey{
 			{
 				Symbol:     "task_results_submits_taskResults",
-				Columns:    []*schema.Column{TaskResultsColumns[11]},
+				Columns:    []*schema.Column{TaskResultsColumns[12]},
 				RefColumns: []*schema.Column{SubmitsColumns[0]},
 				OnDelete:   schema.SetNull,
 			},

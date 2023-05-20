@@ -63,6 +63,26 @@ func (sc *SubmitCreate) SetNillableLanguage(s *submit.Language) *SubmitCreate {
 	return sc
 }
 
+// SetMessage sets the "message" field.
+func (sc *SubmitCreate) SetMessage(s string) *SubmitCreate {
+	sc.mutation.SetMessage(s)
+	return sc
+}
+
+// SetNillableMessage sets the "message" field if the given value is not nil.
+func (sc *SubmitCreate) SetNillableMessage(s *string) *SubmitCreate {
+	if s != nil {
+		sc.SetMessage(*s)
+	}
+	return sc
+}
+
+// SetStatus sets the "status" field.
+func (sc *SubmitCreate) SetStatus(s string) *SubmitCreate {
+	sc.mutation.SetStatus(s)
+	return sc
+}
+
 // SetSubmitedAt sets the "submited_at" field.
 func (sc *SubmitCreate) SetSubmitedAt(t time.Time) *SubmitCreate {
 	sc.mutation.SetSubmitedAt(t)
@@ -206,6 +226,9 @@ func (sc *SubmitCreate) check() error {
 			return &ValidationError{Name: "language", err: fmt.Errorf(`ent: validator failed for field "Submit.language": %w`, err)}
 		}
 	}
+	if _, ok := sc.mutation.Status(); !ok {
+		return &ValidationError{Name: "status", err: errors.New(`ent: missing required field "Submit.status"`)}
+	}
 	if _, ok := sc.mutation.SubmitedAt(); !ok {
 		return &ValidationError{Name: "submited_at", err: errors.New(`ent: missing required field "Submit.submited_at"`)}
 	}
@@ -256,6 +279,14 @@ func (sc *SubmitCreate) createSpec() (*Submit, *sqlgraph.CreateSpec) {
 	if value, ok := sc.mutation.Language(); ok {
 		_spec.SetField(submit.FieldLanguage, field.TypeEnum, value)
 		_node.Language = value
+	}
+	if value, ok := sc.mutation.Message(); ok {
+		_spec.SetField(submit.FieldMessage, field.TypeString, value)
+		_node.Message = value
+	}
+	if value, ok := sc.mutation.Status(); ok {
+		_spec.SetField(submit.FieldStatus, field.TypeString, value)
+		_node.Status = value
 	}
 	if value, ok := sc.mutation.SubmitedAt(); ok {
 		_spec.SetField(submit.FieldSubmitedAt, field.TypeTime, value)

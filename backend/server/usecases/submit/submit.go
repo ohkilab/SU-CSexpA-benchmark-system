@@ -3,11 +3,14 @@ package submit
 import (
 	"context"
 	"fmt"
+	"log"
 	"strconv"
 	"time"
 
+	"entgo.io/ent/dialect/sql"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/ent"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/ent/contest"
+	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/ent/group"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/ent/submit"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/api/grpc/interceptor"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/core/timejst"
@@ -49,6 +52,7 @@ func (i *Interactor) PostSubmit(ctx context.Context, req *backendpb.PostSubmitRe
 		SetSubmitedAt(timejst.Now()).
 		SetContestsID(int(req.ContestId)).
 		SetGroupsID(claims.GroupID).
+		SetStatus(backendpb.Status_WAITING.String()).
 		Save(ctx)
 	if err != nil {
 		return nil, status.Error(codes.Internal, err.Error())
@@ -127,51 +131,73 @@ func (i *Interactor) GetSubmit(req *backendpb.GetSubmitRequest, stream backendpb
 			}
 			return status.Error(codes.Internal, err.Error())
 		}
-		if err := stream.Send(toGetSubmitResponse(s)); err != nil {
+		if err := stream.Send(&backendpb.GetSubmitResponse{
+			Submit: toPbSubmit(s),
+		}); err != nil {
 			return err
 		}
 		// ベンチマーク処理が完了していたら結果を返す
 		if !s.CompletedAt.IsZero() {
+			log.Println("completed submit:", s)
 			break
 		}
 
-		time.Sleep(2 * time.Second)
+		time.Sleep(500 * time.Millisecond)
 	}
 
 	return nil
 }
 
-func toGetSubmitResponse(submit *ent.Submit) *backendpb.GetSubmitResponse {
-	var completedAt *timestamppb.Timestamp
-	if !submit.CompletedAt.IsZero() {
-		completedAt = timestamppb.New(submit.CompletedAt)
+func toPbSubmit(submit *ent.Submit) *backendpb.Submit {
+	return &backendpb.Submit{
+		Id:      int32(submit.ID),
+		GroupId: int32(submit.Edges.Groups.ID),
+		Year:    int32(submit.Year),
+		Score:   int32(submit.Score),
+		// Language: submit.Language,
+		ErrorMessage: &submit.Message,
+		SubmitedAt:   timestamppb.New(submit.SubmitedAt),
+		CompletedAt:  timestamppb.New(submit.CompletedAt),
+		TaskResults: lo.Map(submit.Edges.TaskResults, func(taskResult *ent.TaskResult, _ int) *backendpb.TaskResult {
+			var requestBody *string
+			if taskResult.RequestBody != "" {
+				requestBody = &taskResult.RequestBody
+			}
+			return &backendpb.TaskResult{
+				Id:                 int32(taskResult.ID),
+				RequestPerSec:      int32(taskResult.RequestPerSec),
+				Url:                taskResult.URL,
+				Method:             taskResult.Method,
+				RequestContentType: taskResult.RequestContentType,
+				RequestBody:        requestBody,
+				ThreadNum:          int32(taskResult.ThreadNum),
+				AttemptCount:       int32(taskResult.AttemptCount),
+				Status:             backendpb.Status(backendpb.Status_value[taskResult.Status]),
+				ErrorMessage:       &taskResult.ErrorMessage,
+				CreatedAt:          timestamppb.New(taskResult.CreatedAt),
+			}
+		}),
 	}
-	return &backendpb.GetSubmitResponse{
-		Submit: &backendpb.Submit{
-			Id:      int32(submit.ID),
-			GroupId: int32(submit.Edges.Groups.ID),
-			Year:    int32(submit.Year),
-			Score:   int32(submit.Score),
-			// Language: submit.Language,
-			SubmitedAt:  timestamppb.New(submit.SubmitedAt),
-			CompletedAt: completedAt,
-			TaskResults: lo.Map(submit.Edges.TaskResults, func(taskResult *ent.TaskResult, _ int) *backendpb.TaskResult {
-				var requestBody *string
-				if taskResult.RequestBody != "" {
-					requestBody = &taskResult.RequestBody
-				}
-				return &backendpb.TaskResult{
-					Id:                 int32(taskResult.ID),
-					RequestPerSec:      int32(taskResult.RequestPerSec),
-					Url:                taskResult.URL,
-					Method:             taskResult.Method,
-					RequestContentType: taskResult.RequestContentType,
-					RequestBody:        requestBody,
-					ThreadNum:          int32(taskResult.ThreadNum),
-					AttemptCount:       int32(taskResult.AttemptCount),
-					CreatedAt:          timestamppb.New(taskResult.CreatedAt),
-				}
-			}),
-		},
+}
+
+func (i *Interactor) ListSubmits(ctx context.Context, groupID *string, status *backendpb.Status) (*backendpb.ListSubmitsResponse, error) {
+	q := i.entClient.Submit.Query().WithGroups(func(gq *ent.GroupQuery) {
+		if groupID != nil {
+			gq.Where(group.NameContains(*groupID))
+		}
+	})
+	if status != nil {
+		q.Where(submit.StatusEQ(status.String()))
 	}
+	submits, err := q.Order(submit.BySubmitedAt(sql.OrderDesc())).All(ctx)
+	if err != nil {
+		return nil, err
+	}
+	return &backendpb.ListSubmitsResponse{
+		Submits: lo.Map(submits, func(submit *ent.Submit, _ int) *backendpb.Submit {
+			pbSubmit := toPbSubmit(submit)
+			pbSubmit.TaskResults = make([]*backendpb.TaskResult, 0)
+			return pbSubmit
+		}),
+	}, nil
 }

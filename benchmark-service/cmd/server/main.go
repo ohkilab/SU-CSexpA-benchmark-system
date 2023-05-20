@@ -3,6 +3,7 @@ package main
 import (
 	"log"
 	"net"
+	"os"
 
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/benchmark-service/benchmark"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/benchmark-service/service"
@@ -13,7 +14,11 @@ import (
 func main() {
 	client := benchmark.NewClient()
 
-	lsnr, err := net.Listen("tcp", ":50051")
+	port := os.Getenv("BENCHMARK_GRPC_PORT")
+	if port == "" {
+		log.Fatal("BENCHMARK_GRPC_PORT is not set")
+	}
+	lsnr, err := net.Listen("tcp", ":"+port)
 	if err != nil {
 		log.Fatal(err)
 	}

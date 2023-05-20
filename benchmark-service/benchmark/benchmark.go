@@ -2,9 +2,11 @@ package benchmark
 
 import (
 	"context"
+	"errors"
 	"io"
 	"net/http"
 	"sync"
+	"syscall"
 	"time"
 
 	"golang.org/x/sync/errgroup"
@@ -35,7 +37,7 @@ func (c *Client) Run(ctx context.Context, url string, options ...optionFunc) ([]
 		f(option)
 	}
 
-	ctx, cancel := context.WithTimeout(ctx, time.Minute)
+	ctx, cancel := context.WithTimeout(ctx, 30*time.Second)
 	defer cancel()
 
 	attemptCount := 0
@@ -54,21 +56,30 @@ func (c *Client) Run(ctx context.Context, url string, options ...optionFunc) ([]
 						return err
 					}
 
-					done := func() bool {
+					done, err := func() (bool, error) {
+						b, err := io.ReadAll(resp.Body)
+						if err != nil {
+							return false, err
+						}
+						resp.Body.Close()
+
 						mu.Lock()
 						defer mu.Unlock()
 						results = append(results, &HttpResult{
 							StatusCode:   resp.StatusCode,
 							ContentType:  resp.Header.Get("Content-Type"),
-							Body:         resp.Body,
+							Body:         b,
 							ResponseTime: took,
 						})
 						attemptCount++
 						if attemptCount == option.attmptCount {
-							return true
+							return true, nil
 						}
-						return false
+						return false, nil
 					}()
+					if err != nil {
+						return err
+					}
 					if done {
 						cancel()
 					}
@@ -88,6 +99,9 @@ func (c *Client) request(url string) (*http.Response, time.Duration, error) {
 	now := time.Now()
 	for {
 		resp, err := c.httpClient.Do(req)
+		if errors.Is(err, syscall.ECONNREFUSED) {
+			return nil, 0, err
+		}
 		if err == nil {
 			return resp, time.Since(now), nil
 		}
@@ -97,6 +111,6 @@ func (c *Client) request(url string) (*http.Response, time.Duration, error) {
 type HttpResult struct {
 	StatusCode   int
 	ContentType  string
-	Body         io.ReadCloser
+	Body         []byte
 	ResponseTime time.Duration
 }

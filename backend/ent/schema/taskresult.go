@@ -16,6 +16,7 @@ func (TaskResult) Fields() []ent.Field {
 	return []ent.Field{
 		field.Int("id"),
 		field.Int("request_per_sec"),
+		field.String("status"), // enum は grpc で定義済み
 		field.String("error_message").Optional(),
 		// request
 		field.String("url"),

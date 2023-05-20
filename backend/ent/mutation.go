@@ -1595,6 +1595,8 @@ type SubmitMutation struct {
 	score              *int
 	addscore           *int
 	language           *submit.Language
+	message            *string
+	status             *string
 	submited_at        *time.Time
 	completed_at       *time.Time
 	updated_at         *time.Time
@@ -1926,6 +1928,91 @@ func (m *SubmitMutation) ResetLanguage() {
 	delete(m.clearedFields, submit.FieldLanguage)
 }
 
+// SetMessage sets the "message" field.
+func (m *SubmitMutation) SetMessage(s string) {
+	m.message = &s
+}
+
+// Message returns the value of the "message" field in the mutation.
+func (m *SubmitMutation) Message() (r string, exists bool) {
+	v := m.message
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldMessage returns the old "message" field's value of the Submit entity.
+// If the Submit object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *SubmitMutation) OldMessage(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldMessage is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldMessage requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldMessage: %w", err)
+	}
+	return oldValue.Message, nil
+}
+
+// ClearMessage clears the value of the "message" field.
+func (m *SubmitMutation) ClearMessage() {
+	m.message = nil
+	m.clearedFields[submit.FieldMessage] = struct{}{}
+}
+
+// MessageCleared returns if the "message" field was cleared in this mutation.
+func (m *SubmitMutation) MessageCleared() bool {
+	_, ok := m.clearedFields[submit.FieldMessage]
+	return ok
+}
+
+// ResetMessage resets all changes to the "message" field.
+func (m *SubmitMutation) ResetMessage() {
+	m.message = nil
+	delete(m.clearedFields, submit.FieldMessage)
+}
+
+// SetStatus sets the "status" field.
+func (m *SubmitMutation) SetStatus(s string) {
+	m.status = &s
+}
+
+// Status returns the value of the "status" field in the mutation.
+func (m *SubmitMutation) Status() (r string, exists bool) {
+	v := m.status
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldStatus returns the old "status" field's value of the Submit entity.
+// If the Submit object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *SubmitMutation) OldStatus(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldStatus is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldStatus requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldStatus: %w", err)
+	}
+	return oldValue.Status, nil
+}
+
+// ResetStatus resets all changes to the "status" field.
+func (m *SubmitMutation) ResetStatus() {
+	m.status = nil
+}
+
 // SetSubmitedAt sets the "submited_at" field.
 func (m *SubmitMutation) SetSubmitedAt(t time.Time) {
 	m.submited_at = &t
@@ -2226,7 +2313,7 @@ func (m *SubmitMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *SubmitMutation) Fields() []string {
-	fields := make([]string, 0, 7)
+	fields := make([]string, 0, 9)
 	if m.url != nil {
 		fields = append(fields, submit.FieldURL)
 	}
@@ -2238,6 +2325,12 @@ func (m *SubmitMutation) Fields() []string {
 	}
 	if m.language != nil {
 		fields = append(fields, submit.FieldLanguage)
+	}
+	if m.message != nil {
+		fields = append(fields, submit.FieldMessage)
+	}
+	if m.status != nil {
+		fields = append(fields, submit.FieldStatus)
 	}
 	if m.submited_at != nil {
 		fields = append(fields, submit.FieldSubmitedAt)
@@ -2264,6 +2357,10 @@ func (m *SubmitMutation) Field(name string) (ent.Value, bool) {
 		return m.Score()
 	case submit.FieldLanguage:
 		return m.Language()
+	case submit.FieldMessage:
+		return m.Message()
+	case submit.FieldStatus:
+		return m.Status()
 	case submit.FieldSubmitedAt:
 		return m.SubmitedAt()
 	case submit.FieldCompletedAt:
@@ -2287,6 +2384,10 @@ func (m *SubmitMutation) OldField(ctx context.Context, name string) (ent.Value, 
 		return m.OldScore(ctx)
 	case submit.FieldLanguage:
 		return m.OldLanguage(ctx)
+	case submit.FieldMessage:
+		return m.OldMessage(ctx)
+	case submit.FieldStatus:
+		return m.OldStatus(ctx)
 	case submit.FieldSubmitedAt:
 		return m.OldSubmitedAt(ctx)
 	case submit.FieldCompletedAt:
@@ -2329,6 +2430,20 @@ func (m *SubmitMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetLanguage(v)
+		return nil
+	case submit.FieldMessage:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetMessage(v)
+		return nil
+	case submit.FieldStatus:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetStatus(v)
 		return nil
 	case submit.FieldSubmitedAt:
 		v, ok := value.(time.Time)
@@ -2414,6 +2529,9 @@ func (m *SubmitMutation) ClearedFields() []string {
 	if m.FieldCleared(submit.FieldLanguage) {
 		fields = append(fields, submit.FieldLanguage)
 	}
+	if m.FieldCleared(submit.FieldMessage) {
+		fields = append(fields, submit.FieldMessage)
+	}
 	if m.FieldCleared(submit.FieldCompletedAt) {
 		fields = append(fields, submit.FieldCompletedAt)
 	}
@@ -2440,6 +2558,9 @@ func (m *SubmitMutation) ClearField(name string) error {
 	case submit.FieldLanguage:
 		m.ClearLanguage()
 		return nil
+	case submit.FieldMessage:
+		m.ClearMessage()
+		return nil
 	case submit.FieldCompletedAt:
 		m.ClearCompletedAt()
 		return nil
@@ -2465,6 +2586,12 @@ func (m *SubmitMutation) ResetField(name string) error {
 		return nil
 	case submit.FieldLanguage:
 		m.ResetLanguage()
+		return nil
+	case submit.FieldMessage:
+		m.ResetMessage()
+		return nil
+	case submit.FieldStatus:
+		m.ResetStatus()
 		return nil
 	case submit.FieldSubmitedAt:
 		m.ResetSubmitedAt()
@@ -2607,6 +2734,7 @@ type TaskResultMutation struct {
 	id                   *int
 	request_per_sec      *int
 	addrequest_per_sec   *int
+	status               *string
 	error_message        *string
 	url                  *string
 	method               *string
@@ -2784,6 +2912,42 @@ func (m *TaskResultMutation) AddedRequestPerSec() (r int, exists bool) {
 func (m *TaskResultMutation) ResetRequestPerSec() {
 	m.request_per_sec = nil
 	m.addrequest_per_sec = nil
+}
+
+// SetStatus sets the "status" field.
+func (m *TaskResultMutation) SetStatus(s string) {
+	m.status = &s
+}
+
+// Status returns the value of the "status" field in the mutation.
+func (m *TaskResultMutation) Status() (r string, exists bool) {
+	v := m.status
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldStatus returns the old "status" field's value of the TaskResult entity.
+// If the TaskResult object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *TaskResultMutation) OldStatus(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldStatus is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldStatus requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldStatus: %w", err)
+	}
+	return oldValue.Status, nil
+}
+
+// ResetStatus resets all changes to the "status" field.
+func (m *TaskResultMutation) ResetStatus() {
+	m.status = nil
 }
 
 // SetErrorMessage sets the "error_message" field.
@@ -3262,9 +3426,12 @@ func (m *TaskResultMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *TaskResultMutation) Fields() []string {
-	fields := make([]string, 0, 10)
+	fields := make([]string, 0, 11)
 	if m.request_per_sec != nil {
 		fields = append(fields, taskresult.FieldRequestPerSec)
+	}
+	if m.status != nil {
+		fields = append(fields, taskresult.FieldStatus)
 	}
 	if m.error_message != nil {
 		fields = append(fields, taskresult.FieldErrorMessage)
@@ -3303,6 +3470,8 @@ func (m *TaskResultMutation) Field(name string) (ent.Value, bool) {
 	switch name {
 	case taskresult.FieldRequestPerSec:
 		return m.RequestPerSec()
+	case taskresult.FieldStatus:
+		return m.Status()
 	case taskresult.FieldErrorMessage:
 		return m.ErrorMessage()
 	case taskresult.FieldURL:
@@ -3332,6 +3501,8 @@ func (m *TaskResultMutation) OldField(ctx context.Context, name string) (ent.Val
 	switch name {
 	case taskresult.FieldRequestPerSec:
 		return m.OldRequestPerSec(ctx)
+	case taskresult.FieldStatus:
+		return m.OldStatus(ctx)
 	case taskresult.FieldErrorMessage:
 		return m.OldErrorMessage(ctx)
 	case taskresult.FieldURL:
@@ -3365,6 +3536,13 @@ func (m *TaskResultMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetRequestPerSec(v)
+		return nil
+	case taskresult.FieldStatus:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetStatus(v)
 		return nil
 	case taskresult.FieldErrorMessage:
 		v, ok := value.(string)
@@ -3540,6 +3718,9 @@ func (m *TaskResultMutation) ResetField(name string) error {
 	switch name {
 	case taskresult.FieldRequestPerSec:
 		m.ResetRequestPerSec()
+		return nil
+	case taskresult.FieldStatus:
+		m.ResetStatus()
 		return nil
 	case taskresult.FieldErrorMessage:
 		m.ResetErrorMessage()

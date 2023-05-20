@@ -49,3 +49,7 @@ func (s *backendServiceServer) GetSubmit(req *pb.GetSubmitRequest, stream pb.Bac
 func (s *backendServiceServer) PostLogin(ctx context.Context, req *pb.PostLoginRequest) (*pb.PostLoginResponse, error) {
 	return s.authInteractor.PostLogin(ctx, req.Id, req.Password)
 }
+
+func (s *backendServiceServer) ListSubmits(ctx context.Context, req *pb.ListSubmitsRequest) (*pb.ListSubmitsResponse, error) {
+	return s.submitInteractor.ListSubmits(ctx, req.GroupId, req.Status)
+}

@@ -1,12 +1,14 @@
 syntax = "proto3";
 
 import "google/protobuf/timestamp.proto";
+import "backend/resources.proto";
 
-option go_package = "./benchmark";
+option go_package = "github.com/ohkilab/SU-CSexpA-benchmark-system/proto-gen/go/benchmark";
 
 message ExecuteRequest {
   repeated Task tasks = 1;
   string group_id = 2;     // for logging
+  int32 year = 3;
 }
 
 message Task {
@@ -30,6 +32,7 @@ message ExecuteResponse {
   int32 total_requests = 4;
   int32 requests_per_second = 5;
   Task task = 6;
+  Status status = 7;
 }
 
 message HttpRequest {

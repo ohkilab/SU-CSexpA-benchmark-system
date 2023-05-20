@@ -6,6 +6,10 @@ WORKDIR /app/proto-gen
 
 COPY proto-gen .
 
+WORKDIR /app/proto-gen/web
+
+RUN pnpm i
+
 WORKDIR /app/frontend
 
 COPY frontend/package.json frontend/pnpm-lock.yaml ./

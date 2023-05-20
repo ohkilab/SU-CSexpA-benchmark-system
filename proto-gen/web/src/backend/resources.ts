@@ -102,6 +102,14 @@ export interface Submit {
      * @generated from protobuf field: repeated TaskResult task_results = 8;
      */
     taskResults: TaskResult[];
+    /**
+     * @generated from protobuf field: Status status = 9;
+     */
+    status: Status;
+    /**
+     * @generated from protobuf field: optional string error_message = 10;
+     */
+    errorMessage?: string; // if the connection error occurs, then this field is filled
 }
 /**
  * @generated from protobuf message TaskResult
@@ -167,6 +175,51 @@ export interface TaskResult {
      * @generated from protobuf field: optional string error_message = 15;
      */
     errorMessage?: string;
+    /**
+     * @generated from protobuf field: Status status = 16;
+     */
+    status: Status;
+}
+/**
+ * @generated from protobuf enum Status
+ */
+export enum Status {
+    /**
+     * waiting for benchmark
+     *
+     * @generated from protobuf enum value: WAITING = 0;
+     */
+    WAITING = 0,
+    /**
+     * in progress
+     *
+     * @generated from protobuf enum value: IN_PROGRESS = 1;
+     */
+    IN_PROGRESS = 1,
+    /**
+     * benchmark succeeded
+     *
+     * @generated from protobuf enum value: SUCCESS = 2;
+     */
+    SUCCESS = 2,
+    /**
+     * failed to connect
+     *
+     * @generated from protobuf enum value: CONNECTION_FAILED = 3;
+     */
+    CONNECTION_FAILED = 3,
+    /**
+     * validation error
+     *
+     * @generated from protobuf enum value: VALIDATION_ERROR = 4;
+     */
+    VALIDATION_ERROR = 4,
+    /**
+     * backend error
+     *
+     * @generated from protobuf enum value: INTERNAL_ERROR = 5;
+     */
+    INTERNAL_ERROR = 5
 }
 /**
  * @generated from protobuf enum Language
@@ -386,11 +439,13 @@ class Submit$Type extends MessageType<Submit> {
             { no: 5, name: "language", kind: "enum", T: () => ["Language", Language] },
             { no: 6, name: "submited_at", kind: "message", T: () => Timestamp },
             { no: 7, name: "completed_at", kind: "message", T: () => Timestamp },
-            { no: 8, name: "task_results", kind: "message", repeat: 1 /*RepeatType.PACKED*/, T: () => TaskResult }
+            { no: 8, name: "task_results", kind: "message", repeat: 1 /*RepeatType.PACKED*/, T: () => TaskResult },
+            { no: 9, name: "status", kind: "enum", T: () => ["Status", Status] },
+            { no: 10, name: "error_message", kind: "scalar", opt: true, T: 9 /*ScalarType.STRING*/ }
         ]);
     }
     create(value?: PartialMessage<Submit>): Submit {
-        const message = { id: 0, groupId: 0, year: 0, score: 0, language: 0, taskResults: [] };
+        const message = { id: 0, groupId: 0, year: 0, score: 0, language: 0, taskResults: [], status: 0 };
         globalThis.Object.defineProperty(message, MESSAGE_TYPE, { enumerable: false, value: this });
         if (value !== undefined)
             reflectionMergePartial<Submit>(this, message, value);
@@ -424,6 +479,12 @@ class Submit$Type extends MessageType<Submit> {
                     break;
                 case /* repeated TaskResult task_results */ 8:
                     message.taskResults.push(TaskResult.internalBinaryRead(reader, reader.uint32(), options));
+                    break;
+                case /* Status status */ 9:
+                    message.status = reader.int32();
+                    break;
+                case /* optional string error_message */ 10:
+                    message.errorMessage = reader.string();
                     break;
                 default:
                     let u = options.readUnknownField;
@@ -461,6 +522,12 @@ class Submit$Type extends MessageType<Submit> {
         /* repeated TaskResult task_results = 8; */
         for (let i = 0; i < message.taskResults.length; i++)
             TaskResult.internalBinaryWrite(message.taskResults[i], writer.tag(8, WireType.LengthDelimited).fork(), options).join();
+        /* Status status = 9; */
+        if (message.status !== 0)
+            writer.tag(9, WireType.Varint).int32(message.status);
+        /* optional string error_message = 10; */
+        if (message.errorMessage !== undefined)
+            writer.tag(10, WireType.LengthDelimited).string(message.errorMessage);
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
@@ -489,11 +556,12 @@ class TaskResult$Type extends MessageType<TaskResult> {
             { no: 12, name: "attempt_time", kind: "scalar", T: 5 /*ScalarType.INT32*/ },
             { no: 13, name: "created_at", kind: "message", T: () => Timestamp },
             { no: 14, name: "deleted_at", kind: "message", T: () => Timestamp },
-            { no: 15, name: "error_message", kind: "scalar", opt: true, T: 9 /*ScalarType.STRING*/ }
+            { no: 15, name: "error_message", kind: "scalar", opt: true, T: 9 /*ScalarType.STRING*/ },
+            { no: 16, name: "status", kind: "enum", T: () => ["Status", Status] }
         ]);
     }
     create(value?: PartialMessage<TaskResult>): TaskResult {
-        const message = { id: 0, requestPerSec: 0, url: "", method: "", requestContentType: "", responseCode: "", responseContentType: "", responseBody: "", threadNum: 0, attemptCount: 0, attemptTime: 0 };
+        const message = { id: 0, requestPerSec: 0, url: "", method: "", requestContentType: "", responseCode: "", responseContentType: "", responseBody: "", threadNum: 0, attemptCount: 0, attemptTime: 0, status: 0 };
         globalThis.Object.defineProperty(message, MESSAGE_TYPE, { enumerable: false, value: this });
         if (value !== undefined)
             reflectionMergePartial<TaskResult>(this, message, value);
@@ -548,6 +616,9 @@ class TaskResult$Type extends MessageType<TaskResult> {
                     break;
                 case /* optional string error_message */ 15:
                     message.errorMessage = reader.string();
+                    break;
+                case /* Status status */ 16:
+                    message.status = reader.int32();
                     break;
                 default:
                     let u = options.readUnknownField;
@@ -606,6 +677,9 @@ class TaskResult$Type extends MessageType<TaskResult> {
         /* optional string error_message = 15; */
         if (message.errorMessage !== undefined)
             writer.tag(15, WireType.LengthDelimited).string(message.errorMessage);
+        /* Status status = 16; */
+        if (message.status !== 0)
+            writer.tag(16, WireType.Varint).int32(message.status);
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);

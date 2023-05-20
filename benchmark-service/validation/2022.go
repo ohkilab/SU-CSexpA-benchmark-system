@@ -3,7 +3,6 @@ package validation
 import (
 	"encoding/json"
 	"errors"
-	"io"
 	"log"
 	"net/url"
 	"time"
@@ -20,13 +19,9 @@ type Response2022 struct {
 	} `json:"geotags"`
 }
 
-func Validate2022(uri *url.URL, r io.ReadCloser) error {
-	defer func() {
-		_, _ = io.Copy(io.Discard, r)
-		r.Close()
-	}()
+func Validate2022(uri *url.URL, b []byte) error {
 	var resp Response2022
-	if err := json.NewDecoder(r).Decode(&resp); err != nil {
+	if err := json.Unmarshal(b, &resp); err != nil {
 		log.Println(err)
 		return errors.New("json: invalid json format")
 	}

@@ -2,7 +2,7 @@ syntax = "proto3";
 
 import "benchmark/messages.proto";
 
-option go_package = "./benchmark";
+option go_package = "github.com/ohkilab/SU-CSexpA-benchmark-system/proto-gen/go/benchmark";
 
 service BenchmarkService {
   rpc Execute(ExecuteRequest) returns (stream ExecuteResponse);

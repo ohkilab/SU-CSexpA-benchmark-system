@@ -97,6 +97,32 @@ func (su *SubmitUpdate) ClearLanguage() *SubmitUpdate {
 	return su
 }
 
+// SetMessage sets the "message" field.
+func (su *SubmitUpdate) SetMessage(s string) *SubmitUpdate {
+	su.mutation.SetMessage(s)
+	return su
+}
+
+// SetNillableMessage sets the "message" field if the given value is not nil.
+func (su *SubmitUpdate) SetNillableMessage(s *string) *SubmitUpdate {
+	if s != nil {
+		su.SetMessage(*s)
+	}
+	return su
+}
+
+// ClearMessage clears the value of the "message" field.
+func (su *SubmitUpdate) ClearMessage() *SubmitUpdate {
+	su.mutation.ClearMessage()
+	return su
+}
+
+// SetStatus sets the "status" field.
+func (su *SubmitUpdate) SetStatus(s string) *SubmitUpdate {
+	su.mutation.SetStatus(s)
+	return su
+}
+
 // SetSubmitedAt sets the "submited_at" field.
 func (su *SubmitUpdate) SetSubmitedAt(t time.Time) *SubmitUpdate {
 	su.mutation.SetSubmitedAt(t)
@@ -312,6 +338,15 @@ func (su *SubmitUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if su.mutation.LanguageCleared() {
 		_spec.ClearField(submit.FieldLanguage, field.TypeEnum)
 	}
+	if value, ok := su.mutation.Message(); ok {
+		_spec.SetField(submit.FieldMessage, field.TypeString, value)
+	}
+	if su.mutation.MessageCleared() {
+		_spec.ClearField(submit.FieldMessage, field.TypeString)
+	}
+	if value, ok := su.mutation.Status(); ok {
+		_spec.SetField(submit.FieldStatus, field.TypeString, value)
+	}
 	if value, ok := su.mutation.SubmitedAt(); ok {
 		_spec.SetField(submit.FieldSubmitedAt, field.TypeTime, value)
 	}
@@ -513,6 +548,32 @@ func (suo *SubmitUpdateOne) SetNillableLanguage(s *submit.Language) *SubmitUpdat
 // ClearLanguage clears the value of the "language" field.
 func (suo *SubmitUpdateOne) ClearLanguage() *SubmitUpdateOne {
 	suo.mutation.ClearLanguage()
+	return suo
+}
+
+// SetMessage sets the "message" field.
+func (suo *SubmitUpdateOne) SetMessage(s string) *SubmitUpdateOne {
+	suo.mutation.SetMessage(s)
+	return suo
+}
+
+// SetNillableMessage sets the "message" field if the given value is not nil.
+func (suo *SubmitUpdateOne) SetNillableMessage(s *string) *SubmitUpdateOne {
+	if s != nil {
+		suo.SetMessage(*s)
+	}
+	return suo
+}
+
+// ClearMessage clears the value of the "message" field.
+func (suo *SubmitUpdateOne) ClearMessage() *SubmitUpdateOne {
+	suo.mutation.ClearMessage()
+	return suo
+}
+
+// SetStatus sets the "status" field.
+func (suo *SubmitUpdateOne) SetStatus(s string) *SubmitUpdateOne {
+	suo.mutation.SetStatus(s)
 	return suo
 }
 
@@ -760,6 +821,15 @@ func (suo *SubmitUpdateOne) sqlSave(ctx context.Context) (_node *Submit, err err
 	}
 	if suo.mutation.LanguageCleared() {
 		_spec.ClearField(submit.FieldLanguage, field.TypeEnum)
+	}
+	if value, ok := suo.mutation.Message(); ok {
+		_spec.SetField(submit.FieldMessage, field.TypeString, value)
+	}
+	if suo.mutation.MessageCleared() {
+		_spec.ClearField(submit.FieldMessage, field.TypeString)
+	}
+	if value, ok := suo.mutation.Status(); ok {
+		_spec.SetField(submit.FieldStatus, field.TypeString, value)
 	}
 	if value, ok := suo.mutation.SubmitedAt(); ok {
 		_spec.SetField(submit.FieldSubmitedAt, field.TypeTime, value)

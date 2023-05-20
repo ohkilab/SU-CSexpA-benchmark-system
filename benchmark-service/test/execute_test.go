@@ -74,6 +74,6 @@ func testTask(port int) *pb.Task {
 			Body:        "",
 		},
 		ThreadNum:    5,
-		AttemptCount: 10000,
+		AttemptCount: 100,
 	}
 }

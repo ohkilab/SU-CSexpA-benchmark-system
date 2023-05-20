@@ -1,37 +1,17 @@
 <script setup lang="ts">
-import { GrpcWebFetchTransport } from '@protobuf-ts/grpcweb-transport';
-import { BackendServiceClient } from 'proto-gen-web/src/backend/services.client';
 import { ref } from 'vue';
 
-import { useStateStore, IState } from '../stores/state';
+defineProps({
+  errMsg: String
+})
 
 const id = ref('')
 const password = ref('')
-const errMsg = ref('')
 
-const state:IState = useStateStore()
-
-const emit = defineEmits(['loggedIn'])
-
-const backend = new BackendServiceClient(
-  new GrpcWebFetchTransport({
-    baseUrl: "http://localhost:8080"
-  })
-)
-
-const handleLogin = () => {
-  backend.postLogin({ id: id.value , password: password.value }).then(value => {
-    console.log(value.response)
-    state.group = id.value
-    emit('loggedIn', value.response.token)
-  }).catch(err => {
-    console.log(err.message)
-    errMsg.value = err.message
-  })
-}
+const emit = defineEmits(['login'])
 </script>
 <template>
-  <form class="flex flex-col items-center justify-center h-full w-full px-5 md:w-96 gap-5 text-xl" @submit.prevent="handleLogin">
+  <form class="flex flex-col items-center justify-center h-full w-full px-5 md:w-96 gap-5 text-xl" @submit.prevent="() => emit('login', id, password)">
     <div class="text-red-500">
       {{errMsg}}
     </div>
