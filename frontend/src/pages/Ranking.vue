@@ -14,7 +14,7 @@ const records:Ref<GetRankingResponse_Record[]> = ref(state.records ?? [])
 
 const backend = new BackendServiceClient(
   new GrpcWebFetchTransport({
-    baseUrl: "http://localhost:8080"
+    baseUrl: import.meta.env.PROD ? `http://${window.location.hostname}:8080` : 'http://localhost:8080'
   })
 )
 

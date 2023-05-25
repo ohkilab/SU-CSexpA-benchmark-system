@@ -21,4 +21,6 @@ RUN pnpm build
 
 FROM nginx:1.24
 
+COPY frontend/nginx.conf /etc/nginx/conf.d/default.conf
+
 COPY --from=builder /app/frontend/dist /usr/share/nginx/html
