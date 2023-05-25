@@ -26,3 +26,7 @@ seed:
 	DB_PORT=3306 \
 	DB_NAME=exp-a \
 	go run ./cmd/seed
+
+.PHONY: viz
+viz:
+	@open ./ent/schema-viz.html
