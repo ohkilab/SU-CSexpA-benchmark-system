@@ -4,8 +4,8 @@ import (
 	"context"
 	"log"
 
-	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/ent"
-	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/ent/contest"
+	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/repository/ent"
+	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/repository/ent/contest"
 	pb "github.com/ohkilab/SU-CSexpA-benchmark-system/proto-gen/go/backend"
 	"github.com/samber/lo"
 	"google.golang.org/grpc/codes"

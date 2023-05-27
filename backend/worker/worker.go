@@ -6,8 +6,8 @@ import (
 	"sync"
 	"time"
 
-	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/ent"
-	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/ent/submit"
+	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/repository/ent"
+	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/repository/ent/submit"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/core/timejst"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/proto-gen/go/backend"
 	backendpb "github.com/ohkilab/SU-CSexpA-benchmark-system/proto-gen/go/backend"

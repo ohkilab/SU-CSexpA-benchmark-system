@@ -7,9 +7,9 @@ import (
 	"time"
 
 	_ "github.com/go-sql-driver/mysql"
-	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/ent"
-	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/ent/group"
-	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/ent/migrate"
+	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/repository/ent"
+	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/repository/ent/group"
+	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/repository/ent/migrate"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/core/timejst"
 	"golang.org/x/crypto/bcrypt"
 )

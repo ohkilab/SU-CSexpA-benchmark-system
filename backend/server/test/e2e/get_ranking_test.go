@@ -4,7 +4,7 @@ import (
 	"context"
 	"testing"
 
-	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/ent/group"
+	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/repository/ent/group"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/api/grpc"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/core/auth"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/core/timejst"

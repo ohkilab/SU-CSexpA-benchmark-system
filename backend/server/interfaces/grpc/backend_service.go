@@ -4,7 +4,7 @@ import (
 	"context"
 	"net/url"
 
-	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/ent"
+	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/repository/ent"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/usecases/auth"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/usecases/contest"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/usecases/ranking"

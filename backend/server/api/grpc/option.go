@@ -1,7 +1,7 @@
 package grpc
 
 import (
-	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/ent"
+	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/repository/ent"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/worker"
 )
 
