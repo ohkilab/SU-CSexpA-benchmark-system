@@ -9,8 +9,8 @@ import { GrpcWebFetchTransport } from '@protobuf-ts/grpcweb-transport'
 import { BackendServiceClient } from 'proto-gen-web/src/backend/services.client'
 import { HealthcheckServiceClient } from 'proto-gen-web/src/backend/services.client'
 
-import type { GetRankingRequest, GetSubmitRequest, GetSubmitResponse } from 'proto-gen-web/src/backend/messages'
-import type { Group } from 'proto-gen-web/src/backend/resources'
+import type { GetRankingRequest, GetSubmitRequest, GetSubmitResponse  } from 'proto-gen-web/src/backend/messages'
+import type { Group, TaskResult } from 'proto-gen-web/src/backend/resources'
 import { Role } from 'proto-gen-web/src/backend/resources'
 
 const state:IState = useStateStore()
@@ -24,6 +24,8 @@ const errorMsg = ref('')
 const tags: Ref<Array<{tag: string, idx: number}>> = ref([])
 
 const submits: Ref<GetSubmitResponse> = ref({})
+
+const taskResults: Ref<TaskResult[]> = ref([])
 
 const url: Ref<string> = ref('')
 
@@ -46,6 +48,9 @@ const benchmark = () => {
 
       console.log("got a message", message)
       // status.current++
+
+      taskResults.value = message.submit?.taskResults ?? []
+      errorMsg.value = message.submit?.errorMessage ?? ''
       state.lastResult = message.submit?.score ?? 0
       state.current = message.submit?.taskResults.length ?? -1
     }
@@ -101,9 +106,22 @@ const filteredTags = computed(() => tags.value.slice(state.current - 2, state.cu
   <div class="flex flex-col mt-auto w-full items-center">
     <div v-if="!state.benchmarking && state.lastResult != 0" class="border flex flex-col border-gray-500 text-center p-5 rounded mb-5 w-max">
       <div class="mb-2">最新結果</div>
-      <div class="flex self-center">
+      <div class="flex self-center mb-5">
         <div class="rounded bg-gray-500 px-2">{{state.lastResult}}</div>
         &nbsp;req/s
+      </div>
+      <div class="flex flex-wrap gap-5 max-w-[600px] items-center justify-center">
+        <div
+          v-for="(t, i) in taskResults"
+          :key="i"
+            class="w-32 p-3 bg-gray-700 rounded shadow-md shadow-black"
+        >
+          <div class="flex justify-center gap-1">
+            {{ i+1 }}:
+            <div class="rounded bg-gray-500 px-2">{{t.requestPerSec}}</div>
+            req/s
+          </div>
+        </div>
       </div>
     </div>
     <div class="text-red-500" v-if="errorMsg">Error: {{errorMsg}}</div>
@@ -115,7 +133,7 @@ const filteredTags = computed(() => tags.value.slice(state.current - 2, state.cu
           <font-awesome-icon class="animate-spin" :icon="['fas', 'spinner']" />
         </div>
 
-        <div class="flex flex-wrap gap-5 self-center max-w-[600px]">
+        <div class="flex flex-wrap gap-5 max-w-[600px] justify-center">
           <div
             v-for="(t, i) in tags"
             :key="i"

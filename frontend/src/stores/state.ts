@@ -27,6 +27,6 @@ export const useStateStore = defineStore<'state', IState>('state', {
     showResult: false,
     result: 0,
     current: 0,
-    size: 20
+    size: 17
   })
 })
