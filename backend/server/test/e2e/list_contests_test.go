@@ -1,0 +1,57 @@
+package e2e
+
+import (
+	"context"
+	"testing"
+
+	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/api/grpc"
+	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/core/timejst"
+	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/test/utils"
+	pb "github.com/ohkilab/SU-CSexpA-benchmark-system/proto-gen/go/backend"
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
+)
+
+func Test_ListContests(t *testing.T) {
+	ctx := context.Background()
+	entClient, cleanupFunc := utils.EnttestOpen(ctx, t)
+	defer cleanupFunc(t)
+
+	conn, closeFunc := utils.LaunchGrpcServer(t, grpc.WithEntClient(entClient))
+	defer closeFunc()
+	client := pb.NewBackendServiceClient(conn)
+
+	// prepare
+	contest1, _ := entClient.Contest.Create().
+		SetTitle("test contest").
+		SetStartAt(timejst.Now()).
+		SetEndAt(timejst.Now().AddDate(1, 0, 0)).
+		SetYear(2023).
+		SetSubmitLimit(9999).
+		SetCreatedAt(timejst.Now()).
+		Save(ctx)
+	contest2, _ := entClient.Contest.Create().
+		SetTitle("test contest").
+		SetStartAt(timejst.Now()).
+		SetEndAt(timejst.Now().AddDate(1, 0, 0)).
+		SetYear(2023).
+		SetSubmitLimit(9999).
+		SetCreatedAt(timejst.Now()).
+		Save(ctx)
+	_, _ = entClient.Contest.Create().
+		SetTitle("test contest").
+		SetStartAt(timejst.Now()).
+		SetEndAt(timejst.Now().AddDate(1, 0, 0)).
+		SetYear(2022).
+		SetSubmitLimit(9999).
+		SetCreatedAt(timejst.Now()).
+		Save(ctx)
+
+	resp, err := client.ListContests(ctx, &pb.ListContestsRequest{
+		Year: 2023,
+	})
+	require.NoError(t, err)
+	assert.Equal(t, 2, len(resp.Contests))
+	assert.Equal(t, contest1.ID, int(resp.Contests[0].Id))
+	assert.Equal(t, contest2.ID, int(resp.Contests[1].Id))
+}

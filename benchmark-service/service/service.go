@@ -7,8 +7,9 @@ import (
 
 type service struct {
 	client *benchmark.Client
+	pb.UnimplementedBenchmarkServiceServer
 }
 
 func New(client *benchmark.Client) pb.BenchmarkServiceServer {
-	return &service{client}
+	return &service{client, pb.UnimplementedBenchmarkServiceServer{}}
 }

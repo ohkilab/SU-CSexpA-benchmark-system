@@ -12,11 +12,12 @@ import (
 
 type healthcheckServiceServer struct {
 	healthcheckInteractor *healthcheck.HealthcheckInteractor
+	pb.UnimplementedHealthcheckServiceServer
 }
 
 func NewHealthcheckService() pb.HealthcheckServiceServer {
 	healthcheckInteractor := healthcheck.NewInteractor()
-	return &healthcheckServiceServer{healthcheckInteractor}
+	return &healthcheckServiceServer{healthcheckInteractor, pb.UnimplementedHealthcheckServiceServer{}}
 }
 
 func (s *healthcheckServiceServer) PingUnary(ctx context.Context, req *pb.PingUnaryRequest) (*pb.PingUnaryResponse, error) {

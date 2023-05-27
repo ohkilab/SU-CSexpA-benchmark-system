@@ -6,6 +6,7 @@ import (
 
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/ent"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/usecases/auth"
+	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/usecases/contest"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/usecases/ranking"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/usecases/submit"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/worker"
@@ -18,13 +19,16 @@ type backendServiceServer struct {
 	authInteractor    *auth.AuthInteractor
 	rankingInteractor *ranking.RankingInteractor
 	submitInteractor  *submit.Interactor
+	contestInteractor *contest.Interactor
+	pb.UnimplementedBackendServiceServer
 }
 
 func NewBackendService(secret []byte, entClient *ent.Client, worker worker.Worker) pb.BackendServiceServer {
 	authInteractor := auth.NewInteractor(secret, entClient)
 	rankingInteractor := ranking.NewInteractor(entClient)
 	submitInteractor := submit.NewInteractor(entClient, worker)
-	return &backendServiceServer{authInteractor, rankingInteractor, submitInteractor}
+	contestInteractor := contest.NewInteractor(entClient)
+	return &backendServiceServer{authInteractor, rankingInteractor, submitInteractor, contestInteractor, pb.UnimplementedBackendServiceServer{}}
 }
 
 func (s *backendServiceServer) GetRanking(ctx context.Context, req *pb.GetRankingRequest) (*pb.GetRankingResponse, error) {
@@ -52,4 +56,8 @@ func (s *backendServiceServer) PostLogin(ctx context.Context, req *pb.PostLoginR
 
 func (s *backendServiceServer) ListSubmits(ctx context.Context, req *pb.ListSubmitsRequest) (*pb.ListSubmitsResponse, error) {
 	return s.submitInteractor.ListSubmits(ctx, req.GroupId, req.Status)
+}
+
+func (s *backendServiceServer) ListContests(ctx context.Context, req *pb.ListContestsRequest) (*pb.ListContestsResponse, error) {
+	return s.contestInteractor.ListContests(ctx, req)
 }
