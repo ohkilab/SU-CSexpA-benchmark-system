@@ -21,6 +21,8 @@ func (Group) Fields() []ent.Field {
 		field.Int("score").Positive(),
 		field.Enum("role").Values("contestant", "guest"),
 		field.String("encrypted_password"),
+		field.Time("created_at"),
+		field.Time("updated_at").Optional(),
 	}
 }
 

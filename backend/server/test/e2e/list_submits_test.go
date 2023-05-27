@@ -32,6 +32,7 @@ func Test_ListSubmits(t *testing.T) {
 		SetRole(group.RoleContestant).
 		SetScore(12345).
 		SetYear(2023).
+		SetCreatedAt(timejst.Now()).
 		Save(ctx)
 	contest, _ := entClient.Contest.Create().
 		SetTitle("test contest").

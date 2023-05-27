@@ -142,7 +142,7 @@ func (cu *ContestUpdate) RemoveSubmits(s ...*Submit) *ContestUpdate {
 
 // Save executes the query and returns the number of nodes affected by the update operation.
 func (cu *ContestUpdate) Save(ctx context.Context) (int, error) {
-	return withHooks[int, ContestMutation](ctx, cu.sqlSave, cu.mutation, cu.hooks)
+	return withHooks(ctx, cu.sqlSave, cu.mutation, cu.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
@@ -410,7 +410,7 @@ func (cuo *ContestUpdateOne) Select(field string, fields ...string) *ContestUpda
 
 // Save executes the query and returns the updated Contest entity.
 func (cuo *ContestUpdateOne) Save(ctx context.Context) (*Contest, error) {
-	return withHooks[*Contest, ContestMutation](ctx, cuo.sqlSave, cuo.mutation, cuo.hooks)
+	return withHooks(ctx, cuo.sqlSave, cuo.mutation, cuo.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.

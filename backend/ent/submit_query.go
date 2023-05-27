@@ -521,7 +521,7 @@ func (sq *SubmitQuery) loadTaskResults(ctx context.Context, query *TaskResultQue
 		}
 		node, ok := nodeids[*fk]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "submit_task_results" returned %v for node %v`, *fk, n.ID)
+			return fmt.Errorf(`unexpected referenced foreign-key "submit_task_results" returned %v for node %v`, *fk, n.ID)
 		}
 		assign(node, n)
 	}

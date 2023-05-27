@@ -25,6 +25,7 @@ type Worker interface {
 type Task struct {
 	Req      *benchmarkpb.ExecuteRequest
 	SubmitID int
+	GroupID  int
 }
 
 type worker struct {
@@ -162,6 +163,20 @@ func (w *worker) Run() {
 			SetStatus(backendpb.Status_SUCCESS.String()).
 			Save(ctx); err != nil {
 			log.Println("ERROR", err)
+		}
+
+		group, err := w.entClient.Group.Get(ctx, task.GroupID)
+		if err != nil {
+			log.Println(err)
+		}
+		if group.Score < score {
+			if _, err := w.entClient.Group.
+				UpdateOneID(group.ID).
+				SetScore(score).
+				SetUpdatedAt(now).
+				Save(ctx); err != nil {
+				log.Println(err)
+			}
 		}
 	}
 }

@@ -33,6 +33,8 @@ var (
 		{Name: "score", Type: field.TypeInt},
 		{Name: "role", Type: field.TypeEnum, Enums: []string{"contestant", "guest"}},
 		{Name: "encrypted_password", Type: field.TypeString},
+		{Name: "created_at", Type: field.TypeTime},
+		{Name: "updated_at", Type: field.TypeTime, Nullable: true},
 	}
 	// GroupsTable holds the schema information for the "groups" table.
 	GroupsTable = &schema.Table{

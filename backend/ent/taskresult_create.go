@@ -143,7 +143,7 @@ func (trc *TaskResultCreate) Mutation() *TaskResultMutation {
 
 // Save creates the TaskResult in the database.
 func (trc *TaskResultCreate) Save(ctx context.Context) (*TaskResult, error) {
-	return withHooks[*TaskResult, TaskResultMutation](ctx, trc.sqlSave, trc.mutation, trc.hooks)
+	return withHooks(ctx, trc.sqlSave, trc.mutation, trc.hooks)
 }
 
 // SaveX calls Save and panics if Save returns an error.

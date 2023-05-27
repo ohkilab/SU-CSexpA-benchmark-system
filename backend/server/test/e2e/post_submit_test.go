@@ -39,6 +39,7 @@ func Test_PostSubmit(t *testing.T) {
 		SetRole(group.RoleContestant).
 		SetScore(12345).
 		SetYear(2023).
+		SetCreatedAt(timejst.Now()).
 		Save(ctx)
 	if err != nil {
 		t.Fatal(err)

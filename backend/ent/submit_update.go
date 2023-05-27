@@ -262,7 +262,7 @@ func (su *SubmitUpdate) ClearContests() *SubmitUpdate {
 
 // Save executes the query and returns the number of nodes affected by the update operation.
 func (su *SubmitUpdate) Save(ctx context.Context) (int, error) {
-	return withHooks[int, SubmitMutation](ctx, su.sqlSave, su.mutation, su.hooks)
+	return withHooks(ctx, su.sqlSave, su.mutation, su.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
@@ -729,7 +729,7 @@ func (suo *SubmitUpdateOne) Select(field string, fields ...string) *SubmitUpdate
 
 // Save executes the query and returns the updated Submit entity.
 func (suo *SubmitUpdateOne) Save(ctx context.Context) (*Submit, error) {
-	return withHooks[*Submit, SubmitMutation](ctx, suo.sqlSave, suo.mutation, suo.hooks)
+	return withHooks(ctx, suo.sqlSave, suo.mutation, suo.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.

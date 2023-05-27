@@ -7,6 +7,7 @@ import (
 
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/ent/group"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/api/grpc"
+	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/core/timejst"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/test/utils"
 	pb "github.com/ohkilab/SU-CSexpA-benchmark-system/proto-gen/go/backend"
 	"github.com/stretchr/testify/assert"
@@ -31,6 +32,7 @@ func Test_PostLogin(t *testing.T) {
 		SetRole(group.RoleContestant).
 		SetScore(12345).
 		SetYear(2023).
+		SetCreatedAt(timejst.Now()).
 		Save(ctx)
 
 	// success

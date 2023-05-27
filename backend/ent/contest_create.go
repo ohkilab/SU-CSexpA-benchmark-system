@@ -99,7 +99,7 @@ func (cc *ContestCreate) Mutation() *ContestMutation {
 
 // Save creates the Contest in the database.
 func (cc *ContestCreate) Save(ctx context.Context) (*Contest, error) {
-	return withHooks[*Contest, ContestMutation](ctx, cc.sqlSave, cc.mutation, cc.hooks)
+	return withHooks(ctx, cc.sqlSave, cc.mutation, cc.hooks)
 }
 
 // SaveX calls Save and panics if Save returns an error.

@@ -6,6 +6,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"time"
 
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
@@ -50,6 +51,26 @@ func (gc *GroupCreate) SetEncryptedPassword(s string) *GroupCreate {
 	return gc
 }
 
+// SetCreatedAt sets the "created_at" field.
+func (gc *GroupCreate) SetCreatedAt(t time.Time) *GroupCreate {
+	gc.mutation.SetCreatedAt(t)
+	return gc
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (gc *GroupCreate) SetUpdatedAt(t time.Time) *GroupCreate {
+	gc.mutation.SetUpdatedAt(t)
+	return gc
+}
+
+// SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
+func (gc *GroupCreate) SetNillableUpdatedAt(t *time.Time) *GroupCreate {
+	if t != nil {
+		gc.SetUpdatedAt(*t)
+	}
+	return gc
+}
+
 // SetID sets the "id" field.
 func (gc *GroupCreate) SetID(i int) *GroupCreate {
 	gc.mutation.SetID(i)
@@ -78,7 +99,7 @@ func (gc *GroupCreate) Mutation() *GroupMutation {
 
 // Save creates the Group in the database.
 func (gc *GroupCreate) Save(ctx context.Context) (*Group, error) {
-	return withHooks[*Group, GroupMutation](ctx, gc.sqlSave, gc.mutation, gc.hooks)
+	return withHooks(ctx, gc.sqlSave, gc.mutation, gc.hooks)
 }
 
 // SaveX calls Save and panics if Save returns an error.
@@ -135,6 +156,9 @@ func (gc *GroupCreate) check() error {
 	if _, ok := gc.mutation.EncryptedPassword(); !ok {
 		return &ValidationError{Name: "encrypted_password", err: errors.New(`ent: missing required field "Group.encrypted_password"`)}
 	}
+	if _, ok := gc.mutation.CreatedAt(); !ok {
+		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "Group.created_at"`)}
+	}
 	return nil
 }
 
@@ -186,6 +210,14 @@ func (gc *GroupCreate) createSpec() (*Group, *sqlgraph.CreateSpec) {
 	if value, ok := gc.mutation.EncryptedPassword(); ok {
 		_spec.SetField(group.FieldEncryptedPassword, field.TypeString, value)
 		_node.EncryptedPassword = value
+	}
+	if value, ok := gc.mutation.CreatedAt(); ok {
+		_spec.SetField(group.FieldCreatedAt, field.TypeTime, value)
+		_node.CreatedAt = value
+	}
+	if value, ok := gc.mutation.UpdatedAt(); ok {
+		_spec.SetField(group.FieldUpdatedAt, field.TypeTime, value)
+		_node.UpdatedAt = value
 	}
 	if nodes := gc.mutation.SubmitsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{

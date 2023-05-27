@@ -6,6 +6,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"time"
 
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
@@ -72,6 +73,32 @@ func (gu *GroupUpdate) SetEncryptedPassword(s string) *GroupUpdate {
 	return gu
 }
 
+// SetCreatedAt sets the "created_at" field.
+func (gu *GroupUpdate) SetCreatedAt(t time.Time) *GroupUpdate {
+	gu.mutation.SetCreatedAt(t)
+	return gu
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (gu *GroupUpdate) SetUpdatedAt(t time.Time) *GroupUpdate {
+	gu.mutation.SetUpdatedAt(t)
+	return gu
+}
+
+// SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
+func (gu *GroupUpdate) SetNillableUpdatedAt(t *time.Time) *GroupUpdate {
+	if t != nil {
+		gu.SetUpdatedAt(*t)
+	}
+	return gu
+}
+
+// ClearUpdatedAt clears the value of the "updated_at" field.
+func (gu *GroupUpdate) ClearUpdatedAt() *GroupUpdate {
+	gu.mutation.ClearUpdatedAt()
+	return gu
+}
+
 // AddSubmitIDs adds the "submits" edge to the Submit entity by IDs.
 func (gu *GroupUpdate) AddSubmitIDs(ids ...int) *GroupUpdate {
 	gu.mutation.AddSubmitIDs(ids...)
@@ -115,7 +142,7 @@ func (gu *GroupUpdate) RemoveSubmits(s ...*Submit) *GroupUpdate {
 
 // Save executes the query and returns the number of nodes affected by the update operation.
 func (gu *GroupUpdate) Save(ctx context.Context) (int, error) {
-	return withHooks[int, GroupMutation](ctx, gu.sqlSave, gu.mutation, gu.hooks)
+	return withHooks(ctx, gu.sqlSave, gu.mutation, gu.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
@@ -192,6 +219,15 @@ func (gu *GroupUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if value, ok := gu.mutation.EncryptedPassword(); ok {
 		_spec.SetField(group.FieldEncryptedPassword, field.TypeString, value)
+	}
+	if value, ok := gu.mutation.CreatedAt(); ok {
+		_spec.SetField(group.FieldCreatedAt, field.TypeTime, value)
+	}
+	if value, ok := gu.mutation.UpdatedAt(); ok {
+		_spec.SetField(group.FieldUpdatedAt, field.TypeTime, value)
+	}
+	if gu.mutation.UpdatedAtCleared() {
+		_spec.ClearField(group.FieldUpdatedAt, field.TypeTime)
 	}
 	if gu.mutation.SubmitsCleared() {
 		edge := &sqlgraph.EdgeSpec{
@@ -302,6 +338,32 @@ func (guo *GroupUpdateOne) SetEncryptedPassword(s string) *GroupUpdateOne {
 	return guo
 }
 
+// SetCreatedAt sets the "created_at" field.
+func (guo *GroupUpdateOne) SetCreatedAt(t time.Time) *GroupUpdateOne {
+	guo.mutation.SetCreatedAt(t)
+	return guo
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (guo *GroupUpdateOne) SetUpdatedAt(t time.Time) *GroupUpdateOne {
+	guo.mutation.SetUpdatedAt(t)
+	return guo
+}
+
+// SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
+func (guo *GroupUpdateOne) SetNillableUpdatedAt(t *time.Time) *GroupUpdateOne {
+	if t != nil {
+		guo.SetUpdatedAt(*t)
+	}
+	return guo
+}
+
+// ClearUpdatedAt clears the value of the "updated_at" field.
+func (guo *GroupUpdateOne) ClearUpdatedAt() *GroupUpdateOne {
+	guo.mutation.ClearUpdatedAt()
+	return guo
+}
+
 // AddSubmitIDs adds the "submits" edge to the Submit entity by IDs.
 func (guo *GroupUpdateOne) AddSubmitIDs(ids ...int) *GroupUpdateOne {
 	guo.mutation.AddSubmitIDs(ids...)
@@ -358,7 +420,7 @@ func (guo *GroupUpdateOne) Select(field string, fields ...string) *GroupUpdateOn
 
 // Save executes the query and returns the updated Group entity.
 func (guo *GroupUpdateOne) Save(ctx context.Context) (*Group, error) {
-	return withHooks[*Group, GroupMutation](ctx, guo.sqlSave, guo.mutation, guo.hooks)
+	return withHooks(ctx, guo.sqlSave, guo.mutation, guo.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
@@ -452,6 +514,15 @@ func (guo *GroupUpdateOne) sqlSave(ctx context.Context) (_node *Group, err error
 	}
 	if value, ok := guo.mutation.EncryptedPassword(); ok {
 		_spec.SetField(group.FieldEncryptedPassword, field.TypeString, value)
+	}
+	if value, ok := guo.mutation.CreatedAt(); ok {
+		_spec.SetField(group.FieldCreatedAt, field.TypeTime, value)
+	}
+	if value, ok := guo.mutation.UpdatedAt(); ok {
+		_spec.SetField(group.FieldUpdatedAt, field.TypeTime, value)
+	}
+	if guo.mutation.UpdatedAtCleared() {
+		_spec.ClearField(group.FieldUpdatedAt, field.TypeTime)
 	}
 	if guo.mutation.SubmitsCleared() {
 		edge := &sqlgraph.EdgeSpec{

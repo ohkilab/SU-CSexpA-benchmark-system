@@ -9,6 +9,7 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/ent"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/ent/group"
+	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/ent/migrate"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/core/timejst"
 	"golang.org/x/crypto/bcrypt"
 )
@@ -28,21 +29,24 @@ func main() {
 	}
 
 	ctx := context.Background()
+	if err := entClient.Schema.Create(ctx, migrate.WithDropColumn(true)); err != nil {
+		log.Fatalf("failed creating schema resources: %v", err)
+	}
 
 	encryptedPassword, _ := bcrypt.GenerateFromPassword([]byte("ohkilab"), bcrypt.DefaultCost)
-	_, err = entClient.Group.Create().SetName("ohkilab").SetEncryptedPassword(string(encryptedPassword)).SetYear(2023).SetRole(group.RoleContestant).SetScore(99999).Save(ctx)
+	_, err = entClient.Group.Create().SetName("ohkilab").SetEncryptedPassword(string(encryptedPassword)).SetYear(2023).SetRole(group.RoleContestant).SetScore(99999).SetCreatedAt(timejst.Now()).Save(ctx)
 	if err != nil {
 		log.Println(err)
 	}
-	_, err = entClient.Group.Create().SetName("a01").SetEncryptedPassword(string(encryptedPassword)).SetYear(2023).SetRole(group.RoleContestant).SetScore(555).Save(ctx)
+	_, err = entClient.Group.Create().SetName("a01").SetEncryptedPassword(string(encryptedPassword)).SetYear(2023).SetRole(group.RoleContestant).SetScore(555).SetCreatedAt(timejst.Now()).Save(ctx)
 	if err != nil {
 		log.Println(err)
 	}
-	_, err = entClient.Group.Create().SetName("a02").SetEncryptedPassword(string(encryptedPassword)).SetYear(2023).SetRole(group.RoleContestant).SetScore(444).Save(ctx)
+	_, err = entClient.Group.Create().SetName("a02").SetEncryptedPassword(string(encryptedPassword)).SetYear(2023).SetRole(group.RoleContestant).SetScore(444).SetCreatedAt(timejst.Now()).Save(ctx)
 	if err != nil {
 		log.Println(err)
 	}
-	_, err = entClient.Group.Create().SetName("a03").SetEncryptedPassword(string(encryptedPassword)).SetYear(2023).SetRole(group.RoleContestant).SetScore(666).Save(ctx)
+	_, err = entClient.Group.Create().SetName("a03").SetEncryptedPassword(string(encryptedPassword)).SetYear(2023).SetRole(group.RoleContestant).SetScore(666).SetCreatedAt(timejst.Now()).Save(ctx)
 	if err != nil {
 		log.Println(err)
 	}

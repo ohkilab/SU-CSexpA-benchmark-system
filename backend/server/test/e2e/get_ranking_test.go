@@ -7,6 +7,7 @@ import (
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/ent/group"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/api/grpc"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/core/auth"
+	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/core/timejst"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/test/utils"
 	pb "github.com/ohkilab/SU-CSexpA-benchmark-system/proto-gen/go/backend"
 	"github.com/stretchr/testify/assert"
@@ -25,10 +26,10 @@ func Test_GetRanking(t *testing.T) {
 
 	// prepare
 	encryptedPassword, _ := bcrypt.GenerateFromPassword([]byte("aaaa"), bcrypt.DefaultCost)
-	a01, _ := entClient.Group.Create().SetName("a01").SetEncryptedPassword(string(encryptedPassword)).SetYear(2023).SetRole(group.RoleContestant).SetScore(333).Save(ctx)
-	a02, _ := entClient.Group.Create().SetName("a02").SetEncryptedPassword(string(encryptedPassword)).SetYear(2023).SetRole(group.RoleContestant).SetScore(555).Save(ctx)
-	a03, _ := entClient.Group.Create().SetName("a03").SetEncryptedPassword(string(encryptedPassword)).SetYear(2023).SetRole(group.RoleContestant).SetScore(444).Save(ctx)
-	szpp, _ := entClient.Group.Create().SetName("szpp").SetEncryptedPassword(string(encryptedPassword)).SetYear(2023).SetRole(group.RoleGuest).SetScore(9999).Save(ctx)
+	a01, _ := entClient.Group.Create().SetName("a01").SetEncryptedPassword(string(encryptedPassword)).SetYear(2023).SetRole(group.RoleContestant).SetScore(333).SetCreatedAt(timejst.Now()).Save(ctx)
+	a02, _ := entClient.Group.Create().SetName("a02").SetEncryptedPassword(string(encryptedPassword)).SetYear(2023).SetRole(group.RoleContestant).SetScore(555).SetCreatedAt(timejst.Now()).Save(ctx)
+	a03, _ := entClient.Group.Create().SetName("a03").SetEncryptedPassword(string(encryptedPassword)).SetYear(2023).SetRole(group.RoleContestant).SetScore(444).SetCreatedAt(timejst.Now()).Save(ctx)
+	szpp, _ := entClient.Group.Create().SetName("szpp").SetEncryptedPassword(string(encryptedPassword)).SetYear(2023).SetRole(group.RoleGuest).SetScore(9999).SetCreatedAt(timejst.Now()).Save(ctx)
 
 	jwtToken, err := auth.GenerateJWTToken(secret, a01.ID, a01.Year)
 	if err != nil {

@@ -190,7 +190,7 @@ func (tru *TaskResultUpdate) ClearSubmits() *TaskResultUpdate {
 
 // Save executes the query and returns the number of nodes affected by the update operation.
 func (tru *TaskResultUpdate) Save(ctx context.Context) (int, error) {
-	return withHooks[int, TaskResultMutation](ctx, tru.sqlSave, tru.mutation, tru.hooks)
+	return withHooks(ctx, tru.sqlSave, tru.mutation, tru.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
@@ -498,7 +498,7 @@ func (truo *TaskResultUpdateOne) Select(field string, fields ...string) *TaskRes
 
 // Save executes the query and returns the updated TaskResult entity.
 func (truo *TaskResultUpdateOne) Save(ctx context.Context) (*TaskResult, error) {
-	return withHooks[*TaskResult, TaskResultMutation](ctx, truo.sqlSave, truo.mutation, truo.hooks)
+	return withHooks(ctx, truo.sqlSave, truo.mutation, truo.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.

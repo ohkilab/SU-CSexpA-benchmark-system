@@ -183,7 +183,7 @@ func (sc *SubmitCreate) Mutation() *SubmitMutation {
 
 // Save creates the Submit in the database.
 func (sc *SubmitCreate) Save(ctx context.Context) (*Submit, error) {
-	return withHooks[*Submit, SubmitMutation](ctx, sc.sqlSave, sc.mutation, sc.hooks)
+	return withHooks(ctx, sc.sqlSave, sc.mutation, sc.hooks)
 }
 
 // SaveX calls Save and panics if Save returns an error.
