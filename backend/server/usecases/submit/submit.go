@@ -59,7 +59,7 @@ func (i *Interactor) PostSubmit(ctx context.Context, req *backendpb.PostSubmitRe
 	}
 
 	// add a task to worker
-	executeRequest := buildTask(submit.URL, strconv.Itoa(claims.GroupID), submit.ID)
+	executeRequest := buildTask(submit.URL, strconv.Itoa(claims.GroupID), submit.ID, submit.Year)
 	i.worker.Push(executeRequest)
 
 	return &backendpb.PostSubmitResponse{
@@ -70,7 +70,7 @@ func (i *Interactor) PostSubmit(ctx context.Context, req *backendpb.PostSubmitRe
 	}, nil
 }
 
-func buildTask(url, groupID string, submitID int) *worker.Task {
+func buildTask(url, groupID string, submitID, year int) *worker.Task {
 	tags := generateRandomTags(50)
 	return &worker.Task{
 		Req: &benchmarkpb.ExecuteRequest{
@@ -87,6 +87,7 @@ func buildTask(url, groupID string, submitID int) *worker.Task {
 					AttemptCount: int32(attemptCount),
 				}
 			}),
+			Year: int32(year),
 		},
 		SubmitID: submitID,
 	}
