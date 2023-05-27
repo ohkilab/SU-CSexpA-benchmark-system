@@ -8,6 +8,7 @@ import (
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/ent/group"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/api/grpc"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/core/auth"
+	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/core/timejst"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/test/utils"
 	pb "github.com/ohkilab/SU-CSexpA-benchmark-system/proto-gen/go/backend"
 	"github.com/stretchr/testify/assert"
@@ -24,7 +25,7 @@ func Test_ListSubmits(t *testing.T) {
 	client := pb.NewBackendServiceClient(conn)
 
 	// prepare
-	now := time.Now()
+	now := timejst.Now()
 	group, _ := entClient.Group.Create().
 		SetName("test").
 		SetEncryptedPassword(string("hoge")).

@@ -61,3 +61,7 @@ func (s *backendServiceServer) ListSubmits(ctx context.Context, req *pb.ListSubm
 func (s *backendServiceServer) ListContests(ctx context.Context, req *pb.ListContestsRequest) (*pb.ListContestsResponse, error) {
 	return s.contestInteractor.ListContests(ctx, req)
 }
+
+func (s *backendServiceServer) VerifyToken(ctx context.Context, req *pb.VerifyTokenRequest) (*pb.VerifyTokenResponse, error) {
+	return s.authInteractor.VerifyToken(ctx), nil
+}

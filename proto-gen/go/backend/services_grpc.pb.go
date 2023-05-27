@@ -25,6 +25,7 @@ const (
 	BackendService_ListSubmits_FullMethodName  = "/backend.BackendService/ListSubmits"
 	BackendService_PostLogin_FullMethodName    = "/backend.BackendService/PostLogin"
 	BackendService_ListContests_FullMethodName = "/backend.BackendService/ListContests"
+	BackendService_VerifyToken_FullMethodName  = "/backend.BackendService/VerifyToken"
 )
 
 // BackendServiceClient is the client API for BackendService service.
@@ -37,6 +38,7 @@ type BackendServiceClient interface {
 	ListSubmits(ctx context.Context, in *ListSubmitsRequest, opts ...grpc.CallOption) (*ListSubmitsResponse, error)
 	PostLogin(ctx context.Context, in *PostLoginRequest, opts ...grpc.CallOption) (*PostLoginResponse, error)
 	ListContests(ctx context.Context, in *ListContestsRequest, opts ...grpc.CallOption) (*ListContestsResponse, error)
+	VerifyToken(ctx context.Context, in *VerifyTokenRequest, opts ...grpc.CallOption) (*VerifyTokenResponse, error)
 }
 
 type backendServiceClient struct {
@@ -124,6 +126,15 @@ func (c *backendServiceClient) ListContests(ctx context.Context, in *ListContest
 	return out, nil
 }
 
+func (c *backendServiceClient) VerifyToken(ctx context.Context, in *VerifyTokenRequest, opts ...grpc.CallOption) (*VerifyTokenResponse, error) {
+	out := new(VerifyTokenResponse)
+	err := c.cc.Invoke(ctx, BackendService_VerifyToken_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // BackendServiceServer is the server API for BackendService service.
 // All implementations must embed UnimplementedBackendServiceServer
 // for forward compatibility
@@ -134,6 +145,7 @@ type BackendServiceServer interface {
 	ListSubmits(context.Context, *ListSubmitsRequest) (*ListSubmitsResponse, error)
 	PostLogin(context.Context, *PostLoginRequest) (*PostLoginResponse, error)
 	ListContests(context.Context, *ListContestsRequest) (*ListContestsResponse, error)
+	VerifyToken(context.Context, *VerifyTokenRequest) (*VerifyTokenResponse, error)
 	mustEmbedUnimplementedBackendServiceServer()
 }
 
@@ -158,6 +170,9 @@ func (UnimplementedBackendServiceServer) PostLogin(context.Context, *PostLoginRe
 }
 func (UnimplementedBackendServiceServer) ListContests(context.Context, *ListContestsRequest) (*ListContestsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListContests not implemented")
+}
+func (UnimplementedBackendServiceServer) VerifyToken(context.Context, *VerifyTokenRequest) (*VerifyTokenResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method VerifyToken not implemented")
 }
 func (UnimplementedBackendServiceServer) mustEmbedUnimplementedBackendServiceServer() {}
 
@@ -283,6 +298,24 @@ func _BackendService_ListContests_Handler(srv interface{}, ctx context.Context, 
 	return interceptor(ctx, in, info, handler)
 }
 
+func _BackendService_VerifyToken_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(VerifyTokenRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BackendServiceServer).VerifyToken(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: BackendService_VerifyToken_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BackendServiceServer).VerifyToken(ctx, req.(*VerifyTokenRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // BackendService_ServiceDesc is the grpc.ServiceDesc for BackendService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -309,6 +342,10 @@ var BackendService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "ListContests",
 			Handler:    _BackendService_ListContests_Handler,
+		},
+		{
+			MethodName: "VerifyToken",
+			Handler:    _BackendService_VerifyToken_Handler,
 		},
 	},
 	Streams: []grpc.StreamDesc{

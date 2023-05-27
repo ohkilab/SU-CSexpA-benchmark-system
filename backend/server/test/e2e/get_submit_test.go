@@ -9,6 +9,7 @@ import (
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/ent/group"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/api/grpc"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/core/auth"
+	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/core/timejst"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/test/utils"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/worker"
 	pb "github.com/ohkilab/SU-CSexpA-benchmark-system/proto-gen/go/backend"
@@ -48,7 +49,7 @@ func Test_GetSubmit(t *testing.T) {
 		SetEndAt(time.Date(2023, time.December, 31, 23, 59, 59, 0, time.UTC)).
 		SetYear(2023).
 		SetSubmitLimit(9999).
-		SetCreatedAt(time.Now()).
+		SetCreatedAt(timejst.Now()).
 		Save(ctx)
 	submit, err := entClient.Submit.Create().
 		SetURL("http://localhost:8080/program").
@@ -56,8 +57,8 @@ func Test_GetSubmit(t *testing.T) {
 		SetGroups(group).
 		SetStatus(pb.Status_SUCCESS.String()).
 		SetYear(2023).
-		SetSubmitedAt(time.Now()).
-		SetCompletedAt(time.Now()).
+		SetSubmitedAt(timejst.Now()).
+		SetCompletedAt(timejst.Now()).
 		Save(ctx)
 
 	jwtToken, err := auth.GenerateJWTToken([]byte("secret"), group.ID, group.Year)

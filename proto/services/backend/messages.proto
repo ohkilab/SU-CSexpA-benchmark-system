@@ -80,3 +80,10 @@ message ListContestsRequest {
 message ListContestsResponse {
   repeated Contest contests = 2;
 }
+
+message VerifyTokenRequest {}
+
+message VerifyTokenResponse {
+  bool ok = 1;
+  string message = 2;
+}

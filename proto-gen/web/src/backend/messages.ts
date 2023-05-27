@@ -236,6 +236,24 @@ export interface ListContestsResponse {
      */
     contests: Contest[];
 }
+/**
+ * @generated from protobuf message backend.VerifyTokenRequest
+ */
+export interface VerifyTokenRequest {
+}
+/**
+ * @generated from protobuf message backend.VerifyTokenResponse
+ */
+export interface VerifyTokenResponse {
+    /**
+     * @generated from protobuf field: bool ok = 1;
+     */
+    ok: boolean;
+    /**
+     * @generated from protobuf field: string message = 2;
+     */
+    message: string;
+}
 // @generated message type with reflection information, may provide speed optimized methods
 class PostLoginRequest$Type extends MessageType<PostLoginRequest> {
     constructor() {
@@ -1246,3 +1264,83 @@ class ListContestsResponse$Type extends MessageType<ListContestsResponse> {
  * @generated MessageType for protobuf message backend.ListContestsResponse
  */
 export const ListContestsResponse = new ListContestsResponse$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class VerifyTokenRequest$Type extends MessageType<VerifyTokenRequest> {
+    constructor() {
+        super("backend.VerifyTokenRequest", []);
+    }
+    create(value?: PartialMessage<VerifyTokenRequest>): VerifyTokenRequest {
+        const message = {};
+        globalThis.Object.defineProperty(message, MESSAGE_TYPE, { enumerable: false, value: this });
+        if (value !== undefined)
+            reflectionMergePartial<VerifyTokenRequest>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: VerifyTokenRequest): VerifyTokenRequest {
+        return target ?? this.create();
+    }
+    internalBinaryWrite(message: VerifyTokenRequest, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message backend.VerifyTokenRequest
+ */
+export const VerifyTokenRequest = new VerifyTokenRequest$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class VerifyTokenResponse$Type extends MessageType<VerifyTokenResponse> {
+    constructor() {
+        super("backend.VerifyTokenResponse", [
+            { no: 1, name: "ok", kind: "scalar", T: 8 /*ScalarType.BOOL*/ },
+            { no: 2, name: "message", kind: "scalar", T: 9 /*ScalarType.STRING*/ }
+        ]);
+    }
+    create(value?: PartialMessage<VerifyTokenResponse>): VerifyTokenResponse {
+        const message = { ok: false, message: "" };
+        globalThis.Object.defineProperty(message, MESSAGE_TYPE, { enumerable: false, value: this });
+        if (value !== undefined)
+            reflectionMergePartial<VerifyTokenResponse>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: VerifyTokenResponse): VerifyTokenResponse {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* bool ok */ 1:
+                    message.ok = reader.bool();
+                    break;
+                case /* string message */ 2:
+                    message.message = reader.string();
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: VerifyTokenResponse, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* bool ok = 1; */
+        if (message.ok !== false)
+            writer.tag(1, WireType.Varint).bool(message.ok);
+        /* string message = 2; */
+        if (message.message !== "")
+            writer.tag(2, WireType.LengthDelimited).string(message.message);
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message backend.VerifyTokenResponse
+ */
+export const VerifyTokenResponse = new VerifyTokenResponse$Type();

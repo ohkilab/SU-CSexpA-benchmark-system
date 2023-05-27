@@ -9,6 +9,7 @@ import (
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/ent/group"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/api/grpc"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/core/auth"
+	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/core/timejst"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/test/utils"
 	mock_worker "github.com/ohkilab/SU-CSexpA-benchmark-system/backend/worker/mock"
 	pb "github.com/ohkilab/SU-CSexpA-benchmark-system/proto-gen/go/backend"
@@ -48,7 +49,7 @@ func Test_PostSubmit(t *testing.T) {
 		SetEndAt(time.Date(2023, time.December, 31, 23, 59, 59, 0, time.UTC)).
 		SetYear(2023).
 		SetSubmitLimit(9999).
-		SetCreatedAt(time.Now()).
+		SetCreatedAt(timejst.Now()).
 		Save(ctx)
 	if err != nil {
 		t.Fatal(err)
@@ -63,7 +64,7 @@ func Test_PostSubmit(t *testing.T) {
 
 	// success
 	req := &pb.PostSubmitRequest{
-		Url:    "http://10.255.255.255",
+		Url:       "http://10.255.255.255",
 		ContestId: int32(contest.ID),
 	}
 	resp, err := client.PostSubmit(ctx, req)
@@ -77,7 +78,7 @@ func Test_PostSubmit(t *testing.T) {
 
 	// failed
 	req = &pb.PostSubmitRequest{
-		Url:    "http://10.255.255.255",
+		Url:       "http://10.255.255.255",
 		ContestId: 0,
 	}
 	_, err = client.PostSubmit(ctx, req)

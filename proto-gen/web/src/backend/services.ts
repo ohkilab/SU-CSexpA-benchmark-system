@@ -5,6 +5,8 @@ import { PingServerSideStreamingResponse } from "./messages";
 import { PingServerSideStreamingRequest } from "./messages";
 import { PingUnaryResponse } from "./messages";
 import { PingUnaryRequest } from "./messages";
+import { VerifyTokenResponse } from "./messages";
+import { VerifyTokenRequest } from "./messages";
 import { ListContestsResponse } from "./messages";
 import { ListContestsRequest } from "./messages";
 import { PostLoginResponse } from "./messages";
@@ -27,7 +29,8 @@ export const BackendService = new ServiceType("backend.BackendService", [
     { name: "GetSubmit", serverStreaming: true, options: {}, I: GetSubmitRequest, O: GetSubmitResponse },
     { name: "ListSubmits", options: {}, I: ListSubmitsRequest, O: ListSubmitsResponse },
     { name: "PostLogin", options: {}, I: PostLoginRequest, O: PostLoginResponse },
-    { name: "ListContests", options: {}, I: ListContestsRequest, O: ListContestsResponse }
+    { name: "ListContests", options: {}, I: ListContestsRequest, O: ListContestsResponse },
+    { name: "VerifyToken", options: {}, I: VerifyTokenRequest, O: VerifyTokenResponse }
 ]);
 /**
  * @generated ServiceType for protobuf service backend.HealthcheckService

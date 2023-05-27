@@ -13,6 +13,7 @@ service BackendService {
   rpc ListSubmits(ListSubmitsRequest) returns (ListSubmitsResponse);
   rpc PostLogin(PostLoginRequest) returns (PostLoginResponse);
   rpc ListContests(ListContestsRequest) returns (ListContestsResponse);
+  rpc VerifyToken(VerifyTokenRequest) returns (VerifyTokenResponse);
 }
 
 service HealthcheckService {

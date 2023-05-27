@@ -4,6 +4,7 @@ import (
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
+	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/core/timejst"
 	"github.com/pkg/errors"
 )
 
@@ -35,7 +36,7 @@ func GenerateJWTToken(secret []byte, groupID int, year int) (string, error) {
 		GroupID: groupID,
 		Year:    year,
 		RegisteredClaims: jwt.RegisteredClaims{
-			ExpiresAt: jwt.NewNumericDate(time.Now().Add(7 * 24 * time.Hour)),
+			ExpiresAt: jwt.NewNumericDate(timejst.Now().Add(7 * 24 * time.Hour)),
 		},
 	})
 	return jwtToken.SignedString(secret)
