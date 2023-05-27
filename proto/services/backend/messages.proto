@@ -5,6 +5,8 @@ import "google/protobuf/timestamp.proto";
 
 option go_package = "github.com/ohkilab/SU-CSexpA-benchmark-system/proto-gen/go/backend";
 
+package backend;
+
 message PostLoginRequest {
   string id = 1; // it means group_id
   string password = 2;
@@ -70,3 +72,11 @@ message PingUnaryResponse { string pong = 1; }
 message PingServerSideStreamingRequest { string ping = 2; }
 
 message PingServerSideStreamingResponse { string pong = 2; }
+
+message ListContestsRequest {
+  int32 year = 1;
+}
+
+message ListContestsResponse {
+  repeated Contest contests = 2;
+}

@@ -5,6 +5,8 @@ import "backend/resources.proto";
 
 option go_package = "github.com/ohkilab/SU-CSexpA-benchmark-system/proto-gen/go/benchmark";
 
+package benchmark;
+
 message ExecuteRequest {
   repeated Task tasks = 1;
   string group_id = 2;     // for logging
@@ -32,7 +34,7 @@ message ExecuteResponse {
   int32 total_requests = 4;
   int32 requests_per_second = 5;
   Task task = 6;
-  Status status = 7;
+  backend.Status status = 7;
 }
 
 message HttpRequest {

@@ -4,12 +4,15 @@ import "backend/messages.proto";
 
 option go_package = "github.com/ohkilab/SU-CSexpA-benchmark-system/proto-gen/go/backend";
 
+package backend;
+
 service BackendService {
   rpc GetRanking(GetRankingRequest) returns (GetRankingResponse);
   rpc PostSubmit(PostSubmitRequest) returns (PostSubmitResponse);
   rpc GetSubmit(GetSubmitRequest) returns (stream GetSubmitResponse);
   rpc ListSubmits(ListSubmitsRequest) returns (ListSubmitsResponse);
   rpc PostLogin(PostLoginRequest) returns (PostLoginResponse);
+  rpc ListContests(ListContestsRequest) returns (ListContestsResponse);
 }
 
 service HealthcheckService {

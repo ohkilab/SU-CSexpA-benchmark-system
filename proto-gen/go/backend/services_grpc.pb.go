@@ -19,11 +19,12 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	BackendService_GetRanking_FullMethodName  = "/BackendService/GetRanking"
-	BackendService_PostSubmit_FullMethodName  = "/BackendService/PostSubmit"
-	BackendService_GetSubmit_FullMethodName   = "/BackendService/GetSubmit"
-	BackendService_ListSubmits_FullMethodName = "/BackendService/ListSubmits"
-	BackendService_PostLogin_FullMethodName   = "/BackendService/PostLogin"
+	BackendService_GetRanking_FullMethodName   = "/backend.BackendService/GetRanking"
+	BackendService_PostSubmit_FullMethodName   = "/backend.BackendService/PostSubmit"
+	BackendService_GetSubmit_FullMethodName    = "/backend.BackendService/GetSubmit"
+	BackendService_ListSubmits_FullMethodName  = "/backend.BackendService/ListSubmits"
+	BackendService_PostLogin_FullMethodName    = "/backend.BackendService/PostLogin"
+	BackendService_ListContests_FullMethodName = "/backend.BackendService/ListContests"
 )
 
 // BackendServiceClient is the client API for BackendService service.
@@ -35,6 +36,7 @@ type BackendServiceClient interface {
 	GetSubmit(ctx context.Context, in *GetSubmitRequest, opts ...grpc.CallOption) (BackendService_GetSubmitClient, error)
 	ListSubmits(ctx context.Context, in *ListSubmitsRequest, opts ...grpc.CallOption) (*ListSubmitsResponse, error)
 	PostLogin(ctx context.Context, in *PostLoginRequest, opts ...grpc.CallOption) (*PostLoginResponse, error)
+	ListContests(ctx context.Context, in *ListContestsRequest, opts ...grpc.CallOption) (*ListContestsResponse, error)
 }
 
 type backendServiceClient struct {
@@ -113,8 +115,17 @@ func (c *backendServiceClient) PostLogin(ctx context.Context, in *PostLoginReque
 	return out, nil
 }
 
+func (c *backendServiceClient) ListContests(ctx context.Context, in *ListContestsRequest, opts ...grpc.CallOption) (*ListContestsResponse, error) {
+	out := new(ListContestsResponse)
+	err := c.cc.Invoke(ctx, BackendService_ListContests_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // BackendServiceServer is the server API for BackendService service.
-// All implementations should embed UnimplementedBackendServiceServer
+// All implementations must embed UnimplementedBackendServiceServer
 // for forward compatibility
 type BackendServiceServer interface {
 	GetRanking(context.Context, *GetRankingRequest) (*GetRankingResponse, error)
@@ -122,9 +133,11 @@ type BackendServiceServer interface {
 	GetSubmit(*GetSubmitRequest, BackendService_GetSubmitServer) error
 	ListSubmits(context.Context, *ListSubmitsRequest) (*ListSubmitsResponse, error)
 	PostLogin(context.Context, *PostLoginRequest) (*PostLoginResponse, error)
+	ListContests(context.Context, *ListContestsRequest) (*ListContestsResponse, error)
+	mustEmbedUnimplementedBackendServiceServer()
 }
 
-// UnimplementedBackendServiceServer should be embedded to have forward compatible implementations.
+// UnimplementedBackendServiceServer must be embedded to have forward compatible implementations.
 type UnimplementedBackendServiceServer struct {
 }
 
@@ -143,6 +156,10 @@ func (UnimplementedBackendServiceServer) ListSubmits(context.Context, *ListSubmi
 func (UnimplementedBackendServiceServer) PostLogin(context.Context, *PostLoginRequest) (*PostLoginResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method PostLogin not implemented")
 }
+func (UnimplementedBackendServiceServer) ListContests(context.Context, *ListContestsRequest) (*ListContestsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ListContests not implemented")
+}
+func (UnimplementedBackendServiceServer) mustEmbedUnimplementedBackendServiceServer() {}
 
 // UnsafeBackendServiceServer may be embedded to opt out of forward compatibility for this service.
 // Use of this interface is not recommended, as added methods to BackendServiceServer will
@@ -248,11 +265,29 @@ func _BackendService_PostLogin_Handler(srv interface{}, ctx context.Context, dec
 	return interceptor(ctx, in, info, handler)
 }
 
+func _BackendService_ListContests_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListContestsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BackendServiceServer).ListContests(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: BackendService_ListContests_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BackendServiceServer).ListContests(ctx, req.(*ListContestsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // BackendService_ServiceDesc is the grpc.ServiceDesc for BackendService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var BackendService_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "BackendService",
+	ServiceName: "backend.BackendService",
 	HandlerType: (*BackendServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
@@ -271,6 +306,10 @@ var BackendService_ServiceDesc = grpc.ServiceDesc{
 			MethodName: "PostLogin",
 			Handler:    _BackendService_PostLogin_Handler,
 		},
+		{
+			MethodName: "ListContests",
+			Handler:    _BackendService_ListContests_Handler,
+		},
 	},
 	Streams: []grpc.StreamDesc{
 		{
@@ -283,8 +322,8 @@ var BackendService_ServiceDesc = grpc.ServiceDesc{
 }
 
 const (
-	HealthcheckService_PingUnary_FullMethodName               = "/HealthcheckService/PingUnary"
-	HealthcheckService_PingServerSideStreaming_FullMethodName = "/HealthcheckService/PingServerSideStreaming"
+	HealthcheckService_PingUnary_FullMethodName               = "/backend.HealthcheckService/PingUnary"
+	HealthcheckService_PingServerSideStreaming_FullMethodName = "/backend.HealthcheckService/PingServerSideStreaming"
 )
 
 // HealthcheckServiceClient is the client API for HealthcheckService service.
@@ -345,14 +384,15 @@ func (x *healthcheckServicePingServerSideStreamingClient) Recv() (*PingServerSid
 }
 
 // HealthcheckServiceServer is the server API for HealthcheckService service.
-// All implementations should embed UnimplementedHealthcheckServiceServer
+// All implementations must embed UnimplementedHealthcheckServiceServer
 // for forward compatibility
 type HealthcheckServiceServer interface {
 	PingUnary(context.Context, *PingUnaryRequest) (*PingUnaryResponse, error)
 	PingServerSideStreaming(*PingServerSideStreamingRequest, HealthcheckService_PingServerSideStreamingServer) error
+	mustEmbedUnimplementedHealthcheckServiceServer()
 }
 
-// UnimplementedHealthcheckServiceServer should be embedded to have forward compatible implementations.
+// UnimplementedHealthcheckServiceServer must be embedded to have forward compatible implementations.
 type UnimplementedHealthcheckServiceServer struct {
 }
 
@@ -362,6 +402,7 @@ func (UnimplementedHealthcheckServiceServer) PingUnary(context.Context, *PingUna
 func (UnimplementedHealthcheckServiceServer) PingServerSideStreaming(*PingServerSideStreamingRequest, HealthcheckService_PingServerSideStreamingServer) error {
 	return status.Errorf(codes.Unimplemented, "method PingServerSideStreaming not implemented")
 }
+func (UnimplementedHealthcheckServiceServer) mustEmbedUnimplementedHealthcheckServiceServer() {}
 
 // UnsafeHealthcheckServiceServer may be embedded to opt out of forward compatibility for this service.
 // Use of this interface is not recommended, as added methods to HealthcheckServiceServer will
@@ -417,7 +458,7 @@ func (x *healthcheckServicePingServerSideStreamingServer) Send(m *PingServerSide
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var HealthcheckService_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "HealthcheckService",
+	ServiceName: "backend.HealthcheckService",
 	HandlerType: (*HealthcheckServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{

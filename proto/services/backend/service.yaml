@@ -4,12 +4,14 @@ grpc_server:
     opts:
       - paths=source_relative
       - require_unimplemented_servers=false
+      - module=github.com/ohkilab/SU-CSexpA-benchmark-system/proto-gen/go
 
 client:
   go:
     dist: ../proto-gen/go
     opts:
       - paths=source_relative
+      - module=github.com/ohkilab/SU-CSexpA-benchmark-system/proto-gen/go
   # grpc-web:
   #   plugin:
   #     name: protoc-gen-grpc-web

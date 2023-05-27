@@ -4,16 +4,15 @@ import "google/protobuf/timestamp.proto";
 
 option go_package = "github.com/ohkilab/SU-CSexpA-benchmark-system/proto-gen/go/backend";
 
+package backend;
+
 message Contest {
-  int32 year = 3; // primary key of contest
-
-  google.protobuf.Timestamp qualifier_start_at = 4;
-  google.protobuf.Timestamp qualifier_end_at = 5;
-  int32 qualifier_submit_limit = 6;
-
-  google.protobuf.Timestamp final_start_at = 7;
-  google.protobuf.Timestamp final_end_at = 8;
-  int32 final_submit_limit = 9;
+  int32 id = 1;
+  string title = 2;
+  google.protobuf.Timestamp start_at = 4;
+  google.protobuf.Timestamp end_at = 5;
+  int32 submit_limit = 6;
+  int32 year = 7;
 }
 
 message Group {

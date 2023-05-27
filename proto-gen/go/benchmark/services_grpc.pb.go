@@ -19,7 +19,7 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	BenchmarkService_Execute_FullMethodName = "/BenchmarkService/Execute"
+	BenchmarkService_Execute_FullMethodName = "/benchmark.BenchmarkService/Execute"
 )
 
 // BenchmarkServiceClient is the client API for BenchmarkService service.
@@ -70,19 +70,21 @@ func (x *benchmarkServiceExecuteClient) Recv() (*ExecuteResponse, error) {
 }
 
 // BenchmarkServiceServer is the server API for BenchmarkService service.
-// All implementations should embed UnimplementedBenchmarkServiceServer
+// All implementations must embed UnimplementedBenchmarkServiceServer
 // for forward compatibility
 type BenchmarkServiceServer interface {
 	Execute(*ExecuteRequest, BenchmarkService_ExecuteServer) error
+	mustEmbedUnimplementedBenchmarkServiceServer()
 }
 
-// UnimplementedBenchmarkServiceServer should be embedded to have forward compatible implementations.
+// UnimplementedBenchmarkServiceServer must be embedded to have forward compatible implementations.
 type UnimplementedBenchmarkServiceServer struct {
 }
 
 func (UnimplementedBenchmarkServiceServer) Execute(*ExecuteRequest, BenchmarkService_ExecuteServer) error {
 	return status.Errorf(codes.Unimplemented, "method Execute not implemented")
 }
+func (UnimplementedBenchmarkServiceServer) mustEmbedUnimplementedBenchmarkServiceServer() {}
 
 // UnsafeBenchmarkServiceServer may be embedded to opt out of forward compatibility for this service.
 // Use of this interface is not recommended, as added methods to BenchmarkServiceServer will
@@ -120,7 +122,7 @@ func (x *benchmarkServiceExecuteServer) Send(m *ExecuteResponse) error {
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var BenchmarkService_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "BenchmarkService",
+	ServiceName: "benchmark.BenchmarkService",
 	HandlerType: (*BenchmarkServiceServer)(nil),
 	Methods:     []grpc.MethodDesc{},
 	Streams: []grpc.StreamDesc{
