@@ -21,7 +21,7 @@ type Response2023 struct {
 	} `json:"results"`
 }
 
-var urlRegexp = regexp.MustCompile(`^https://farm\d\.static\.flickr\.com/\d+/.+\.jpg$`)
+var urlRegexp = regexp.MustCompile(`^http[s]?://farm\d\.static\.flickr\.com/\d+/.+\.jpg$`)
 
 func validate2023(uri *url.URL, b []byte) error {
 	var resp Response2023
