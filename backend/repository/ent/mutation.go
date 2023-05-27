@@ -1781,6 +1781,8 @@ type SubmitMutation struct {
 	language           *submit.Language
 	message            *string
 	status             *string
+	task_num           *int
+	addtask_num        *int
 	submited_at        *time.Time
 	completed_at       *time.Time
 	updated_at         *time.Time
@@ -2197,6 +2199,62 @@ func (m *SubmitMutation) ResetStatus() {
 	m.status = nil
 }
 
+// SetTaskNum sets the "task_num" field.
+func (m *SubmitMutation) SetTaskNum(i int) {
+	m.task_num = &i
+	m.addtask_num = nil
+}
+
+// TaskNum returns the value of the "task_num" field in the mutation.
+func (m *SubmitMutation) TaskNum() (r int, exists bool) {
+	v := m.task_num
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldTaskNum returns the old "task_num" field's value of the Submit entity.
+// If the Submit object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *SubmitMutation) OldTaskNum(ctx context.Context) (v int, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldTaskNum is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldTaskNum requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldTaskNum: %w", err)
+	}
+	return oldValue.TaskNum, nil
+}
+
+// AddTaskNum adds i to the "task_num" field.
+func (m *SubmitMutation) AddTaskNum(i int) {
+	if m.addtask_num != nil {
+		*m.addtask_num += i
+	} else {
+		m.addtask_num = &i
+	}
+}
+
+// AddedTaskNum returns the value that was added to the "task_num" field in this mutation.
+func (m *SubmitMutation) AddedTaskNum() (r int, exists bool) {
+	v := m.addtask_num
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetTaskNum resets all changes to the "task_num" field.
+func (m *SubmitMutation) ResetTaskNum() {
+	m.task_num = nil
+	m.addtask_num = nil
+}
+
 // SetSubmitedAt sets the "submited_at" field.
 func (m *SubmitMutation) SetSubmitedAt(t time.Time) {
 	m.submited_at = &t
@@ -2497,7 +2555,7 @@ func (m *SubmitMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *SubmitMutation) Fields() []string {
-	fields := make([]string, 0, 9)
+	fields := make([]string, 0, 10)
 	if m.url != nil {
 		fields = append(fields, submit.FieldURL)
 	}
@@ -2515,6 +2573,9 @@ func (m *SubmitMutation) Fields() []string {
 	}
 	if m.status != nil {
 		fields = append(fields, submit.FieldStatus)
+	}
+	if m.task_num != nil {
+		fields = append(fields, submit.FieldTaskNum)
 	}
 	if m.submited_at != nil {
 		fields = append(fields, submit.FieldSubmitedAt)
@@ -2545,6 +2606,8 @@ func (m *SubmitMutation) Field(name string) (ent.Value, bool) {
 		return m.Message()
 	case submit.FieldStatus:
 		return m.Status()
+	case submit.FieldTaskNum:
+		return m.TaskNum()
 	case submit.FieldSubmitedAt:
 		return m.SubmitedAt()
 	case submit.FieldCompletedAt:
@@ -2572,6 +2635,8 @@ func (m *SubmitMutation) OldField(ctx context.Context, name string) (ent.Value, 
 		return m.OldMessage(ctx)
 	case submit.FieldStatus:
 		return m.OldStatus(ctx)
+	case submit.FieldTaskNum:
+		return m.OldTaskNum(ctx)
 	case submit.FieldSubmitedAt:
 		return m.OldSubmitedAt(ctx)
 	case submit.FieldCompletedAt:
@@ -2629,6 +2694,13 @@ func (m *SubmitMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetStatus(v)
 		return nil
+	case submit.FieldTaskNum:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetTaskNum(v)
+		return nil
 	case submit.FieldSubmitedAt:
 		v, ok := value.(time.Time)
 		if !ok {
@@ -2664,6 +2736,9 @@ func (m *SubmitMutation) AddedFields() []string {
 	if m.addscore != nil {
 		fields = append(fields, submit.FieldScore)
 	}
+	if m.addtask_num != nil {
+		fields = append(fields, submit.FieldTaskNum)
+	}
 	return fields
 }
 
@@ -2676,6 +2751,8 @@ func (m *SubmitMutation) AddedField(name string) (ent.Value, bool) {
 		return m.AddedYear()
 	case submit.FieldScore:
 		return m.AddedScore()
+	case submit.FieldTaskNum:
+		return m.AddedTaskNum()
 	}
 	return nil, false
 }
@@ -2698,6 +2775,13 @@ func (m *SubmitMutation) AddField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.AddScore(v)
+		return nil
+	case submit.FieldTaskNum:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddTaskNum(v)
 		return nil
 	}
 	return fmt.Errorf("unknown Submit numeric field %s", name)
@@ -2776,6 +2860,9 @@ func (m *SubmitMutation) ResetField(name string) error {
 		return nil
 	case submit.FieldStatus:
 		m.ResetStatus()
+		return nil
+	case submit.FieldTaskNum:
+		m.ResetTaskNum()
 		return nil
 	case submit.FieldSubmitedAt:
 		m.ResetSubmitedAt()

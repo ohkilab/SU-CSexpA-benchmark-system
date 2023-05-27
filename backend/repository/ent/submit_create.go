@@ -83,6 +83,12 @@ func (sc *SubmitCreate) SetStatus(s string) *SubmitCreate {
 	return sc
 }
 
+// SetTaskNum sets the "task_num" field.
+func (sc *SubmitCreate) SetTaskNum(i int) *SubmitCreate {
+	sc.mutation.SetTaskNum(i)
+	return sc
+}
+
 // SetSubmitedAt sets the "submited_at" field.
 func (sc *SubmitCreate) SetSubmitedAt(t time.Time) *SubmitCreate {
 	sc.mutation.SetSubmitedAt(t)
@@ -229,6 +235,9 @@ func (sc *SubmitCreate) check() error {
 	if _, ok := sc.mutation.Status(); !ok {
 		return &ValidationError{Name: "status", err: errors.New(`ent: missing required field "Submit.status"`)}
 	}
+	if _, ok := sc.mutation.TaskNum(); !ok {
+		return &ValidationError{Name: "task_num", err: errors.New(`ent: missing required field "Submit.task_num"`)}
+	}
 	if _, ok := sc.mutation.SubmitedAt(); !ok {
 		return &ValidationError{Name: "submited_at", err: errors.New(`ent: missing required field "Submit.submited_at"`)}
 	}
@@ -287,6 +296,10 @@ func (sc *SubmitCreate) createSpec() (*Submit, *sqlgraph.CreateSpec) {
 	if value, ok := sc.mutation.Status(); ok {
 		_spec.SetField(submit.FieldStatus, field.TypeString, value)
 		_node.Status = value
+	}
+	if value, ok := sc.mutation.TaskNum(); ok {
+		_spec.SetField(submit.FieldTaskNum, field.TypeInt, value)
+		_node.TaskNum = value
 	}
 	if value, ok := sc.mutation.SubmitedAt(); ok {
 		_spec.SetField(submit.FieldSubmitedAt, field.TypeTime, value)

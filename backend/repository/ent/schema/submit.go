@@ -25,6 +25,7 @@ func (Submit) Fields() []ent.Field {
 		field.Enum("language").Values(languages...).Optional(),
 		field.String("message").Optional(),
 		field.String("status"), // enum は grpc で定義済み
+		field.Int("task_num"),
 		field.Time("submited_at"),
 		field.Time("completed_at").Optional(),
 		field.Time("updated_at").Optional(),

@@ -80,6 +80,11 @@ func Status(v string) predicate.Submit {
 	return predicate.Submit(sql.FieldEQ(FieldStatus, v))
 }
 
+// TaskNum applies equality check predicate on the "task_num" field. It's identical to TaskNumEQ.
+func TaskNum(v int) predicate.Submit {
+	return predicate.Submit(sql.FieldEQ(FieldTaskNum, v))
+}
+
 // SubmitedAt applies equality check predicate on the "submited_at" field. It's identical to SubmitedAtEQ.
 func SubmitedAt(v time.Time) predicate.Submit {
 	return predicate.Submit(sql.FieldEQ(FieldSubmitedAt, v))
@@ -418,6 +423,46 @@ func StatusEqualFold(v string) predicate.Submit {
 // StatusContainsFold applies the ContainsFold predicate on the "status" field.
 func StatusContainsFold(v string) predicate.Submit {
 	return predicate.Submit(sql.FieldContainsFold(FieldStatus, v))
+}
+
+// TaskNumEQ applies the EQ predicate on the "task_num" field.
+func TaskNumEQ(v int) predicate.Submit {
+	return predicate.Submit(sql.FieldEQ(FieldTaskNum, v))
+}
+
+// TaskNumNEQ applies the NEQ predicate on the "task_num" field.
+func TaskNumNEQ(v int) predicate.Submit {
+	return predicate.Submit(sql.FieldNEQ(FieldTaskNum, v))
+}
+
+// TaskNumIn applies the In predicate on the "task_num" field.
+func TaskNumIn(vs ...int) predicate.Submit {
+	return predicate.Submit(sql.FieldIn(FieldTaskNum, vs...))
+}
+
+// TaskNumNotIn applies the NotIn predicate on the "task_num" field.
+func TaskNumNotIn(vs ...int) predicate.Submit {
+	return predicate.Submit(sql.FieldNotIn(FieldTaskNum, vs...))
+}
+
+// TaskNumGT applies the GT predicate on the "task_num" field.
+func TaskNumGT(v int) predicate.Submit {
+	return predicate.Submit(sql.FieldGT(FieldTaskNum, v))
+}
+
+// TaskNumGTE applies the GTE predicate on the "task_num" field.
+func TaskNumGTE(v int) predicate.Submit {
+	return predicate.Submit(sql.FieldGTE(FieldTaskNum, v))
+}
+
+// TaskNumLT applies the LT predicate on the "task_num" field.
+func TaskNumLT(v int) predicate.Submit {
+	return predicate.Submit(sql.FieldLT(FieldTaskNum, v))
+}
+
+// TaskNumLTE applies the LTE predicate on the "task_num" field.
+func TaskNumLTE(v int) predicate.Submit {
+	return predicate.Submit(sql.FieldLTE(FieldTaskNum, v))
 }
 
 // SubmitedAtEQ applies the EQ predicate on the "submited_at" field.

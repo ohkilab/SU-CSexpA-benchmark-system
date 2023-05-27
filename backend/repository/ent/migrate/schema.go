@@ -59,6 +59,7 @@ var (
 		{Name: "language", Type: field.TypeEnum, Nullable: true, Enums: []string{"php", "go", "rust", "javascript", "csharp", "cpp", "ruby", "python"}},
 		{Name: "message", Type: field.TypeString, Nullable: true},
 		{Name: "status", Type: field.TypeString},
+		{Name: "task_num", Type: field.TypeInt},
 		{Name: "submited_at", Type: field.TypeTime},
 		{Name: "completed_at", Type: field.TypeTime, Nullable: true},
 		{Name: "updated_at", Type: field.TypeTime, Nullable: true},
@@ -73,13 +74,13 @@ var (
 		ForeignKeys: []*schema.ForeignKey{
 			{
 				Symbol:     "submits_contests_submits",
-				Columns:    []*schema.Column{SubmitsColumns[10]},
+				Columns:    []*schema.Column{SubmitsColumns[11]},
 				RefColumns: []*schema.Column{ContestsColumns[0]},
 				OnDelete:   schema.SetNull,
 			},
 			{
 				Symbol:     "submits_groups_submits",
-				Columns:    []*schema.Column{SubmitsColumns[11]},
+				Columns:    []*schema.Column{SubmitsColumns[12]},
 				RefColumns: []*schema.Column{GroupsColumns[0]},
 				OnDelete:   schema.SetNull,
 			},

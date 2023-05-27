@@ -4,6 +4,7 @@ import (
 	"context"
 	"testing"
 
+	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/repository/ent/contest"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/api/grpc"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/core/timejst"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/test/utils"
@@ -29,6 +30,7 @@ func Test_ListContests(t *testing.T) {
 		SetYear(2023).
 		SetSubmitLimit(9999).
 		SetCreatedAt(timejst.Now()).
+		SetTagSelectionLogic(contest.TagSelectionLogicAuto).
 		Save(ctx)
 	contest2, _ := entClient.Contest.Create().
 		SetTitle("test contest").
@@ -36,6 +38,7 @@ func Test_ListContests(t *testing.T) {
 		SetEndAt(timejst.Now().AddDate(1, 0, 0)).
 		SetYear(2023).
 		SetSubmitLimit(9999).
+		SetTagSelectionLogic(contest.TagSelectionLogicAuto).
 		SetCreatedAt(timejst.Now()).
 		Save(ctx)
 	_, _ = entClient.Contest.Create().
@@ -44,6 +47,7 @@ func Test_ListContests(t *testing.T) {
 		SetEndAt(timejst.Now().AddDate(1, 0, 0)).
 		SetYear(2022).
 		SetSubmitLimit(9999).
+		SetTagSelectionLogic(contest.TagSelectionLogicAuto).
 		SetCreatedAt(timejst.Now()).
 		Save(ctx)
 

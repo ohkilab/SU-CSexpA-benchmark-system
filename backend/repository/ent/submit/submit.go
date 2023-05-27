@@ -26,6 +26,8 @@ const (
 	FieldMessage = "message"
 	// FieldStatus holds the string denoting the status field in the database.
 	FieldStatus = "status"
+	// FieldTaskNum holds the string denoting the task_num field in the database.
+	FieldTaskNum = "task_num"
 	// FieldSubmitedAt holds the string denoting the submited_at field in the database.
 	FieldSubmitedAt = "submited_at"
 	// FieldCompletedAt holds the string denoting the completed_at field in the database.
@@ -72,6 +74,7 @@ var Columns = []string{
 	FieldLanguage,
 	FieldMessage,
 	FieldStatus,
+	FieldTaskNum,
 	FieldSubmitedAt,
 	FieldCompletedAt,
 	FieldUpdatedAt,
@@ -169,6 +172,11 @@ func ByMessage(opts ...sql.OrderTermOption) OrderOption {
 // ByStatus orders the results by the status field.
 func ByStatus(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldStatus, opts...).ToFunc()
+}
+
+// ByTaskNum orders the results by the task_num field.
+func ByTaskNum(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldTaskNum, opts...).ToFunc()
 }
 
 // BySubmitedAt orders the results by the submited_at field.

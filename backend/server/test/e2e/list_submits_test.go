@@ -5,6 +5,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/repository/ent/contest"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/repository/ent/group"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/api/grpc"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/core/auth"
@@ -40,6 +41,7 @@ func Test_ListSubmits(t *testing.T) {
 		SetEndAt(time.Date(2023, time.December, 31, 23, 59, 59, 0, time.UTC)).
 		SetYear(2023).
 		SetSubmitLimit(9999).
+		SetTagSelectionLogic(contest.TagSelectionLogicAuto).
 		SetCreatedAt(now).
 		Save(ctx)
 	submit1, err := entClient.Submit.Create().
@@ -49,6 +51,7 @@ func Test_ListSubmits(t *testing.T) {
 		SetStatus(pb.Status_SUCCESS.String()).
 		SetYear(2023).
 		SetSubmitedAt(now.AddDate(0, 0, -2)).
+		SetTaskNum(50).
 		Save(ctx)
 	submit2, err := entClient.Submit.Create().
 		SetURL("http://localhost:8080/program").
@@ -57,6 +60,7 @@ func Test_ListSubmits(t *testing.T) {
 		SetStatus(pb.Status_SUCCESS.String()).
 		SetYear(2023).
 		SetSubmitedAt(now.AddDate(0, 0, -1)).
+		SetTaskNum(50).
 		Save(ctx)
 	submit3, err := entClient.Submit.Create().
 		SetURL("http://localhost:8080/program").
@@ -65,6 +69,7 @@ func Test_ListSubmits(t *testing.T) {
 		SetStatus(pb.Status_SUCCESS.String()).
 		SetYear(2023).
 		SetSubmitedAt(now).
+		SetTaskNum(50).
 		Save(ctx)
 
 	jwtToken, err := auth.GenerateJWTToken([]byte("secret"), group.ID, group.Year)

@@ -6,6 +6,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/repository/ent/contest"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/repository/ent/group"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/api/grpc"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/core/auth"
@@ -51,6 +52,7 @@ func Test_GetSubmit(t *testing.T) {
 		SetYear(2023).
 		SetSubmitLimit(9999).
 		SetCreatedAt(timejst.Now()).
+		SetTagSelectionLogic(contest.TagSelectionLogicAuto).
 		Save(ctx)
 	submit, err := entClient.Submit.Create().
 		SetURL("http://localhost:8080/program").
@@ -58,6 +60,7 @@ func Test_GetSubmit(t *testing.T) {
 		SetGroups(group).
 		SetStatus(pb.Status_SUCCESS.String()).
 		SetYear(2023).
+		SetTaskNum(50).
 		SetSubmitedAt(timejst.Now()).
 		SetCompletedAt(timejst.Now()).
 		Save(ctx)

@@ -123,6 +123,19 @@ func (su *SubmitUpdate) SetStatus(s string) *SubmitUpdate {
 	return su
 }
 
+// SetTaskNum sets the "task_num" field.
+func (su *SubmitUpdate) SetTaskNum(i int) *SubmitUpdate {
+	su.mutation.ResetTaskNum()
+	su.mutation.SetTaskNum(i)
+	return su
+}
+
+// AddTaskNum adds i to the "task_num" field.
+func (su *SubmitUpdate) AddTaskNum(i int) *SubmitUpdate {
+	su.mutation.AddTaskNum(i)
+	return su
+}
+
 // SetSubmitedAt sets the "submited_at" field.
 func (su *SubmitUpdate) SetSubmitedAt(t time.Time) *SubmitUpdate {
 	su.mutation.SetSubmitedAt(t)
@@ -346,6 +359,12 @@ func (su *SubmitUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if value, ok := su.mutation.Status(); ok {
 		_spec.SetField(submit.FieldStatus, field.TypeString, value)
+	}
+	if value, ok := su.mutation.TaskNum(); ok {
+		_spec.SetField(submit.FieldTaskNum, field.TypeInt, value)
+	}
+	if value, ok := su.mutation.AddedTaskNum(); ok {
+		_spec.AddField(submit.FieldTaskNum, field.TypeInt, value)
 	}
 	if value, ok := su.mutation.SubmitedAt(); ok {
 		_spec.SetField(submit.FieldSubmitedAt, field.TypeTime, value)
@@ -574,6 +593,19 @@ func (suo *SubmitUpdateOne) ClearMessage() *SubmitUpdateOne {
 // SetStatus sets the "status" field.
 func (suo *SubmitUpdateOne) SetStatus(s string) *SubmitUpdateOne {
 	suo.mutation.SetStatus(s)
+	return suo
+}
+
+// SetTaskNum sets the "task_num" field.
+func (suo *SubmitUpdateOne) SetTaskNum(i int) *SubmitUpdateOne {
+	suo.mutation.ResetTaskNum()
+	suo.mutation.SetTaskNum(i)
+	return suo
+}
+
+// AddTaskNum adds i to the "task_num" field.
+func (suo *SubmitUpdateOne) AddTaskNum(i int) *SubmitUpdateOne {
+	suo.mutation.AddTaskNum(i)
 	return suo
 }
 
@@ -830,6 +862,12 @@ func (suo *SubmitUpdateOne) sqlSave(ctx context.Context) (_node *Submit, err err
 	}
 	if value, ok := suo.mutation.Status(); ok {
 		_spec.SetField(submit.FieldStatus, field.TypeString, value)
+	}
+	if value, ok := suo.mutation.TaskNum(); ok {
+		_spec.SetField(submit.FieldTaskNum, field.TypeInt, value)
+	}
+	if value, ok := suo.mutation.AddedTaskNum(); ok {
+		_spec.AddField(submit.FieldTaskNum, field.TypeInt, value)
 	}
 	if value, ok := suo.mutation.SubmitedAt(); ok {
 		_spec.SetField(submit.FieldSubmitedAt, field.TypeTime, value)

@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/golang/mock/gomock"
+	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/repository/ent/contest"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/repository/ent/group"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/api/grpc"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/core/auth"
@@ -14,6 +15,7 @@ import (
 	mock_worker "github.com/ohkilab/SU-CSexpA-benchmark-system/backend/worker/mock"
 	pb "github.com/ohkilab/SU-CSexpA-benchmark-system/proto-gen/go/backend"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 	"golang.org/x/crypto/bcrypt"
 	"google.golang.org/grpc/metadata"
 )
@@ -50,6 +52,7 @@ func Test_PostSubmit(t *testing.T) {
 		SetEndAt(time.Date(2023, time.December, 31, 23, 59, 59, 0, time.UTC)).
 		SetYear(2023).
 		SetSubmitLimit(9999).
+		SetTagSelectionLogic(contest.TagSelectionLogicAuto).
 		SetCreatedAt(timejst.Now()).
 		Save(ctx)
 	if err != nil {
@@ -68,10 +71,9 @@ func Test_PostSubmit(t *testing.T) {
 		Url:       "http://10.255.255.255",
 		ContestId: int32(contest.ID),
 	}
+	t.Log(contest.ID)
 	resp, err := client.PostSubmit(ctx, req)
-	if err != nil {
-		t.Fatal(err)
-	}
+	require.NoError(t, err)
 	assert.NotEmpty(t, resp.Id)
 	assert.Equal(t, req.Url, resp.Url)
 	assert.Equal(t, req.ContestId, resp.ContestId)

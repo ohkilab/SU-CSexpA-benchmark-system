@@ -12,6 +12,7 @@ import (
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/repository/ent/contest"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/repository/ent/group"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/repository/ent/submit"
+	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/repository/tag"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/api/grpc/interceptor"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/core/timejst"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/worker"
@@ -39,13 +40,28 @@ func NewInteractor(entClient *ent.Client, worker worker.Worker) *Interactor {
 
 func (i *Interactor) PostSubmit(ctx context.Context, req *backendpb.PostSubmitRequest) (*backendpb.PostSubmitResponse, error) {
 	claims := interceptor.GetClaimsFromContext(ctx)
-	exists, err := i.entClient.Contest.Query().Where(contest.ID(int(req.ContestId))).Exist(ctx)
+	c, err := i.entClient.Contest.Get(ctx, int(req.ContestId))
 	if err != nil {
+		if ent.IsNotFound(err) {
+			return nil, status.Error(codes.InvalidArgument, "no such contest")
+		}
 		return nil, status.Error(codes.Internal, err.Error())
 	}
-	if !exists {
-		return nil, status.Error(codes.InvalidArgument, "no such contest")
+
+	var tags []string
+	switch c.TagSelectionLogic {
+	case contest.TagSelectionLogicAuto:
+		tags, err = tag.GetRandomTags(c.ID, 50)
+		if err != nil {
+			return nil, status.Error(codes.Internal, "failed to generate tags")
+		}
+	case contest.TagSelectionLogicManual:
+		tags, err = tag.GetRandomTags(c.ID, 1) // TODO: fix it
+		if err != nil {
+			return nil, status.Error(codes.Internal, "failed to generate tags")
+		}
 	}
+
 	submit, err := i.entClient.Submit.Create().
 		SetURL(req.Url).
 		SetYear(claims.Year).
@@ -53,13 +69,14 @@ func (i *Interactor) PostSubmit(ctx context.Context, req *backendpb.PostSubmitRe
 		SetContestsID(int(req.ContestId)).
 		SetGroupsID(claims.GroupID).
 		SetStatus(backendpb.Status_WAITING.String()).
+		SetTaskNum(len(tags)).
 		Save(ctx)
 	if err != nil {
 		return nil, status.Error(codes.Internal, err.Error())
 	}
 
 	// add a task to worker
-	executeRequest := buildTask(submit.URL, claims.GroupID, submit.ID, submit.Year)
+	executeRequest := buildTask(claims.GroupID, submit, tags)
 	i.worker.Push(executeRequest)
 
 	return &backendpb.PostSubmitResponse{
@@ -70,15 +87,14 @@ func (i *Interactor) PostSubmit(ctx context.Context, req *backendpb.PostSubmitRe
 	}, nil
 }
 
-func buildTask(url string, groupID, submitID, year int) *worker.Task {
-	tags := generateRandomTags(50)
+func buildTask(groupID int, submit *ent.Submit, tags []string) *worker.Task {
 	return &worker.Task{
 		Req: &benchmarkpb.ExecuteRequest{
 			GroupId: strconv.Itoa(groupID),
 			Tasks: lo.Map(tags, func(tag string, _ int) *benchmarkpb.Task {
 				return &benchmarkpb.Task{
 					Request: &benchmarkpb.HttpRequest{
-						Url:         fmt.Sprintf("%s?tag=%s", url, tag),
+						Url:         fmt.Sprintf("%s?tag=%s", submit.URL, tag),
 						Method:      benchmarkpb.HttpMethod_GET,
 						ContentType: "application/x-www-form-urlencoded",
 						Body:        "",
@@ -87,41 +103,11 @@ func buildTask(url string, groupID, submitID, year int) *worker.Task {
 					AttemptCount: int32(attemptCount),
 				}
 			}),
-			Year: int32(year),
+			Year: int32(submit.Year),
 		},
-		SubmitID: submitID,
+		SubmitID: submit.ID,
 		GroupID:  groupID,
 	}
-}
-
-// TODO: flickr の tag api を叩いて取るとか？
-func generateRandomTags(n int) []string {
-	// tags := make([]string, n)
-	// for i := range tags {
-	// 	tags[i] = lo.RandomString(10, lo.AlphanumericCharset)
-	// }
-	// return tags
-
-	return lo.Shuffle([]string{
-		"陸上自衛隊",
-		"陸光麵館",
-		"陸前高田ボランティア",
-		"陸前高田市",
-		"陸家嘴",
-		"陸羽茶室",
-		"陸航",
-		"険道",
-		"陽光橋",
-		"陽光橋夜景",
-		"陽明公園",
-		"陽明大學",
-		"陽明山",
-		"陽明山中國麗緻大飯店",
-		"陽明山公園",
-		"陽明山前山公園",
-		"陽明山國家公園",
-	})
-
 }
 
 func (i *Interactor) GetSubmit(req *backendpb.GetSubmitRequest, stream backendpb.BackendService_GetSubmitServer) error {
