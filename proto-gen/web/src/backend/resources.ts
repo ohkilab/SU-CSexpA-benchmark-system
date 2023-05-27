@@ -106,6 +106,10 @@ export interface Submit {
      * @generated from protobuf field: optional string error_message = 10;
      */
     errorMessage?: string; // if the connection error occurs, then this field is filled
+    /**
+     * @generated from protobuf field: int32 tag_count = 11;
+     */
+    tagCount: number;
 }
 /**
  * @generated from protobuf message backend.TaskResult
@@ -430,11 +434,12 @@ class Submit$Type extends MessageType<Submit> {
             { no: 7, name: "completed_at", kind: "message", T: () => Timestamp },
             { no: 8, name: "task_results", kind: "message", repeat: 1 /*RepeatType.PACKED*/, T: () => TaskResult },
             { no: 9, name: "status", kind: "enum", T: () => ["backend.Status", Status] },
-            { no: 10, name: "error_message", kind: "scalar", opt: true, T: 9 /*ScalarType.STRING*/ }
+            { no: 10, name: "error_message", kind: "scalar", opt: true, T: 9 /*ScalarType.STRING*/ },
+            { no: 11, name: "tag_count", kind: "scalar", T: 5 /*ScalarType.INT32*/ }
         ]);
     }
     create(value?: PartialMessage<Submit>): Submit {
-        const message = { id: 0, groupId: 0, year: 0, score: 0, language: 0, taskResults: [], status: 0 };
+        const message = { id: 0, groupId: 0, year: 0, score: 0, language: 0, taskResults: [], status: 0, tagCount: 0 };
         globalThis.Object.defineProperty(message, MESSAGE_TYPE, { enumerable: false, value: this });
         if (value !== undefined)
             reflectionMergePartial<Submit>(this, message, value);
@@ -474,6 +479,9 @@ class Submit$Type extends MessageType<Submit> {
                     break;
                 case /* optional string error_message */ 10:
                     message.errorMessage = reader.string();
+                    break;
+                case /* int32 tag_count */ 11:
+                    message.tagCount = reader.int32();
                     break;
                 default:
                     let u = options.readUnknownField;
@@ -517,6 +525,9 @@ class Submit$Type extends MessageType<Submit> {
         /* optional string error_message = 10; */
         if (message.errorMessage !== undefined)
             writer.tag(10, WireType.LengthDelimited).string(message.errorMessage);
+        /* int32 tag_count = 11; */
+        if (message.tagCount !== 0)
+            writer.tag(11, WireType.Varint).int32(message.tagCount);
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);

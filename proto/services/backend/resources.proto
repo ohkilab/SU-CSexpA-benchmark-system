@@ -35,6 +35,7 @@ message Submit {
   Status status = 9;
   optional string error_message =
       10; // if the connection error occurs, then this field is filled
+  int32 tag_count = 11;
 }
 
 message TaskResult {
