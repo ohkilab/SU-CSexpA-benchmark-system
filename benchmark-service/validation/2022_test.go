@@ -616,6 +616,6 @@ const testdata2022 = `
 
 func Test_validate2022(t *testing.T) {
 	uri, _ := url.ParseRequestURI("http://localhost:8080/program?tag=陸上自衛隊")
-	err := Validate2022(uri, []byte(testdata2022))
+	err := validate2022(uri, []byte(testdata2022))
 	assert.NoError(t, err)
 }

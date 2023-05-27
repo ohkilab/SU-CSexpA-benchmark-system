@@ -11,6 +11,6 @@ const testdata2023 = `{"tag": "flamingofilter","results":[{"lat":44.192333,"lon"
 
 func Test_validate2023(t *testing.T) {
 	uri, _ := url.ParseRequestURI("http://localhost:8080/program?tag=flamingofilter")
-	err := Validate2023(uri, []byte(testdata2023))
+	err := validate2023(uri, []byte(testdata2023))
 	assert.NoError(t, err)
 }

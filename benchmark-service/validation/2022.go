@@ -19,7 +19,7 @@ type Response2022 struct {
 	} `json:"geotags"`
 }
 
-func Validate2022(uri *url.URL, b []byte) error {
+func validate2022(uri *url.URL, b []byte) error {
 	var resp Response2022
 	if err := json.Unmarshal(b, &resp); err != nil {
 		log.Println(err)

@@ -23,7 +23,7 @@ type Response2023 struct {
 
 var urlRegexp = regexp.MustCompile(`^https://farm\d\.static\.flickr\.com/\d+/.+\.jpg$`)
 
-func Validate2023(uri *url.URL, b []byte) error {
+func validate2023(uri *url.URL, b []byte) error {
 	var resp Response2023
 	if err := json.Unmarshal(b, &resp); err != nil {
 		log.Println(err)

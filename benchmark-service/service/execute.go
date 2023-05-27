@@ -23,6 +23,11 @@ func (s *service) Execute(req *pb.ExecuteRequest, stream pb.BenchmarkService_Exe
 		return status.Error(codes.InvalidArgument, "groupID must be 100 or less")
 	}
 
+	validateFunc, err := validation.Detect(int(req.Year))
+	if err != nil {
+		return err
+	}
+
 	for _, task := range req.Tasks {
 		log.Println(task)
 		uri, err := url.ParseRequestURI(task.Request.Url)
@@ -53,7 +58,7 @@ func (s *service) Execute(req *pb.ExecuteRequest, stream pb.BenchmarkService_Exe
 
 		timeElapsed := time.Duration(0)
 		for _, result := range results {
-			if err := validation.Validate2022(uri, result.Body); err != nil {
+			if err := validateFunc(uri, result.Body); err != nil {
 				errMsg := err.Error()
 				validationErr := &errMsg
 				if err := stream.Send(&pb.ExecuteResponse{
