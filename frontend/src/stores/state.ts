@@ -10,6 +10,10 @@ export interface IState {
   benchmarkInterval: number
   lastResult: number
   records: Array<GetRankingResponse_Record> | null
+  showResult: boolean
+  current: number
+  size: number
+  result: number
 }
 
 export const useStateStore = defineStore<'state', IState>('state', {
@@ -19,6 +23,10 @@ export const useStateStore = defineStore<'state', IState>('state', {
     benchmarking: false,
     benchmarkInterval: 0,
     lastResult: 0,
-    records: []
+    records: [],
+    showResult: false,
+    result: 0,
+    current: 0,
+    size: 20
   })
 })

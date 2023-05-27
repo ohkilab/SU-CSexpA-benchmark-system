@@ -26,6 +26,7 @@ onMounted(() => {
     containGuest: false
   },opt).then(res => {
     records.value = res.response.records
+    console.log(res.response.records)
     // state.records = records.value
   })
 })

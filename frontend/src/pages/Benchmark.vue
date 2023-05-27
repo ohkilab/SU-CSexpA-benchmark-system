@@ -19,21 +19,7 @@ const webfetchTransport = new GrpcWebFetchTransport({baseUrl: 'http://localhost:
 
 const backend = new BackendServiceClient(webfetchTransport)
 
-interface Status {
-  benchmarking: boolean,
-  showResult: boolean,
-  result: number,
-  current: number,
-  size: number,
-}
-
-const status: Status = reactive({
-  benchmarking: false,
-  showResult: false,
-  result: 0,
-  current: 0,
-  size: 20
-})
+const errorMsg = ref('')
 
 const tags: Ref<Array<{tag: string, idx: number}>> = ref([])
 
@@ -60,12 +46,12 @@ const benchmark = () => {
 
       console.log("got a message", message)
       // status.current++
-      status.current = message.submit?.taskResults.length ?? -1
+      state.lastResult = message.submit?.score ?? 0
+      state.current = message.submit?.taskResults.length ?? -1
     }
 
-    status.current = 0
-    state.benchmarking = false
-    status.showResult = true
+    handleStopBenchmark()
+
     console.log(call.status)
     console.log(call.trailers)
 
@@ -73,27 +59,12 @@ const benchmark = () => {
     console.log(err)
   })
 
-  // state.benchmarkInterval = setInterval(() => {
-  //   if(status.current < status.size) {
-  //     status.current++
-  //   } else {
-  //     status.current = 0
-  //     state.benchmarking = false
-  //     status.showResult = true
-  //     state.lastResult = Math.floor(Math.random() * (20000 - 200) + 200)
-  //
-  //     clearInterval(state.benchmarkInterval)
-  //     state.benchmarkInterval = 0
-  //   }
-  // }, 100)
 }
 
 const handleStopBenchmark = () => {
+  state.current = 0
   state.benchmarking = false
-  status.current = 0
-  state.benchmarking = false
-  status.showResult = true
-  clearInterval(state.benchmarkInterval)
+  state.showResult = true
 }
 
 onMounted(() => {
@@ -102,7 +73,7 @@ onMounted(() => {
   url.value = localStorage.getItem('currentUrl') ?? ''
   urlList.value = JSON.parse(localStorage.getItem('urlList') ?? '[]')
   
-  tags.value = Array.from(new Array(status.size)).map((_, idx) => {
+  tags.value = Array.from(new Array(state.size)).map((_, idx) => {
     return {
       tag: 'tag_string ' + idx,
       idx
@@ -112,7 +83,7 @@ onMounted(() => {
   // backend.getSubmit({
   //   submitId: 1
   // }, opt).then(res => {
-  //   // console.log(res)
+  //   console.log(res)
   // })
 })
 
@@ -124,7 +95,7 @@ watch(urlList, urlList => {
   localStorage.setItem('urlList', JSON.stringify(urlList))
 }, {deep: true})
 
-const filteredTags = computed(() => tags.value.slice(status.current - 2, status.current + 2))
+const filteredTags = computed(() => tags.value.slice(state.current - 2, state.current + 2))
 </script>
 <template>
   <div class="flex flex-col mt-auto w-full items-center">
@@ -135,10 +106,11 @@ const filteredTags = computed(() => tags.value.slice(status.current - 2, status.
         &nbsp;req/s
       </div>
     </div>
+    <div class="text-red-500" v-if="errorMsg">Error: {{errorMsg}}</div>
     <div v-if="state.benchmarking">
       <div class="flex flex-col gap-8 my-auto text-xl items-center justify-center">
         <div class="p-4 border-2 rounded border-gray-600 flex flex-col items-center gap-3">
-          タグ {{ `${status.current+1}/${status.size}` }} ベンチマーク中
+          タグ {{ `${state.current+1}/${state.size}` }} ベンチマーク中
           <br>
           <font-awesome-icon class="animate-spin" :icon="['fas', 'spinner']" />
         </div>
@@ -148,13 +120,13 @@ const filteredTags = computed(() => tags.value.slice(status.current - 2, status.
             v-for="(t, i) in tags"
             :key="i"
               class="transition-all ease-out duration-200 w-32 p-3 text-center bg-gray-700 rounded shadow-md shadow-black"
-              :class="status.current > i ? 'bg-green-700' :
-                      status.current == i ? 'bg-gray-700' :
+              :class="state.current > i ? 'bg-green-700' :
+                      state.current == i ? 'bg-gray-700' :
                       'opacity-70'
                      "
           >
-            <font-awesome-icon v-if="status.current > i" :icon="['fas', 'check']"></font-awesome-icon>
-            <font-awesome-icon v-else-if="status.current == i" class="animate-spin" :icon="['fas', 'spinner']"></font-awesome-icon>
+            <font-awesome-icon v-if="state.current > i" :icon="['fas', 'check']"></font-awesome-icon>
+            <font-awesome-icon v-else-if="state.current == i" class="animate-spin" :icon="['fas', 'spinner']"></font-awesome-icon>
             <font-awesome-icon v-else :icon="['fas', 'minus']"></font-awesome-icon>
             {{ i+1 }}
           </div>
@@ -169,7 +141,7 @@ const filteredTags = computed(() => tags.value.slice(status.current - 2, status.
       </div>
       <div class="w-5/6 flex gap-5">
         <input class="w-full rounded bg-gray-700 p-2 hover:bg-gray-600 transition focus:outline-none focus:bg-gray-600" placeholder="Raspberry Pi の IPアドレス" type="text" v-model="url">
-        <button @click="urlList.push(url)" class="px-4 bg-blue-500 rounded shadow-black shadow-md transition hover:scale-105">+</button>
+        <!-- <button @click="urlList.push(url)" class="px-4 bg-blue-500 rounded shadow-black shadow-md transition hover:scale-105">+</button> -->
       </div>
       <button class="p-5 bg-blue-500 w-64 rounded text-xl shadow-md shadow-black hover:scale-105 transition" @click="benchmark">ベンチマーク開始</button>
     </div>
