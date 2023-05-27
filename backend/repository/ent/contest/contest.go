@@ -24,8 +24,8 @@ const (
 	FieldSubmitLimit = "submit_limit"
 	// FieldYear holds the string denoting the year field in the database.
 	FieldYear = "year"
-	// FieldTagSelection holds the string denoting the tag_selection field in the database.
-	FieldTagSelection = "tag_selection"
+	// FieldTagSelectionLogic holds the string denoting the tag_selection_logic field in the database.
+	FieldTagSelectionLogic = "tag_selection_logic"
 	// FieldCreatedAt holds the string denoting the created_at field in the database.
 	FieldCreatedAt = "created_at"
 	// FieldUpdatedAt holds the string denoting the updated_at field in the database.
@@ -51,7 +51,7 @@ var Columns = []string{
 	FieldEndAt,
 	FieldSubmitLimit,
 	FieldYear,
-	FieldTagSelection,
+	FieldTagSelectionLogic,
 	FieldCreatedAt,
 	FieldUpdatedAt,
 }
@@ -71,26 +71,26 @@ var (
 	YearValidator func(int) error
 )
 
-// TagSelection defines the type for the "tag_selection" enum field.
-type TagSelection string
+// TagSelectionLogic defines the type for the "tag_selection_logic" enum field.
+type TagSelectionLogic string
 
-// TagSelection values.
+// TagSelectionLogic values.
 const (
-	TagSelectionAuto   TagSelection = "auto"
-	TagSelectionManual TagSelection = "manual"
+	TagSelectionLogicAuto   TagSelectionLogic = "auto"
+	TagSelectionLogicManual TagSelectionLogic = "manual"
 )
 
-func (ts TagSelection) String() string {
-	return string(ts)
+func (tsl TagSelectionLogic) String() string {
+	return string(tsl)
 }
 
-// TagSelectionValidator is a validator for the "tag_selection" field enum values. It is called by the builders before save.
-func TagSelectionValidator(ts TagSelection) error {
-	switch ts {
-	case TagSelectionAuto, TagSelectionManual:
+// TagSelectionLogicValidator is a validator for the "tag_selection_logic" field enum values. It is called by the builders before save.
+func TagSelectionLogicValidator(tsl TagSelectionLogic) error {
+	switch tsl {
+	case TagSelectionLogicAuto, TagSelectionLogicManual:
 		return nil
 	default:
-		return fmt.Errorf("contest: invalid enum value for tag_selection field: %q", ts)
+		return fmt.Errorf("contest: invalid enum value for tag_selection_logic field: %q", tsl)
 	}
 }
 
@@ -127,9 +127,9 @@ func ByYear(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldYear, opts...).ToFunc()
 }
 
-// ByTagSelection orders the results by the tag_selection field.
-func ByTagSelection(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldTagSelection, opts...).ToFunc()
+// ByTagSelectionLogic orders the results by the tag_selection_logic field.
+func ByTagSelectionLogic(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldTagSelectionLogic, opts...).ToFunc()
 }
 
 // ByCreatedAt orders the results by the created_at field.

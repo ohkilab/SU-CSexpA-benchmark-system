@@ -36,26 +36,26 @@ const (
 // ContestMutation represents an operation that mutates the Contest nodes in the graph.
 type ContestMutation struct {
 	config
-	op              Op
-	typ             string
-	id              *int
-	title           *string
-	start_at        *time.Time
-	end_at          *time.Time
-	submit_limit    *int
-	addsubmit_limit *int
-	year            *int
-	addyear         *int
-	tag_selection   *contest.TagSelection
-	created_at      *time.Time
-	updated_at      *time.Time
-	clearedFields   map[string]struct{}
-	submits         map[int]struct{}
-	removedsubmits  map[int]struct{}
-	clearedsubmits  bool
-	done            bool
-	oldValue        func(context.Context) (*Contest, error)
-	predicates      []predicate.Contest
+	op                  Op
+	typ                 string
+	id                  *int
+	title               *string
+	start_at            *time.Time
+	end_at              *time.Time
+	submit_limit        *int
+	addsubmit_limit     *int
+	year                *int
+	addyear             *int
+	tag_selection_logic *contest.TagSelectionLogic
+	created_at          *time.Time
+	updated_at          *time.Time
+	clearedFields       map[string]struct{}
+	submits             map[int]struct{}
+	removedsubmits      map[int]struct{}
+	clearedsubmits      bool
+	done                bool
+	oldValue            func(context.Context) (*Contest, error)
+	predicates          []predicate.Contest
 }
 
 var _ ent.Mutation = (*ContestMutation)(nil)
@@ -382,40 +382,40 @@ func (m *ContestMutation) ResetYear() {
 	m.addyear = nil
 }
 
-// SetTagSelection sets the "tag_selection" field.
-func (m *ContestMutation) SetTagSelection(cs contest.TagSelection) {
-	m.tag_selection = &cs
+// SetTagSelectionLogic sets the "tag_selection_logic" field.
+func (m *ContestMutation) SetTagSelectionLogic(csl contest.TagSelectionLogic) {
+	m.tag_selection_logic = &csl
 }
 
-// TagSelection returns the value of the "tag_selection" field in the mutation.
-func (m *ContestMutation) TagSelection() (r contest.TagSelection, exists bool) {
-	v := m.tag_selection
+// TagSelectionLogic returns the value of the "tag_selection_logic" field in the mutation.
+func (m *ContestMutation) TagSelectionLogic() (r contest.TagSelectionLogic, exists bool) {
+	v := m.tag_selection_logic
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldTagSelection returns the old "tag_selection" field's value of the Contest entity.
+// OldTagSelectionLogic returns the old "tag_selection_logic" field's value of the Contest entity.
 // If the Contest object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *ContestMutation) OldTagSelection(ctx context.Context) (v contest.TagSelection, err error) {
+func (m *ContestMutation) OldTagSelectionLogic(ctx context.Context) (v contest.TagSelectionLogic, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldTagSelection is only allowed on UpdateOne operations")
+		return v, errors.New("OldTagSelectionLogic is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldTagSelection requires an ID field in the mutation")
+		return v, errors.New("OldTagSelectionLogic requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldTagSelection: %w", err)
+		return v, fmt.Errorf("querying old value for OldTagSelectionLogic: %w", err)
 	}
-	return oldValue.TagSelection, nil
+	return oldValue.TagSelectionLogic, nil
 }
 
-// ResetTagSelection resets all changes to the "tag_selection" field.
-func (m *ContestMutation) ResetTagSelection() {
-	m.tag_selection = nil
+// ResetTagSelectionLogic resets all changes to the "tag_selection_logic" field.
+func (m *ContestMutation) ResetTagSelectionLogic() {
+	m.tag_selection_logic = nil
 }
 
 // SetCreatedAt sets the "created_at" field.
@@ -607,8 +607,8 @@ func (m *ContestMutation) Fields() []string {
 	if m.year != nil {
 		fields = append(fields, contest.FieldYear)
 	}
-	if m.tag_selection != nil {
-		fields = append(fields, contest.FieldTagSelection)
+	if m.tag_selection_logic != nil {
+		fields = append(fields, contest.FieldTagSelectionLogic)
 	}
 	if m.created_at != nil {
 		fields = append(fields, contest.FieldCreatedAt)
@@ -634,8 +634,8 @@ func (m *ContestMutation) Field(name string) (ent.Value, bool) {
 		return m.SubmitLimit()
 	case contest.FieldYear:
 		return m.Year()
-	case contest.FieldTagSelection:
-		return m.TagSelection()
+	case contest.FieldTagSelectionLogic:
+		return m.TagSelectionLogic()
 	case contest.FieldCreatedAt:
 		return m.CreatedAt()
 	case contest.FieldUpdatedAt:
@@ -659,8 +659,8 @@ func (m *ContestMutation) OldField(ctx context.Context, name string) (ent.Value,
 		return m.OldSubmitLimit(ctx)
 	case contest.FieldYear:
 		return m.OldYear(ctx)
-	case contest.FieldTagSelection:
-		return m.OldTagSelection(ctx)
+	case contest.FieldTagSelectionLogic:
+		return m.OldTagSelectionLogic(ctx)
 	case contest.FieldCreatedAt:
 		return m.OldCreatedAt(ctx)
 	case contest.FieldUpdatedAt:
@@ -709,12 +709,12 @@ func (m *ContestMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetYear(v)
 		return nil
-	case contest.FieldTagSelection:
-		v, ok := value.(contest.TagSelection)
+	case contest.FieldTagSelectionLogic:
+		v, ok := value.(contest.TagSelectionLogic)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetTagSelection(v)
+		m.SetTagSelectionLogic(v)
 		return nil
 	case contest.FieldCreatedAt:
 		v, ok := value.(time.Time)
@@ -830,8 +830,8 @@ func (m *ContestMutation) ResetField(name string) error {
 	case contest.FieldYear:
 		m.ResetYear()
 		return nil
-	case contest.FieldTagSelection:
-		m.ResetTagSelection()
+	case contest.FieldTagSelectionLogic:
+		m.ResetTagSelectionLogic()
 		return nil
 	case contest.FieldCreatedAt:
 		m.ResetCreatedAt()

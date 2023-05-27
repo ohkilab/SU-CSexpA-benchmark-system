@@ -51,9 +51,9 @@ func (cc *ContestCreate) SetYear(i int) *ContestCreate {
 	return cc
 }
 
-// SetTagSelection sets the "tag_selection" field.
-func (cc *ContestCreate) SetTagSelection(cs contest.TagSelection) *ContestCreate {
-	cc.mutation.SetTagSelection(cs)
+// SetTagSelectionLogic sets the "tag_selection_logic" field.
+func (cc *ContestCreate) SetTagSelectionLogic(csl contest.TagSelectionLogic) *ContestCreate {
+	cc.mutation.SetTagSelectionLogic(csl)
 	return cc
 }
 
@@ -152,12 +152,12 @@ func (cc *ContestCreate) check() error {
 			return &ValidationError{Name: "year", err: fmt.Errorf(`ent: validator failed for field "Contest.year": %w`, err)}
 		}
 	}
-	if _, ok := cc.mutation.TagSelection(); !ok {
-		return &ValidationError{Name: "tag_selection", err: errors.New(`ent: missing required field "Contest.tag_selection"`)}
+	if _, ok := cc.mutation.TagSelectionLogic(); !ok {
+		return &ValidationError{Name: "tag_selection_logic", err: errors.New(`ent: missing required field "Contest.tag_selection_logic"`)}
 	}
-	if v, ok := cc.mutation.TagSelection(); ok {
-		if err := contest.TagSelectionValidator(v); err != nil {
-			return &ValidationError{Name: "tag_selection", err: fmt.Errorf(`ent: validator failed for field "Contest.tag_selection": %w`, err)}
+	if v, ok := cc.mutation.TagSelectionLogic(); ok {
+		if err := contest.TagSelectionLogicValidator(v); err != nil {
+			return &ValidationError{Name: "tag_selection_logic", err: fmt.Errorf(`ent: validator failed for field "Contest.tag_selection_logic": %w`, err)}
 		}
 	}
 	if _, ok := cc.mutation.CreatedAt(); !ok {
@@ -215,9 +215,9 @@ func (cc *ContestCreate) createSpec() (*Contest, *sqlgraph.CreateSpec) {
 		_spec.SetField(contest.FieldYear, field.TypeInt, value)
 		_node.Year = value
 	}
-	if value, ok := cc.mutation.TagSelection(); ok {
-		_spec.SetField(contest.FieldTagSelection, field.TypeEnum, value)
-		_node.TagSelection = value
+	if value, ok := cc.mutation.TagSelectionLogic(); ok {
+		_spec.SetField(contest.FieldTagSelectionLogic, field.TypeEnum, value)
+		_node.TagSelectionLogic = value
 	}
 	if value, ok := cc.mutation.CreatedAt(); ok {
 		_spec.SetField(contest.FieldCreatedAt, field.TypeTime, value)

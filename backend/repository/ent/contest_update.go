@@ -73,9 +73,9 @@ func (cu *ContestUpdate) AddYear(i int) *ContestUpdate {
 	return cu
 }
 
-// SetTagSelection sets the "tag_selection" field.
-func (cu *ContestUpdate) SetTagSelection(cs contest.TagSelection) *ContestUpdate {
-	cu.mutation.SetTagSelection(cs)
+// SetTagSelectionLogic sets the "tag_selection_logic" field.
+func (cu *ContestUpdate) SetTagSelectionLogic(csl contest.TagSelectionLogic) *ContestUpdate {
+	cu.mutation.SetTagSelectionLogic(csl)
 	return cu
 }
 
@@ -180,9 +180,9 @@ func (cu *ContestUpdate) check() error {
 			return &ValidationError{Name: "year", err: fmt.Errorf(`ent: validator failed for field "Contest.year": %w`, err)}
 		}
 	}
-	if v, ok := cu.mutation.TagSelection(); ok {
-		if err := contest.TagSelectionValidator(v); err != nil {
-			return &ValidationError{Name: "tag_selection", err: fmt.Errorf(`ent: validator failed for field "Contest.tag_selection": %w`, err)}
+	if v, ok := cu.mutation.TagSelectionLogic(); ok {
+		if err := contest.TagSelectionLogicValidator(v); err != nil {
+			return &ValidationError{Name: "tag_selection_logic", err: fmt.Errorf(`ent: validator failed for field "Contest.tag_selection_logic": %w`, err)}
 		}
 	}
 	return nil
@@ -221,8 +221,8 @@ func (cu *ContestUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if value, ok := cu.mutation.AddedYear(); ok {
 		_spec.AddField(contest.FieldYear, field.TypeInt, value)
 	}
-	if value, ok := cu.mutation.TagSelection(); ok {
-		_spec.SetField(contest.FieldTagSelection, field.TypeEnum, value)
+	if value, ok := cu.mutation.TagSelectionLogic(); ok {
+		_spec.SetField(contest.FieldTagSelectionLogic, field.TypeEnum, value)
 	}
 	if value, ok := cu.mutation.CreatedAt(); ok {
 		_spec.SetField(contest.FieldCreatedAt, field.TypeTime, value)
@@ -342,9 +342,9 @@ func (cuo *ContestUpdateOne) AddYear(i int) *ContestUpdateOne {
 	return cuo
 }
 
-// SetTagSelection sets the "tag_selection" field.
-func (cuo *ContestUpdateOne) SetTagSelection(cs contest.TagSelection) *ContestUpdateOne {
-	cuo.mutation.SetTagSelection(cs)
+// SetTagSelectionLogic sets the "tag_selection_logic" field.
+func (cuo *ContestUpdateOne) SetTagSelectionLogic(csl contest.TagSelectionLogic) *ContestUpdateOne {
+	cuo.mutation.SetTagSelectionLogic(csl)
 	return cuo
 }
 
@@ -462,9 +462,9 @@ func (cuo *ContestUpdateOne) check() error {
 			return &ValidationError{Name: "year", err: fmt.Errorf(`ent: validator failed for field "Contest.year": %w`, err)}
 		}
 	}
-	if v, ok := cuo.mutation.TagSelection(); ok {
-		if err := contest.TagSelectionValidator(v); err != nil {
-			return &ValidationError{Name: "tag_selection", err: fmt.Errorf(`ent: validator failed for field "Contest.tag_selection": %w`, err)}
+	if v, ok := cuo.mutation.TagSelectionLogic(); ok {
+		if err := contest.TagSelectionLogicValidator(v); err != nil {
+			return &ValidationError{Name: "tag_selection_logic", err: fmt.Errorf(`ent: validator failed for field "Contest.tag_selection_logic": %w`, err)}
 		}
 	}
 	return nil
@@ -520,8 +520,8 @@ func (cuo *ContestUpdateOne) sqlSave(ctx context.Context) (_node *Contest, err e
 	if value, ok := cuo.mutation.AddedYear(); ok {
 		_spec.AddField(contest.FieldYear, field.TypeInt, value)
 	}
-	if value, ok := cuo.mutation.TagSelection(); ok {
-		_spec.SetField(contest.FieldTagSelection, field.TypeEnum, value)
+	if value, ok := cuo.mutation.TagSelectionLogic(); ok {
+		_spec.SetField(contest.FieldTagSelectionLogic, field.TypeEnum, value)
 	}
 	if value, ok := cuo.mutation.CreatedAt(); ok {
 		_spec.SetField(contest.FieldCreatedAt, field.TypeTime, value)

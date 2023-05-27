@@ -315,24 +315,24 @@ func YearLTE(v int) predicate.Contest {
 	return predicate.Contest(sql.FieldLTE(FieldYear, v))
 }
 
-// TagSelectionEQ applies the EQ predicate on the "tag_selection" field.
-func TagSelectionEQ(v TagSelection) predicate.Contest {
-	return predicate.Contest(sql.FieldEQ(FieldTagSelection, v))
+// TagSelectionLogicEQ applies the EQ predicate on the "tag_selection_logic" field.
+func TagSelectionLogicEQ(v TagSelectionLogic) predicate.Contest {
+	return predicate.Contest(sql.FieldEQ(FieldTagSelectionLogic, v))
 }
 
-// TagSelectionNEQ applies the NEQ predicate on the "tag_selection" field.
-func TagSelectionNEQ(v TagSelection) predicate.Contest {
-	return predicate.Contest(sql.FieldNEQ(FieldTagSelection, v))
+// TagSelectionLogicNEQ applies the NEQ predicate on the "tag_selection_logic" field.
+func TagSelectionLogicNEQ(v TagSelectionLogic) predicate.Contest {
+	return predicate.Contest(sql.FieldNEQ(FieldTagSelectionLogic, v))
 }
 
-// TagSelectionIn applies the In predicate on the "tag_selection" field.
-func TagSelectionIn(vs ...TagSelection) predicate.Contest {
-	return predicate.Contest(sql.FieldIn(FieldTagSelection, vs...))
+// TagSelectionLogicIn applies the In predicate on the "tag_selection_logic" field.
+func TagSelectionLogicIn(vs ...TagSelectionLogic) predicate.Contest {
+	return predicate.Contest(sql.FieldIn(FieldTagSelectionLogic, vs...))
 }
 
-// TagSelectionNotIn applies the NotIn predicate on the "tag_selection" field.
-func TagSelectionNotIn(vs ...TagSelection) predicate.Contest {
-	return predicate.Contest(sql.FieldNotIn(FieldTagSelection, vs...))
+// TagSelectionLogicNotIn applies the NotIn predicate on the "tag_selection_logic" field.
+func TagSelectionLogicNotIn(vs ...TagSelectionLogic) predicate.Contest {
+	return predicate.Contest(sql.FieldNotIn(FieldTagSelectionLogic, vs...))
 }
 
 // CreatedAtEQ applies the EQ predicate on the "created_at" field.
