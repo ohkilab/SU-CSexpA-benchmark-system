@@ -46,6 +46,7 @@ type ContestMutation struct {
 	addsubmit_limit *int
 	year            *int
 	addyear         *int
+	tag_selection   *contest.TagSelection
 	created_at      *time.Time
 	updated_at      *time.Time
 	clearedFields   map[string]struct{}
@@ -381,6 +382,42 @@ func (m *ContestMutation) ResetYear() {
 	m.addyear = nil
 }
 
+// SetTagSelection sets the "tag_selection" field.
+func (m *ContestMutation) SetTagSelection(cs contest.TagSelection) {
+	m.tag_selection = &cs
+}
+
+// TagSelection returns the value of the "tag_selection" field in the mutation.
+func (m *ContestMutation) TagSelection() (r contest.TagSelection, exists bool) {
+	v := m.tag_selection
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldTagSelection returns the old "tag_selection" field's value of the Contest entity.
+// If the Contest object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ContestMutation) OldTagSelection(ctx context.Context) (v contest.TagSelection, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldTagSelection is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldTagSelection requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldTagSelection: %w", err)
+	}
+	return oldValue.TagSelection, nil
+}
+
+// ResetTagSelection resets all changes to the "tag_selection" field.
+func (m *ContestMutation) ResetTagSelection() {
+	m.tag_selection = nil
+}
+
 // SetCreatedAt sets the "created_at" field.
 func (m *ContestMutation) SetCreatedAt(t time.Time) {
 	m.created_at = &t
@@ -554,7 +591,7 @@ func (m *ContestMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *ContestMutation) Fields() []string {
-	fields := make([]string, 0, 7)
+	fields := make([]string, 0, 8)
 	if m.title != nil {
 		fields = append(fields, contest.FieldTitle)
 	}
@@ -569,6 +606,9 @@ func (m *ContestMutation) Fields() []string {
 	}
 	if m.year != nil {
 		fields = append(fields, contest.FieldYear)
+	}
+	if m.tag_selection != nil {
+		fields = append(fields, contest.FieldTagSelection)
 	}
 	if m.created_at != nil {
 		fields = append(fields, contest.FieldCreatedAt)
@@ -594,6 +634,8 @@ func (m *ContestMutation) Field(name string) (ent.Value, bool) {
 		return m.SubmitLimit()
 	case contest.FieldYear:
 		return m.Year()
+	case contest.FieldTagSelection:
+		return m.TagSelection()
 	case contest.FieldCreatedAt:
 		return m.CreatedAt()
 	case contest.FieldUpdatedAt:
@@ -617,6 +659,8 @@ func (m *ContestMutation) OldField(ctx context.Context, name string) (ent.Value,
 		return m.OldSubmitLimit(ctx)
 	case contest.FieldYear:
 		return m.OldYear(ctx)
+	case contest.FieldTagSelection:
+		return m.OldTagSelection(ctx)
 	case contest.FieldCreatedAt:
 		return m.OldCreatedAt(ctx)
 	case contest.FieldUpdatedAt:
@@ -664,6 +708,13 @@ func (m *ContestMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetYear(v)
+		return nil
+	case contest.FieldTagSelection:
+		v, ok := value.(contest.TagSelection)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetTagSelection(v)
 		return nil
 	case contest.FieldCreatedAt:
 		v, ok := value.(time.Time)
@@ -778,6 +829,9 @@ func (m *ContestMutation) ResetField(name string) error {
 		return nil
 	case contest.FieldYear:
 		m.ResetYear()
+		return nil
+	case contest.FieldTagSelection:
+		m.ResetTagSelection()
 		return nil
 	case contest.FieldCreatedAt:
 		m.ResetCreatedAt()

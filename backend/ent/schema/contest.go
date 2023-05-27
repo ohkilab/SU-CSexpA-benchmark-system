@@ -20,6 +20,7 @@ func (Contest) Fields() []ent.Field {
 		field.Time("end_at"),
 		field.Int("submit_limit"),
 		field.Int("year").Positive(),
+		field.Enum("tag_selection").Values("auto", "manual"),
 		field.Time("created_at"),
 		field.Time("updated_at").Optional(),
 	}

@@ -3,6 +3,8 @@
 package contest
 
 import (
+	"fmt"
+
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 )
@@ -22,6 +24,8 @@ const (
 	FieldSubmitLimit = "submit_limit"
 	// FieldYear holds the string denoting the year field in the database.
 	FieldYear = "year"
+	// FieldTagSelection holds the string denoting the tag_selection field in the database.
+	FieldTagSelection = "tag_selection"
 	// FieldCreatedAt holds the string denoting the created_at field in the database.
 	FieldCreatedAt = "created_at"
 	// FieldUpdatedAt holds the string denoting the updated_at field in the database.
@@ -47,6 +51,7 @@ var Columns = []string{
 	FieldEndAt,
 	FieldSubmitLimit,
 	FieldYear,
+	FieldTagSelection,
 	FieldCreatedAt,
 	FieldUpdatedAt,
 }
@@ -65,6 +70,29 @@ var (
 	// YearValidator is a validator for the "year" field. It is called by the builders before save.
 	YearValidator func(int) error
 )
+
+// TagSelection defines the type for the "tag_selection" enum field.
+type TagSelection string
+
+// TagSelection values.
+const (
+	TagSelectionAuto   TagSelection = "auto"
+	TagSelectionManual TagSelection = "manual"
+)
+
+func (ts TagSelection) String() string {
+	return string(ts)
+}
+
+// TagSelectionValidator is a validator for the "tag_selection" field enum values. It is called by the builders before save.
+func TagSelectionValidator(ts TagSelection) error {
+	switch ts {
+	case TagSelectionAuto, TagSelectionManual:
+		return nil
+	default:
+		return fmt.Errorf("contest: invalid enum value for tag_selection field: %q", ts)
+	}
+}
 
 // OrderOption defines the ordering options for the Contest queries.
 type OrderOption func(*sql.Selector)
@@ -97,6 +125,11 @@ func BySubmitLimit(opts ...sql.OrderTermOption) OrderOption {
 // ByYear orders the results by the year field.
 func ByYear(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldYear, opts...).ToFunc()
+}
+
+// ByTagSelection orders the results by the tag_selection field.
+func ByTagSelection(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldTagSelection, opts...).ToFunc()
 }
 
 // ByCreatedAt orders the results by the created_at field.

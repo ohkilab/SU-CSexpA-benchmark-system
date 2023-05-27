@@ -16,6 +16,7 @@ var (
 		{Name: "end_at", Type: field.TypeTime},
 		{Name: "submit_limit", Type: field.TypeInt},
 		{Name: "year", Type: field.TypeInt},
+		{Name: "tag_selection", Type: field.TypeEnum, Enums: []string{"auto", "manual"}},
 		{Name: "created_at", Type: field.TypeTime},
 		{Name: "updated_at", Type: field.TypeTime, Nullable: true},
 	}

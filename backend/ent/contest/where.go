@@ -315,6 +315,26 @@ func YearLTE(v int) predicate.Contest {
 	return predicate.Contest(sql.FieldLTE(FieldYear, v))
 }
 
+// TagSelectionEQ applies the EQ predicate on the "tag_selection" field.
+func TagSelectionEQ(v TagSelection) predicate.Contest {
+	return predicate.Contest(sql.FieldEQ(FieldTagSelection, v))
+}
+
+// TagSelectionNEQ applies the NEQ predicate on the "tag_selection" field.
+func TagSelectionNEQ(v TagSelection) predicate.Contest {
+	return predicate.Contest(sql.FieldNEQ(FieldTagSelection, v))
+}
+
+// TagSelectionIn applies the In predicate on the "tag_selection" field.
+func TagSelectionIn(vs ...TagSelection) predicate.Contest {
+	return predicate.Contest(sql.FieldIn(FieldTagSelection, vs...))
+}
+
+// TagSelectionNotIn applies the NotIn predicate on the "tag_selection" field.
+func TagSelectionNotIn(vs ...TagSelection) predicate.Contest {
+	return predicate.Contest(sql.FieldNotIn(FieldTagSelection, vs...))
+}
+
 // CreatedAtEQ applies the EQ predicate on the "created_at" field.
 func CreatedAtEQ(v time.Time) predicate.Contest {
 	return predicate.Contest(sql.FieldEQ(FieldCreatedAt, v))
