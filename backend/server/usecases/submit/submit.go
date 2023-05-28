@@ -3,7 +3,6 @@ package submit
 import (
 	"context"
 	"fmt"
-	"log"
 	"strconv"
 	"time"
 
@@ -19,6 +18,7 @@ import (
 	backendpb "github.com/ohkilab/SU-CSexpA-benchmark-system/proto-gen/go/backend"
 	benchmarkpb "github.com/ohkilab/SU-CSexpA-benchmark-system/proto-gen/go/benchmark"
 	"github.com/samber/lo"
+	"golang.org/x/exp/slog"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/types/known/timestamppb"
@@ -32,10 +32,11 @@ const (
 type Interactor struct {
 	entClient *ent.Client
 	worker    worker.Worker
+	logger    *slog.Logger
 }
 
-func NewInteractor(entClient *ent.Client, worker worker.Worker) *Interactor {
-	return &Interactor{entClient, worker}
+func NewInteractor(entClient *ent.Client, worker worker.Worker, logger *slog.Logger) *Interactor {
+	return &Interactor{entClient, worker, logger}
 }
 
 func (i *Interactor) PostSubmit(ctx context.Context, req *backendpb.PostSubmitRequest) (*backendpb.PostSubmitResponse, error) {
@@ -45,6 +46,7 @@ func (i *Interactor) PostSubmit(ctx context.Context, req *backendpb.PostSubmitRe
 		if ent.IsNotFound(err) {
 			return nil, status.Error(codes.InvalidArgument, "no such contest")
 		}
+		i.logger.Error("failed to fetch contest", err)
 		return nil, status.Error(codes.Internal, err.Error())
 	}
 
@@ -53,11 +55,13 @@ func (i *Interactor) PostSubmit(ctx context.Context, req *backendpb.PostSubmitRe
 	case contest.TagSelectionLogicAuto:
 		tags, err = tag.GetRandomTags(c.ID, 50)
 		if err != nil {
+			i.logger.Error("failed to generate tags", err)
 			return nil, status.Error(codes.Internal, "failed to generate tags")
 		}
 	case contest.TagSelectionLogicManual:
 		tags, err = tag.GetRandomTags(c.ID, 1) // TODO: fix it
 		if err != nil {
+			i.logger.Error("failed to generate tags", err)
 			return nil, status.Error(codes.Internal, "failed to generate tags")
 		}
 	}
@@ -72,6 +76,7 @@ func (i *Interactor) PostSubmit(ctx context.Context, req *backendpb.PostSubmitRe
 		SetTaskNum(len(tags)).
 		Save(ctx)
 	if err != nil {
+		i.logger.Error("failed to create submit", err)
 		return nil, status.Error(codes.Internal, err.Error())
 	}
 
@@ -117,16 +122,18 @@ func (i *Interactor) GetSubmit(req *backendpb.GetSubmitRequest, stream backendpb
 			if ent.IsNotFound(err) {
 				return status.Error(codes.NotFound, "no such submit")
 			}
+			i.logger.Error("failed to fetch submit", err)
 			return status.Error(codes.Internal, err.Error())
 		}
 		if err := stream.Send(&backendpb.GetSubmitResponse{
 			Submit: toPbSubmit(s),
 		}); err != nil {
+			i.logger.Error("failed to send submit", err)
 			return err
 		}
 		// ベンチマーク処理が完了していたら結果を返す
 		if !s.CompletedAt.IsZero() {
-			log.Println("completed submit:", s)
+			i.logger.Info("completed submit", slog.Any("submit", s))
 			break
 		}
 
@@ -168,18 +175,19 @@ func toPbSubmit(submit *ent.Submit) *backendpb.Submit {
 	}
 }
 
-func (i *Interactor) ListSubmits(ctx context.Context, groupID *string, status *backendpb.Status) (*backendpb.ListSubmitsResponse, error) {
+func (i *Interactor) ListSubmits(ctx context.Context, groupID *string, st *backendpb.Status) (*backendpb.ListSubmitsResponse, error) {
 	q := i.entClient.Submit.Query().WithGroups(func(gq *ent.GroupQuery) {
 		if groupID != nil {
 			gq.Where(group.NameContains(*groupID))
 		}
 	})
-	if status != nil {
-		q.Where(submit.StatusEQ(status.String()))
+	if st != nil {
+		q.Where(submit.StatusEQ(st.String()))
 	}
 	submits, err := q.Order(submit.BySubmitedAt(sql.OrderDesc())).All(ctx)
 	if err != nil {
-		return nil, err
+		i.logger.Error("failed to fetch submits", err)
+		return nil, status.Error(codes.Internal, err.Error())
 	}
 	return &backendpb.ListSubmitsResponse{
 		Submits: lo.Map(submits, func(submit *ent.Submit, _ int) *backendpb.Submit {

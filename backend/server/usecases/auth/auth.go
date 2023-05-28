@@ -10,6 +10,7 @@ import (
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/core/timejst"
 	pb "github.com/ohkilab/SU-CSexpA-benchmark-system/proto-gen/go/backend"
 	"golang.org/x/crypto/bcrypt"
+	"golang.org/x/exp/slog"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
@@ -17,16 +18,18 @@ import (
 type AuthInteractor struct {
 	secret    []byte
 	entClient *ent.Client
+	logger    *slog.Logger
 }
 
-func NewInteractor(secret []byte, entClient *ent.Client) *AuthInteractor {
-	return &AuthInteractor{secret, entClient}
+func NewInteractor(secret []byte, entClient *ent.Client, logger *slog.Logger) *AuthInteractor {
+	return &AuthInteractor{secret, entClient, logger}
 }
 
 func (i *AuthInteractor) PostLogin(ctx context.Context, id, password string) (*pb.PostLoginResponse, error) {
 	groups, err := i.entClient.Group.Query().Where(group.NameEQ(id)).All(ctx)
 	if err != nil {
-		return nil, status.Error(codes.Internal, err.Error())
+		i.logger.Error("failed to fetch groups", err)
+		return nil, status.Error(codes.Internal, "failed to fetch groups")
 	}
 	var group *ent.Group
 	for _, g := range groups {
@@ -41,6 +44,7 @@ func (i *AuthInteractor) PostLogin(ctx context.Context, id, password string) (*p
 	}
 	jwtToken, err := auth.GenerateJWTToken(i.secret, group.ID, group.Year)
 	if err != nil {
+		i.logger.Error("failed to generate jwt token", err)
 		return nil, err
 	}
 	return &pb.PostLoginResponse{
@@ -57,6 +61,7 @@ func (i *AuthInteractor) PostLogin(ctx context.Context, id, password string) (*p
 func (i *AuthInteractor) VerifyToken(ctx context.Context) *pb.VerifyTokenResponse {
 	token, err := grpc_auth.AuthFromMD(ctx, "bearer")
 	if err != nil {
+		i.logger.Error("failed to get token from metadata", err)
 		return &pb.VerifyTokenResponse{
 			Ok:      false,
 			Message: "missing token",
@@ -64,6 +69,7 @@ func (i *AuthInteractor) VerifyToken(ctx context.Context) *pb.VerifyTokenRespons
 	}
 	claims, err := auth.GetClaimsFromToken(token, i.secret)
 	if err != nil {
+		i.logger.Error("failed to get claims from token", err)
 		return &pb.VerifyTokenResponse{
 			Ok:      false,
 			Message: "invalid token",

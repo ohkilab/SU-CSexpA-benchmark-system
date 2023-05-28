@@ -11,6 +11,7 @@ import (
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/usecases/submit"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/worker"
 	pb "github.com/ohkilab/SU-CSexpA-benchmark-system/proto-gen/go/backend"
+	"golang.org/x/exp/slog"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
@@ -23,11 +24,11 @@ type backendServiceServer struct {
 	pb.UnimplementedBackendServiceServer
 }
 
-func NewBackendService(secret []byte, entClient *ent.Client, worker worker.Worker) pb.BackendServiceServer {
-	authInteractor := auth.NewInteractor(secret, entClient)
-	rankingInteractor := ranking.NewInteractor(entClient)
-	submitInteractor := submit.NewInteractor(entClient, worker)
-	contestInteractor := contest.NewInteractor(entClient)
+func NewBackendService(secret []byte, entClient *ent.Client, worker worker.Worker, logger *slog.Logger) pb.BackendServiceServer {
+	authInteractor := auth.NewInteractor(secret, entClient, logger)
+	rankingInteractor := ranking.NewInteractor(entClient, logger)
+	submitInteractor := submit.NewInteractor(entClient, worker, logger)
+	contestInteractor := contest.NewInteractor(entClient, logger)
 	return &backendServiceServer{authInteractor, rankingInteractor, submitInteractor, contestInteractor, pb.UnimplementedBackendServiceServer{}}
 }
 

@@ -33,6 +33,9 @@ func main() {
 		panic(err)
 	}
 
+	// logger
+	logger := slog.Default()
+
 	// benchmark worker
 	conn, err := pkgrpc.Dial(fmt.Sprintf("%s:%s", config.BenchmarkHost, config.BenchmarkPort), pkgrpc.WithInsecure())
 	if err != nil {
@@ -40,11 +43,16 @@ func main() {
 	}
 	defer conn.Close()
 	benchmarkClient := benchmark.NewBenchmarkServiceClient(conn)
-	benchmarkWorker := worker.New(entClient, benchmarkClient)
+	benchmarkWorker := worker.New(entClient, benchmarkClient, logger)
 	go benchmarkWorker.Run()
 
 	// build grpc server
-	grpcServer := grpc.NewServer(grpc.WithEntClient(entClient), grpc.WithJwtSecret(config.JwtSecret), grpc.WithWorker(benchmarkWorker))
+	grpcServer := grpc.NewServer(
+		grpc.WithEntClient(entClient),
+		grpc.WithJwtSecret(config.JwtSecret),
+		grpc.WithWorker(benchmarkWorker),
+		grpc.WithLogger(logger),
+	)
 
 	// launch grpc server
 	listener, err := net.Listen("tcp", ":"+config.GrpcPort)

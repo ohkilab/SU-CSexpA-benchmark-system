@@ -8,14 +8,16 @@ import (
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/repository/ent/group"
 	pb "github.com/ohkilab/SU-CSexpA-benchmark-system/proto-gen/go/backend"
 	"github.com/samber/lo"
+	"golang.org/x/exp/slog"
 )
 
 type RankingInteractor struct {
 	entClient *ent.Client
+	logger    *slog.Logger
 }
 
-func NewInteractor(entClient *ent.Client) *RankingInteractor {
-	return &RankingInteractor{entClient}
+func NewInteractor(entClient *ent.Client, logger *slog.Logger) *RankingInteractor {
+	return &RankingInteractor{entClient, logger}
 }
 
 func (i *RankingInteractor) GetRanking(ctx context.Context, containGuest bool, year int) ([]*pb.GetRankingResponse_Record, error) {
@@ -25,6 +27,7 @@ func (i *RankingInteractor) GetRanking(ctx context.Context, containGuest bool, y
 	}
 	groups, err := query.All(ctx)
 	if err != nil {
+		i.logger.Error("failed to fetch groups", err)
 		return nil, err
 	}
 	pbGroups := lo.Map(groups, func(group *ent.Group, i int) *pb.GetRankingResponse_Record {

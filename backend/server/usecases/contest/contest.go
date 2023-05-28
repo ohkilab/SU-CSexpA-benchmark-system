@@ -2,12 +2,12 @@ package contest
 
 import (
 	"context"
-	"log"
 
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/repository/ent"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/repository/ent/contest"
 	pb "github.com/ohkilab/SU-CSexpA-benchmark-system/proto-gen/go/backend"
 	"github.com/samber/lo"
+	"golang.org/x/exp/slog"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/types/known/timestamppb"
@@ -15,16 +15,17 @@ import (
 
 type Interactor struct {
 	entClient *ent.Client
+	logger    *slog.Logger
 }
 
-func NewInteractor(entClient *ent.Client) *Interactor {
-	return &Interactor{entClient}
+func NewInteractor(entClient *ent.Client, logger *slog.Logger) *Interactor {
+	return &Interactor{entClient, logger}
 }
 
 func (i *Interactor) ListContests(ctx context.Context, req *pb.ListContestsRequest) (*pb.ListContestsResponse, error) {
 	contests, err := i.entClient.Contest.Query().Where(contest.Year(int(req.Year))).All(ctx)
 	if err != nil {
-		log.Println(err)
+		i.logger.Error("failed to fetch contests", err)
 		return nil, status.Error(codes.Internal, "failed to fetch contests")
 	}
 	return &pb.ListContestsResponse{

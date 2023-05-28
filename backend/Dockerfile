@@ -1,6 +1,6 @@
 FROM golang:1.20 AS builder
 
-WORKDIR /app
+WORKDIR /src
 COPY . .
 RUN go build \
     -mod=vendor \
@@ -11,6 +11,7 @@ RUN go build \
 FROM ubuntu:22.04
 
 WORKDIR /app
-COPY --from=builder /app/backend-server .
+COPY --from=builder /src/backend-server .
+COPY --from=builder /src/storage ./storage
 
 ENTRYPOINT [ "/app/backend-server" ]

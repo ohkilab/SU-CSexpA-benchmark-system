@@ -17,6 +17,7 @@ import (
 	benchmarkpb "github.com/ohkilab/SU-CSexpA-benchmark-system/proto-gen/go/benchmark"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	"golang.org/x/exp/slog"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/metadata"
 	"google.golang.org/grpc/status"
@@ -29,7 +30,7 @@ func Test_GetSubmit(t *testing.T) {
 	connBenchmark, closeBenchmark := utils.LaunchBenchmarkGrpcServer(t)
 	defer closeBenchmark()
 	benchmarkClient := benchmarkpb.NewBenchmarkServiceClient(connBenchmark)
-	worker := worker.New(entClient, benchmarkClient)
+	worker := worker.New(entClient, benchmarkClient, slog.Default())
 	go worker.Run()
 
 	conn, closeFunc := utils.LaunchGrpcServer(t, grpc.WithEntClient(entClient), grpc.WithJwtSecret("secret"), grpc.WithWorker(worker))

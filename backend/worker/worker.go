@@ -2,7 +2,6 @@ package worker
 
 import (
 	"io"
-	"log"
 	"sync"
 	"time"
 
@@ -13,6 +12,7 @@ import (
 	backendpb "github.com/ohkilab/SU-CSexpA-benchmark-system/proto-gen/go/backend"
 	benchmarkpb "github.com/ohkilab/SU-CSexpA-benchmark-system/proto-gen/go/benchmark"
 	"github.com/samber/lo"
+	"golang.org/x/exp/slog"
 	"golang.org/x/net/context"
 	"golang.org/x/sync/errgroup"
 )
@@ -32,10 +32,11 @@ type worker struct {
 	entClient       *ent.Client
 	benchmarkClient benchmarkpb.BenchmarkServiceClient
 	queue           *Queue[Task]
+	logger          *slog.Logger
 }
 
-func New(entClient *ent.Client, benchmarkClient benchmarkpb.BenchmarkServiceClient) *worker {
-	return &worker{entClient, benchmarkClient, &Queue[Task]{}}
+func New(entClient *ent.Client, benchmarkClient benchmarkpb.BenchmarkServiceClient, logger *slog.Logger) *worker {
+	return &worker{entClient, benchmarkClient, &Queue[Task]{}, logger}
 }
 
 func (w *worker) Push(task *Task) {
@@ -51,132 +52,142 @@ func (w *worker) Run() {
 			continue
 		}
 
-		ctx, cancel := context.WithTimeout(context.Background(), 5*time.Minute)
-		defer cancel()
-		log.Println("Start benchmark", task.Req)
-		stream, err := w.benchmarkClient.Execute(ctx, task.Req)
-		if err != nil {
-			log.Println(err)
+		ctx := context.Background()
+
+		w.logger.Info("start benchmark", slog.Any("req", task.Req))
+		if err := w.runBenchmarkTask(task); err != nil {
 			_, err = w.entClient.Submit.UpdateOneID(task.SubmitID).
 				SetScore(0).
-				SetMessage("failed to connect to benchmark-service").
+				SetMessage("Internal Server Error(Please contact administrator)").
 				SetStatus(backend.Status_INTERNAL_ERROR.String()).
 				SetCompletedAt(timejst.Now()).
 				SetUpdatedAt(timejst.Now()).
 				Save(ctx)
 			if err != nil {
-				log.Println(err)
+				w.logger.Error("failed to update submit", err)
 			}
-			continue
+			w.logger.Error("failed to run benchmark", err)
 		}
-		_, err = w.entClient.Submit.UpdateOneID(task.SubmitID).
-			SetStatus(backendpb.Status_IN_PROGRESS.String()).
-			SetUpdatedAt(timejst.Now()).
-			Save(ctx)
-		if err != nil {
-			log.Println(err)
-		}
+		w.logger.Info("benchmark succeeded")
+	}
+}
 
-		eg := &errgroup.Group{}
-		score := 0
-		mu := sync.Mutex{}
-		for {
-			resp, err := stream.Recv()
-			if err == io.EOF {
-				log.Println("received EOF")
-				if err := stream.CloseSend(); err != nil {
-					log.Println(err)
-				}
-				submit, err := w.entClient.Submit.Query().WithTaskResults().Where(submit.ID(task.SubmitID)).Only(ctx)
-				if err != nil {
-					log.Println(err)
-					break
-				}
-				if len(submit.Edges.TaskResults) == 0 {
-					break
-				}
-				if mp := lo.Associate(submit.Edges.TaskResults, func(tr *ent.TaskResult) (string, struct{}) {
-					return tr.ErrorMessage, struct{}{}
-				}); len(mp) == 1 {
-					if _, err := w.entClient.Submit.UpdateOneID(task.SubmitID).SetMessage(submit.Edges.TaskResults[0].ErrorMessage).Save(ctx); err != nil {
-						log.Println(err)
-						break
-					}
-				}
-				break
-			}
-			log.Println("received", resp)
-			if err != nil {
-				log.Println(err)
-				_, err = w.entClient.Submit.UpdateOneID(task.SubmitID).
-					SetScore(0).
-					SetMessage(err.Error()).
-					SetStatus(backend.Status_INTERNAL_ERROR.String()).
-					SetCompletedAt(timejst.Now()).
-					SetUpdatedAt(timejst.Now()).
-					Save(ctx)
-				if err != nil {
-					log.Println(err)
-				}
-				break
-			}
+func (w *worker) runBenchmarkTask(task *Task) error {
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Minute)
+	defer cancel()
 
-			eg.Go(func() error {
-				resp := resp
+	stream, err := w.benchmarkClient.Execute(ctx, task.Req)
+	if err != nil {
+		w.logger.Error("failed to connect to benchmark-service", err)
+		return err
+	}
+	_, err = w.entClient.Submit.UpdateOneID(task.SubmitID).
+		SetStatus(backendpb.Status_IN_PROGRESS.String()).
+		SetUpdatedAt(timejst.Now()).
+		Save(ctx)
+	if err != nil {
+		w.logger.Error("failed to update submit", err)
+		return err
+	}
 
-				mu.Lock()
-				if resp.Ok {
-					score += int(resp.RequestsPerSecond)
-				}
-				mu.Unlock()
-
-				var errorMessage string
-				if resp.ErrorMessage != nil {
-					errorMessage = *resp.ErrorMessage
-				}
-				_, err := w.entClient.TaskResult.Create().
-					SetRequestPerSec(int(resp.RequestsPerSecond)).
-					SetURL(resp.Task.Request.Url).
-					SetMethod(resp.Task.Request.Method.String()).
-					SetErrorMessage(errorMessage).
-					SetRequestContentType(resp.Task.Request.ContentType).
-					SetRequestBody(resp.Task.Request.Body).
-					SetThreadNum(int(resp.Task.ThreadNum)).
-					SetAttemptCount(int(resp.Task.AttemptCount)).
-					SetStatus(resp.Status.String()).
-					SetCreatedAt(timejst.Now()).
-					SetSubmitsID(task.SubmitID).
-					Save(ctx)
+	eg := &errgroup.Group{}
+	score := 0
+	mu := sync.Mutex{}
+	for {
+		resp, err := stream.Recv()
+		if err == io.EOF {
+			if err := stream.CloseSend(); err != nil {
+				w.logger.Error("failed to close stream", err)
 				return err
-			})
-		}
-		if err := eg.Wait(); err != nil {
-			log.Println(err)
-		}
-
-		now := timejst.Now()
-		if _, err := w.entClient.Submit.
-			UpdateOneID(task.SubmitID).
-			SetCompletedAt(now).
-			SetUpdatedAt(now).
-			SetScore(score).
-			SetStatus(backendpb.Status_SUCCESS.String()).
-			Save(ctx); err != nil {
-			log.Println("ERROR", err)
-		}
-
-		group, err := w.entClient.Group.Get(ctx, task.GroupID)
-		if err != nil {
-			log.Println(err)
-		}
-		if group.Score < score {
-			if _, err := w.entClient.Group.
-				UpdateOneID(group.ID).
-				SetScore(score).
-				SetUpdatedAt(now).
-				Save(ctx); err != nil {
-				log.Println(err)
 			}
+
+			submit, err := w.entClient.Submit.Query().WithTaskResults().Where(submit.ID(task.SubmitID)).Only(ctx)
+			if err != nil {
+				w.logger.Error("failed to get submit", err)
+				return err
+			}
+			if len(submit.Edges.TaskResults) == 0 {
+				w.logger.Error("failed to get task results", err)
+				return err
+			}
+			if mp := lo.Associate(submit.Edges.TaskResults, func(tr *ent.TaskResult) (string, struct{}) {
+				return tr.ErrorMessage, struct{}{}
+			}); len(mp) == 1 {
+				if _, err := w.entClient.Submit.UpdateOneID(task.SubmitID).SetMessage(submit.Edges.TaskResults[0].ErrorMessage).Save(ctx); err != nil {
+					w.logger.Error("failed to update submit", err)
+					return err
+				}
+			}
+			break
+		}
+		if err != nil {
+			w.logger.Error("failed to receive benchmark response", err)
+			return err
+		}
+		w.logger.Info("received benchmark response", slog.Any("resp", resp))
+
+		eg.Go(func() error {
+			resp := resp
+
+			mu.Lock()
+			if resp.Ok {
+				score += int(resp.RequestsPerSecond)
+			}
+			mu.Unlock()
+
+			var errorMessage string
+			if resp.ErrorMessage != nil {
+				errorMessage = *resp.ErrorMessage
+			}
+			if _, err := w.entClient.TaskResult.Create().
+				SetRequestPerSec(int(resp.RequestsPerSecond)).
+				SetURL(resp.Task.Request.Url).
+				SetMethod(resp.Task.Request.Method.String()).
+				SetErrorMessage(errorMessage).
+				SetRequestContentType(resp.Task.Request.ContentType).
+				SetRequestBody(resp.Task.Request.Body).
+				SetThreadNum(int(resp.Task.ThreadNum)).
+				SetAttemptCount(int(resp.Task.AttemptCount)).
+				SetStatus(resp.Status.String()).
+				SetCreatedAt(timejst.Now()).
+				SetSubmitsID(task.SubmitID).
+				Save(ctx); err != nil {
+				w.logger.Error("failed to save task result", err)
+				return err
+			}
+			return nil
+		})
+	}
+	if err := eg.Wait(); err != nil {
+		return err
+	}
+
+	now := timejst.Now()
+	if _, err := w.entClient.Submit.
+		UpdateOneID(task.SubmitID).
+		SetCompletedAt(now).
+		SetUpdatedAt(now).
+		SetScore(score).
+		SetStatus(backendpb.Status_SUCCESS.String()).
+		Save(ctx); err != nil {
+		w.logger.Error("failed to update submit", err)
+		return err
+	}
+
+	group, err := w.entClient.Group.Get(ctx, task.GroupID)
+	if err != nil {
+		w.logger.Error("failed to get group", err)
+		return err
+	}
+	if group.Score < score {
+		if _, err := w.entClient.Group.
+			UpdateOneID(group.ID).
+			SetScore(score).
+			SetUpdatedAt(now).
+			Save(ctx); err != nil {
+			w.logger.Error("failed to update group", err)
+			return err
 		}
 	}
+	return nil
 }
