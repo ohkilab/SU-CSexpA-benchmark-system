@@ -150,6 +150,7 @@ func toPbSubmit(submit *ent.Submit) *backendpb.Submit {
 		Year:    int32(submit.Year),
 		Score:   int32(submit.Score),
 		// Language: submit.Language,
+		TagCount:     int32(submit.TaskNum),
 		ErrorMessage: &submit.Message,
 		SubmitedAt:   timestamppb.New(submit.SubmitedAt),
 		CompletedAt:  timestamppb.New(submit.CompletedAt),
