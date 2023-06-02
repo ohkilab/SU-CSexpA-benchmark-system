@@ -8,6 +8,7 @@ import (
 
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/repository/ent"
+	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/repository/ent/contest"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/repository/ent/group"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/repository/ent/migrate"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/core/timejst"
@@ -57,6 +58,7 @@ func main() {
 		SetEndAt(time.Date(2023, time.December, 31, 23, 59, 59, 0, time.UTC)).
 		SetSubmitLimit(9999).
 		SetYear(2023).
+		SetTagSelectionLogic(contest.TagSelectionLogicAuto).
 		SetCreatedAt(timejst.Now()).
 		Save(ctx)
 	if err != nil {
