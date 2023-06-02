@@ -43,7 +43,7 @@ func validate2023(uri *url.URL, b []byte) error {
 		left, _ := time.Parse("2006-01-02 15:04:05", resp.Results[i].Date)
 		right, _ := time.Parse("2006-01-02 15:04:05", resp.Results[i+1].Date)
 		// left, right := resp.Geotags[i].Date, resp.Geotags[i+1].Date
-		if left.After(right) {
+		if !left.After(right) {
 			return errors.New("Geotags: the order of Geotags must be desc by date")
 		}
 	}
