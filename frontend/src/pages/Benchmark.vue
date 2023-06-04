@@ -53,6 +53,7 @@ const benchmark = () => {
       errorMsg.value = message.submit?.errorMessage ?? ''
       state.lastResult = message.submit?.score ?? 0
       state.current = message.submit?.taskResults.length ?? -1
+      state.size = message.submit?.tagCount ?? 0
     }
 
     handleStopBenchmark()
@@ -135,9 +136,9 @@ const filteredTags = computed(() => tags.value.slice(state.current - 2, state.cu
 
         <div class="flex flex-wrap gap-5 max-w-[600px] justify-center">
           <div
-            v-for="(t, i) in tags"
+            v-for="(t, i) in state.size"
             :key="i"
-              class="transition-all ease-out duration-200 w-32 p-3 text-center bg-gray-700 rounded shadow-md shadow-black"
+              class="transition-all ease-out duration-200 w-20 p-3 text-center bg-gray-700 rounded shadow-md shadow-black"
               :class="state.current > i ? 'bg-green-700' :
                       state.current == i ? 'bg-gray-700' :
                       'opacity-70'
