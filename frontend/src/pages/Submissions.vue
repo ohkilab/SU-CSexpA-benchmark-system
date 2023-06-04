@@ -41,27 +41,26 @@ onMounted(() => {
 <template>
   <!-- TODO: show "no submissions when server returns no submissions" -->
   <table v-if="submits.length > 0" class="table-auto">
-    <thead>
+    <thead class="bg-gray-700">
       <tr>
-        <th class="border border-teal-800 p-2">提出ID</th>
-        <th class="border border-teal-800">提出日時</th>
-        <th class="border border-teal-800 px-2">グループID</th>
-        <th class="border border-teal-800">得点</th>
-        <th class="border border-teal-800">結果</th>
+        <th class="px-2 py-3">提出ID</th>
+        <th class="">提出日時</th>
+        <th class="px-2">グループID</th>
+        <th class="">得点</th>
+        <th class="">結果</th>
       </tr>
     </thead>
     <tbody>
-      <tr v-for="(s, idx) in submits" key="idx">
-       <td class="border border-teal-800 w-20 text-center">{{s.id}}</td>
-       <td class="border border-teal-800 w-60 text-center">{{formatDate(Number(s.submitedAt?.seconds))}}</td>
-       <td class="border border-teal-800 w-30 text-center">{{s.groupId}}</td>
-       <td class="border border-teal-800 w-20 text-center px-4">
+      <tr v-for="(s, idx) in submits" class="bg-gray-900 border-b-2 border-gray-800 hover:bg-gray-700 cursor-pointer transition" key="idx">
+       <td class="w-20 text-center">{{s.id}}</td>
+       <td class="w-60 text-center">{{formatDate(Number(s.submitedAt?.seconds))}}</td>
+       <td class="w-30 text-center">{{s.groupId}}</td>
+       <td class="w-20 text-center px-4">
          <div class="w-20 bg-gray-500 rounded text-center justify-center">
           {{s.score}}
           </div>
        </td>
-       <td class="border border-teal-800 p-2 transition-colors text-center">
-          
+       <td class="py-2 transition-colors text-center">
           <div v-if="s.status == Status.WAITING" class="p-1 w-40 bg-teal-500 rounded">Waiting</div>
           <div v-else-if="s.status == Status.IN_PROGRESS" class="p-1 w-40 bg-teal-500 rounded">In Progress</div>
           <div v-else-if="s.status == Status.SUCCESS" class="p-1 w-40 bg-blue-600 rounded">Success</div>
