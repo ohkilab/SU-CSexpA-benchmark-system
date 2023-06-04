@@ -10,7 +10,7 @@ import { BackendServiceClient } from 'proto-gen-web/src/backend/services.client'
 import { HealthcheckServiceClient } from 'proto-gen-web/src/backend/services.client'
 
 import type { GetRankingRequest, GetSubmitRequest, GetSubmitResponse  } from 'proto-gen-web/src/backend/messages'
-import type { Group, TaskResult } from 'proto-gen-web/src/backend/resources'
+import { Group, Status, TaskResult } from 'proto-gen-web/src/backend/resources'
 import { Role } from 'proto-gen-web/src/backend/resources'
 
 const state:IState = useStateStore()
@@ -32,6 +32,7 @@ const urlList: Ref<string[]> = ref([])
 const benchmark = () => {
 
   let opt = {meta: {'authorization' : 'Bearer ' + state.token}}
+  taskResults.value = []
 
   backend.postSubmit({
     url: url.value, //'http://host.docker.internal:3001',
@@ -47,7 +48,7 @@ const benchmark = () => {
       console.log("got a message", message)
       // status.current++
 
-      taskResults.value = message.submit?.taskResults ?? []
+      taskResults.value = Array.from(Array(message.submit?.tagCount)).map((el, i) => message.submit?.taskResults[i] ?? {} as TaskResult)
       errorMsg.value = message.submit?.errorMessage ?? ''
       state.lastResult = message.submit?.score ?? 0
       state.current = message.submit?.taskResults.length ?? -1
@@ -76,6 +77,8 @@ onMounted(() => {
 
   url.value = localStorage.getItem('currentUrl') ?? ''
   urlList.value = JSON.parse(localStorage.getItem('urlList') ?? '[]')
+
+  BigInt.prototype.toJSON = function() {return this.toString()}
 })
 
 watch(url, url => {
@@ -89,7 +92,27 @@ watch(urlList, urlList => {
 </script>
 <template>
   <div class="flex flex-col mt-auto w-full items-center">
-    <div v-if="!state.benchmarking && state.lastResult != 0" class="border flex flex-col border-gray-500 text-center p-5 rounded mb-5 w-max">
+    <fieldset v-if="state.debug" class="border border-red-500 p-2">
+      <legend>Debug</legend>
+      <pre>{{taskResults.length}}</pre>
+
+      <div v-if="state.debug" class="flex flex-col gap-2 w-full">
+        <div class="p-1 w-40 bg-teal-500 rounded">Waiting</div>
+        <div class="p-1 w-40 bg-teal-500 rounded">In Progress</div>
+        <div class="p-1 w-40 bg-blue-600 rounded">Success</div>
+        <div class="p-1 w-40 bg-red-600 rounded">Connection Failed</div>
+        <div class="p-1 w-40 bg-orange-500 rounded">Validation Error</div>
+        <div class="p-1 w-40 bg-orange-500 rounded">Internal Error</div>
+        {{Status}}
+        <div class="p-1 w-40 bg-teal-500 rounded">teal-500</div>
+        <div class="p-1 w-40 bg-teal-500 rounded">teal-500</div>
+        <div class="p-1 w-40 bg-blue-600 rounded">blue-600</div>
+        <div class="p-1 w-40 bg-red-600 rounded">red-600</div>
+        <div class="p-1 w-40 bg-orange-500 rounded">orange-500</div>
+        <div class="p-1 w-40 bg-orange-500 rounded">orange-500</div>
+      </div>
+    </fieldset>
+    <div v-if="!state.benchmarking" class="border flex flex-col border-gray-500 text-center p-5 rounded mb-5 w-max">
       <div class="mb-2">最新結果</div>
       <div class="flex self-center mb-5">
         <div class="rounded bg-gray-500 px-2">{{state.lastResult}}</div>
@@ -99,7 +122,15 @@ watch(urlList, urlList => {
         <div
           v-for="(t, i) in taskResults"
           :key="i"
-            class="w-32 p-3 bg-gray-700 rounded shadow-md shadow-black"
+          class="w-32 p-3 bg-gray-700 rounded shadow-md shadow-black"
+          :class="
+            t.status == Status.WAITING ? 'opacity-70' :
+            t.status == Status.IN_PROGRESS ? 'bg-teal-500' :
+            t.status == Status.SUCCESS ? 'bg-blue-600' :
+            t.status == Status.CONNECTION_FAILED ? 'bg-red-500' :
+            t.status == Status.VALIDATION_ERROR ? 'bg-orange-500' :
+            t.status == Status.INTERNAL_ERROR ? 'bg-orange-500' : ''
+          "
         >
           <div class="flex justify-center gap-1">
             {{ i+1 }}:
@@ -120,16 +151,25 @@ watch(urlList, urlList => {
 
         <div class="flex flex-wrap gap-5 max-w-[600px] justify-center">
           <div
-            v-for="(t, i) in state.size"
+            v-for="(t, i) in taskResults"
             :key="i"
               class="transition-all ease-out duration-200 w-20 p-3 text-center bg-gray-700 rounded shadow-md shadow-black"
-              :class="state.current > i ? 'bg-green-700' :
-                      state.current == i ? 'bg-gray-700' :
-                      'opacity-70'
-                     "
+              :class="
+                t.status == Status.WAITING ? 'opacity-70' :
+                t.status == Status.IN_PROGRESS ? 'bg-teal-500' :
+                t.status == Status.SUCCESS ? 'bg-blue-600' :
+                t.status == Status.CONNECTION_FAILED ? 'bg-red-500' :
+                t.status == Status.VALIDATION_ERROR ? 'bg-orange-500' :
+                t.status == Status.INTERNAL_ERROR ? 'bg-orange-500' : 'opacity-70'
+              "
           >
-            <font-awesome-icon v-if="state.current > i" :icon="['fas', 'check']"></font-awesome-icon>
-            <font-awesome-icon v-else-if="state.current == i" class="animate-spin" :icon="['fas', 'spinner']"></font-awesome-icon>
+
+            <font-awesome-icon v-if="state.current == i" class="animate-spin" :icon="['fas', 'spinner']"></font-awesome-icon>
+            <font-awesome-icon v-else-if="t.status == Status.WAITING" :icon="['fas', 'minus']"></font-awesome-icon>
+            <font-awesome-icon v-else-if="t.status == Status.IN_PROGRESS" :icon="['fas', 'spinner']"></font-awesome-icon>
+            <font-awesome-icon v-else-if="t.status == Status.SUCCESS" :icon="['fas', 'check']"></font-awesome-icon>
+            <font-awesome-icon v-else-if="t.status == Status.CONNECTION_FAILED" :icon="['fas', 'x']"></font-awesome-icon>
+            <font-awesome-icon v-else-if="t.status == Status.VALIDATION_ERROR" :icon="['fas', 'exclamation']"></font-awesome-icon>
             <font-awesome-icon v-else :icon="['fas', 'minus']"></font-awesome-icon>
             {{ i+1 }}
           </div>

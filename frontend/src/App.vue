@@ -29,6 +29,7 @@ const errMsg = ref('')
 
 const handleLogin = (id:string, password:string) => {
   backend.postLogin({ id, password }).then(value => {
+    console.log(value)
     token.value = value.response.token
     group.value = id
     loggedIn.value = true
