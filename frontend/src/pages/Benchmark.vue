@@ -48,7 +48,7 @@ const benchmark = () => {
       console.log("got a message", message)
       // status.current++
 
-      taskResults.value = Array.from(Array(message.submit?.tagCount)).map((el, i) => message.submit?.taskResults[i] ?? {} as TaskResult)
+      taskResults.value = Array.from(Array(message.submit?.tagCount)).map((_, i) => message.submit?.taskResults[i] ?? {} as TaskResult)
       errorMsg.value = message.submit?.errorMessage ?? ''
       state.lastResult = message.submit?.score ?? 0
       state.current = message.submit?.taskResults.length ?? -1
@@ -78,7 +78,8 @@ onMounted(() => {
   url.value = localStorage.getItem('currentUrl') ?? ''
   urlList.value = JSON.parse(localStorage.getItem('urlList') ?? '[]')
 
-  BigInt.prototype.toJSON = function() {return this.toString()}
+  // fix BigInt problem
+  if(import.meta.env.DEV) BigInt.prototype.toJSON = function() {return this.toString()}
 })
 
 watch(url, url => {
@@ -112,17 +113,17 @@ watch(urlList, urlList => {
         <div class="p-1 w-40 bg-orange-500 rounded">orange-500</div>
       </div>
     </fieldset>
-    <div v-if="!state.benchmarking" class="border flex flex-col border-gray-500 text-center p-5 rounded mb-5 w-max">
+    <div v-if="!state.benchmarking" class="border flex flex-col border-gray-500 p-5 text-center rounded mb-5">
       <div class="mb-2">最新結果</div>
       <div class="flex self-center mb-5">
         <div class="rounded bg-gray-500 px-2">{{state.lastResult}}</div>
         &nbsp;req/s
       </div>
-      <div class="flex flex-wrap gap-5 max-w-[600px] items-center justify-center">
+      <div class="flex flex-wrap gap-5 max-w-[1000px] items-center justify-center">
         <div
           v-for="(t, i) in taskResults"
           :key="i"
-          class="w-32 p-3 bg-gray-700 rounded shadow-md shadow-black"
+          class="flex gap-1 w-40 p-3 bg-gray-700 justify-center items-center rounded shadow-md shadow-black"
           :class="
             t.status == Status.WAITING ? 'opacity-70' :
             t.status == Status.IN_PROGRESS ? 'bg-teal-500' :
@@ -132,11 +133,15 @@ watch(urlList, urlList => {
             t.status == Status.INTERNAL_ERROR ? 'bg-orange-500' : ''
           "
         >
-          <div class="flex justify-center gap-1">
+            <font-awesome-icon v-if="t.status == Status.IN_PROGRESS" :icon="['fas', 'spinner']"></font-awesome-icon>
+            <font-awesome-icon v-else-if="t.status == Status.WAITING" :icon="['fas', 'minus']"></font-awesome-icon>
+            <font-awesome-icon v-else-if="t.status == Status.SUCCESS" :icon="['fas', 'check']"></font-awesome-icon>
+            <font-awesome-icon v-else-if="t.status == Status.CONNECTION_FAILED" :icon="['fas', 'x']"></font-awesome-icon>
+            <font-awesome-icon v-else-if="t.status == Status.VALIDATION_ERROR" :icon="['fas', 'exclamation']"></font-awesome-icon>
+            <font-awesome-icon v-else :icon="['fas', 'minus']"></font-awesome-icon>
             {{ i+1 }}:
             <div class="rounded bg-gray-500 px-2">{{t.requestPerSec}}</div>
             req/s
-          </div>
         </div>
       </div>
     </div>
@@ -149,7 +154,7 @@ watch(urlList, urlList => {
           <font-awesome-icon class="animate-spin" :icon="['fas', 'spinner']" />
         </div>
 
-        <div class="flex flex-wrap gap-5 max-w-[600px] justify-center">
+        <div class="flex flex-wrap gap-5 max-w-[1000px] justify-center">
           <div
             v-for="(t, i) in taskResults"
             :key="i"

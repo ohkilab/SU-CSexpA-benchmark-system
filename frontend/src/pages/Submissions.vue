@@ -3,8 +3,8 @@ import { onMounted, Ref, ref } from 'vue';
 import { GrpcWebFetchTransport } from '@protobuf-ts/grpcweb-transport';
 import { BackendServiceClient } from 'proto-gen-web/src/backend/services.client';
 import { IState, useStateStore } from '../stores/state';
-import { Status, Submit } from 'proto-gen-web/src/backend/resources';
-import { ListSubmitsRequest } from 'proto-gen-web/src/backend/messages';
+import { Status, Submit, TaskResult } from 'proto-gen-web/src/backend/resources';
+import { GetSubmitRequest, ListSubmitsRequest } from 'proto-gen-web/src/backend/messages';
 
 const backend = new BackendServiceClient(
   new GrpcWebFetchTransport({
@@ -16,12 +16,27 @@ const state:IState = useStateStore()
 
 const submits:Ref<Submit[]> = ref([])
 
+const taskResults:Ref<TaskResult[]> = ref([])
+
 const formatDate = (timestamp: number):string => {
   const dateObject: Date = new Date(timestamp * 1000)
   const date: string = dateObject.toLocaleDateString()
   const time: string = dateObject.toLocaleTimeString()
   
   return `${date} ${time}`
+}
+
+const handleModal = async (submitId: number) => {
+    const getSubmitRequest:GetSubmitRequest = {
+      submitId
+    }
+
+    const opt = {meta: {'authorization' : 'Bearer ' + state.token}}
+    const call = backend.getSubmit(getSubmitRequest, opt)
+    for await (let message of call.responses) {
+      console.log("got a message", message)
+      taskResults.value = message.submit?.taskResults ?? []
+    }
 }
 
 onMounted(() => {
@@ -33,14 +48,48 @@ onMounted(() => {
   }
 
   backend.listSubmits(listSubmitsRequest, opt)
-      .then(res => {
-        console.log(res.response.submits)
-        submits.value = res.response.submits
-      })
+    .then(res => {
+      console.log(res.response.submits)
+      submits.value = res.response.submits
+    })
+
 })
 </script>
 <template>
-  <!-- TODO: show "no submissions when server returns no submissions" -->
+  <!-- TODO: show "no submissions" when server returns no submissions -->
+  <div v-if="taskResults.length > 0" @click="taskResults = []" class="fixed flex justify-center items-center inset-0 bg-black bg-opacity-50 overflow-y-auto h-full w-full">
+        <div class="bg-gray-700 w-5/6 h-5/6 rounded overflow-y-auto mx-auto p-10 gap-4 flex flex-col">
+          <div
+            v-for="(t, i) in taskResults"
+            :key="i"
+            class="flex gap-2 p-3 bg-gray-700 rounded shadow-md shadow-black items-center justify-between"
+            :class="
+              t.status == Status.WAITING ? 'opacity-70' :
+              t.status == Status.IN_PROGRESS ? 'bg-teal-500' :
+              t.status == Status.SUCCESS ? 'bg-blue-600' :
+              t.status == Status.CONNECTION_FAILED ? 'bg-red-500' :
+              t.status == Status.VALIDATION_ERROR ? 'bg-orange-500' :
+              t.status == Status.INTERNAL_ERROR ? 'bg-orange-500' : ''
+            "
+          >
+            <div class="flex justify-center items-center gap-1">
+              <font-awesome-icon v-if="t.status == Status.IN_PROGRESS" :icon="['fas', 'spinner']"></font-awesome-icon>
+              <font-awesome-icon v-else-if="t.status == Status.WAITING" :icon="['fas', 'minus']"></font-awesome-icon>
+              <font-awesome-icon v-else-if="t.status == Status.SUCCESS" :icon="['fas', 'check']"></font-awesome-icon>
+              <font-awesome-icon v-else-if="t.status == Status.CONNECTION_FAILED" :icon="['fas', 'x']"></font-awesome-icon>
+              <font-awesome-icon v-else-if="t.status == Status.VALIDATION_ERROR" :icon="['fas', 'exclamation']"></font-awesome-icon>
+              <font-awesome-icon v-else :icon="['fas', 'minus']"></font-awesome-icon>
+              タグ {{ i+1 }}:
+              <div class="rounded bg-gray-500 px-2">{{t.requestPerSec}}</div>
+              req/s
+            </div>
+            <div>エラー: {{t.errorMessage}}</div>
+          </div>
+        </div>
+      </div>
+  <div class="">
+    {{}}
+  </div>
   <table v-if="submits.length > 0" class="table-auto">
     <thead class="bg-gray-700">
       <tr>
@@ -52,7 +101,11 @@ onMounted(() => {
       </tr>
     </thead>
     <tbody>
-      <tr v-for="(s, idx) in submits" class="bg-gray-900 border-b-2 border-gray-800 hover:bg-gray-700 cursor-pointer transition" key="idx">
+      <tr
+        v-for="(s, idx) in submits" class="bg-gray-900 border-b-2 border-gray-800 hover:bg-gray-700 cursor-pointer transition" 
+        @click.prevent="handleModal(s.id)"
+        key="idx"
+      >
        <td class="w-20 text-center">{{s.id}}</td>
        <td class="w-60 text-center">{{formatDate(Number(s.submitedAt?.seconds))}}</td>
        <td class="w-30 text-center">{{s.groupId}}</td>

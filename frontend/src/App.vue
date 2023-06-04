@@ -100,6 +100,7 @@ onMounted(() => {
     <fieldset v-if="state.debug" class="mx-8 border border-red-500 p-2">
       <legend>Debug Panel</legend>
       <pre class="break-all whitespace-pre-wrap">state: {{JSON.stringify(state, null, 4)}}</pre>
+      <button class="bg-green-500 p-2" @click="state.benchmarking = !state.benchmarking">Toggle benchmarking</button>
     </fieldset>
     <div v-if="loggedIn && !state.benchmarking" class="flex gap-5 text-lg">
         <!-- TODO: fix active class -->
