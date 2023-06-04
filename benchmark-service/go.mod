@@ -7,6 +7,7 @@ replace github.com/ohkilab/SU-CSexpA-benchmark-system/proto-gen/go => ../proto-g
 require (
 	github.com/ohkilab/SU-CSexpA-benchmark-system/proto-gen/go v0.0.0-00010101000000-000000000000
 	github.com/stretchr/testify v1.8.2
+	golang.org/x/exp v0.0.0-20230522175609-2e198f4a06a1
 	golang.org/x/sync v0.2.0
 	google.golang.org/grpc v1.54.0
 )

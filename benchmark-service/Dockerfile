@@ -8,5 +8,6 @@ FROM ubuntu:22.04
 
 WORKDIR /app
 COPY --from=builder /app/benchmark-server .
+COPY --from=builder /app/data ./data
 
 ENTRYPOINT [ "/app/benchmark-server" ]

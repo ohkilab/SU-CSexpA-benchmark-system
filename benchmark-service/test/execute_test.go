@@ -11,7 +11,9 @@ import (
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/benchmark-service/benchmark"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/benchmark-service/service"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/benchmark-service/test/utils"
+	"github.com/ohkilab/SU-CSexpA-benchmark-system/benchmark-service/validation"
 	pb "github.com/ohkilab/SU-CSexpA-benchmark-system/proto-gen/go/benchmark"
+	"golang.org/x/exp/slog"
 	"google.golang.org/grpc"
 )
 
@@ -24,8 +26,10 @@ func Test_Execute(t *testing.T) {
 	}
 	defer lsnr.Close()
 
+	validatorMap := validation.NewValidator(slog.Default())
+
 	grpcServer := grpc.NewServer()
-	grpcServer.RegisterService(&pb.BenchmarkService_ServiceDesc, service.New(benchmark.NewClient()))
+	grpcServer.RegisterService(&pb.BenchmarkService_ServiceDesc, service.New(benchmark.NewClient(), validatorMap))
 	go func() {
 		if err := grpcServer.Serve(lsnr); err != nil {
 			panic(err)

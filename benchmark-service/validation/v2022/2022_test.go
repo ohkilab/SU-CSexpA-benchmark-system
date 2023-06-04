@@ -1,4 +1,4 @@
-package validation
+package v2022
 
 import (
 	"net/url"
@@ -614,8 +614,8 @@ const testdata2022 = `
   ]
 }`
 
-func Test_validate2022(t *testing.T) {
+func Test_validate(t *testing.T) {
 	uri, _ := url.ParseRequestURI("http://localhost:8080/program?tag=陸上自衛隊")
-	err := validate2022(uri, []byte(testdata2022))
+	err := Validate(uri, []byte(testdata2022))
 	assert.NoError(t, err)
 }

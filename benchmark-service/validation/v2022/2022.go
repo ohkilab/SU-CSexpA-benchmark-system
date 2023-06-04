@@ -1,4 +1,4 @@
-package validation
+package v2022
 
 import (
 	"encoding/json"
@@ -9,7 +9,7 @@ import (
 )
 
 // https://ohkilab.github.io/SU-CSexpA/content/part3/part3_final_assignment/final_assignment_details.html#geotag-csv
-type Response2022 struct {
+type Response struct {
 	Tag     string `json:"tag"`
 	Geotags []struct {
 		Lat  float64 `json:"lat"`
@@ -19,8 +19,8 @@ type Response2022 struct {
 	} `json:"geotags"`
 }
 
-func validate2022(uri *url.URL, b []byte) error {
-	var resp Response2022
+func Validate(uri *url.URL, b []byte) error {
+	var resp Response
 	if err := json.Unmarshal(b, &resp); err != nil {
 		log.Println(err)
 		return errors.New("json: invalid json format")

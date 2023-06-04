@@ -2,13 +2,13 @@ package service
 
 import (
 	"errors"
+	"fmt"
 	"log"
 	"net/url"
 	"syscall"
 	"time"
 
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/benchmark-service/benchmark"
-	"github.com/ohkilab/SU-CSexpA-benchmark-system/benchmark-service/validation"
 	backendpb "github.com/ohkilab/SU-CSexpA-benchmark-system/proto-gen/go/backend"
 	pb "github.com/ohkilab/SU-CSexpA-benchmark-system/proto-gen/go/benchmark"
 	"google.golang.org/grpc/codes"
@@ -23,9 +23,9 @@ func (s *service) Execute(req *pb.ExecuteRequest, stream pb.BenchmarkService_Exe
 		return status.Error(codes.InvalidArgument, "groupID must be 100 or less")
 	}
 
-	validateFunc, err := validation.Detect(req.ContestSlug)
-	if err != nil {
-		return err
+	validator, ok := s.validatorMap[req.ContestSlug]
+	if !ok {
+		return status.Error(codes.InvalidArgument, fmt.Sprintf("the validator is not supported(slug: %s)", req.ContestSlug))
 	}
 
 	for _, task := range req.Tasks {
@@ -58,7 +58,7 @@ func (s *service) Execute(req *pb.ExecuteRequest, stream pb.BenchmarkService_Exe
 
 		timeElapsed := time.Duration(0)
 		for _, result := range results {
-			if err := validateFunc(uri, result.Body); err != nil {
+			if err := validator.Validate(uri, result.Body); err != nil {
 				errMsg := err.Error()
 				validationErr := &errMsg
 				if err := stream.Send(&pb.ExecuteResponse{
