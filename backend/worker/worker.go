@@ -12,6 +12,7 @@ import (
 	backendpb "github.com/ohkilab/SU-CSexpA-benchmark-system/proto-gen/go/backend"
 	benchmarkpb "github.com/ohkilab/SU-CSexpA-benchmark-system/proto-gen/go/benchmark"
 	"github.com/samber/lo"
+	"golang.org/x/exp/slices"
 	"golang.org/x/exp/slog"
 	"golang.org/x/net/context"
 	"golang.org/x/sync/errgroup"
@@ -91,7 +92,7 @@ func (w *worker) runBenchmarkTask(task *Task) error {
 	}
 
 	eg := &errgroup.Group{}
-	score := 0
+	scores := make([]int, 0, len(task.Req.Tasks))
 	status := backend.Status_SUCCESS
 	mu := sync.Mutex{}
 	for {
@@ -132,14 +133,13 @@ func (w *worker) runBenchmarkTask(task *Task) error {
 
 			mu.Lock()
 			if resp.Ok {
-				score += int(resp.RequestsPerSecond)
+				scores = append(scores, int(resp.RequestsPerSecond))
 			}
-			mu.Unlock()
-
 			if needsUpdateStatus(status, resp.Status) {
 				w.logger.Info("update status", slog.Any("current status", status), slog.Any("next status", resp.Status))
 				status = resp.Status
 			}
+			mu.Unlock()
 
 			var errorMessage string
 			if resp.ErrorMessage != nil {
@@ -166,6 +166,14 @@ func (w *worker) runBenchmarkTask(task *Task) error {
 	}
 	if err := eg.Wait(); err != nil {
 		return err
+	}
+
+	score := 0
+	if status == backend.Status_SUCCESS {
+		slices.SortFunc(scores, func(l, r int) bool {
+			return l > r
+		})
+		score = lo.Sum(scores[:len(task.Req.Tasks)-10])
 	}
 
 	now := timejst.Now()
