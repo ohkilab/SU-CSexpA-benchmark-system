@@ -16,7 +16,21 @@ const state:IState = useStateStore()
 
 const submits:Ref<Submit[]> = ref([])
 
+const modalItem:Ref<Submit> = ref({
+  id: 0,
+  groupId: 0,
+  year: 0,
+  score: 0,
+  language: 0,
+  taskResults: [],
+  tagCount: 0,
+  status: 0,
+  errorMessage: ''
+})
+
 const taskResults:Ref<TaskResult[]> = ref([])
+
+const modalSubmitId:Ref<number> = ref(0)
 
 const formatDate = (timestamp: number):string => {
   const dateObject: Date = new Date(timestamp * 1000)
@@ -26,17 +40,21 @@ const formatDate = (timestamp: number):string => {
   return `${date} ${time}`
 }
 
-const handleModal = async (submitId: number) => {
+const handleModal = async (submit: Submit) => {
+    // get taskResults
     const getSubmitRequest:GetSubmitRequest = {
-      submitId
+      submitId: submit.id
     }
 
     const opt = {meta: {'authorization' : 'Bearer ' + state.token}}
     const call = backend.getSubmit(getSubmitRequest, opt)
     for await (let message of call.responses) {
       console.log("got a message", message)
-      taskResults.value = message.submit?.taskResults ?? []
+      submit.taskResults = message.submit?.taskResults ?? []
     }
+
+    // set modal item
+    modalItem.value = submit
 }
 
 onMounted(() => {
@@ -57,10 +75,16 @@ onMounted(() => {
 </script>
 <template>
   <!-- TODO: show "no submissions" when server returns no submissions -->
-  <div v-if="taskResults.length > 0" @click="taskResults = []" class="fixed flex justify-center items-center inset-0 bg-black bg-opacity-50 overflow-y-auto h-full w-full">
+
+  <!-- modal -->
+  <div v-if="modalItem.taskResults.length > 0" @click="modalItem.taskResults = []" class="fixed flex justify-center items-center inset-0 bg-black bg-opacity-50 overflow-y-auto h-full w-full">
         <div class="bg-gray-700 w-5/6 h-5/6 rounded overflow-y-auto mx-auto p-10 gap-4 flex flex-col">
+          <div class="text-2xl">提出ID: {{modalItem.id}} 結果詳細</div>
+          <div class="text-md text-gray-300">提出日時: {{formatDate(Number(modalItem.submitedAt?.seconds))}}</div>
+          <div class="text-md text-gray-300">グループID: {{modalItem.groupId}}</div>
+          <div class="w-full h-full bg-gray-900 rounded p-8 overflow-y-auto flex flex-col gap-2">
           <div
-            v-for="(t, i) in taskResults"
+            v-for="(t, i) in modalItem.taskResults"
             :key="i"
             class="flex gap-2 p-3 bg-gray-700 rounded shadow-md shadow-black items-center justify-between"
             :class="
@@ -72,7 +96,7 @@ onMounted(() => {
               t.status == Status.INTERNAL_ERROR ? 'bg-orange-500' : ''
             "
           >
-            <div class="flex justify-center items-center gap-1">
+            <div class="flex justify-center items-center gap-2">
               <font-awesome-icon v-if="t.status == Status.IN_PROGRESS" :icon="['fas', 'spinner']"></font-awesome-icon>
               <font-awesome-icon v-else-if="t.status == Status.WAITING" :icon="['fas', 'minus']"></font-awesome-icon>
               <font-awesome-icon v-else-if="t.status == Status.SUCCESS" :icon="['fas', 'check']"></font-awesome-icon>
@@ -84,6 +108,7 @@ onMounted(() => {
               req/s
             </div>
             <div>エラー: {{t.errorMessage}}</div>
+          </div>
           </div>
         </div>
       </div>
@@ -103,7 +128,7 @@ onMounted(() => {
     <tbody>
       <tr
         v-for="(s, idx) in submits" class="bg-gray-900 border-b-2 border-gray-800 hover:bg-gray-700 cursor-pointer transition" 
-        @click.prevent="handleModal(s.id)"
+        @click.prevent="handleModal(s)"
         key="idx"
       >
        <td class="w-20 text-center">{{s.id}}</td>
