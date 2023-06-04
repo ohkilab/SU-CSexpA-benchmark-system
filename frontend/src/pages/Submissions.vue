@@ -26,9 +26,10 @@ const formatDate = (timestamp: number):string => {
 
 onMounted(() => {
   const opt = {meta: {'authorization' : 'Bearer ' + state.token}}
+  // TODO: get own submissions, filter functionality
   const listSubmitsRequest:ListSubmitsRequest = {
     // groupId: '2',
-    // status: Status.SUCCESS
+    // status: Status.VALIDATION_ERROR
   }
 
   backend.listSubmits(listSubmitsRequest, opt)
@@ -66,7 +67,7 @@ onMounted(() => {
           <div v-else-if="s.status == Status.SUCCESS" class="p-1 w-40 bg-blue-600 rounded">Success</div>
           <div v-else-if="s.status == Status.CONNECTION_FAILED" class="p-1 w-40 bg-red-600 rounded">Connection Failed</div>
           <div v-else-if="s.status == Status.VALIDATION_ERROR" class="p-1 w-40 bg-orange-500 rounded">Validation Error</div>
-          <div v-else-if="s.status == 5" class="p-1 w-40 bg-orange-500 rounded">Internal Error</div>
+          <div v-else-if="s.status == Status.INTERNAL_ERROR" class="p-1 w-40 bg-orange-500 rounded">Internal Error</div>
           <div v-else class="p-1 w-40 bg-orange-500 rounded">Unknown Error</div>
        </td>
       </tr>
