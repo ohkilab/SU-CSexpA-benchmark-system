@@ -150,6 +150,7 @@ func toPbSubmit(submit *ent.Submit) *backendpb.Submit {
 		GroupId: int32(submit.Edges.Groups.ID),
 		Year:    int32(submit.Year),
 		Score:   int32(submit.Score),
+		Status:  backendpb.Status(backendpb.Status_value[submit.Status]),
 		// Language: submit.Language,
 		TagCount:     int32(submit.TaskNum),
 		ErrorMessage: &submit.Message,

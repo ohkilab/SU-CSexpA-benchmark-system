@@ -92,6 +92,7 @@ func (w *worker) runBenchmarkTask(task *Task) error {
 
 	eg := &errgroup.Group{}
 	score := 0
+	status := backend.Status_SUCCESS
 	mu := sync.Mutex{}
 	for {
 		resp, err := stream.Recv()
@@ -135,6 +136,11 @@ func (w *worker) runBenchmarkTask(task *Task) error {
 			}
 			mu.Unlock()
 
+			if needsUpdateStatus(status, resp.Status) {
+				w.logger.Info("update status", slog.Any("current status", status), slog.Any("next status", resp.Status))
+				status = resp.Status
+			}
+
 			var errorMessage string
 			if resp.ErrorMessage != nil {
 				errorMessage = *resp.ErrorMessage
@@ -168,7 +174,7 @@ func (w *worker) runBenchmarkTask(task *Task) error {
 		SetCompletedAt(now).
 		SetUpdatedAt(now).
 		SetScore(score).
-		SetStatus(backendpb.Status_SUCCESS.String()).
+		SetStatus(status.String()).
 		Save(ctx); err != nil {
 		w.logger.Error("failed to update submit", err)
 		return err
@@ -190,4 +196,16 @@ func (w *worker) runBenchmarkTask(task *Task) error {
 		}
 	}
 	return nil
+}
+
+func needsUpdateStatus(current, next backend.Status) bool {
+	priorityMap := map[backend.Status]int{
+		backend.Status_WAITING:           0,
+		backend.Status_IN_PROGRESS:       1,
+		backend.Status_CONNECTION_FAILED: 2,
+		backend.Status_SUCCESS:           3,
+		backend.Status_VALIDATION_ERROR:  4,
+		backend.Status_INTERNAL_ERROR:    5,
+	}
+	return priorityMap[current] < priorityMap[next]
 }
