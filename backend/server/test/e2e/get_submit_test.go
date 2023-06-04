@@ -6,11 +6,11 @@ import (
 	"testing"
 	"time"
 
-	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/repository/ent/contest"
-	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/repository/ent/group"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/api/grpc"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/core/auth"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/core/timejst"
+	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/repository/ent/contest"
+	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/repository/ent/group"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/test/utils"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/worker"
 	pb "github.com/ohkilab/SU-CSexpA-benchmark-system/proto-gen/go/backend"

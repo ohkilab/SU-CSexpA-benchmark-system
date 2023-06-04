@@ -4,10 +4,10 @@ import (
 	"context"
 
 	grpc_auth "github.com/grpc-ecosystem/go-grpc-middleware/v2/interceptors/auth"
-	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/repository/ent"
-	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/repository/ent/group"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/core/auth"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/core/timejst"
+	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/repository/ent"
+	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/repository/ent/group"
 	pb "github.com/ohkilab/SU-CSexpA-benchmark-system/proto-gen/go/backend"
 	"golang.org/x/crypto/bcrypt"
 	"golang.org/x/exp/slog"

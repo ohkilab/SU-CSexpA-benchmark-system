@@ -4,8 +4,8 @@ import (
 	"context"
 
 	"entgo.io/ent/dialect/sql"
-	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/repository/ent"
-	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/repository/ent/group"
+	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/repository/ent"
+	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/repository/ent/group"
 	pb "github.com/ohkilab/SU-CSexpA-benchmark-system/proto-gen/go/backend"
 	"github.com/samber/lo"
 	"golang.org/x/exp/slog"

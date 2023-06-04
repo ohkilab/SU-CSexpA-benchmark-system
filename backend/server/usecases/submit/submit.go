@@ -7,13 +7,13 @@ import (
 	"time"
 
 	"entgo.io/ent/dialect/sql"
-	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/repository/ent"
-	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/repository/ent/contest"
-	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/repository/ent/group"
-	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/repository/ent/submit"
-	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/repository/tag"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/api/grpc/interceptor"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/core/timejst"
+	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/repository/ent"
+	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/repository/ent/contest"
+	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/repository/ent/group"
+	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/repository/ent/submit"
+	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/repository/tag"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/worker"
 	backendpb "github.com/ohkilab/SU-CSexpA-benchmark-system/proto-gen/go/backend"
 	benchmarkpb "github.com/ohkilab/SU-CSexpA-benchmark-system/proto-gen/go/benchmark"
@@ -30,13 +30,14 @@ const (
 )
 
 type Interactor struct {
-	entClient *ent.Client
-	worker    worker.Worker
-	logger    *slog.Logger
+	entClient     *ent.Client
+	worker        worker.Worker
+	logger        *slog.Logger
+	tagRepository tag.Repository
 }
 
-func NewInteractor(entClient *ent.Client, worker worker.Worker, logger *slog.Logger) *Interactor {
-	return &Interactor{entClient, worker, logger}
+func NewInteractor(entClient *ent.Client, worker worker.Worker, logger *slog.Logger, tagRepository tag.Repository) *Interactor {
+	return &Interactor{entClient, worker, logger, tagRepository}
 }
 
 func (i *Interactor) PostSubmit(ctx context.Context, req *backendpb.PostSubmitRequest) (*backendpb.PostSubmitResponse, error) {
@@ -53,13 +54,13 @@ func (i *Interactor) PostSubmit(ctx context.Context, req *backendpb.PostSubmitRe
 	var tags []string
 	switch c.TagSelectionLogic {
 	case contest.TagSelectionLogicAuto:
-		tags, err = tag.GetRandomTags(c.ID, 50)
+		tags, err = i.tagRepository.GetRandomTags(c.ID, 50)
 		if err != nil {
 			i.logger.Error("failed to generate tags", err)
 			return nil, status.Error(codes.Internal, "failed to generate tags")
 		}
 	case contest.TagSelectionLogicManual:
-		tags, err = tag.GetRandomTags(c.ID, 1) // TODO: fix it
+		tags, err = i.tagRepository.GetRandomTags(c.ID, 1) // TODO: fix it
 		if err != nil {
 			i.logger.Error("failed to generate tags", err)
 			return nil, status.Error(codes.Internal, "failed to generate tags")

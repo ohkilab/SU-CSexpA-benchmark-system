@@ -3,8 +3,8 @@ package contest
 import (
 	"context"
 
-	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/repository/ent"
-	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/repository/ent/contest"
+	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/repository/ent"
+	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/repository/ent/contest"
 	pb "github.com/ohkilab/SU-CSexpA-benchmark-system/proto-gen/go/backend"
 	"github.com/samber/lo"
 	"golang.org/x/exp/slog"

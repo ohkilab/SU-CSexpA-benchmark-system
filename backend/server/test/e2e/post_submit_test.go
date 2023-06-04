@@ -6,11 +6,12 @@ import (
 	"time"
 
 	"github.com/golang/mock/gomock"
-	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/repository/ent/contest"
-	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/repository/ent/group"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/api/grpc"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/core/auth"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/core/timejst"
+	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/repository/ent/contest"
+	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/repository/ent/group"
+	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/repository/tag"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/test/utils"
 	mock_worker "github.com/ohkilab/SU-CSexpA-benchmark-system/backend/worker/mock"
 	pb "github.com/ohkilab/SU-CSexpA-benchmark-system/proto-gen/go/backend"
@@ -29,7 +30,11 @@ func Test_PostSubmit(t *testing.T) {
 	worker := mock_worker.NewMockWorker(ctrl)
 	worker.EXPECT().Push(gomock.Any()).AnyTimes()
 	secret := []byte("secret")
-	conn, closeFunc := utils.LaunchGrpcServer(t, grpc.WithJwtSecret("secret"), grpc.WithEntClient(entClient), grpc.WithWorker(worker))
+	mockRepository := tag.MockRepository(
+		func(contestID, num int) ([]string, error) {
+			return []string{"a", "b", "c"}, nil
+		}, nil)
+	conn, closeFunc := utils.LaunchGrpcServer(t, grpc.WithJwtSecret("secret"), grpc.WithEntClient(entClient), grpc.WithWorker(worker), grpc.WithTagRepository(mockRepository))
 	defer closeFunc()
 	client := pb.NewBackendServiceClient(conn)
 

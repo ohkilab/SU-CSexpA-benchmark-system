@@ -1,16 +1,18 @@
 package grpc
 
 import (
-	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/repository/ent"
+	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/repository/ent"
+	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/repository/tag"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/worker"
 	"golang.org/x/exp/slog"
 )
 
 type option struct {
-	entClient *ent.Client
-	jwtSecret []byte
-	worker    worker.Worker
-	logger    *slog.Logger
+	entClient     *ent.Client
+	jwtSecret     []byte
+	worker        worker.Worker
+	logger        *slog.Logger
+	tagRepository tag.Repository
 }
 
 type OptionFunc func(*option)
@@ -36,5 +38,11 @@ func WithWorker(worker worker.Worker) OptionFunc {
 func WithLogger(logger *slog.Logger) OptionFunc {
 	return func(o *option) {
 		o.logger = logger
+	}
+}
+
+func WithTagRepository(r tag.Repository) OptionFunc {
+	return func(o *option) {
+		o.tagRepository = r
 	}
 }

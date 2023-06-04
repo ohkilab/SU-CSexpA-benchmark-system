@@ -4,7 +4,8 @@ import (
 	"context"
 	"net/url"
 
-	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/repository/ent"
+	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/repository/ent"
+	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/repository/tag"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/usecases/auth"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/usecases/contest"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/usecases/ranking"
@@ -24,10 +25,10 @@ type backendServiceServer struct {
 	pb.UnimplementedBackendServiceServer
 }
 
-func NewBackendService(secret []byte, entClient *ent.Client, worker worker.Worker, logger *slog.Logger) pb.BackendServiceServer {
+func NewBackendService(secret []byte, entClient *ent.Client, worker worker.Worker, logger *slog.Logger, tagRepository tag.Repository) pb.BackendServiceServer {
 	authInteractor := auth.NewInteractor(secret, entClient, logger)
 	rankingInteractor := ranking.NewInteractor(entClient, logger)
-	submitInteractor := submit.NewInteractor(entClient, worker, logger)
+	submitInteractor := submit.NewInteractor(entClient, worker, logger, tagRepository)
 	contestInteractor := contest.NewInteractor(entClient, logger)
 	return &backendServiceServer{authInteractor, rankingInteractor, submitInteractor, contestInteractor, pb.UnimplementedBackendServiceServer{}}
 }

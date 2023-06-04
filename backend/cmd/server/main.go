@@ -6,9 +6,10 @@ import (
 	"net"
 
 	_ "github.com/go-sql-driver/mysql"
-	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/repository/ent"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/api/grpc"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/core/config"
+	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/repository/ent"
+	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/repository/tag"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/worker"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/proto-gen/go/benchmark"
 	"golang.org/x/exp/slog"
@@ -52,6 +53,7 @@ func main() {
 		grpc.WithJwtSecret(config.JwtSecret),
 		grpc.WithWorker(benchmarkWorker),
 		grpc.WithLogger(logger),
+		grpc.WithTagRepository(tag.NewRespository(".")),
 	)
 
 	// launch grpc server
