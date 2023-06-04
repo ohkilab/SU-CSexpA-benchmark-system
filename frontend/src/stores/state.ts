@@ -14,6 +14,7 @@ export interface IState {
   current: number
   size: number
   result: number
+  debug: boolean
 }
 
 export const useStateStore = defineStore<'state', IState>('state', {
@@ -27,6 +28,7 @@ export const useStateStore = defineStore<'state', IState>('state', {
     showResult: false,
     result: 0,
     current: 0,
-    size: 17
+    size: 17,
+    debug: false
   })
 })

@@ -1,5 +1,6 @@
 import Benchmark from './pages/Benchmark.vue'
 import Ranking from './pages/Ranking.vue'
+import Submissions from './pages/Submissions.vue'
 import { createRouter, createWebHistory } from 'vue-router'
 
 const routes = [
@@ -10,6 +11,10 @@ const routes = [
   {
     path: '/ranking',
     component: Ranking
+  },
+  {
+    path: '/submissions',
+    component: Submissions
   },
   {
     path: '/benchmark',
