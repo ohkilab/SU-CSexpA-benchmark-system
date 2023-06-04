@@ -10,3 +10,8 @@ prepare:
 .PHONY: up
 up: prepare .env
 	docker compose up --wait --build
+
+.PHONY: clean
+clean:
+	@docker compose down --rmi local -v --remove-orphans
+	@rm -rf ./data
