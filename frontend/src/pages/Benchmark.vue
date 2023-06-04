@@ -21,8 +21,6 @@ const backend = new BackendServiceClient(webfetchTransport)
 
 const errorMsg = ref('')
 
-const tags: Ref<Array<{tag: string, idx: number}>> = ref([])
-
 const submits: Ref<GetSubmitResponse> = ref({})
 
 const taskResults: Ref<TaskResult[]> = ref([])
@@ -78,19 +76,6 @@ onMounted(() => {
 
   url.value = localStorage.getItem('currentUrl') ?? ''
   urlList.value = JSON.parse(localStorage.getItem('urlList') ?? '[]')
-  
-  tags.value = Array.from(new Array(state.size)).map((_, idx) => {
-    return {
-      tag: 'tag_string ' + idx,
-      idx
-    }
-  })
-
-  // backend.getSubmit({
-  //   submitId: 1
-  // }, opt).then(res => {
-  //   console.log(res)
-  // })
 })
 
 watch(url, url => {
@@ -101,7 +86,6 @@ watch(urlList, urlList => {
   localStorage.setItem('urlList', JSON.stringify(urlList))
 }, {deep: true})
 
-const filteredTags = computed(() => tags.value.slice(state.current - 2, state.current + 2))
 </script>
 <template>
   <div class="flex flex-col mt-auto w-full items-center">
