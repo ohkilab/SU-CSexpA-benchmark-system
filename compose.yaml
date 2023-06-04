@@ -20,6 +20,8 @@ services:
       dockerfile: Dockerfile
     env_file:
       - .env
+    ports:
+      - 50052:50052
     # TODO: benchmark-service を host と同一のネットワークに載せる(そうしないと benchmark-service から直接 IP アドレスにアクセスすることができない)
     # network_mode: host
     # expose:
