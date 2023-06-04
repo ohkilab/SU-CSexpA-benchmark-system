@@ -46,6 +46,7 @@ type ContestMutation struct {
 	addsubmit_limit     *int
 	year                *int
 	addyear             *int
+	slug                *string
 	tag_selection_logic *contest.TagSelectionLogic
 	created_at          *time.Time
 	updated_at          *time.Time
@@ -382,6 +383,42 @@ func (m *ContestMutation) ResetYear() {
 	m.addyear = nil
 }
 
+// SetSlug sets the "slug" field.
+func (m *ContestMutation) SetSlug(s string) {
+	m.slug = &s
+}
+
+// Slug returns the value of the "slug" field in the mutation.
+func (m *ContestMutation) Slug() (r string, exists bool) {
+	v := m.slug
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldSlug returns the old "slug" field's value of the Contest entity.
+// If the Contest object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ContestMutation) OldSlug(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldSlug is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldSlug requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldSlug: %w", err)
+	}
+	return oldValue.Slug, nil
+}
+
+// ResetSlug resets all changes to the "slug" field.
+func (m *ContestMutation) ResetSlug() {
+	m.slug = nil
+}
+
 // SetTagSelectionLogic sets the "tag_selection_logic" field.
 func (m *ContestMutation) SetTagSelectionLogic(csl contest.TagSelectionLogic) {
 	m.tag_selection_logic = &csl
@@ -591,7 +628,7 @@ func (m *ContestMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *ContestMutation) Fields() []string {
-	fields := make([]string, 0, 8)
+	fields := make([]string, 0, 9)
 	if m.title != nil {
 		fields = append(fields, contest.FieldTitle)
 	}
@@ -606,6 +643,9 @@ func (m *ContestMutation) Fields() []string {
 	}
 	if m.year != nil {
 		fields = append(fields, contest.FieldYear)
+	}
+	if m.slug != nil {
+		fields = append(fields, contest.FieldSlug)
 	}
 	if m.tag_selection_logic != nil {
 		fields = append(fields, contest.FieldTagSelectionLogic)
@@ -634,6 +674,8 @@ func (m *ContestMutation) Field(name string) (ent.Value, bool) {
 		return m.SubmitLimit()
 	case contest.FieldYear:
 		return m.Year()
+	case contest.FieldSlug:
+		return m.Slug()
 	case contest.FieldTagSelectionLogic:
 		return m.TagSelectionLogic()
 	case contest.FieldCreatedAt:
@@ -659,6 +701,8 @@ func (m *ContestMutation) OldField(ctx context.Context, name string) (ent.Value,
 		return m.OldSubmitLimit(ctx)
 	case contest.FieldYear:
 		return m.OldYear(ctx)
+	case contest.FieldSlug:
+		return m.OldSlug(ctx)
 	case contest.FieldTagSelectionLogic:
 		return m.OldTagSelectionLogic(ctx)
 	case contest.FieldCreatedAt:
@@ -708,6 +752,13 @@ func (m *ContestMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetYear(v)
+		return nil
+	case contest.FieldSlug:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetSlug(v)
 		return nil
 	case contest.FieldTagSelectionLogic:
 		v, ok := value.(contest.TagSelectionLogic)
@@ -829,6 +880,9 @@ func (m *ContestMutation) ResetField(name string) error {
 		return nil
 	case contest.FieldYear:
 		m.ResetYear()
+		return nil
+	case contest.FieldSlug:
+		m.ResetSlug()
 		return nil
 	case contest.FieldTagSelectionLogic:
 		m.ResetTagSelectionLogic()

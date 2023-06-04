@@ -20,8 +20,9 @@ func (Contest) Fields() []ent.Field {
 		field.Time("end_at"),
 		field.Int("submit_limit"),
 		field.Int("year").Positive(),
-		// if auto, {contest_id}/random.txt is used
-		// if manual, {contest_id}/\d.txt is used (number means attempt count)
+		field.String("slug").Unique(),
+		// if auto, {contest_slug}/random.txt is used
+		// if manual, {contest_slug}/\d.txt is used (number means attempt count)
 		field.Enum("tag_selection_logic").Values("auto", "manual"),
 		field.Time("created_at"),
 		field.Time("updated_at").Optional(),

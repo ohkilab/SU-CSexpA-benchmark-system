@@ -25,6 +25,7 @@ func Test_ListContests(t *testing.T) {
 	// prepare
 	contest1, _ := entClient.Contest.Create().
 		SetTitle("test contest").
+		SetSlug("test-contest1").
 		SetStartAt(timejst.Now()).
 		SetEndAt(timejst.Now().AddDate(1, 0, 0)).
 		SetYear(2023).
@@ -34,6 +35,7 @@ func Test_ListContests(t *testing.T) {
 		Save(ctx)
 	contest2, _ := entClient.Contest.Create().
 		SetTitle("test contest").
+		SetSlug("test-contest2").
 		SetStartAt(timejst.Now()).
 		SetEndAt(timejst.Now().AddDate(1, 0, 0)).
 		SetYear(2023).
@@ -43,6 +45,7 @@ func Test_ListContests(t *testing.T) {
 		Save(ctx)
 	_, _ = entClient.Contest.Create().
 		SetTitle("test contest").
+		SetSlug("test-contest3").
 		SetStartAt(timejst.Now()).
 		SetEndAt(timejst.Now().AddDate(1, 0, 0)).
 		SetYear(2022).

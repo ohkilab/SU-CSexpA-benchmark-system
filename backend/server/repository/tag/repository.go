@@ -13,8 +13,8 @@ import (
 // 現状はローカルに置いているので運用があまりにも大変
 
 type Repository interface {
-	GetRandomTags(contestID, num int) ([]string, error)
-	GetTags(contestID, count int) ([]string, error)
+	GetRandomTags(contestSlug string, num int) ([]string, error)
+	GetTags(contestSlug string, count int) ([]string, error)
 }
 
 type repository struct {
@@ -25,8 +25,8 @@ func NewRespository(storagePath string) Repository {
 	return &repository{storagePath}
 }
 
-func (r *repository) GetRandomTags(contestID, num int) ([]string, error) {
-	b, err := os.ReadFile(filepath.Join(r.storagePath, fmt.Sprintf("storage/tags/%d/random.txt", contestID)))
+func (r *repository) GetRandomTags(contestSlug string, num int) ([]string, error) {
+	b, err := os.ReadFile(filepath.Join(r.storagePath, fmt.Sprintf("storage/tags/%s/random.txt", contestSlug)))
 	if err != nil {
 		return nil, err
 	}
@@ -39,8 +39,8 @@ func (r *repository) GetRandomTags(contestID, num int) ([]string, error) {
 	}
 }
 
-func (r *repository) GetTags(contestID, count int) ([]string, error) {
-	b, err := os.ReadFile(filepath.Join(r.storagePath, fmt.Sprintf("storage/tags/%d/%d.txt", contestID, count)))
+func (r *repository) GetTags(contestSlug string, count int) ([]string, error) {
+	b, err := os.ReadFile(filepath.Join(r.storagePath, fmt.Sprintf("storage/tags/%s/%d.txt", contestSlug, count)))
 	if err != nil {
 		return nil, err
 	}

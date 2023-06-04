@@ -80,6 +80,11 @@ func Year(v int) predicate.Contest {
 	return predicate.Contest(sql.FieldEQ(FieldYear, v))
 }
 
+// Slug applies equality check predicate on the "slug" field. It's identical to SlugEQ.
+func Slug(v string) predicate.Contest {
+	return predicate.Contest(sql.FieldEQ(FieldSlug, v))
+}
+
 // CreatedAt applies equality check predicate on the "created_at" field. It's identical to CreatedAtEQ.
 func CreatedAt(v time.Time) predicate.Contest {
 	return predicate.Contest(sql.FieldEQ(FieldCreatedAt, v))
@@ -313,6 +318,71 @@ func YearLT(v int) predicate.Contest {
 // YearLTE applies the LTE predicate on the "year" field.
 func YearLTE(v int) predicate.Contest {
 	return predicate.Contest(sql.FieldLTE(FieldYear, v))
+}
+
+// SlugEQ applies the EQ predicate on the "slug" field.
+func SlugEQ(v string) predicate.Contest {
+	return predicate.Contest(sql.FieldEQ(FieldSlug, v))
+}
+
+// SlugNEQ applies the NEQ predicate on the "slug" field.
+func SlugNEQ(v string) predicate.Contest {
+	return predicate.Contest(sql.FieldNEQ(FieldSlug, v))
+}
+
+// SlugIn applies the In predicate on the "slug" field.
+func SlugIn(vs ...string) predicate.Contest {
+	return predicate.Contest(sql.FieldIn(FieldSlug, vs...))
+}
+
+// SlugNotIn applies the NotIn predicate on the "slug" field.
+func SlugNotIn(vs ...string) predicate.Contest {
+	return predicate.Contest(sql.FieldNotIn(FieldSlug, vs...))
+}
+
+// SlugGT applies the GT predicate on the "slug" field.
+func SlugGT(v string) predicate.Contest {
+	return predicate.Contest(sql.FieldGT(FieldSlug, v))
+}
+
+// SlugGTE applies the GTE predicate on the "slug" field.
+func SlugGTE(v string) predicate.Contest {
+	return predicate.Contest(sql.FieldGTE(FieldSlug, v))
+}
+
+// SlugLT applies the LT predicate on the "slug" field.
+func SlugLT(v string) predicate.Contest {
+	return predicate.Contest(sql.FieldLT(FieldSlug, v))
+}
+
+// SlugLTE applies the LTE predicate on the "slug" field.
+func SlugLTE(v string) predicate.Contest {
+	return predicate.Contest(sql.FieldLTE(FieldSlug, v))
+}
+
+// SlugContains applies the Contains predicate on the "slug" field.
+func SlugContains(v string) predicate.Contest {
+	return predicate.Contest(sql.FieldContains(FieldSlug, v))
+}
+
+// SlugHasPrefix applies the HasPrefix predicate on the "slug" field.
+func SlugHasPrefix(v string) predicate.Contest {
+	return predicate.Contest(sql.FieldHasPrefix(FieldSlug, v))
+}
+
+// SlugHasSuffix applies the HasSuffix predicate on the "slug" field.
+func SlugHasSuffix(v string) predicate.Contest {
+	return predicate.Contest(sql.FieldHasSuffix(FieldSlug, v))
+}
+
+// SlugEqualFold applies the EqualFold predicate on the "slug" field.
+func SlugEqualFold(v string) predicate.Contest {
+	return predicate.Contest(sql.FieldEqualFold(FieldSlug, v))
+}
+
+// SlugContainsFold applies the ContainsFold predicate on the "slug" field.
+func SlugContainsFold(v string) predicate.Contest {
+	return predicate.Contest(sql.FieldContainsFold(FieldSlug, v))
 }
 
 // TagSelectionLogicEQ applies the EQ predicate on the "tag_selection_logic" field.

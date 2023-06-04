@@ -4,27 +4,27 @@ package tag
 // 現状はローカルに置いているので運用があまりにも大変
 
 type mockRepository struct {
-	getRandomTags func(contestID, num int) ([]string, error)
-	getTags       func(contestID, count int) ([]string, error)
+	getRandomTags func(contestSlug string, num int) ([]string, error)
+	getTags       func(contestSlug string, count int) ([]string, error)
 }
 
 func MockRepository(
-	getRandomTags func(contestID, num int) ([]string, error),
-	getTags func(contestID, count int) ([]string, error),
+	getRandomTags func(contestSlug string, num int) ([]string, error),
+	getTags func(contestSlug string, count int) ([]string, error),
 ) Repository {
 	return &mockRepository{getRandomTags, getTags}
 }
 
-func (r *mockRepository) GetRandomTags(contestID, num int) ([]string, error) {
+func (r *mockRepository) GetRandomTags(contestSlug string, num int) ([]string, error) {
 	if r.getRandomTags != nil {
-		return r.getRandomTags(contestID, num)
+		return r.getRandomTags(contestSlug, num)
 	}
 	return []string{}, nil
 }
 
-func (r *mockRepository) GetTags(contestID, count int) ([]string, error) {
+func (r *mockRepository) GetTags(contestSlug string, count int) ([]string, error) {
 	if r.getTags != nil {
-		return r.getTags(contestID, count)
+		return r.getTags(contestSlug, count)
 	}
 	return []string{}, nil
 }

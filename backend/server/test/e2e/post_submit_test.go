@@ -31,7 +31,7 @@ func Test_PostSubmit(t *testing.T) {
 	worker.EXPECT().Push(gomock.Any()).AnyTimes()
 	secret := []byte("secret")
 	mockRepository := tag.MockRepository(
-		func(contestID, num int) ([]string, error) {
+		func(contestSlug string, num int) ([]string, error) {
 			return []string{"a", "b", "c"}, nil
 		}, nil)
 	conn, closeFunc := utils.LaunchGrpcServer(t, grpc.WithJwtSecret("secret"), grpc.WithEntClient(entClient), grpc.WithWorker(worker), grpc.WithTagRepository(mockRepository))
@@ -53,6 +53,7 @@ func Test_PostSubmit(t *testing.T) {
 	}
 	contest, err := entClient.Contest.Create().
 		SetTitle("test contest").
+		SetSlug("test-contest").
 		SetStartAt(time.Date(2023, time.January, 1, 0, 0, 0, 0, time.UTC)).
 		SetEndAt(time.Date(2023, time.December, 31, 23, 59, 59, 0, time.UTC)).
 		SetYear(2023).

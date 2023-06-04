@@ -73,6 +73,12 @@ func (cu *ContestUpdate) AddYear(i int) *ContestUpdate {
 	return cu
 }
 
+// SetSlug sets the "slug" field.
+func (cu *ContestUpdate) SetSlug(s string) *ContestUpdate {
+	cu.mutation.SetSlug(s)
+	return cu
+}
+
 // SetTagSelectionLogic sets the "tag_selection_logic" field.
 func (cu *ContestUpdate) SetTagSelectionLogic(csl contest.TagSelectionLogic) *ContestUpdate {
 	cu.mutation.SetTagSelectionLogic(csl)
@@ -221,6 +227,9 @@ func (cu *ContestUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if value, ok := cu.mutation.AddedYear(); ok {
 		_spec.AddField(contest.FieldYear, field.TypeInt, value)
 	}
+	if value, ok := cu.mutation.Slug(); ok {
+		_spec.SetField(contest.FieldSlug, field.TypeString, value)
+	}
 	if value, ok := cu.mutation.TagSelectionLogic(); ok {
 		_spec.SetField(contest.FieldTagSelectionLogic, field.TypeEnum, value)
 	}
@@ -339,6 +348,12 @@ func (cuo *ContestUpdateOne) SetYear(i int) *ContestUpdateOne {
 // AddYear adds i to the "year" field.
 func (cuo *ContestUpdateOne) AddYear(i int) *ContestUpdateOne {
 	cuo.mutation.AddYear(i)
+	return cuo
+}
+
+// SetSlug sets the "slug" field.
+func (cuo *ContestUpdateOne) SetSlug(s string) *ContestUpdateOne {
+	cuo.mutation.SetSlug(s)
 	return cuo
 }
 
@@ -519,6 +534,9 @@ func (cuo *ContestUpdateOne) sqlSave(ctx context.Context) (_node *Contest, err e
 	}
 	if value, ok := cuo.mutation.AddedYear(); ok {
 		_spec.AddField(contest.FieldYear, field.TypeInt, value)
+	}
+	if value, ok := cuo.mutation.Slug(); ok {
+		_spec.SetField(contest.FieldSlug, field.TypeString, value)
 	}
 	if value, ok := cuo.mutation.TagSelectionLogic(); ok {
 		_spec.SetField(contest.FieldTagSelectionLogic, field.TypeEnum, value)

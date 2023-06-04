@@ -51,6 +51,12 @@ func (cc *ContestCreate) SetYear(i int) *ContestCreate {
 	return cc
 }
 
+// SetSlug sets the "slug" field.
+func (cc *ContestCreate) SetSlug(s string) *ContestCreate {
+	cc.mutation.SetSlug(s)
+	return cc
+}
+
 // SetTagSelectionLogic sets the "tag_selection_logic" field.
 func (cc *ContestCreate) SetTagSelectionLogic(csl contest.TagSelectionLogic) *ContestCreate {
 	cc.mutation.SetTagSelectionLogic(csl)
@@ -152,6 +158,9 @@ func (cc *ContestCreate) check() error {
 			return &ValidationError{Name: "year", err: fmt.Errorf(`ent: validator failed for field "Contest.year": %w`, err)}
 		}
 	}
+	if _, ok := cc.mutation.Slug(); !ok {
+		return &ValidationError{Name: "slug", err: errors.New(`ent: missing required field "Contest.slug"`)}
+	}
 	if _, ok := cc.mutation.TagSelectionLogic(); !ok {
 		return &ValidationError{Name: "tag_selection_logic", err: errors.New(`ent: missing required field "Contest.tag_selection_logic"`)}
 	}
@@ -214,6 +223,10 @@ func (cc *ContestCreate) createSpec() (*Contest, *sqlgraph.CreateSpec) {
 	if value, ok := cc.mutation.Year(); ok {
 		_spec.SetField(contest.FieldYear, field.TypeInt, value)
 		_node.Year = value
+	}
+	if value, ok := cc.mutation.Slug(); ok {
+		_spec.SetField(contest.FieldSlug, field.TypeString, value)
+		_node.Slug = value
 	}
 	if value, ok := cc.mutation.TagSelectionLogic(); ok {
 		_spec.SetField(contest.FieldTagSelectionLogic, field.TypeEnum, value)

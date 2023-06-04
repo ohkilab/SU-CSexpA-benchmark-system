@@ -13,6 +13,7 @@ message Contest {
   google.protobuf.Timestamp end_at = 5;
   int32 submit_limit = 6;
   int32 year = 7;
+  string slug = 8;
 }
 
 message Group {

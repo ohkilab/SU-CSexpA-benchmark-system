@@ -24,6 +24,8 @@ const (
 	FieldSubmitLimit = "submit_limit"
 	// FieldYear holds the string denoting the year field in the database.
 	FieldYear = "year"
+	// FieldSlug holds the string denoting the slug field in the database.
+	FieldSlug = "slug"
 	// FieldTagSelectionLogic holds the string denoting the tag_selection_logic field in the database.
 	FieldTagSelectionLogic = "tag_selection_logic"
 	// FieldCreatedAt holds the string denoting the created_at field in the database.
@@ -51,6 +53,7 @@ var Columns = []string{
 	FieldEndAt,
 	FieldSubmitLimit,
 	FieldYear,
+	FieldSlug,
 	FieldTagSelectionLogic,
 	FieldCreatedAt,
 	FieldUpdatedAt,
@@ -125,6 +128,11 @@ func BySubmitLimit(opts ...sql.OrderTermOption) OrderOption {
 // ByYear orders the results by the year field.
 func ByYear(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldYear, opts...).ToFunc()
+}
+
+// BySlug orders the results by the slug field.
+func BySlug(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldSlug, opts...).ToFunc()
 }
 
 // ByTagSelectionLogic orders the results by the tag_selection_logic field.

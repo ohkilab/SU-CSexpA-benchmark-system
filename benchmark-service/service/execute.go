@@ -23,7 +23,7 @@ func (s *service) Execute(req *pb.ExecuteRequest, stream pb.BenchmarkService_Exe
 		return status.Error(codes.InvalidArgument, "groupID must be 100 or less")
 	}
 
-	validateFunc, err := validation.Detect(int(req.Year))
+	validateFunc, err := validation.Detect(req.ContestSlug)
 	if err != nil {
 		return err
 	}

@@ -40,6 +40,10 @@ export interface Contest {
      * @generated from protobuf field: int32 year = 7;
      */
     year: number;
+    /**
+     * @generated from protobuf field: string slug = 8;
+     */
+    slug: string;
 }
 /**
  * @generated from protobuf message backend.Group
@@ -280,11 +284,12 @@ class Contest$Type extends MessageType<Contest> {
             { no: 4, name: "start_at", kind: "message", T: () => Timestamp },
             { no: 5, name: "end_at", kind: "message", T: () => Timestamp },
             { no: 6, name: "submit_limit", kind: "scalar", T: 5 /*ScalarType.INT32*/ },
-            { no: 7, name: "year", kind: "scalar", T: 5 /*ScalarType.INT32*/ }
+            { no: 7, name: "year", kind: "scalar", T: 5 /*ScalarType.INT32*/ },
+            { no: 8, name: "slug", kind: "scalar", T: 9 /*ScalarType.STRING*/ }
         ]);
     }
     create(value?: PartialMessage<Contest>): Contest {
-        const message = { id: 0, title: "", submitLimit: 0, year: 0 };
+        const message = { id: 0, title: "", submitLimit: 0, year: 0, slug: "" };
         globalThis.Object.defineProperty(message, MESSAGE_TYPE, { enumerable: false, value: this });
         if (value !== undefined)
             reflectionMergePartial<Contest>(this, message, value);
@@ -312,6 +317,9 @@ class Contest$Type extends MessageType<Contest> {
                     break;
                 case /* int32 year */ 7:
                     message.year = reader.int32();
+                    break;
+                case /* string slug */ 8:
+                    message.slug = reader.string();
                     break;
                 default:
                     let u = options.readUnknownField;
@@ -343,6 +351,9 @@ class Contest$Type extends MessageType<Contest> {
         /* int32 year = 7; */
         if (message.year !== 0)
             writer.tag(7, WireType.Varint).int32(message.year);
+        /* string slug = 8; */
+        if (message.slug !== "")
+            writer.tag(8, WireType.LengthDelimited).string(message.slug);
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);

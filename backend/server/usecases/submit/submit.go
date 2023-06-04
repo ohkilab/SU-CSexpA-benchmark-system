@@ -54,13 +54,13 @@ func (i *Interactor) PostSubmit(ctx context.Context, req *backendpb.PostSubmitRe
 	var tags []string
 	switch c.TagSelectionLogic {
 	case contest.TagSelectionLogicAuto:
-		tags, err = i.tagRepository.GetRandomTags(c.ID, 50)
+		tags, err = i.tagRepository.GetRandomTags(c.Slug, 50)
 		if err != nil {
 			i.logger.Error("failed to generate tags", err)
 			return nil, status.Error(codes.Internal, "failed to generate tags")
 		}
 	case contest.TagSelectionLogicManual:
-		tags, err = i.tagRepository.GetRandomTags(c.ID, 1) // TODO: fix it
+		tags, err = i.tagRepository.GetRandomTags(c.Slug, 1) // TODO: fix it
 		if err != nil {
 			i.logger.Error("failed to generate tags", err)
 			return nil, status.Error(codes.Internal, "failed to generate tags")
@@ -82,7 +82,7 @@ func (i *Interactor) PostSubmit(ctx context.Context, req *backendpb.PostSubmitRe
 	}
 
 	// add a task to worker
-	executeRequest := buildTask(claims.GroupID, submit, tags)
+	executeRequest := buildTask(claims.GroupID, c.Slug, submit, tags)
 	i.worker.Push(executeRequest)
 
 	return &backendpb.PostSubmitResponse{
@@ -93,7 +93,7 @@ func (i *Interactor) PostSubmit(ctx context.Context, req *backendpb.PostSubmitRe
 	}, nil
 }
 
-func buildTask(groupID int, submit *ent.Submit, tags []string) *worker.Task {
+func buildTask(groupID int, contestSlug string, submit *ent.Submit, tags []string) *worker.Task {
 	return &worker.Task{
 		Req: &benchmarkpb.ExecuteRequest{
 			GroupId: strconv.Itoa(groupID),
@@ -109,7 +109,7 @@ func buildTask(groupID int, submit *ent.Submit, tags []string) *worker.Task {
 					AttemptCount: int32(attemptCount),
 				}
 			}),
-			Year: int32(submit.Year),
+			ContestSlug: contestSlug,
 		},
 		SubmitID: submit.ID,
 		GroupID:  groupID,
