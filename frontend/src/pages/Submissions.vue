@@ -62,12 +62,12 @@ onMounted(() => {
        </td>
        <td class="border border-teal-800 p-2 transition-colors text-center">
           
-          <div v-if="idx == 0" class="p-1 w-40 bg-teal-500 rounded">Waiting</div>
-          <div v-else-if="idx == 1" class="p-1 w-40 bg-teal-500 rounded">In Progress</div>
-          <div v-else-if="idx == 2" class="p-1 w-40 bg-blue-600 rounded">Success</div>
-          <div v-else-if="idx == 3" class="p-1 w-40 bg-red-600 rounded">Connection Failed</div>
-          <div v-else-if="idx == 4" class="p-1 w-40 bg-orange-500 rounded">Validation Error</div>
-          <div v-else-if="idx == 5" class="p-1 w-40 bg-orange-500 rounded">Internal Error</div>
+          <div v-if="s.status == Status.WAITING" class="p-1 w-40 bg-teal-500 rounded">Waiting</div>
+          <div v-else-if="s.status == Status.IN_PROGRESS" class="p-1 w-40 bg-teal-500 rounded">In Progress</div>
+          <div v-else-if="s.status == Status.SUCCESS" class="p-1 w-40 bg-blue-600 rounded">Success</div>
+          <div v-else-if="s.status == Status.CONNECTION_FAILED" class="p-1 w-40 bg-red-600 rounded">Connection Failed</div>
+          <div v-else-if="s.status == Status.VALIDATION_ERROR" class="p-1 w-40 bg-orange-500 rounded">Validation Error</div>
+          <div v-else-if="s.status == 5" class="p-1 w-40 bg-orange-500 rounded">Internal Error</div>
           <div v-else class="p-1 w-40 bg-orange-500 rounded">Unknown Error</div>
        </td>
       </tr>
@@ -84,5 +84,6 @@ onMounted(() => {
     <div class="p-1 w-40 bg-red-600 rounded">Connection Failed</div>
     <div class="p-1 w-40 bg-orange-500 rounded">Validation Error</div>
     <div class="p-1 w-40 bg-orange-500 rounded">Internal Error</div>
+    {{Status}}
   </div>
 </template>
