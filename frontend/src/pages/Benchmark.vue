@@ -38,15 +38,14 @@ const benchmark = () => {
     url: url.value, //'http://host.docker.internal:3001',
     contestId: 1
   },opt).then(async res => {
-    console.log(res)
+    if(import.meta.env.DEV) console.log(res)
     state.benchmarking = true
 
     let call = backend.getSubmit({submitId: res.response.id}, opt)
     for await (let message of call.responses) {
       if(!state.benchmarking) break
 
-      console.log("got a message", message)
-      // status.current++
+      if(import.meta.env.DEV) console.log('Submit', message)
 
       taskResults.value = Array.from(Array(message.submit?.tagCount)).map((_, i) => message.submit?.taskResults[i] ?? {} as TaskResult)
       errorMsg.value = message.submit?.errorMessage ?? ''
@@ -57,9 +56,10 @@ const benchmark = () => {
 
     handleStopBenchmark()
 
-    console.log(call.status)
-    console.log(call.trailers)
-
+    if(import.meta.env.DEV) {
+      console.log(call.status)
+      console.log(call.trailers)
+    }
   }).catch(err => {
     console.log(err)
   })
@@ -79,7 +79,7 @@ onMounted(() => {
   urlList.value = JSON.parse(localStorage.getItem('urlList') ?? '[]')
 
   // fix BigInt problem
-  if(import.meta.env.DEV) BigInt.prototype.toJSON = function() {return this.toString()}
+  // if(import.meta.env.DEV) BigInt.prototype.toJSON = function() {return this.toString()}
 })
 
 watch(url, url => {

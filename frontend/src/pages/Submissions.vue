@@ -49,7 +49,7 @@ const handleModal = async (submit: Submit) => {
     const opt = {meta: {'authorization' : 'Bearer ' + state.token}}
     const call = backend.getSubmit(getSubmitRequest, opt)
     for await (let message of call.responses) {
-      console.log("got a message", message)
+      if(import.meta.env.DEV) console.log('Submit', message)
       submit.taskResults = message.submit?.taskResults ?? []
     }
 
@@ -67,7 +67,7 @@ onMounted(() => {
 
   backend.listSubmits(listSubmitsRequest, opt)
     .then(res => {
-      console.log(res.response.submits)
+      if(import.meta.env.DEV) console.log('Submits', res.response.submits)
       submits.value = res.response.submits
     })
 
@@ -107,14 +107,11 @@ onMounted(() => {
               <div class="rounded bg-gray-500 px-2">{{t.requestPerSec}}</div>
               req/s
             </div>
-            <div>エラー: {{t.errorMessage}}</div>
+            <div>{{t.errorMessage != '' ? `エラー: ${t.errorMessage}` : ''}}</div>
           </div>
           </div>
         </div>
       </div>
-  <div class="">
-    {{}}
-  </div>
   <table v-if="submits.length > 0" class="table-auto">
     <thead class="bg-gray-700">
       <tr>
