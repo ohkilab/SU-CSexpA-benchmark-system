@@ -17,17 +17,18 @@ const handleLogout = () => {
   group.value = ''
 }
 
-const backend = new BackendServiceClient(
-  new GrpcWebFetchTransport({
-    baseUrl: import.meta.env.PROD ? `http://${window.location.hostname}:8080` : state.devBaseUrl
-  })
-)
-
 const PROD = import.meta.env.PROD
 
 const errMsg = ref('')
 
 const handleLogin = (id:string, password:string) => {
+
+  const backend = new BackendServiceClient(
+    new GrpcWebFetchTransport({
+      baseUrl: import.meta.env.PROD ? `http://${window.location.hostname}:8080` : state.devBaseUrl
+    })
+  )
+
   backend.postLogin({ id, password }).then(value => {
     if(import.meta.env.DEV) console.log('Login', value)
     token.value = value.response.token
@@ -62,6 +63,12 @@ onMounted(() => {
   // try login with token
   if(localStorage.getItem('token')) {
     let opt = {meta: {'authorization' : 'Bearer ' + localStorage.getItem('token')}}
+
+    const backend = new BackendServiceClient(
+      new GrpcWebFetchTransport({
+        baseUrl: import.meta.env.PROD ? `http://${window.location.hostname}:8080` : state.devBaseUrl
+      })
+    )
 
     backend.getRanking({
       year: 2023,
