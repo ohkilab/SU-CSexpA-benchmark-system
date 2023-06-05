@@ -127,6 +127,6 @@ onMounted(() => {
       <router-view v-if="loggedIn"></router-view>
       <Login class="mt-auto" :err-msg="errMsg" @login=" (id, password) => {handleLogin(id, password)}" v-else></Login>
     <!-- footer -->
-    <div class="flex items-center justify-center bg-gray-700 w-full mt-auto">© 2023 Ohkilab. All rights reserved.</div>
+    <div class="flex items-center justify-center bg-gray-700 w-full mt-auto h-8">© 2023 <a href="https://sec.inf.shizuoka.ac.jp/" class="text-blue-500 mx-1" target="_blank">Ohkilab.</a> All rights reserved.</div>
   </div>
 </template>
