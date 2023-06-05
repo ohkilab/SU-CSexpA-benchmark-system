@@ -34,7 +34,7 @@ message GetSubmitRequest { int32 submit_id = 1; }
 message GetSubmitResponse { Submit submit = 1; }
 
 message ListSubmitsRequest {
-  optional string group_id = 2; // middle match
+  optional string group_name = 2; // middle match
   optional Status status = 3;
 }
 

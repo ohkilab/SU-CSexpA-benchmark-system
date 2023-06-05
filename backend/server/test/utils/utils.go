@@ -17,6 +17,7 @@ import (
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/repository/ent/migrate"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/benchmark-service/benchmark"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/benchmark-service/service"
+	"github.com/ohkilab/SU-CSexpA-benchmark-system/benchmark-service/validation"
 	pb "github.com/ohkilab/SU-CSexpA-benchmark-system/proto-gen/go/benchmark"
 	pkggrpc "google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
@@ -26,7 +27,7 @@ func LaunchBenchmarkGrpcServer(t *testing.T) (*pkggrpc.ClientConn, func()) {
 	t.Helper()
 	server := pkggrpc.NewServer()
 	client := benchmark.NewClient()
-	benchmarkService := service.New(client)
+	benchmarkService := service.New(client, make(map[string]validation.Validator))
 	server.RegisterService(&pb.BenchmarkService_ServiceDesc, benchmarkService)
 	lsnr, err := net.Listen("tcp", ":3777")
 	if err != nil {

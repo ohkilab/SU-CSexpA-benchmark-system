@@ -57,7 +57,7 @@ func (s *backendServiceServer) PostLogin(ctx context.Context, req *pb.PostLoginR
 }
 
 func (s *backendServiceServer) ListSubmits(ctx context.Context, req *pb.ListSubmitsRequest) (*pb.ListSubmitsResponse, error) {
-	return s.submitInteractor.ListSubmits(ctx, req.GroupId, req.Status)
+	return s.submitInteractor.ListSubmits(ctx, req.GroupName, req.Status)
 }
 
 func (s *backendServiceServer) ListContests(ctx context.Context, req *pb.ListContestsRequest) (*pb.ListContestsResponse, error) {

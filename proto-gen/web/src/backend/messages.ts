@@ -99,9 +99,9 @@ export interface GetSubmitResponse {
  */
 export interface ListSubmitsRequest {
     /**
-     * @generated from protobuf field: optional string group_id = 2;
+     * @generated from protobuf field: optional string group_name = 2;
      */
-    groupId?: string; // middle match
+    groupName?: string; // middle match
     /**
      * @generated from protobuf field: optional backend.Status status = 3;
      */
@@ -582,7 +582,7 @@ export const GetSubmitResponse = new GetSubmitResponse$Type();
 class ListSubmitsRequest$Type extends MessageType<ListSubmitsRequest> {
     constructor() {
         super("backend.ListSubmitsRequest", [
-            { no: 2, name: "group_id", kind: "scalar", opt: true, T: 9 /*ScalarType.STRING*/ },
+            { no: 2, name: "group_name", kind: "scalar", opt: true, T: 9 /*ScalarType.STRING*/ },
             { no: 3, name: "status", kind: "enum", opt: true, T: () => ["backend.Status", Status] }
         ]);
     }
@@ -598,8 +598,8 @@ class ListSubmitsRequest$Type extends MessageType<ListSubmitsRequest> {
         while (reader.pos < end) {
             let [fieldNo, wireType] = reader.tag();
             switch (fieldNo) {
-                case /* optional string group_id */ 2:
-                    message.groupId = reader.string();
+                case /* optional string group_name */ 2:
+                    message.groupName = reader.string();
                     break;
                 case /* optional backend.Status status */ 3:
                     message.status = reader.int32();
@@ -616,9 +616,9 @@ class ListSubmitsRequest$Type extends MessageType<ListSubmitsRequest> {
         return message;
     }
     internalBinaryWrite(message: ListSubmitsRequest, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
-        /* optional string group_id = 2; */
-        if (message.groupId !== undefined)
-            writer.tag(2, WireType.LengthDelimited).string(message.groupId);
+        /* optional string group_name = 2; */
+        if (message.groupName !== undefined)
+            writer.tag(2, WireType.LengthDelimited).string(message.groupName);
         /* optional backend.Status status = 3; */
         if (message.status !== undefined)
             writer.tag(3, WireType.Varint).int32(message.status);
