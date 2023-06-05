@@ -7,11 +7,8 @@ import type { Ref } from 'vue'
 
 import { GrpcWebFetchTransport } from '@protobuf-ts/grpcweb-transport'
 import { BackendServiceClient } from 'proto-gen-web/src/backend/services.client'
-import { HealthcheckServiceClient } from 'proto-gen-web/src/backend/services.client'
 
-import type { GetRankingRequest, GetSubmitRequest, GetSubmitResponse  } from 'proto-gen-web/src/backend/messages'
 import { Group, Status, TaskResult } from 'proto-gen-web/src/backend/resources'
-import { Role } from 'proto-gen-web/src/backend/resources'
 
 const state:IState = useStateStore()
 
@@ -20,8 +17,6 @@ const webfetchTransport = new GrpcWebFetchTransport({baseUrl: 'http://localhost:
 const backend = new BackendServiceClient(webfetchTransport)
 
 const errorMsg = ref('')
-
-const submits: Ref<GetSubmitResponse> = ref({})
 
 const taskResults: Ref<TaskResult[]> = ref([])
 
@@ -73,8 +68,6 @@ const handleStopBenchmark = () => {
 }
 
 onMounted(() => {
-  let opt = {meta: {'authorization' : 'Bearer ' + state.token}}
-
   url.value = localStorage.getItem('currentUrl') ?? ''
   urlList.value = JSON.parse(localStorage.getItem('urlList') ?? '[]')
 
@@ -125,9 +118,9 @@ watch(urlList, urlList => {
           :key="i"
           class="flex gap-1 w-40 p-3 bg-gray-700 justify-center items-center rounded shadow-md shadow-black"
           :class="
+            t.status == Status.SUCCESS ? 'bg-blue-600' :
             t.status == Status.WAITING ? 'opacity-70' :
             t.status == Status.IN_PROGRESS ? 'bg-teal-500' :
-            t.status == Status.SUCCESS ? 'bg-blue-600' :
             t.status == Status.CONNECTION_FAILED ? 'bg-red-500' :
             t.status == Status.VALIDATION_ERROR ? 'bg-orange-500' :
             t.status == Status.INTERNAL_ERROR ? 'bg-orange-500' : ''
