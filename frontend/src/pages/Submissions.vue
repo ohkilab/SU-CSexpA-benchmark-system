@@ -86,28 +86,29 @@ onMounted(() => {
           <div
             v-for="(t, i) in modalItem.taskResults"
             :key="i"
-            class="flex gap-2 p-3 bg-gray-700 rounded shadow-md shadow-black items-center justify-between"
+            class="flex gap-2 py-3 px-6 rounded shadow-md shadow-black items-center justify-between"
             :class="
               t.status == Status.WAITING ? 'opacity-70' :
               t.status == Status.IN_PROGRESS ? 'bg-teal-500' :
               t.status == Status.SUCCESS ? 'bg-blue-600' :
               t.status == Status.CONNECTION_FAILED ? 'bg-red-500' :
               t.status == Status.VALIDATION_ERROR ? 'bg-orange-500' :
-              t.status == Status.INTERNAL_ERROR ? 'bg-orange-500' : ''
+              t.status == Status.INTERNAL_ERROR ? 'bg-orange-500' : 'bg-gray-700 opacity-70'
             "
           >
             <div class="flex justify-center items-center gap-2">
+              タグ {{ i+1 }}：
+              <div class="rounded bg-gray-500 px-2">{{t.requestPerSec}}</div>
+              req/s
+            </div>
+            <div class='flex gap-5 items-center'>{{t.errorMessage != '' ? `エラー: ${t.errorMessage}` : ''}}
               <font-awesome-icon v-if="t.status == Status.IN_PROGRESS" :icon="['fas', 'spinner']"></font-awesome-icon>
               <font-awesome-icon v-else-if="t.status == Status.WAITING" :icon="['fas', 'minus']"></font-awesome-icon>
               <font-awesome-icon v-else-if="t.status == Status.SUCCESS" :icon="['fas', 'check']"></font-awesome-icon>
               <font-awesome-icon v-else-if="t.status == Status.CONNECTION_FAILED" :icon="['fas', 'x']"></font-awesome-icon>
               <font-awesome-icon v-else-if="t.status == Status.VALIDATION_ERROR" :icon="['fas', 'exclamation']"></font-awesome-icon>
               <font-awesome-icon v-else :icon="['fas', 'minus']"></font-awesome-icon>
-              タグ {{ i+1 }}:
-              <div class="rounded bg-gray-500 px-2">{{t.requestPerSec}}</div>
-              req/s
             </div>
-            <div>{{t.errorMessage != '' ? `エラー: ${t.errorMessage}` : ''}}</div>
           </div>
           </div>
         </div>
@@ -119,7 +120,7 @@ onMounted(() => {
         <th class="">提出日時</th>
         <th class="px-2">グループID</th>
         <th class="">得点</th>
-        <th class="">結果</th>
+        <th class="w-48">結果</th>
       </tr>
     </thead>
     <tbody>
@@ -131,18 +132,18 @@ onMounted(() => {
        <td class="w-20 text-center">{{s.id}}</td>
        <td class="w-60 text-center">{{formatDate(Number(s.submitedAt?.seconds))}}</td>
        <td class="w-30 text-center">{{s.groupId}}</td>
-       <td class="w-20 text-center px-4">
+       <td class="w-20 text-center px-5">
          <div class="w-20 bg-gray-500 rounded text-center justify-center">
           {{s.score}}
           </div>
        </td>
        <td class="py-2 transition-colors text-center">
-          <div v-if="s.status == Status.WAITING" class="p-1 w-40 bg-teal-500 rounded">Waiting</div>
-          <div v-else-if="s.status == Status.IN_PROGRESS" class="p-1 w-40 bg-teal-500 rounded">In Progress</div>
-          <div v-else-if="s.status == Status.SUCCESS" class="p-1 w-40 bg-blue-600 rounded">Success</div>
-          <div v-else-if="s.status == Status.CONNECTION_FAILED" class="p-1 w-40 bg-red-600 rounded">Connection Failed</div>
-          <div v-else-if="s.status == Status.VALIDATION_ERROR" class="p-1 w-40 bg-orange-500 rounded">Validation Error</div>
-          <div v-else-if="s.status == Status.INTERNAL_ERROR" class="p-1 w-40 bg-orange-500 rounded">Internal Error</div>
+          <div v-if="s.status == Status.WAITING" class="p-1 w-40 bg-teal-500 rounded mx-auto">Waiting</div>
+          <div v-else-if="s.status == Status.IN_PROGRESS" class="p-1 w-40 bg-teal-500 rounded mx-auto">In Progress</div>
+          <div v-else-if="s.status == Status.SUCCESS" class="p-1 w-40 bg-blue-600 rounded mx-auto">Success</div>
+          <div v-else-if="s.status == Status.CONNECTION_FAILED" class="p-1 w-40 bg-red-600 rounded mx-auto">Connection Failed</div>
+          <div v-else-if="s.status == Status.VALIDATION_ERROR" class="p-1 w-40 bg-orange-500 rounded mx-auto">Validation Error</div>
+          <div v-else-if="s.status == Status.INTERNAL_ERROR" class="p-1 w-40 bg-orange-500 rounded mx-auto">Internal Error</div>
           <div v-else class="p-1 w-40 bg-orange-500 rounded">Unknown Error</div>
        </td>
       </tr>

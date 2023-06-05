@@ -116,14 +116,14 @@ watch(urlList, urlList => {
         <div
           v-for="(t, i) in taskResults"
           :key="i"
-          class="flex gap-1 w-40 p-3 bg-gray-700 justify-center items-center rounded shadow-md shadow-black"
+          class="flex gap-1 w-40 p-3 justify-center items-center rounded shadow-md shadow-black"
           :class="
-            t.status == Status.SUCCESS ? 'bg-blue-600' :
             t.status == Status.WAITING ? 'opacity-70' :
             t.status == Status.IN_PROGRESS ? 'bg-teal-500' :
+            t.status == Status.SUCCESS ? 'bg-blue-600' :
             t.status == Status.CONNECTION_FAILED ? 'bg-red-500' :
             t.status == Status.VALIDATION_ERROR ? 'bg-orange-500' :
-            t.status == Status.INTERNAL_ERROR ? 'bg-orange-500' : ''
+            t.status == Status.INTERNAL_ERROR ? 'bg-orange-500' : 'bg-gray-700 opacity-70'
           "
         >
             <font-awesome-icon v-if="t.status == Status.IN_PROGRESS" :icon="['fas', 'spinner']"></font-awesome-icon>
@@ -151,14 +151,14 @@ watch(urlList, urlList => {
           <div
             v-for="(t, i) in taskResults"
             :key="i"
-              class="transition-all ease-out duration-200 w-20 p-3 text-center bg-gray-700 rounded shadow-md shadow-black"
+              class="transition-all ease-out duration-200 w-20 p-3 text-center rounded shadow-md shadow-black"
               :class="
                 t.status == Status.WAITING ? 'opacity-70' :
                 t.status == Status.IN_PROGRESS ? 'bg-teal-500' :
                 t.status == Status.SUCCESS ? 'bg-blue-600' :
                 t.status == Status.CONNECTION_FAILED ? 'bg-red-500' :
                 t.status == Status.VALIDATION_ERROR ? 'bg-orange-500' :
-                t.status == Status.INTERNAL_ERROR ? 'bg-orange-500' : 'opacity-70'
+                t.status == Status.INTERNAL_ERROR ? 'bg-orange-500' : 'bg-gray-700 opacity-70'
               "
           >
 
