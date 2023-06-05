@@ -15,6 +15,8 @@ const handleLogout = () => {
   loggedIn.value = false
   token.value = ''
   group.value = ''
+  state.group = ''
+  state.lastResult = 0
 }
 
 const PROD = import.meta.env.PROD

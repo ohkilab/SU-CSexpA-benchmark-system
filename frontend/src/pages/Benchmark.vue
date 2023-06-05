@@ -76,7 +76,7 @@ onMounted(() => {
   
   // TODO: make sure to get own score
   const listSubmitsRequest:ListSubmitsRequest = {
-    // groupId: '2',
+    groupName: state.group,
     // status: Status.VALIDATION_ERROR
   }
 
