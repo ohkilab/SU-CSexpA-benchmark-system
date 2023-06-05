@@ -77,42 +77,57 @@ onMounted(() => {
   <!-- TODO: show "no submissions" when server returns no submissions -->
 
   <!-- modal -->
-  <div v-if="modalItem.taskResults.length > 0" @click="modalItem.taskResults = []" class="fixed flex justify-center items-center inset-0 bg-black bg-opacity-50 overflow-y-auto h-full w-full">
-        <div class="bg-gray-700 w-5/6 h-5/6 rounded overflow-y-auto mx-auto p-10 gap-4 flex flex-col">
+  <transition
+      enter-active-class="duration-100 ease-out"
+      enter-from-class="transform opacity-0"
+      enter-to-class="opacity-100"
+      leave-active-class="duration-100 ease-in"
+      leave-from-class="opacity-100"
+      leave-to-class="transform opacity-0"
+  >
+    <div v-if="modalItem.taskResults.length > 0" @click.self="modalItem.taskResults = []" class="fixed flex justify-center items-center inset-0 bg-black bg-opacity-50 overflow-y-auto h-full w-full">
+      <div class="bg-gray-700 w-5/6 h-5/6 rounded overflow-y-auto mx-auto p-10 gap-2 flex flex-col">
+        <div class="flex justify-between items-center">
           <div class="text-2xl">提出ID: {{modalItem.id}} 結果詳細</div>
-          <div class="text-md text-gray-300">提出日時: {{formatDate(Number(modalItem.submitedAt?.seconds))}}</div>
-          <div class="text-md text-gray-300">グループID: {{modalItem.groupId}}</div>
-          <div class="w-full h-full bg-gray-900 rounded p-8 overflow-y-auto flex flex-col gap-2">
-          <div
-            v-for="(t, i) in modalItem.taskResults"
-            :key="i"
-            class="flex gap-2 py-3 px-6 rounded shadow-md shadow-black items-center justify-between"
-            :class="
-              t.status == Status.WAITING ? 'opacity-70' :
-              t.status == Status.IN_PROGRESS ? 'bg-teal-500' :
-              t.status == Status.SUCCESS ? 'bg-blue-600' :
-              t.status == Status.CONNECTION_FAILED ? 'bg-red-500' :
-              t.status == Status.VALIDATION_ERROR ? 'bg-orange-500' :
-              t.status == Status.INTERNAL_ERROR ? 'bg-orange-500' : 'bg-gray-700 opacity-70'
-            "
-          >
-            <div class="flex justify-center items-center gap-2">
-              タグ {{ i+1 }}：
-              <div class="rounded bg-gray-500 px-2">{{t.requestPerSec}}</div>
-              req/s
-            </div>
-            <div class='flex gap-5 items-center'>{{t.errorMessage != '' ? `エラー: ${t.errorMessage}` : ''}}
-              <font-awesome-icon v-if="t.status == Status.IN_PROGRESS" :icon="['fas', 'spinner']"></font-awesome-icon>
-              <font-awesome-icon v-else-if="t.status == Status.WAITING" :icon="['fas', 'minus']"></font-awesome-icon>
-              <font-awesome-icon v-else-if="t.status == Status.SUCCESS" :icon="['fas', 'check']"></font-awesome-icon>
-              <font-awesome-icon v-else-if="t.status == Status.CONNECTION_FAILED" :icon="['fas', 'x']"></font-awesome-icon>
-              <font-awesome-icon v-else-if="t.status == Status.VALIDATION_ERROR" :icon="['fas', 'exclamation']"></font-awesome-icon>
-              <font-awesome-icon v-else :icon="['fas', 'minus']"></font-awesome-icon>
-            </div>
+          <button @click="modalItem.taskResults = []" class="px-4 py-3 bg-red-500 shadow-md shadow-black rounded hover:bg-red-600 transition">
+            <font-awesome-icon :icon="['fas', 'x']"></font-awesome-icon>
+          </button>
+        </div>
+        <div class="text-md text-gray-300">提出日時: {{formatDate(Number(modalItem.submitedAt?.seconds))}}</div>
+        <div class="text-md text-gray-300">グループID: {{modalItem.groupId}}</div>
+        <div class="w-full h-full bg-gray-900 rounded p-8 overflow-y-auto flex flex-col gap-2">
+        <div
+          v-for="(t, i) in modalItem.taskResults"
+          :key="i"
+          class="flex gap-2 py-3 px-5 rounded shadow-md shadow-black items-center justify-between"
+          :class="
+            t.status == Status.WAITING ? 'opacity-70' :
+            t.status == Status.IN_PROGRESS ? 'bg-teal-500' :
+            t.status == Status.SUCCESS ? 'bg-blue-600' :
+            t.status == Status.CONNECTION_FAILED ? 'bg-red-500' :
+            t.status == Status.VALIDATION_ERROR ? 'bg-orange-500' :
+            t.status == Status.INTERNAL_ERROR ? 'bg-orange-500' : 'bg-gray-700 opacity-70'
+          "
+        >
+          <div class="flex justify-center items-center gap-2">
+            タグ {{ i+1 }}：
+            <div class="rounded bg-gray-500 px-2">{{t.requestPerSec}}</div>
+            req/s
           </div>
+          <div class='flex gap-5 items-center'>{{t.errorMessage != '' ? `エラー: ${t.errorMessage}` : ''}}
+            <font-awesome-icon v-if="t.status == Status.IN_PROGRESS" :icon="['fas', 'spinner']"></font-awesome-icon>
+            <font-awesome-icon v-else-if="t.status == Status.WAITING" :icon="['fas', 'minus']"></font-awesome-icon>
+            <font-awesome-icon v-else-if="t.status == Status.SUCCESS" :icon="['fas', 'check']"></font-awesome-icon>
+            <font-awesome-icon v-else-if="t.status == Status.CONNECTION_FAILED" :icon="['fas', 'x']"></font-awesome-icon>
+            <font-awesome-icon v-else-if="t.status == Status.VALIDATION_ERROR" :icon="['fas', 'exclamation']"></font-awesome-icon>
+            <font-awesome-icon v-else :icon="['fas', 'minus']"></font-awesome-icon>
           </div>
         </div>
+        </div>
       </div>
+    </div>
+
+  </transition>
   <table v-if="submits.length > 0" class="table-auto">
     <thead class="bg-gray-700">
       <tr>
