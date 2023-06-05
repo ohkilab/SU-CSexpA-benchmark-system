@@ -19,7 +19,7 @@ const backend = new BackendServiceClient(
 
 const modalItem:Ref<Submit> = ref({
   id: 0,
-  groupId: 0,
+  groupName: '',
   year: 0,
   score: 0,
   language: 0,
