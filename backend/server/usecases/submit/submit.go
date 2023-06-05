@@ -146,11 +146,11 @@ func (i *Interactor) GetSubmit(req *backendpb.GetSubmitRequest, stream backendpb
 
 func toPbSubmit(submit *ent.Submit) *backendpb.Submit {
 	return &backendpb.Submit{
-		Id:      int32(submit.ID),
-		GroupId: int32(submit.Edges.Groups.ID),
-		Year:    int32(submit.Year),
-		Score:   int32(submit.Score),
-		Status:  backendpb.Status(backendpb.Status_value[submit.Status]),
+		Id:        int32(submit.ID),
+		GroupName: submit.Edges.Groups.Name,
+		Year:      int32(submit.Year),
+		Score:     int32(submit.Score),
+		Status:    backendpb.Status(backendpb.Status_value[submit.Status]),
 		// Language: submit.Language,
 		TagCount:     int32(submit.TaskNum),
 		ErrorMessage: &submit.Message,

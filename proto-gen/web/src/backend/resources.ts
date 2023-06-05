@@ -75,9 +75,9 @@ export interface Submit {
      */
     id: number;
     /**
-     * @generated from protobuf field: int32 group_id = 2;
+     * @generated from protobuf field: string group_name = 2;
      */
-    groupId: number;
+    groupName: string;
     /**
      * @generated from protobuf field: int32 year = 3;
      */
@@ -437,7 +437,7 @@ class Submit$Type extends MessageType<Submit> {
     constructor() {
         super("backend.Submit", [
             { no: 1, name: "id", kind: "scalar", T: 5 /*ScalarType.INT32*/ },
-            { no: 2, name: "group_id", kind: "scalar", T: 5 /*ScalarType.INT32*/ },
+            { no: 2, name: "group_name", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
             { no: 3, name: "year", kind: "scalar", T: 5 /*ScalarType.INT32*/ },
             { no: 4, name: "score", kind: "scalar", T: 5 /*ScalarType.INT32*/ },
             { no: 5, name: "language", kind: "enum", T: () => ["backend.Language", Language] },
@@ -450,7 +450,7 @@ class Submit$Type extends MessageType<Submit> {
         ]);
     }
     create(value?: PartialMessage<Submit>): Submit {
-        const message = { id: 0, groupId: 0, year: 0, score: 0, language: 0, taskResults: [], status: 0, tagCount: 0 };
+        const message = { id: 0, groupName: "", year: 0, score: 0, language: 0, taskResults: [], status: 0, tagCount: 0 };
         globalThis.Object.defineProperty(message, MESSAGE_TYPE, { enumerable: false, value: this });
         if (value !== undefined)
             reflectionMergePartial<Submit>(this, message, value);
@@ -464,8 +464,8 @@ class Submit$Type extends MessageType<Submit> {
                 case /* int32 id */ 1:
                     message.id = reader.int32();
                     break;
-                case /* int32 group_id */ 2:
-                    message.groupId = reader.int32();
+                case /* string group_name */ 2:
+                    message.groupName = reader.string();
                     break;
                 case /* int32 year */ 3:
                     message.year = reader.int32();
@@ -509,9 +509,9 @@ class Submit$Type extends MessageType<Submit> {
         /* int32 id = 1; */
         if (message.id !== 0)
             writer.tag(1, WireType.Varint).int32(message.id);
-        /* int32 group_id = 2; */
-        if (message.groupId !== 0)
-            writer.tag(2, WireType.Varint).int32(message.groupId);
+        /* string group_name = 2; */
+        if (message.groupName !== "")
+            writer.tag(2, WireType.LengthDelimited).string(message.groupName);
         /* int32 year = 3; */
         if (message.year !== 0)
             writer.tag(3, WireType.Varint).int32(message.year);
