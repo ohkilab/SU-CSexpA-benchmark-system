@@ -6,15 +6,16 @@ import { IState, useStateStore } from '../stores/state';
 import { Status, Submit, TaskResult } from 'proto-gen-web/src/backend/resources';
 import { GetSubmitRequest, ListSubmitsRequest } from 'proto-gen-web/src/backend/messages';
 
-const backend = new BackendServiceClient(
-  new GrpcWebFetchTransport({
-    baseUrl: import.meta.env.PROD ? `http://${window.location.hostname}:8080` : 'http://localhost:8080'
-  })
-)
 
 const state:IState = useStateStore()
 
 const submits:Ref<Submit[]> = ref([])
+
+const backend = new BackendServiceClient(
+  new GrpcWebFetchTransport({
+    baseUrl: import.meta.env.PROD ? `http://${window.location.hostname}:8080` : state.devBaseUrl
+  })
+)
 
 const modalItem:Ref<Submit> = ref({
   id: 0,
@@ -61,7 +62,7 @@ onMounted(() => {
   const opt = {meta: {'authorization' : 'Bearer ' + state.token}}
   // TODO: get own submissions, filter functionality
   const listSubmitsRequest:ListSubmitsRequest = {
-    // groupId: '2',
+    // groupId: '1',
     // status: Status.VALIDATION_ERROR
   }
 

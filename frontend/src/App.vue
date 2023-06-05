@@ -17,11 +17,9 @@ const handleLogout = () => {
   group.value = ''
 }
 
-const baseUrl = ref('http://localhost:8080')
-
 const backend = new BackendServiceClient(
   new GrpcWebFetchTransport({
-    baseUrl: import.meta.env.PROD ? `http://${window.location.hostname}:8080` : 'http://localhost:8080'
+    baseUrl: import.meta.env.PROD ? `http://${window.location.hostname}:8080` : state.devBaseUrl
   })
 )
 
@@ -102,9 +100,8 @@ onMounted(() => {
     <fieldset v-if="state.debug" class="mx-8 border border-red-500 p-2 flex flex-col gap-2">
       <legend>Debug Panel</legend>
       <pre class="break-all whitespace-pre-wrap">state: {{JSON.stringify(state, null, 4)}}</pre>
-      <pre class="break-all whitespace-pre-wrap">baseUrl: {{baseUrl}}</pre>
       <button class="bg-green-500 p-2" @click="state.benchmarking = !state.benchmarking">Toggle benchmarking</button>
-      <input type="text" :value="baseUrl" placeholder="baseUrl" class="bg-gray-700 p-2 rounded transition hover:bg-gray-600 focus:outline-none" />
+      <input type="text" v-model="state.devBaseUrl" placeholder="baseUrl" class="bg-gray-700 p-2 rounded transition hover:bg-gray-600 focus:outline-none" />
     </fieldset>
     <div v-if="loggedIn && !state.benchmarking" class="flex gap-5 text-lg">
         <!-- TODO: fix active class -->
