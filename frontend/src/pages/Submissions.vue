@@ -89,13 +89,20 @@ onMounted(() => {
     <div v-if="modalItem.taskResults.length > 0" @click.self="modalItem.taskResults = []" class="fixed flex justify-center items-center inset-0 bg-black bg-opacity-50 overflow-y-auto h-full w-full">
       <div class="bg-gray-700 w-5/6 h-5/6 rounded overflow-y-auto mx-auto p-10 gap-2 flex flex-col">
         <div class="flex justify-between items-center">
-          <div class="text-2xl">提出ID: {{modalItem.id}} 結果詳細</div>
+          <div class="text-2xl">グループ {{ modalItem.groupName }} 提出ID: {{modalItem.id}} 結果詳細
+
+          </div>
           <button @click="modalItem.taskResults = []" class="px-4 py-3 bg-red-500 shadow-md shadow-black rounded hover:bg-red-600 transition">
             <font-awesome-icon :icon="['fas', 'x']"></font-awesome-icon>
           </button>
         </div>
+        <div class="flex gap-2">
+          得点:
+          <div class="w-20 bg-gray-500 rounded text-center justify-center">
+          {{modalItem.score}}
+          </div>
+        </div>
         <div class="text-md text-gray-300">提出日時: {{formatDate(Number(modalItem.submitedAt?.seconds))}}</div>
-        <div class="text-md text-gray-300">グループID: {{modalItem.groupName}}</div>
         <div class="w-full h-full bg-gray-900 rounded p-8 overflow-y-auto flex flex-col gap-2">
         <div
           v-for="(t, i) in modalItem.taskResults"
@@ -134,7 +141,7 @@ onMounted(() => {
       <tr>
         <th class="px-2 py-3">提出ID</th>
         <th class="">提出日時</th>
-        <th class="px-2">グループID</th>
+        <th class="px-2">グループ名</th>
         <th class="">得点</th>
         <th class="w-48">結果</th>
       </tr>

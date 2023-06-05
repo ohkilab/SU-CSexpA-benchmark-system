@@ -29,7 +29,7 @@ export const useStateStore = defineStore<'state', IState>('state', {
     showResult: false,
     result: 0,
     current: 0,
-    size: 17,
+    size: 0,
     debug: false,
     devBaseUrl: 'http://localhost:8080'
   })

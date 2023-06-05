@@ -143,8 +143,7 @@ watch(urlList, urlList => {
     <div v-if="state.benchmarking">
       <div class="flex flex-col gap-8 my-auto text-xl items-center justify-center">
         <div class="p-4 border-2 rounded border-gray-600 flex flex-col items-center gap-3">
-          タグ {{}}
-          タグ {{ `${state.current+1}/${state.size}` }} ベンチマーク中
+          {{ state.current < state.size ? `タグ ${state.current+1}/${state.size} ベンチマーク中` : 'ベンチマーク完了' }}
           <br>
           <font-awesome-icon class="animate-spin" :icon="['fas', 'spinner']" />
         </div>
