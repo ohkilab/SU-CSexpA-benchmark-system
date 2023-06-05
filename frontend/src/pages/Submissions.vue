@@ -95,7 +95,7 @@ onMounted(() => {
           </button>
         </div>
         <div class="text-md text-gray-300">提出日時: {{formatDate(Number(modalItem.submitedAt?.seconds))}}</div>
-        <div class="text-md text-gray-300">グループID: {{modalItem.groupId}}</div>
+        <div class="text-md text-gray-300">グループID: {{modalItem.groupName}}</div>
         <div class="w-full h-full bg-gray-900 rounded p-8 overflow-y-auto flex flex-col gap-2">
         <div
           v-for="(t, i) in modalItem.taskResults"
@@ -147,7 +147,7 @@ onMounted(() => {
       >
        <td class="w-20 text-center">{{s.id}}</td>
        <td class="w-60 text-center">{{formatDate(Number(s.submitedAt?.seconds))}}</td>
-       <td class="w-30 text-center">{{s.groupId}}</td>
+       <td class="w-30 text-center">{{s.groupName}}</td>
        <td class="w-20 text-center px-5">
          <div class="w-20 bg-gray-500 rounded text-center justify-center">
           {{s.score}}
