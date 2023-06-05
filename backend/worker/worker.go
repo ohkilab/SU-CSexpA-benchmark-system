@@ -210,8 +210,8 @@ func needsUpdateStatus(current, next backend.Status) bool {
 	priorityMap := map[backend.Status]int{
 		backend.Status_WAITING:           0,
 		backend.Status_IN_PROGRESS:       1,
-		backend.Status_CONNECTION_FAILED: 2,
-		backend.Status_SUCCESS:           3,
+		backend.Status_SUCCESS:           2,
+		backend.Status_CONNECTION_FAILED: 3,
 		backend.Status_VALIDATION_ERROR:  4,
 		backend.Status_INTERNAL_ERROR:    5,
 	}
