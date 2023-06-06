@@ -14,6 +14,8 @@
                   title: string
                   showCloseButton?: boolean
                 }>()
+
+  const emit = defineEmits(['closeModal'])
 </script>
 <template>
       <div class="bg-gray-700 w-5/6 h-5/6 rounded overflow-y-auto mx-auto p-10 gap-2 flex flex-col">
@@ -31,7 +33,7 @@
               <div v-else-if="props.submit.status == Status.INTERNAL_ERROR" class="p-1 w-40 bg-orange-500 rounded mx-2">Internal Error</div>
               <div v-else class="p-1 w-40 bg-orange-500 rounded">Unknown Error</div>
             </div>
-            <button v-if="showCloseButton" class="px-4 py-2 bg-red-500 shadow-md shadow-black rounded hover:bg-red-600 transition">
+            <button v-if="showCloseButton" @click="() => emit('closeModal')" class="px-4 py-2 bg-red-500 shadow-md shadow-black rounded hover:bg-red-600 transition">
               <font-awesome-icon :icon="['fas', 'x']"></font-awesome-icon>
             </button>
           </div>
