@@ -8,8 +8,10 @@ import type { Ref } from 'vue'
 import { GrpcWebFetchTransport } from '@protobuf-ts/grpcweb-transport'
 import { BackendServiceClient } from 'proto-gen-web/src/backend/services.client'
 
-import { Group, Status, TaskResult } from 'proto-gen-web/src/backend/resources'
+import { Group, Status, Submit, TaskResult } from 'proto-gen-web/src/backend/resources'
 import { GetSubmitRequest, ListSubmitsRequest } from 'proto-gen-web/src/backend/messages'
+
+import Result from '../components/Result.vue'
 
 const state:IState = useStateStore()
 
@@ -18,6 +20,8 @@ const backend = new BackendServiceClient(
     baseUrl: import.meta.env.PROD ? `http://${window.location.hostname}:8080` : state.devBaseUrl
   })
 )
+
+const latestSubmit:Ref<Partial<Submit>> = ref({})
 
 const currentStatus:Ref<Status> = ref(0)
 
@@ -29,8 +33,36 @@ const url: Ref<string> = ref('')
 
 const urlList: Ref<string[]> = ref([])
 
-const benchmark = () => {
+const fetchLatestSubmit = () => {
+  const listSubmitsRequest:ListSubmitsRequest = {
+    groupName: state.group,
+    // status: Status.VALIDATION_ERROR
+  }
 
+  let opt = {meta: {'authorization' : 'Bearer ' + state.token}}
+
+  // get all submissions
+  backend.listSubmits(listSubmitsRequest, opt)
+    .then(async res => {
+      if(import.meta.env.DEV) console.log('Submits', res.response.submits[0]?.id)
+
+      const getSubmitRequest:GetSubmitRequest = {
+        submitId: res.response.submits[0].id
+      }
+
+      // get latest submission
+      const opt = {meta: {'authorization' : 'Bearer ' + state.token}}
+      const call = backend.getSubmit(getSubmitRequest, opt)
+      for await (let message of call.responses) {
+        if(import.meta.env.DEV) console.log('Submit', message)
+        latestSubmit.value = message.submit ?? {}
+        taskResults.value = message.submit?.taskResults ?? []
+        state.lastResult = message.submit?.score ?? 0
+      }
+    })
+}
+
+const benchmark = () => {
   let opt = {meta: {'authorization' : 'Bearer ' + state.token}}
   taskResults.value = []
 
@@ -71,41 +103,14 @@ const handleStopBenchmark = () => {
   state.current = 0
   state.benchmarking = false
   state.showResult = true
+  fetchLatestSubmit()
 }
 
 onMounted(() => {
   url.value = localStorage.getItem('currentUrl') ?? ''
   urlList.value = JSON.parse(localStorage.getItem('urlList') ?? '[]')
-  
-  const listSubmitsRequest:ListSubmitsRequest = {
-    groupName: state.group,
-    // status: Status.VALIDATION_ERROR
-  }
 
-  let opt = {meta: {'authorization' : 'Bearer ' + state.token}}
-
-  backend.listSubmits(listSubmitsRequest, opt)
-    .then(async res => {
-      if(import.meta.env.DEV) console.log('Submits', res.response.submits[0]?.id)
-      // submits.value = res.response.submits
-
-      const getSubmitRequest:GetSubmitRequest = {
-        submitId: res.response.submits[0].id
-      }
-
-      const opt = {meta: {'authorization' : 'Bearer ' + state.token}}
-      const call = backend.getSubmit(getSubmitRequest, opt)
-      for await (let message of call.responses) {
-        if(import.meta.env.DEV) console.log('Submit', message)
-        taskResults.value = message.submit?.taskResults ?? []
-        state.lastResult = message.submit?.score ?? 0
-      }
-
-      // set modal item
-    })
-
-
-
+  fetchLatestSubmit()
   // fix BigInt problem
   // if(import.meta.env.DEV) BigInt.prototype.toJSON = function() {return this.toString()}
 })
@@ -198,38 +203,47 @@ watch(urlList, urlList => {
         <!-- <button @click="urlList.push(url)" class="px-4 bg-blue-500 rounded shadow-black shadow-md transition hover:scale-105">+</button> -->
       </div>
       <button class="p-5 mb-5 bg-blue-500 w-64 rounded text-xl shadow-md shadow-black hover:scale-105 transition" @click="benchmark">ベンチマーク開始</button>
-    </div>
-    <div v-if="!state.benchmarking" class="border flex flex-col border-gray-500 p-5 text-center rounded mb-5">
-      <div class="mb-2">最新結果</div>
-      <div class="flex self-center mb-5">
-        <div class="rounded bg-gray-500 px-2">{{state.lastResult}}</div>
-        &nbsp;req/s
+      <div v-if="Object.keys(latestSubmit).length > 0" class="w-full h-[800px]">
+        <result
+          :submit="latestSubmit"
+          :title="`最新結果`"
+        />
       </div>
-      <div class="flex flex-wrap gap-5 max-w-[1000px] items-center justify-center">
-        <div
-          v-for="(t, i) in taskResults"
-          :key="i"
-          class="flex gap-1 w-40 p-3 justify-center items-center rounded shadow-md shadow-black"
-          :class="
-            t.status == Status.WAITING ? 'opacity-70' :
-            t.status == Status.IN_PROGRESS ? 'bg-teal-500' :
-            t.status == Status.SUCCESS ? 'bg-blue-600' :
-            t.status == Status.CONNECTION_FAILED ? 'bg-red-500' :
-            t.status == Status.VALIDATION_ERROR ? 'bg-orange-500' :
-            t.status == Status.INTERNAL_ERROR ? 'bg-orange-500' : 'bg-gray-700 opacity-70'
-          "
-        >
-            <font-awesome-icon v-if="t.status == Status.IN_PROGRESS" :icon="['fas', 'spinner']"></font-awesome-icon>
-            <font-awesome-icon v-else-if="t.status == Status.WAITING" :icon="['fas', 'minus']"></font-awesome-icon>
-            <font-awesome-icon v-else-if="t.status == Status.SUCCESS" :icon="['fas', 'check']"></font-awesome-icon>
-            <font-awesome-icon v-else-if="t.status == Status.CONNECTION_FAILED" :icon="['fas', 'x']"></font-awesome-icon>
-            <font-awesome-icon v-else-if="t.status == Status.VALIDATION_ERROR" :icon="['fas', 'exclamation']"></font-awesome-icon>
-            <font-awesome-icon v-else :icon="['fas', 'minus']"></font-awesome-icon>
-            {{ i+1 }}:
-            <div class="rounded bg-gray-500 px-2">{{t.requestPerSec}}</div>
-            req/s
-        </div>
+      <div v-else>
+        loading...
       </div>
     </div>
+    <!-- <div v-if="!state.benchmarking" class="border flex flex-col border-gray-500 p-5 text-center rounded mb-5"> -->
+    <!--   <div class="mb-2">最新結果</div> -->
+    <!--   <div class="flex self-center mb-5"> -->
+    <!--     <div class="rounded bg-gray-500 px-2">{{state.lastResult}}</div> -->
+    <!--     &nbsp;req/s -->
+    <!--   </div> -->
+    <!--   <div class="flex flex-wrap gap-5 max-w-[1000px] items-center justify-center"> -->
+    <!--     <div -->
+    <!--       v-for="(t, i) in taskResults" -->
+    <!--       :key="i" -->
+    <!--       class="flex gap-1 w-40 p-3 justify-center items-center rounded shadow-md shadow-black" -->
+    <!--       :class=" -->
+    <!--         t.status == Status.WAITING ? 'opacity-70' : -->
+    <!--         t.status == Status.IN_PROGRESS ? 'bg-teal-500' : -->
+    <!--         t.status == Status.SUCCESS ? 'bg-blue-600' : -->
+    <!--         t.status == Status.CONNECTION_FAILED ? 'bg-red-500' : -->
+    <!--         t.status == Status.VALIDATION_ERROR ? 'bg-orange-500' : -->
+    <!--         t.status == Status.INTERNAL_ERROR ? 'bg-orange-500' : 'bg-gray-700 opacity-70' -->
+    <!--       " -->
+    <!--     > -->
+    <!--         <font-awesome-icon v-if="t.status == Status.IN_PROGRESS" :icon="['fas', 'spinner']"></font-awesome-icon> -->
+    <!--         <font-awesome-icon v-else-if="t.status == Status.WAITING" :icon="['fas', 'minus']"></font-awesome-icon> -->
+    <!--         <font-awesome-icon v-else-if="t.status == Status.SUCCESS" :icon="['fas', 'check']"></font-awesome-icon> -->
+    <!--         <font-awesome-icon v-else-if="t.status == Status.CONNECTION_FAILED" :icon="['fas', 'x']"></font-awesome-icon> -->
+    <!--         <font-awesome-icon v-else-if="t.status == Status.VALIDATION_ERROR" :icon="['fas', 'exclamation']"></font-awesome-icon> -->
+    <!--         <font-awesome-icon v-else :icon="['fas', 'minus']"></font-awesome-icon> -->
+    <!--         {{ i+1 }}: -->
+    <!--         <div class="rounded bg-gray-500 px-2">{{t.requestPerSec}}</div> -->
+    <!--         req/s -->
+    <!--     </div> -->
+    <!--   </div> -->
+    <!-- </div> -->
   </div>
 </template>

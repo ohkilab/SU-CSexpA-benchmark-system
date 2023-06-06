@@ -29,10 +29,6 @@ const modalItem:Ref<Submit> = ref({
   errorMessage: ''
 })
 
-const taskResults:Ref<TaskResult[]> = ref([])
-
-const modalSubmitId:Ref<number> = ref(0)
-
 const formatDate = (timestamp: number):string => {
   const dateObject: Date = new Date(timestamp * 1000)
   const date: string = dateObject.toLocaleDateString()
