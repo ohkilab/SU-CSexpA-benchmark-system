@@ -58,7 +58,6 @@ onMounted(() => {
       if(import.meta.env.DEV) console.log('Submits', res.response.submits)
       submits.value = res.response.submits
     })
-
 })
 </script>
 <template>

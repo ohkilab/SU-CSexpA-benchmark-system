@@ -40,7 +40,7 @@
         </div>
         <div class="flex gap-2">
           <div class="flex gap-2">
-            提出 ID: {{props.submit.id}}
+            グループ {{props.submit.groupName}} 提出 ID: {{props.submit.id}}
           </div>
           <div class="flex gap-2">
             得点:
