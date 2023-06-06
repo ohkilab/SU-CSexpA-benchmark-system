@@ -19,6 +19,8 @@ const backend = new BackendServiceClient(
   })
 )
 
+const currentStatus:Ref<Status> = ref(0)
+
 const errorMsg = ref('')
 
 const taskResults: Ref<TaskResult[]> = ref([])
@@ -36,7 +38,7 @@ const benchmark = () => {
     url: url.value, //'http://host.docker.internal:3001',
     contestId: 1
   },opt).then(async res => {
-    if(import.meta.env.DEV) console.log(res)
+    if(import.meta.env.DEV) console.log("postSubmit res: ", res)
     state.benchmarking = true
 
     let call = backend.getSubmit({submitId: res.response.id}, opt)
@@ -44,6 +46,8 @@ const benchmark = () => {
       if(!state.benchmarking) break
 
       if(import.meta.env.DEV) console.log('Submit', message)
+
+      currentStatus.value = message.submit?.status ?? Status.WAITING
 
       taskResults.value = Array.from(Array(message.submit?.tagCount)).map((_, i) => message.submit?.taskResults[i] ?? {} as TaskResult)
       errorMsg.value = message.submit?.errorMessage ?? ''
@@ -72,9 +76,7 @@ const handleStopBenchmark = () => {
 onMounted(() => {
   url.value = localStorage.getItem('currentUrl') ?? ''
   urlList.value = JSON.parse(localStorage.getItem('urlList') ?? '[]')
-
   
-  // TODO: make sure to get own score
   const listSubmitsRequest:ListSubmitsRequest = {
     groupName: state.group,
     // status: Status.VALIDATION_ERROR
@@ -108,6 +110,21 @@ onMounted(() => {
   // if(import.meta.env.DEV) BigInt.prototype.toJSON = function() {return this.toString()}
 })
 
+const statusMessage = (status: Status) => {
+  switch (status) {
+    case Status.WAITING: //1
+      return 'Waiting'
+    case Status.IN_PROGRESS: //2
+      return 'In progress'
+    case Status.SUCCESS: //3
+      return 'Success'
+    case Status.CONNECTION_FAILED: //4
+      return 'Connection Failed'
+    case Status.VALIDATION_ERROR: //5
+      return 'Validation Error'
+  }
+}
+
 watch(url, url => {
   localStorage.setItem('currentUrl', url)
 })
@@ -122,30 +139,24 @@ watch(urlList, urlList => {
     <fieldset v-if="state.debug" class="border border-red-500 p-2">
       <legend>Debug</legend>
       <pre>{{taskResults.length}}</pre>
-
-      <div v-if="state.debug" class="flex flex-col gap-2 w-full">
-        <div class="p-1 w-40 bg-teal-500 rounded">Waiting</div>
-        <div class="p-1 w-40 bg-teal-500 rounded">In Progress</div>
-        <div class="p-1 w-40 bg-blue-600 rounded">Success</div>
-        <div class="p-1 w-40 bg-red-600 rounded">Connection Failed</div>
-        <div class="p-1 w-40 bg-orange-500 rounded">Validation Error</div>
-        <div class="p-1 w-40 bg-orange-500 rounded">Internal Error</div>
-        {{Status}}
-        <div class="p-1 w-40 bg-teal-500 rounded">teal-500</div>
-        <div class="p-1 w-40 bg-teal-500 rounded">teal-500</div>
-        <div class="p-1 w-40 bg-blue-600 rounded">blue-600</div>
-        <div class="p-1 w-40 bg-red-600 rounded">red-600</div>
-        <div class="p-1 w-40 bg-orange-500 rounded">orange-500</div>
-        <div class="p-1 w-40 bg-orange-500 rounded">orange-500</div>
-      </div>
+      <pre>{{Status}}</pre>
+      <pre>{{statusMessage(currentStatus)}}</pre>
+      <input class="text-red-500" v-model="currentStatus" type="number">
+      <pre>{{Status[currentStatus]}}</pre>
     </fieldset>
     <div class="text-red-500" v-if="errorMsg">Error: {{errorMsg}}</div>
     <div v-if="state.benchmarking">
       <div class="flex flex-col gap-8 my-auto text-xl items-center justify-center">
         <div class="p-4 border-2 rounded border-gray-600 flex flex-col items-center gap-3">
-          {{ state.current < state.size ? `タグ ${state.current+1}/${state.size} ベンチマーク中` : 'ベンチマーク完了' }}
-          <br>
-          <font-awesome-icon class="animate-spin" :icon="['fas', 'spinner']" />
+          <div>
+             ステータス: {{statusMessage(currentStatus)}}
+          </div>
+          <div>
+             {{ currentStatus == Status.IN_PROGRESS ? `タグ ${state.current+1}/${state.size} ベンチマーク中` : 
+                currentStatus == Status.SUCCESS ? `ベンチマーク成功` : ''
+             }}
+          </div>
+          <font-awesome-icon v-if="currentStatus == Status.WAITING || currentStatus == Status.IN_PROGRESS" class="animate-spin" :icon="['fas', 'spinner']" />
         </div>
 
         <div class="flex flex-wrap gap-5 max-w-[1000px] justify-center">
@@ -177,6 +188,7 @@ watch(urlList, urlList => {
       </div>
     </div>
     <div class="flex flex-col gap-5 w-full items-center" v-else>
+      <!-- deprecated: url list -->
       <div class="flex gap-4 w-5/6" v-for="(u, idx) in urlList" :key="u">
         <button @click="url = u" class="w-full rounded bg-gray-600 p-2 text-left hover:bg-gray-600 transition">{{u}}</button>
         <button @click="urlList.splice(idx, 1)" class="px-4 bg-red-500 rounded shadow-black shadow-md transition hover:scale-105">-</button>
