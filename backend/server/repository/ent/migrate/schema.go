@@ -32,7 +32,7 @@ var (
 		{Name: "id", Type: field.TypeInt, Increment: true},
 		{Name: "name", Type: field.TypeString},
 		{Name: "year", Type: field.TypeInt},
-		{Name: "score", Type: field.TypeInt},
+		{Name: "score", Type: field.TypeInt, Nullable: true},
 		{Name: "role", Type: field.TypeEnum, Enums: []string{"contestant", "guest"}},
 		{Name: "encrypted_password", Type: field.TypeString},
 		{Name: "created_at", Type: field.TypeTime},

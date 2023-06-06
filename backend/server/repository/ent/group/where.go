@@ -230,6 +230,16 @@ func ScoreLTE(v int) predicate.Group {
 	return predicate.Group(sql.FieldLTE(FieldScore, v))
 }
 
+// ScoreIsNil applies the IsNil predicate on the "score" field.
+func ScoreIsNil() predicate.Group {
+	return predicate.Group(sql.FieldIsNull(FieldScore))
+}
+
+// ScoreNotNil applies the NotNil predicate on the "score" field.
+func ScoreNotNil() predicate.Group {
+	return predicate.Group(sql.FieldNotNull(FieldScore))
+}
+
 // RoleEQ applies the EQ predicate on the "role" field.
 func RoleEQ(v Role) predicate.Group {
 	return predicate.Group(sql.FieldEQ(FieldRole, v))

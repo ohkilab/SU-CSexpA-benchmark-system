@@ -1251,10 +1251,24 @@ func (m *GroupMutation) AddedScore() (r int, exists bool) {
 	return *v, true
 }
 
+// ClearScore clears the value of the "score" field.
+func (m *GroupMutation) ClearScore() {
+	m.score = nil
+	m.addscore = nil
+	m.clearedFields[group.FieldScore] = struct{}{}
+}
+
+// ScoreCleared returns if the "score" field was cleared in this mutation.
+func (m *GroupMutation) ScoreCleared() bool {
+	_, ok := m.clearedFields[group.FieldScore]
+	return ok
+}
+
 // ResetScore resets all changes to the "score" field.
 func (m *GroupMutation) ResetScore() {
 	m.score = nil
 	m.addscore = nil
+	delete(m.clearedFields, group.FieldScore)
 }
 
 // SetRole sets the "role" field.
@@ -1684,6 +1698,9 @@ func (m *GroupMutation) AddField(name string, value ent.Value) error {
 // mutation.
 func (m *GroupMutation) ClearedFields() []string {
 	var fields []string
+	if m.FieldCleared(group.FieldScore) {
+		fields = append(fields, group.FieldScore)
+	}
 	if m.FieldCleared(group.FieldUpdatedAt) {
 		fields = append(fields, group.FieldUpdatedAt)
 	}
@@ -1701,6 +1718,9 @@ func (m *GroupMutation) FieldCleared(name string) bool {
 // error if the field is not defined in the schema.
 func (m *GroupMutation) ClearField(name string) error {
 	switch name {
+	case group.FieldScore:
+		m.ClearScore()
+		return nil
 	case group.FieldUpdatedAt:
 		m.ClearUpdatedAt()
 		return nil

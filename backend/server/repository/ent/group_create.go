@@ -39,6 +39,14 @@ func (gc *GroupCreate) SetScore(i int) *GroupCreate {
 	return gc
 }
 
+// SetNillableScore sets the "score" field if the given value is not nil.
+func (gc *GroupCreate) SetNillableScore(i *int) *GroupCreate {
+	if i != nil {
+		gc.SetScore(*i)
+	}
+	return gc
+}
+
 // SetRole sets the "role" field.
 func (gc *GroupCreate) SetRole(gr group.Role) *GroupCreate {
 	gc.mutation.SetRole(gr)
@@ -135,14 +143,6 @@ func (gc *GroupCreate) check() error {
 	if v, ok := gc.mutation.Year(); ok {
 		if err := group.YearValidator(v); err != nil {
 			return &ValidationError{Name: "year", err: fmt.Errorf(`ent: validator failed for field "Group.year": %w`, err)}
-		}
-	}
-	if _, ok := gc.mutation.Score(); !ok {
-		return &ValidationError{Name: "score", err: errors.New(`ent: missing required field "Group.score"`)}
-	}
-	if v, ok := gc.mutation.Score(); ok {
-		if err := group.ScoreValidator(v); err != nil {
-			return &ValidationError{Name: "score", err: fmt.Errorf(`ent: validator failed for field "Group.score": %w`, err)}
 		}
 	}
 	if _, ok := gc.mutation.Role(); !ok {
