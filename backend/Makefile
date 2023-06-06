@@ -18,14 +18,27 @@ e2e_test: mysql/start
 		go test ./server/test/e2e -v
 	@docker rm -f $(CONTAINER_ID)
 
-.PHONY: seed
-seed:
+.PHONY: batch/seed
+batch/seed:
 	@DB_USER=root \
 	DB_PASS=root \
 	DB_HOST=localhost \
 	DB_PORT=3306 \
 	DB_NAME=exp-a \
-	go run ./cmd/seed
+	go run ./cmd/batch seed
+
+.PHONY: batch/create-users
+batch/create-users:
+	@DB_USER=root \
+	DB_PASS=root \
+	DB_HOST=localhost \
+	DB_PORT=3306 \
+	DB_NAME=exp-a \
+	go run ./cmd/batch create-users .create-users.yaml
+
+.PHONY: seed
+seed: batch/seed
+	@echo "seed is deprecated. please use \"make batch/seed\""
 
 .PHONY: viz
 viz:

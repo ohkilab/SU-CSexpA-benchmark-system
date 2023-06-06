@@ -1,4 +1,4 @@
-package main
+package config
 
 import "github.com/kelseyhightower/envconfig"
 
@@ -10,7 +10,7 @@ type Config struct {
 	DBName string `envconfig:"DB_NAME" required:"true"`
 }
 
-func newConfig() (*Config, error) {
+func New() (*Config, error) {
 	config := &Config{}
 	if err := envconfig.Process("", config); err != nil {
 		return nil, err
