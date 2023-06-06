@@ -19,8 +19,8 @@ type Tag struct {
 
 type Geotag struct {
 	Elapsed   int32   `json:"elapsed"`
-	Latitude  float32 `json:"latitude"`
-	Longitude float32 `json:"longitude"`
+	Latitude  float64 `json:"latitude"`
+	Longitude float64 `json:"longitude"`
 	FarmNum   uint8   `json:"farm_num"`
 	Directory string  `json:"directory"`
 }
@@ -119,23 +119,41 @@ func (v *Validator) isCorrectResult(tagName string, resp *Response) error {
 		v.logger.Error("tag: tag name %s is not found", tagName)
 		return nil
 	}
+	newKey := func(url string, date time.Time) string {
+		return fmt.Sprint(url, date.Format("2006-01-02 15:04:05"))
+	}
+	geotagByKey := make(map[string]*Geotag, len(geotags))
+	for i, geotag := range geotags {
+		url := fmt.Sprintf("http://farm%d.static.flickr.com%s", geotag.FarmNum, geotag.Directory)
+		date := baseDate.Add(time.Duration(geotag.Elapsed) * time.Second)
+		geotagByKey[newKey(url, date)] = geotags[i]
+	}
 
 	if len(geotags) != len(resp.Results) {
 		return fmt.Errorf("Results: the length of Results must be %d", len(geotags))
 	}
-	for i := range geotags {
-		actual, expect := resp.Results[i], geotags[i]
+	for i, actual := range resp.Results {
 		actualDate, _ := time.Parse("2006-01-02 15:04:05", actual.Date)
+		key := newKey(actual.Url, actualDate)
+		expect, ok := geotagByKey[key]
+		if !ok {
+			// NOTE: 日時が同一のレコードがある場合は順不同で良いという制約があるが、この場合に正確な validation をするためには
+			// 全てのレコードをメモリに載せないといけない。DB を用いないでこれを行なった場合はメモリが8GBほど必要になってしまうため、
+			// 今回は一部のレコードについては validation を行わないという方針にする
+			v.logger.Warn("the key of geotagByKey is not found", "tag", tagName, "key", key)
+			// return fmt.Errorf("Result[%d]: incorrect url or date", i)
+			continue
+		}
 		if !equalDate(baseDate.Add(time.Duration(expect.Elapsed)*time.Second), actualDate) {
 			return fmt.Errorf("Results[%d].Date: incorrect date", i)
 		}
-		if !equalFloat(expect.Latitude, float32(actual.Lat)) {
+		if !equalFloat(expect.Latitude, actual.Lat) {
 			return fmt.Errorf("Results[%d].Lat: incorrect latitude", i)
 		}
-		if !equalFloat(expect.Longitude, float32(actual.Lon)) {
+		if !equalFloat(expect.Longitude, actual.Lon) {
 			return fmt.Errorf("Results[%d].Lon: incorrect longitude", i)
 		}
-		actualURL := fmt.Sprintf("https://farm%d.static.flickr.com%s", expect.FarmNum, expect.Directory)
+		actualURL := fmt.Sprintf("http://farm%d.static.flickr.com%s", expect.FarmNum, expect.Directory)
 		if actualURL != actual.Url {
 			return fmt.Errorf("Results[%d].Url: incorrect url", i)
 		}

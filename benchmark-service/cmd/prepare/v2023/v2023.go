@@ -2,7 +2,6 @@ package v2023
 
 import (
 	"bufio"
-	"encoding/json"
 	"fmt"
 	"log"
 	"os"
@@ -10,6 +9,8 @@ import (
 	"strconv"
 	"strings"
 	"time"
+
+	"encoding/json"
 )
 
 type Tag struct {
@@ -155,6 +156,7 @@ func LoadGeotags(name string) ([]*Geotag, error) {
 		}
 		latitude, _ := strconv.ParseFloat(tokens[2], 64)
 		longitude, _ := strconv.ParseFloat(tokens[3], 64)
+
 		var farmNum int8
 		var directory string
 		fmt.Sscanf(tokens[4], "http://farm%d.static.flickr.com%s", &farmNum, &directory)
