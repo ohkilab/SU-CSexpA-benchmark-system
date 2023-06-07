@@ -178,12 +178,11 @@ func toPbSubmit(submit *ent.Submit) *backendpb.Submit {
 	}
 }
 
-func (i *Interactor) ListSubmits(ctx context.Context, groupID *string, st *backendpb.Status) (*backendpb.ListSubmitsResponse, error) {
-	q := i.entClient.Submit.Query().WithGroups(func(gq *ent.GroupQuery) {
-		if groupID != nil {
-			gq.Where(group.NameContains(*groupID))
-		}
-	})
+func (i *Interactor) ListSubmits(ctx context.Context, groupName *string, st *backendpb.Status) (*backendpb.ListSubmitsResponse, error) {
+	q := i.entClient.Submit.Query().WithGroups()
+	if groupName != nil {
+		q.Where(submit.HasGroupsWith(group.NameContains(*groupName)))
+	}
 	if st != nil {
 		q.Where(submit.StatusEQ(st.String()))
 	}

@@ -12,6 +12,7 @@ import (
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/repository/ent/group"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/test/utils"
 	pb "github.com/ohkilab/SU-CSexpA-benchmark-system/proto-gen/go/backend"
+	"github.com/samber/lo"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"google.golang.org/grpc/metadata"
@@ -27,11 +28,19 @@ func Test_ListSubmits(t *testing.T) {
 
 	// prepare
 	now := timejst.Now()
-	group, _ := entClient.Group.Create().
-		SetName("test").
+	group1, _ := entClient.Group.Create().
+		SetName("test1").
 		SetEncryptedPassword(string("hoge")).
 		SetRole(group.RoleContestant).
 		SetScore(12345).
+		SetYear(2023).
+		SetCreatedAt(timejst.Now()).
+		Save(ctx)
+	group2, _ := entClient.Group.Create().
+		SetName("test2").
+		SetEncryptedPassword(string("hoge")).
+		SetRole(group.RoleContestant).
+		SetScore(123456).
 		SetYear(2023).
 		SetCreatedAt(timejst.Now()).
 		Save(ctx)
@@ -48,7 +57,7 @@ func Test_ListSubmits(t *testing.T) {
 	submit1, err := entClient.Submit.Create().
 		SetURL("http://localhost:8080/program").
 		SetContests(contest).
-		SetGroups(group).
+		SetGroups(group1).
 		SetStatus(pb.Status_SUCCESS.String()).
 		SetYear(2023).
 		SetSubmitedAt(now.AddDate(0, 0, -2)).
@@ -57,7 +66,7 @@ func Test_ListSubmits(t *testing.T) {
 	submit2, err := entClient.Submit.Create().
 		SetURL("http://localhost:8080/program").
 		SetContests(contest).
-		SetGroups(group).
+		SetGroups(group1).
 		SetStatus(pb.Status_SUCCESS.String()).
 		SetYear(2023).
 		SetSubmitedAt(now.AddDate(0, 0, -1)).
@@ -66,24 +75,40 @@ func Test_ListSubmits(t *testing.T) {
 	submit3, err := entClient.Submit.Create().
 		SetURL("http://localhost:8080/program").
 		SetContests(contest).
-		SetGroups(group).
-		SetStatus(pb.Status_SUCCESS.String()).
+		SetGroups(group2).
+		SetStatus(pb.Status_CONNECTION_FAILED.String()).
 		SetYear(2023).
 		SetSubmitedAt(now).
 		SetTaskNum(50).
 		Save(ctx)
 
-	jwtToken, err := auth.GenerateJWTToken([]byte("secret"), group.ID, group.Year)
+	jwtToken, err := auth.GenerateJWTToken([]byte("secret"), group1.ID, group1.Year)
 	if err != nil {
 		t.Fatal(err)
 	}
 	meta := metadata.New(map[string]string{"authorization": "Bearer " + jwtToken})
 	ctx = metadata.NewOutgoingContext(ctx, meta)
+
 	resp, err := client.ListSubmits(ctx, &pb.ListSubmitsRequest{})
 	require.NoError(t, err)
-
 	require.Len(t, resp.Submits, 3)
 	assert.Equal(t, submit3.ID, int(resp.Submits[0].Id))
 	assert.Equal(t, submit2.ID, int(resp.Submits[1].Id))
 	assert.Equal(t, submit1.ID, int(resp.Submits[2].Id))
+
+	resp, err = client.ListSubmits(ctx, &pb.ListSubmitsRequest{
+		GroupName: lo.ToPtr("test2"),
+	})
+	require.NoError(t, err)
+	require.Len(t, resp.Submits, 1)
+	assert.Equal(t, submit3.ID, int(resp.Submits[0].Id))
+	assert.Equal(t, group2.Name, resp.Submits[0].GroupName)
+
+	resp, err = client.ListSubmits(ctx, &pb.ListSubmitsRequest{
+		Status: lo.ToPtr(pb.Status_CONNECTION_FAILED),
+	})
+	require.NoError(t, err)
+	require.Len(t, resp.Submits, 1)
+	assert.Equal(t, submit3.ID, int(resp.Submits[0].Id))
+	assert.Equal(t, group2.Name, resp.Submits[0].GroupName)
 }
