@@ -24,7 +24,7 @@ onMounted(() => {
   backend.getRanking({
     year: 2023,
     containGuest: false
-  },opt).then(res => {
+  }, opt).then(res => {
     records.value = res.response.records
     if(import.meta.env.DEV) console.log(res.response.records)
     // state.records = records.value

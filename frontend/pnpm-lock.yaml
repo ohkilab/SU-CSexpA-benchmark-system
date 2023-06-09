@@ -1,4 +1,8 @@
-lockfileVersion: '6.0'
+lockfileVersion: '6.1'
+
+settings:
+  autoInstallPeers: true
+  excludeLinksFromLockfile: false
 
 dependencies:
   '@fortawesome/fontawesome-svg-core':
@@ -28,6 +32,9 @@ dependencies:
   pinia:
     specifier: ^2.0.35
     version: 2.0.35(typescript@4.9.5)(vue@3.2.47)
+  pinia-plugin-persistedstate:
+    specifier: ^3.1.0
+    version: 3.1.0(pinia@2.0.35)
   proto-gen-ts:
     specifier: link:../proto-gen/ts
     version: link:../proto-gen/ts
@@ -1002,6 +1009,14 @@ packages:
     resolution: {integrity: sha512-udgsAY+fTnvv7kI7aaxbqwWNb0AHiB0qBO89PZKPkoTmGOgdbrHDKD+0B2X4uTfJ/FT1R09r9gTsjUjNJotuog==}
     engines: {node: '>=0.10.0'}
     dev: true
+
+  /pinia-plugin-persistedstate@3.1.0(pinia@2.0.35):
+    resolution: {integrity: sha512-8UN+vYMEPBdgNLwceY08mi5olI0wkYaEb8b6hD6xW7SnBRuPydWHlEhZvUWgNb/ibuf4PvufpvtS+dmhYjJQOw==}
+    peerDependencies:
+      pinia: ^2.0.0
+    dependencies:
+      pinia: 2.0.35(typescript@4.9.5)(vue@3.2.47)
+    dev: false
 
   /pinia@2.0.35(typescript@4.9.5)(vue@3.2.47):
     resolution: {integrity: sha512-P1IKKQWhxGXiiZ3atOaNI75bYlFUbRxtJdhPLX059Z7+b9Z04rnTZdSY8Aph1LA+/4QEMAYHsTQ638Wfe+6K5g==}

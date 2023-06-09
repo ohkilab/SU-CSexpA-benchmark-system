@@ -7,7 +7,6 @@ import { Status, Submit, TaskResult } from 'proto-gen-web/src/backend/resources'
 import { GetSubmitRequest, ListSubmitsRequest } from 'proto-gen-web/src/backend/messages';
 import Result from '../components/Result.vue'
 
-
 const state:IState = useStateStore()
 
 const submits:Ref<Submit[]> = ref([])

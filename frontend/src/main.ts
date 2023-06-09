@@ -1,5 +1,6 @@
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
+import piniaPluginPersistedState from 'pinia-plugin-persistedstate'
 
 import './style.css'
 import App from './App.vue'
@@ -13,6 +14,7 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import {fas} from '@fortawesome/free-solid-svg-icons'
 
 const pinia = createPinia()
+pinia.use(piniaPluginPersistedState)
 
 library.add(fas)
 
