@@ -11,6 +11,8 @@ const state:IState = useStateStore()
 
 const submits:Ref<Submit[]> = ref([])
 
+const noSubmissions:Ref<boolean> = ref(false)
+
 const backend = new BackendServiceClient(
   new GrpcWebFetchTransport({
     baseUrl: import.meta.env.PROD ? `http://${window.location.hostname}:8080` : state.devBaseUrl
@@ -56,6 +58,10 @@ onMounted(() => {
     .then(res => {
       if(import.meta.env.DEV) console.log('Submits', res.response.submits)
       submits.value = res.response.submits
+
+      if(res.response.submits.length == 0) {
+        noSubmissions.value = true
+      }
     })
 })
 </script>
@@ -118,7 +124,8 @@ onMounted(() => {
   </table>
 
   <div class="mt-auto" v-else>
-    <font-awesome-icon  class="animate-spin text-3xl" :icon="['fas', 'spinner']"></font-awesome-icon>
+    <font-awesome-icon v-if="!noSubmissions"  class="animate-spin text-3xl" :icon="['fas', 'spinner']"></font-awesome-icon>
+    <div v-else>まだベンチマーク結果がありません。</div>
   </div>
   <div v-if="state.debug" class="flex flex-col gap-2 w-full">
     <div class="p-1 w-40 bg-teal-500 rounded">Waiting</div>

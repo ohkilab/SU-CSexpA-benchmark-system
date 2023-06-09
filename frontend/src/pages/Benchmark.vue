@@ -33,6 +33,8 @@ const url: Ref<string> = ref('')
 
 const urlList: Ref<string[]> = ref([])
 
+const noSubmissions: Ref<boolean> = ref(false)
+
 const fetchLatestSubmit = () => {
   const listSubmitsRequest:ListSubmitsRequest = {
     groupName: state.group,
@@ -45,6 +47,10 @@ const fetchLatestSubmit = () => {
   backend.listSubmits(listSubmitsRequest, opt)
     .then(async res => {
       if(import.meta.env.DEV) console.log('Submits', res.response.submits[0]?.id)
+
+      if(res.response.submits.length === 0) {
+        noSubmissions.value = true
+      }
 
       const getSubmitRequest:GetSubmitRequest = {
         submitId: res.response.submits[0].id
@@ -210,7 +216,7 @@ watch(urlList, urlList => {
         />
       </div>
       <div v-else>
-        loading...
+        {{noSubmissions ? 'まだベンチマーク結果がありません。' : '読み込み中...'}}
       </div>
     </div>
     <!-- <div v-if="!state.benchmarking" class="border flex flex-col border-gray-500 p-5 text-center rounded mb-5"> -->
