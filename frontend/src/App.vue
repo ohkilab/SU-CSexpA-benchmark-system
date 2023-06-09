@@ -40,6 +40,7 @@ const handleLogin = (id:string, password:string) => {
     state.token = value.response.token
     state.group = id
     loggedIn.value = true
+    errMsg.value = ''
     router.push('/benchmark')
   }).catch(err => {
     console.log(err)
@@ -118,7 +119,7 @@ onMounted(() => {
           >ランキング</router-link
         >
       </div>
-      <div v-if="!loggedIn" class="mt-auto"></div>
+      <div v-if="!loggedIn" class="mt-auto text-red-500">{{errMsg}}</div>
       <router-view @login="(id:string, password:string) => {handleLogin(id, password)}" ></router-view>
       <!-- <Login class="mt-auto" :err-msg="errMsg" @login=" (id, password) => {handleLogin(id, password)}" v-else></Login> -->
     <!-- footer -->
