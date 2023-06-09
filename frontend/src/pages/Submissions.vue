@@ -74,7 +74,9 @@ onMounted(() => {
 
 
   <div v-if="Object.keys(modalItem).length > 0" @click.self="modalItem = {}" class="fixed flex justify-center items-center inset-0 bg-black bg-opacity-50 overflow-y-auto h-full w-full">
-    <result :submit="modalItem" :title="'結果詳細'" :show-close-button="true" @close-modal="modalItem = {}" />
+    <div class="w-5/6 h-5/6">
+      <result :submit="modalItem" :title="'結果詳細'" :show-close-button="true" @close-modal="modalItem = {}" />
+    </div>
     </div>
 
   </transition>

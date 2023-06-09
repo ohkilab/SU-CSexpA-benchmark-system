@@ -9,6 +9,7 @@ import {useStateStore} from './stores/state'
 const loggedIn = ref(false)
 const state = useStateStore()
 const router = useRouter()
+const route = useRoute()
 
 const handleLogout = () => {
   // clear all credentials
@@ -48,7 +49,7 @@ const handleLogin = (id:string, password:string) => {
 
 onMounted(() => {
   // try login with token
-  if(localStorage.getItem('token')) {
+  if(state.token) {
     const backend = new BackendServiceClient(
       new GrpcWebFetchTransport({
         baseUrl: import.meta.env.PROD ? `http://${window.location.hostname}:8080` : state.devBaseUrl

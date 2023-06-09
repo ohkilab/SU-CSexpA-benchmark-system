@@ -203,7 +203,7 @@ watch(urlList, urlList => {
         <!-- <button @click="urlList.push(url)" class="px-4 bg-blue-500 rounded shadow-black shadow-md transition hover:scale-105">+</button> -->
       </div>
       <button class="p-5 mb-5 bg-blue-500 w-64 rounded text-xl shadow-md shadow-black hover:scale-105 transition" @click="benchmark">ベンチマーク開始</button>
-      <div v-if="Object.keys(latestSubmit).length > 0" class="w-full h-[800px]">
+      <div v-if="Object.keys(latestSubmit).length > 0" class="w-5/6 h-[500px]">
         <result
           :submit="latestSubmit"
           :title="`最新結果`"

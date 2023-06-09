@@ -18,7 +18,7 @@
   const emit = defineEmits(['closeModal'])
 </script>
 <template>
-      <div class="bg-gray-700 w-5/6 h-5/6 rounded overflow-y-auto mx-auto p-10 gap-2 flex flex-col">
+      <div class="bg-gray-700 w-full h-full rounded overflow-y-auto mx-auto p-10 gap-2 flex flex-col">
         <!-- title row -->
         <div class="flex items-center">
           <!-- <div class="text-2xl">グループ {{ props.submit.groupName }} 提出ID: {{ props.submit.id }} 結果詳細</div> -->

@@ -12,7 +12,7 @@ const emit = defineEmits(['login'])
 </script>
 <template>
   <form class="flex flex-col items-center justify-center h-full w-full px-5 md:w-96 gap-5 text-xl" @submit.prevent="() => emit('login', id, password)">
-    <router-link class="border border-gray-300 p-2 rounded hover:bg-gray-600 transition" :to="'/ranking'">ログインなしでランキングを見る</router-link>
+    <!-- <router-link class="border border-gray-300 p-2 rounded hover:bg-gray-600 transition" :to="'/ranking'">ログインなしでランキングを見る</router-link> -->
 
     <div class="text-red-500">
       {{errMsg}}
