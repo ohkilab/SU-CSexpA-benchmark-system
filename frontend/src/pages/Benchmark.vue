@@ -219,37 +219,5 @@ watch(urlList, urlList => {
         {{noSubmissions ? 'まだベンチマーク結果がありません。' : '読み込み中...'}}
       </div>
     </div>
-    <!-- <div v-if="!state.benchmarking" class="border flex flex-col border-gray-500 p-5 text-center rounded mb-5"> -->
-    <!--   <div class="mb-2">最新結果</div> -->
-    <!--   <div class="flex self-center mb-5"> -->
-    <!--     <div class="rounded bg-gray-500 px-2">{{state.lastResult}}</div> -->
-    <!--     &nbsp;req/s -->
-    <!--   </div> -->
-    <!--   <div class="flex flex-wrap gap-5 max-w-[1000px] items-center justify-center"> -->
-    <!--     <div -->
-    <!--       v-for="(t, i) in taskResults" -->
-    <!--       :key="i" -->
-    <!--       class="flex gap-1 w-40 p-3 justify-center items-center rounded shadow-md shadow-black" -->
-    <!--       :class=" -->
-    <!--         t.status == Status.WAITING ? 'opacity-70' : -->
-    <!--         t.status == Status.IN_PROGRESS ? 'bg-teal-500' : -->
-    <!--         t.status == Status.SUCCESS ? 'bg-blue-600' : -->
-    <!--         t.status == Status.CONNECTION_FAILED ? 'bg-red-500' : -->
-    <!--         t.status == Status.VALIDATION_ERROR ? 'bg-orange-500' : -->
-    <!--         t.status == Status.INTERNAL_ERROR ? 'bg-orange-500' : 'bg-gray-700 opacity-70' -->
-    <!--       " -->
-    <!--     > -->
-    <!--         <font-awesome-icon v-if="t.status == Status.IN_PROGRESS" :icon="['fas', 'spinner']"></font-awesome-icon> -->
-    <!--         <font-awesome-icon v-else-if="t.status == Status.WAITING" :icon="['fas', 'minus']"></font-awesome-icon> -->
-    <!--         <font-awesome-icon v-else-if="t.status == Status.SUCCESS" :icon="['fas', 'check']"></font-awesome-icon> -->
-    <!--         <font-awesome-icon v-else-if="t.status == Status.CONNECTION_FAILED" :icon="['fas', 'x']"></font-awesome-icon> -->
-    <!--         <font-awesome-icon v-else-if="t.status == Status.VALIDATION_ERROR" :icon="['fas', 'exclamation']"></font-awesome-icon> -->
-    <!--         <font-awesome-icon v-else :icon="['fas', 'minus']"></font-awesome-icon> -->
-    <!--         {{ i+1 }}: -->
-    <!--         <div class="rounded bg-gray-500 px-2">{{t.requestPerSec}}</div> -->
-    <!--         req/s -->
-    <!--     </div> -->
-    <!--   </div> -->
-    <!-- </div> -->
   </div>
 </template>

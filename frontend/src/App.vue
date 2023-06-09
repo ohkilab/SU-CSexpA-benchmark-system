@@ -33,10 +33,6 @@ const handleLogin = (id:string, password:string) => {
 
   backend.postLogin({ id, password }).then(value => {
     if(import.meta.env.DEV) console.log('Login', value)
-    // token.value = value.response.token
-    // group.value = id
-    // localStorage.setItem('token', value.response.token)
-    // localStorage.setItem('group', id)
     state.token = value.response.token
     state.group = id
     loggedIn.value = true
@@ -60,15 +56,10 @@ onMounted(() => {
     backend.verifyToken({token: state.token})
     .then(_ => {
       // successfully logged in with token, load token and group name into app
-      // state.token = localStorage.getItem('token') ?? ''
-      // state.group = localStorage.getItem('group') ?? ''
       loggedIn.value = true
     }).catch(_ => {
       // login with token failed
-      // localStorage.removeItem('token')
-      // localStorage.removeItem('group')
       router.push('/login')
-
       errMsg.value = 'Session expired, please login again'
     })
   } else {
@@ -121,7 +112,6 @@ onMounted(() => {
       </div>
       <div v-if="!loggedIn" class="mt-auto text-red-500">{{errMsg}}</div>
       <router-view @login="(id:string, password:string) => {handleLogin(id, password)}" ></router-view>
-      <!-- <Login class="mt-auto" :err-msg="errMsg" @login=" (id, password) => {handleLogin(id, password)}" v-else></Login> -->
     <!-- footer -->
     <div class="flex mt-auto items-center justify-center bg-gray-700 w-full h-8">© 2023 <a href="https://sec.inf.shizuoka.ac.jp/" class="text-blue-500 mx-1" target="_blank">Ohkilab.</a> All rights reserved.</div>
   </div>
