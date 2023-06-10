@@ -12,10 +12,11 @@ import { reflectionMergePartial } from "@protobuf-ts/runtime";
 import { MESSAGE_TYPE } from "@protobuf-ts/runtime";
 import { MessageType } from "@protobuf-ts/runtime";
 import { Contest } from "./resources";
+import { Group } from "./resources";
 import { Status } from "./resources";
 import { Submit } from "./resources";
 import { Timestamp } from "../google/protobuf/timestamp";
-import { Group } from "./resources";
+import { Role } from "./resources";
 /**
  * @generated from protobuf message backend.PostLoginRequest
  */
@@ -34,13 +35,26 @@ export interface PostLoginRequest {
  */
 export interface PostLoginResponse {
     /**
-     * @generated from protobuf field: backend.Group group = 1;
+     * @generated from protobuf field: backend.PostLoginResponse.Group group = 1;
      */
-    group?: Group;
+    group?: PostLoginResponse_Group;
     /**
      * @generated from protobuf field: string token = 2;
      */
     token: string;
+}
+/**
+ * @generated from protobuf message backend.PostLoginResponse.Group
+ */
+export interface PostLoginResponse_Group {
+    /**
+     * @generated from protobuf field: string id = 1;
+     */
+    id: string;
+    /**
+     * @generated from protobuf field: backend.Role role = 2;
+     */
+    role: Role;
 }
 /**
  * @generated from protobuf message backend.PostSubmitRequest
@@ -308,7 +322,7 @@ export const PostLoginRequest = new PostLoginRequest$Type();
 class PostLoginResponse$Type extends MessageType<PostLoginResponse> {
     constructor() {
         super("backend.PostLoginResponse", [
-            { no: 1, name: "group", kind: "message", T: () => Group },
+            { no: 1, name: "group", kind: "message", T: () => PostLoginResponse_Group },
             { no: 2, name: "token", kind: "scalar", T: 9 /*ScalarType.STRING*/ }
         ]);
     }
@@ -324,8 +338,8 @@ class PostLoginResponse$Type extends MessageType<PostLoginResponse> {
         while (reader.pos < end) {
             let [fieldNo, wireType] = reader.tag();
             switch (fieldNo) {
-                case /* backend.Group group */ 1:
-                    message.group = Group.internalBinaryRead(reader, reader.uint32(), options, message.group);
+                case /* backend.PostLoginResponse.Group group */ 1:
+                    message.group = PostLoginResponse_Group.internalBinaryRead(reader, reader.uint32(), options, message.group);
                     break;
                 case /* string token */ 2:
                     message.token = reader.string();
@@ -342,9 +356,9 @@ class PostLoginResponse$Type extends MessageType<PostLoginResponse> {
         return message;
     }
     internalBinaryWrite(message: PostLoginResponse, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
-        /* backend.Group group = 1; */
+        /* backend.PostLoginResponse.Group group = 1; */
         if (message.group)
-            Group.internalBinaryWrite(message.group, writer.tag(1, WireType.LengthDelimited).fork(), options).join();
+            PostLoginResponse_Group.internalBinaryWrite(message.group, writer.tag(1, WireType.LengthDelimited).fork(), options).join();
         /* string token = 2; */
         if (message.token !== "")
             writer.tag(2, WireType.LengthDelimited).string(message.token);
@@ -358,6 +372,60 @@ class PostLoginResponse$Type extends MessageType<PostLoginResponse> {
  * @generated MessageType for protobuf message backend.PostLoginResponse
  */
 export const PostLoginResponse = new PostLoginResponse$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class PostLoginResponse_Group$Type extends MessageType<PostLoginResponse_Group> {
+    constructor() {
+        super("backend.PostLoginResponse.Group", [
+            { no: 1, name: "id", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 2, name: "role", kind: "enum", T: () => ["backend.Role", Role] }
+        ]);
+    }
+    create(value?: PartialMessage<PostLoginResponse_Group>): PostLoginResponse_Group {
+        const message = { id: "", role: 0 };
+        globalThis.Object.defineProperty(message, MESSAGE_TYPE, { enumerable: false, value: this });
+        if (value !== undefined)
+            reflectionMergePartial<PostLoginResponse_Group>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: PostLoginResponse_Group): PostLoginResponse_Group {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* string id */ 1:
+                    message.id = reader.string();
+                    break;
+                case /* backend.Role role */ 2:
+                    message.role = reader.int32();
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: PostLoginResponse_Group, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* string id = 1; */
+        if (message.id !== "")
+            writer.tag(1, WireType.LengthDelimited).string(message.id);
+        /* backend.Role role = 2; */
+        if (message.role !== 0)
+            writer.tag(2, WireType.Varint).int32(message.role);
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message backend.PostLoginResponse.Group
+ */
+export const PostLoginResponse_Group = new PostLoginResponse_Group$Type();
 // @generated message type with reflection information, may provide speed optimized methods
 class PostSubmitRequest$Type extends MessageType<PostSubmitRequest> {
     constructor() {

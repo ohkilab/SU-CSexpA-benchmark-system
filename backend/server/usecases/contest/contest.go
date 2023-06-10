@@ -4,7 +4,6 @@ import (
 	"context"
 
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/repository/ent"
-	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/repository/ent/contest"
 	pb "github.com/ohkilab/SU-CSexpA-benchmark-system/proto-gen/go/backend"
 	"github.com/samber/lo"
 	"golang.org/x/exp/slog"
@@ -23,7 +22,7 @@ func NewInteractor(entClient *ent.Client, logger *slog.Logger) *Interactor {
 }
 
 func (i *Interactor) ListContests(ctx context.Context, req *pb.ListContestsRequest) (*pb.ListContestsResponse, error) {
-	contests, err := i.entClient.Contest.Query().Where(contest.Year(int(req.Year))).All(ctx)
+	contests, err := i.entClient.Contest.Query().All(ctx)
 	if err != nil {
 		i.logger.Error("failed to fetch contests", err)
 		return nil, status.Error(codes.Internal, "failed to fetch contests")
@@ -42,6 +41,5 @@ func toPbContest(contest *ent.Contest) *pb.Contest {
 		StartAt:     timestamppb.New(contest.StartAt),
 		EndAt:       timestamppb.New(contest.EndAt),
 		SubmitLimit: int32(contest.SubmitLimit),
-		Year:        int32(contest.Year),
 	}
 }

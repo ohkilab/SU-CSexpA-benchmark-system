@@ -44,8 +44,6 @@ func Test_PostSubmit(t *testing.T) {
 		SetName("test").
 		SetEncryptedPassword(string(encryptedPassword)).
 		SetRole(group.RoleContestant).
-		SetScore(12345).
-		SetYear(2023).
 		SetCreatedAt(timejst.Now()).
 		Save(ctx)
 	if err != nil {
@@ -56,7 +54,6 @@ func Test_PostSubmit(t *testing.T) {
 		SetSlug("test-contest").
 		SetStartAt(time.Date(2023, time.January, 1, 0, 0, 0, 0, time.UTC)).
 		SetEndAt(time.Date(2023, time.December, 31, 23, 59, 59, 0, time.UTC)).
-		SetYear(2023).
 		SetSubmitLimit(9999).
 		SetTagSelectionLogic(contest.TagSelectionLogicAuto).
 		SetCreatedAt(timejst.Now()).
@@ -65,7 +62,7 @@ func Test_PostSubmit(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	jwtToken, err := auth.GenerateJWTToken(secret, group.ID, group.Year)
+	jwtToken, err := auth.GenerateJWTToken(secret, group.ID, group.CreatedAt.Year())
 	if err != nil {
 		t.Fatal(err)
 	}

@@ -37,19 +37,6 @@ func (su *SubmitUpdate) SetURL(s string) *SubmitUpdate {
 	return su
 }
 
-// SetYear sets the "year" field.
-func (su *SubmitUpdate) SetYear(i int) *SubmitUpdate {
-	su.mutation.ResetYear()
-	su.mutation.SetYear(i)
-	return su
-}
-
-// AddYear adds i to the "year" field.
-func (su *SubmitUpdate) AddYear(i int) *SubmitUpdate {
-	su.mutation.AddYear(i)
-	return su
-}
-
 // SetScore sets the "score" field.
 func (su *SubmitUpdate) SetScore(i int) *SubmitUpdate {
 	su.mutation.ResetScore()
@@ -302,11 +289,6 @@ func (su *SubmitUpdate) ExecX(ctx context.Context) {
 
 // check runs all checks and user-defined validators on the builder.
 func (su *SubmitUpdate) check() error {
-	if v, ok := su.mutation.Year(); ok {
-		if err := submit.YearValidator(v); err != nil {
-			return &ValidationError{Name: "year", err: fmt.Errorf(`ent: validator failed for field "Submit.year": %w`, err)}
-		}
-	}
 	if v, ok := su.mutation.Language(); ok {
 		if err := submit.LanguageValidator(v); err != nil {
 			return &ValidationError{Name: "language", err: fmt.Errorf(`ent: validator failed for field "Submit.language": %w`, err)}
@@ -329,12 +311,6 @@ func (su *SubmitUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if value, ok := su.mutation.URL(); ok {
 		_spec.SetField(submit.FieldURL, field.TypeString, value)
-	}
-	if value, ok := su.mutation.Year(); ok {
-		_spec.SetField(submit.FieldYear, field.TypeInt, value)
-	}
-	if value, ok := su.mutation.AddedYear(); ok {
-		_spec.AddField(submit.FieldYear, field.TypeInt, value)
 	}
 	if value, ok := su.mutation.Score(); ok {
 		_spec.SetField(submit.FieldScore, field.TypeInt, value)
@@ -507,19 +483,6 @@ type SubmitUpdateOne struct {
 // SetURL sets the "url" field.
 func (suo *SubmitUpdateOne) SetURL(s string) *SubmitUpdateOne {
 	suo.mutation.SetURL(s)
-	return suo
-}
-
-// SetYear sets the "year" field.
-func (suo *SubmitUpdateOne) SetYear(i int) *SubmitUpdateOne {
-	suo.mutation.ResetYear()
-	suo.mutation.SetYear(i)
-	return suo
-}
-
-// AddYear adds i to the "year" field.
-func (suo *SubmitUpdateOne) AddYear(i int) *SubmitUpdateOne {
-	suo.mutation.AddYear(i)
 	return suo
 }
 
@@ -788,11 +751,6 @@ func (suo *SubmitUpdateOne) ExecX(ctx context.Context) {
 
 // check runs all checks and user-defined validators on the builder.
 func (suo *SubmitUpdateOne) check() error {
-	if v, ok := suo.mutation.Year(); ok {
-		if err := submit.YearValidator(v); err != nil {
-			return &ValidationError{Name: "year", err: fmt.Errorf(`ent: validator failed for field "Submit.year": %w`, err)}
-		}
-	}
 	if v, ok := suo.mutation.Language(); ok {
 		if err := submit.LanguageValidator(v); err != nil {
 			return &ValidationError{Name: "language", err: fmt.Errorf(`ent: validator failed for field "Submit.language": %w`, err)}
@@ -832,12 +790,6 @@ func (suo *SubmitUpdateOne) sqlSave(ctx context.Context) (_node *Submit, err err
 	}
 	if value, ok := suo.mutation.URL(); ok {
 		_spec.SetField(submit.FieldURL, field.TypeString, value)
-	}
-	if value, ok := suo.mutation.Year(); ok {
-		_spec.SetField(submit.FieldYear, field.TypeInt, value)
-	}
-	if value, ok := suo.mutation.AddedYear(); ok {
-		_spec.AddField(submit.FieldYear, field.TypeInt, value)
 	}
 	if value, ok := suo.mutation.Score(); ok {
 		_spec.SetField(submit.FieldScore, field.TypeInt, value)

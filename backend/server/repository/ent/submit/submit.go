@@ -16,8 +16,6 @@ const (
 	FieldID = "id"
 	// FieldURL holds the string denoting the url field in the database.
 	FieldURL = "url"
-	// FieldYear holds the string denoting the year field in the database.
-	FieldYear = "year"
 	// FieldScore holds the string denoting the score field in the database.
 	FieldScore = "score"
 	// FieldLanguage holds the string denoting the language field in the database.
@@ -69,7 +67,6 @@ const (
 var Columns = []string{
 	FieldID,
 	FieldURL,
-	FieldYear,
 	FieldScore,
 	FieldLanguage,
 	FieldMessage,
@@ -101,11 +98,6 @@ func ValidColumn(column string) bool {
 	}
 	return false
 }
-
-var (
-	// YearValidator is a validator for the "year" field. It is called by the builders before save.
-	YearValidator func(int) error
-)
 
 // Language defines the type for the "language" enum field.
 type Language string
@@ -147,11 +139,6 @@ func ByID(opts ...sql.OrderTermOption) OrderOption {
 // ByURL orders the results by the url field.
 func ByURL(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldURL, opts...).ToFunc()
-}
-
-// ByYear orders the results by the year field.
-func ByYear(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldYear, opts...).ToFunc()
 }
 
 // ByScore orders the results by the score field.

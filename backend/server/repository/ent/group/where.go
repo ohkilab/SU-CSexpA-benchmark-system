@@ -60,16 +60,6 @@ func Name(v string) predicate.Group {
 	return predicate.Group(sql.FieldEQ(FieldName, v))
 }
 
-// Year applies equality check predicate on the "year" field. It's identical to YearEQ.
-func Year(v int) predicate.Group {
-	return predicate.Group(sql.FieldEQ(FieldYear, v))
-}
-
-// Score applies equality check predicate on the "score" field. It's identical to ScoreEQ.
-func Score(v int) predicate.Group {
-	return predicate.Group(sql.FieldEQ(FieldScore, v))
-}
-
 // EncryptedPassword applies equality check predicate on the "encrypted_password" field. It's identical to EncryptedPasswordEQ.
 func EncryptedPassword(v string) predicate.Group {
 	return predicate.Group(sql.FieldEQ(FieldEncryptedPassword, v))
@@ -148,96 +138,6 @@ func NameEqualFold(v string) predicate.Group {
 // NameContainsFold applies the ContainsFold predicate on the "name" field.
 func NameContainsFold(v string) predicate.Group {
 	return predicate.Group(sql.FieldContainsFold(FieldName, v))
-}
-
-// YearEQ applies the EQ predicate on the "year" field.
-func YearEQ(v int) predicate.Group {
-	return predicate.Group(sql.FieldEQ(FieldYear, v))
-}
-
-// YearNEQ applies the NEQ predicate on the "year" field.
-func YearNEQ(v int) predicate.Group {
-	return predicate.Group(sql.FieldNEQ(FieldYear, v))
-}
-
-// YearIn applies the In predicate on the "year" field.
-func YearIn(vs ...int) predicate.Group {
-	return predicate.Group(sql.FieldIn(FieldYear, vs...))
-}
-
-// YearNotIn applies the NotIn predicate on the "year" field.
-func YearNotIn(vs ...int) predicate.Group {
-	return predicate.Group(sql.FieldNotIn(FieldYear, vs...))
-}
-
-// YearGT applies the GT predicate on the "year" field.
-func YearGT(v int) predicate.Group {
-	return predicate.Group(sql.FieldGT(FieldYear, v))
-}
-
-// YearGTE applies the GTE predicate on the "year" field.
-func YearGTE(v int) predicate.Group {
-	return predicate.Group(sql.FieldGTE(FieldYear, v))
-}
-
-// YearLT applies the LT predicate on the "year" field.
-func YearLT(v int) predicate.Group {
-	return predicate.Group(sql.FieldLT(FieldYear, v))
-}
-
-// YearLTE applies the LTE predicate on the "year" field.
-func YearLTE(v int) predicate.Group {
-	return predicate.Group(sql.FieldLTE(FieldYear, v))
-}
-
-// ScoreEQ applies the EQ predicate on the "score" field.
-func ScoreEQ(v int) predicate.Group {
-	return predicate.Group(sql.FieldEQ(FieldScore, v))
-}
-
-// ScoreNEQ applies the NEQ predicate on the "score" field.
-func ScoreNEQ(v int) predicate.Group {
-	return predicate.Group(sql.FieldNEQ(FieldScore, v))
-}
-
-// ScoreIn applies the In predicate on the "score" field.
-func ScoreIn(vs ...int) predicate.Group {
-	return predicate.Group(sql.FieldIn(FieldScore, vs...))
-}
-
-// ScoreNotIn applies the NotIn predicate on the "score" field.
-func ScoreNotIn(vs ...int) predicate.Group {
-	return predicate.Group(sql.FieldNotIn(FieldScore, vs...))
-}
-
-// ScoreGT applies the GT predicate on the "score" field.
-func ScoreGT(v int) predicate.Group {
-	return predicate.Group(sql.FieldGT(FieldScore, v))
-}
-
-// ScoreGTE applies the GTE predicate on the "score" field.
-func ScoreGTE(v int) predicate.Group {
-	return predicate.Group(sql.FieldGTE(FieldScore, v))
-}
-
-// ScoreLT applies the LT predicate on the "score" field.
-func ScoreLT(v int) predicate.Group {
-	return predicate.Group(sql.FieldLT(FieldScore, v))
-}
-
-// ScoreLTE applies the LTE predicate on the "score" field.
-func ScoreLTE(v int) predicate.Group {
-	return predicate.Group(sql.FieldLTE(FieldScore, v))
-}
-
-// ScoreIsNil applies the IsNil predicate on the "score" field.
-func ScoreIsNil() predicate.Group {
-	return predicate.Group(sql.FieldIsNull(FieldScore))
-}
-
-// ScoreNotNil applies the NotNil predicate on the "score" field.
-func ScoreNotNil() predicate.Group {
-	return predicate.Group(sql.FieldNotNull(FieldScore))
 }
 
 // RoleEQ applies the EQ predicate on the "role" field.

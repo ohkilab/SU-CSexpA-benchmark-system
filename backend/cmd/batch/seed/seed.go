@@ -38,19 +38,19 @@ var Command = &cobra.Command{
 		}
 
 		encryptedPassword, _ := bcrypt.GenerateFromPassword([]byte("ohkilab"), bcrypt.DefaultCost)
-		_, err = entClient.Group.Create().SetName("ohkilab").SetEncryptedPassword(string(encryptedPassword)).SetYear(2023).SetRole(group.RoleContestant).SetScore(99999).SetCreatedAt(timejst.Now()).Save(ctx)
+		_, err = entClient.Group.Create().SetName("ohkilab").SetEncryptedPassword(string(encryptedPassword)).SetRole(group.RoleContestant).SetCreatedAt(timejst.Now()).Save(ctx)
 		if err != nil {
 			return err
 		}
-		_, err = entClient.Group.Create().SetName("a01").SetEncryptedPassword(string(encryptedPassword)).SetYear(2023).SetRole(group.RoleContestant).SetScore(555).SetCreatedAt(timejst.Now()).Save(ctx)
+		_, err = entClient.Group.Create().SetName("a01").SetEncryptedPassword(string(encryptedPassword)).SetRole(group.RoleContestant).SetCreatedAt(timejst.Now()).Save(ctx)
 		if err != nil {
 			return err
 		}
-		_, err = entClient.Group.Create().SetName("a02").SetEncryptedPassword(string(encryptedPassword)).SetYear(2023).SetRole(group.RoleContestant).SetScore(444).SetCreatedAt(timejst.Now()).Save(ctx)
+		_, err = entClient.Group.Create().SetName("a02").SetEncryptedPassword(string(encryptedPassword)).SetRole(group.RoleContestant).SetCreatedAt(timejst.Now()).Save(ctx)
 		if err != nil {
 			return err
 		}
-		_, err = entClient.Group.Create().SetName("a03").SetEncryptedPassword(string(encryptedPassword)).SetYear(2023).SetRole(group.RoleContestant).SetScore(666).SetCreatedAt(timejst.Now()).Save(ctx)
+		_, err = entClient.Group.Create().SetName("a03").SetEncryptedPassword(string(encryptedPassword)).SetRole(group.RoleContestant).SetCreatedAt(timejst.Now()).Save(ctx)
 		if err != nil {
 			return err
 		}
@@ -61,7 +61,6 @@ var Command = &cobra.Command{
 			SetStartAt(time.Date(2023, time.January, 1, 0, 0, 0, 0, time.UTC)).
 			SetEndAt(time.Date(2023, time.December, 31, 23, 59, 59, 0, time.UTC)).
 			SetSubmitLimit(9999).
-			SetYear(2023).
 			SetTagSelectionLogic(contest.TagSelectionLogicAuto).
 			SetCreatedAt(timejst.Now()).
 			Save(ctx)

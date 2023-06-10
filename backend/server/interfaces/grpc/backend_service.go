@@ -34,7 +34,7 @@ func NewBackendService(secret []byte, entClient *ent.Client, worker worker.Worke
 }
 
 func (s *backendServiceServer) GetRanking(ctx context.Context, req *pb.GetRankingRequest) (*pb.GetRankingResponse, error) {
-	records, err := s.rankingInteractor.GetRanking(ctx, req.ContainGuest, int(req.Year))
+	records, err := s.rankingInteractor.GetRanking(ctx, req.ContainGuest, int(req.ContestId))
 	if err != nil {
 		return nil, err
 	}

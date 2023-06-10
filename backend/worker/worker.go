@@ -7,6 +7,7 @@ import (
 
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/core/timejst"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/repository/ent"
+	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/repository/ent/group"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/repository/ent/submit"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/proto-gen/go/backend"
 	backendpb "github.com/ohkilab/SU-CSexpA-benchmark-system/proto-gen/go/backend"
@@ -188,15 +189,14 @@ func (w *worker) runBenchmarkTask(task *Task) error {
 		return err
 	}
 
-	group, err := w.entClient.Group.Get(ctx, task.GroupID)
+	maxSubmit, err := w.entClient.Submit.Query().WithGroups().Where(submit.HasGroupsWith(group.ID(task.GroupID))).Order(ent.Desc(submit.FieldScore)).First(ctx)
 	if err != nil {
-		w.logger.Error("failed to get group", err)
+		w.logger.Error("failed to get max submit", "error", err)
 		return err
 	}
-	if group.Score < score {
+	if maxSubmit.Score < score {
 		if _, err := w.entClient.Group.
-			UpdateOneID(group.ID).
-			SetScore(score).
+			UpdateOneID(maxSubmit.Edges.Groups.ID).
 			SetUpdatedAt(now).
 			Save(ctx); err != nil {
 			w.logger.Error("failed to update group", err)

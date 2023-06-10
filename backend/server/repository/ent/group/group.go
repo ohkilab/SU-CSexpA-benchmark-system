@@ -16,10 +16,6 @@ const (
 	FieldID = "id"
 	// FieldName holds the string denoting the name field in the database.
 	FieldName = "name"
-	// FieldYear holds the string denoting the year field in the database.
-	FieldYear = "year"
-	// FieldScore holds the string denoting the score field in the database.
-	FieldScore = "score"
 	// FieldRole holds the string denoting the role field in the database.
 	FieldRole = "role"
 	// FieldEncryptedPassword holds the string denoting the encrypted_password field in the database.
@@ -45,8 +41,6 @@ const (
 var Columns = []string{
 	FieldID,
 	FieldName,
-	FieldYear,
-	FieldScore,
 	FieldRole,
 	FieldEncryptedPassword,
 	FieldCreatedAt,
@@ -62,11 +56,6 @@ func ValidColumn(column string) bool {
 	}
 	return false
 }
-
-var (
-	// YearValidator is a validator for the "year" field. It is called by the builders before save.
-	YearValidator func(int) error
-)
 
 // Role defines the type for the "role" enum field.
 type Role string
@@ -102,16 +91,6 @@ func ByID(opts ...sql.OrderTermOption) OrderOption {
 // ByName orders the results by the name field.
 func ByName(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldName, opts...).ToFunc()
-}
-
-// ByYear orders the results by the year field.
-func ByYear(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldYear, opts...).ToFunc()
-}
-
-// ByScore orders the results by the score field.
-func ByScore(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldScore, opts...).ToFunc()
 }
 
 // ByRole orders the results by the role field.

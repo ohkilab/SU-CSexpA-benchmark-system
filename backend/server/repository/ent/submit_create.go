@@ -29,12 +29,6 @@ func (sc *SubmitCreate) SetURL(s string) *SubmitCreate {
 	return sc
 }
 
-// SetYear sets the "year" field.
-func (sc *SubmitCreate) SetYear(i int) *SubmitCreate {
-	sc.mutation.SetYear(i)
-	return sc
-}
-
 // SetScore sets the "score" field.
 func (sc *SubmitCreate) SetScore(i int) *SubmitCreate {
 	sc.mutation.SetScore(i)
@@ -219,14 +213,6 @@ func (sc *SubmitCreate) check() error {
 	if _, ok := sc.mutation.URL(); !ok {
 		return &ValidationError{Name: "url", err: errors.New(`ent: missing required field "Submit.url"`)}
 	}
-	if _, ok := sc.mutation.Year(); !ok {
-		return &ValidationError{Name: "year", err: errors.New(`ent: missing required field "Submit.year"`)}
-	}
-	if v, ok := sc.mutation.Year(); ok {
-		if err := submit.YearValidator(v); err != nil {
-			return &ValidationError{Name: "year", err: fmt.Errorf(`ent: validator failed for field "Submit.year": %w`, err)}
-		}
-	}
 	if v, ok := sc.mutation.Language(); ok {
 		if err := submit.LanguageValidator(v); err != nil {
 			return &ValidationError{Name: "language", err: fmt.Errorf(`ent: validator failed for field "Submit.language": %w`, err)}
@@ -276,10 +262,6 @@ func (sc *SubmitCreate) createSpec() (*Submit, *sqlgraph.CreateSpec) {
 	if value, ok := sc.mutation.URL(); ok {
 		_spec.SetField(submit.FieldURL, field.TypeString, value)
 		_node.URL = value
-	}
-	if value, ok := sc.mutation.Year(); ok {
-		_spec.SetField(submit.FieldYear, field.TypeInt, value)
-		_node.Year = value
 	}
 	if value, ok := sc.mutation.Score(); ok {
 		_spec.SetField(submit.FieldScore, field.TypeInt, value)

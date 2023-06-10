@@ -69,7 +69,6 @@ func (i *Interactor) PostSubmit(ctx context.Context, req *backendpb.PostSubmitRe
 
 	submit, err := i.entClient.Submit.Create().
 		SetURL(req.Url).
-		SetYear(claims.Year).
 		SetSubmitedAt(timejst.Now()).
 		SetContestsID(int(req.ContestId)).
 		SetGroupsID(claims.GroupID).
@@ -148,7 +147,6 @@ func toPbSubmit(submit *ent.Submit) *backendpb.Submit {
 	return &backendpb.Submit{
 		Id:        int32(submit.ID),
 		GroupName: submit.Edges.Groups.Name,
-		Year:      int32(submit.Year),
 		Score:     int32(submit.Score),
 		Status:    backendpb.Status(backendpb.Status_value[submit.Status]),
 		// Language: submit.Language,

@@ -30,8 +30,6 @@ func Test_PostLogin(t *testing.T) {
 		SetName("test").
 		SetEncryptedPassword(string(encryptedPassword)).
 		SetRole(group.RoleContestant).
-		SetScore(12345).
-		SetYear(2023).
 		SetCreatedAt(timejst.Now()).
 		Save(ctx)
 
@@ -41,8 +39,6 @@ func Test_PostLogin(t *testing.T) {
 		t.Fatal(err)
 	}
 	assert.Equal(t, g.Name, resp.Group.Id)
-	assert.Equal(t, int32(g.Year), resp.Group.Year)
-	assert.Equal(t, int32(g.Score), resp.Group.Score)
 	assert.Equal(t, g.Role, group.Role(strings.ToLower(pb.Role_name[int32(resp.Group.Role)])))
 	assert.NotEmpty(t, resp.Token)
 

@@ -26,7 +26,7 @@ func NewInteractor(secret []byte, entClient *ent.Client, logger *slog.Logger) *A
 }
 
 func (i *AuthInteractor) PostLogin(ctx context.Context, id, password string) (*pb.PostLoginResponse, error) {
-	groups, err := i.entClient.Group.Query().Where(group.NameEQ(id)).All(ctx)
+	groups, err := i.entClient.Group.Query().WithSubmits().Where(group.NameEQ(id)).All(ctx)
 	if err != nil {
 		i.logger.Error("failed to fetch groups", err)
 		return nil, status.Error(codes.Internal, "failed to fetch groups")
@@ -42,17 +42,15 @@ func (i *AuthInteractor) PostLogin(ctx context.Context, id, password string) (*p
 	if group == nil {
 		return nil, status.Error(codes.Unauthenticated, "id or password is incorrect")
 	}
-	jwtToken, err := auth.GenerateJWTToken(i.secret, group.ID, group.Year)
+	jwtToken, err := auth.GenerateJWTToken(i.secret, group.ID, group.CreatedAt.Year())
 	if err != nil {
 		i.logger.Error("failed to generate jwt token", err)
 		return nil, err
 	}
 	return &pb.PostLoginResponse{
-		Group: &pb.Group{
-			Id:    group.Name,
-			Year:  int32(group.Year),
-			Role:  pb.Role(pb.Role_value[group.Role.String()]),
-			Score: int32(group.Score),
+		Group: &pb.PostLoginResponse_Group{
+			Id:   group.Name,
+			Role: pb.Role(pb.Role_value[group.Role.String()]),
 		},
 		Token: jwtToken,
 	}, nil

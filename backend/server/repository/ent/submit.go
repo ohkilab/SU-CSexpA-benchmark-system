@@ -21,8 +21,6 @@ type Submit struct {
 	ID int `json:"id,omitempty"`
 	// URL holds the value of the "url" field.
 	URL string `json:"url,omitempty"`
-	// Year holds the value of the "year" field.
-	Year int `json:"year,omitempty"`
 	// Score holds the value of the "score" field.
 	Score int `json:"score,omitempty"`
 	// Language holds the value of the "language" field.
@@ -100,7 +98,7 @@ func (*Submit) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case submit.FieldID, submit.FieldYear, submit.FieldScore, submit.FieldTaskNum:
+		case submit.FieldID, submit.FieldScore, submit.FieldTaskNum:
 			values[i] = new(sql.NullInt64)
 		case submit.FieldURL, submit.FieldLanguage, submit.FieldMessage, submit.FieldStatus:
 			values[i] = new(sql.NullString)
@@ -136,12 +134,6 @@ func (s *Submit) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field url", values[i])
 			} else if value.Valid {
 				s.URL = value.String
-			}
-		case submit.FieldYear:
-			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for field year", values[i])
-			} else if value.Valid {
-				s.Year = int(value.Int64)
 			}
 		case submit.FieldScore:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
@@ -258,9 +250,6 @@ func (s *Submit) String() string {
 	builder.WriteString(fmt.Sprintf("id=%v, ", s.ID))
 	builder.WriteString("url=")
 	builder.WriteString(s.URL)
-	builder.WriteString(", ")
-	builder.WriteString("year=")
-	builder.WriteString(fmt.Sprintf("%v", s.Year))
 	builder.WriteString(", ")
 	builder.WriteString("score=")
 	builder.WriteString(fmt.Sprintf("%v", s.Score))

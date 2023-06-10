@@ -20,7 +20,6 @@ func (Submit) Fields() []ent.Field {
 	return []ent.Field{
 		field.Int("id"),
 		field.String("url"),
-		field.Int("year").Positive(),
 		field.Int("score").Optional(),
 		field.Enum("language").Values(languages...).Optional(),
 		field.String("message").Optional(),

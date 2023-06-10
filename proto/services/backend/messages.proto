@@ -13,6 +13,10 @@ message PostLoginRequest {
 }
 
 message PostLoginResponse {
+  message Group {
+    string id = 1;
+    Role role = 2;
+  }
   Group group = 1;
   string token = 2;
 }

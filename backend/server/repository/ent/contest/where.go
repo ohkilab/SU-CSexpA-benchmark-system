@@ -75,11 +75,6 @@ func SubmitLimit(v int) predicate.Contest {
 	return predicate.Contest(sql.FieldEQ(FieldSubmitLimit, v))
 }
 
-// Year applies equality check predicate on the "year" field. It's identical to YearEQ.
-func Year(v int) predicate.Contest {
-	return predicate.Contest(sql.FieldEQ(FieldYear, v))
-}
-
 // Slug applies equality check predicate on the "slug" field. It's identical to SlugEQ.
 func Slug(v string) predicate.Contest {
 	return predicate.Contest(sql.FieldEQ(FieldSlug, v))
@@ -278,46 +273,6 @@ func SubmitLimitLT(v int) predicate.Contest {
 // SubmitLimitLTE applies the LTE predicate on the "submit_limit" field.
 func SubmitLimitLTE(v int) predicate.Contest {
 	return predicate.Contest(sql.FieldLTE(FieldSubmitLimit, v))
-}
-
-// YearEQ applies the EQ predicate on the "year" field.
-func YearEQ(v int) predicate.Contest {
-	return predicate.Contest(sql.FieldEQ(FieldYear, v))
-}
-
-// YearNEQ applies the NEQ predicate on the "year" field.
-func YearNEQ(v int) predicate.Contest {
-	return predicate.Contest(sql.FieldNEQ(FieldYear, v))
-}
-
-// YearIn applies the In predicate on the "year" field.
-func YearIn(vs ...int) predicate.Contest {
-	return predicate.Contest(sql.FieldIn(FieldYear, vs...))
-}
-
-// YearNotIn applies the NotIn predicate on the "year" field.
-func YearNotIn(vs ...int) predicate.Contest {
-	return predicate.Contest(sql.FieldNotIn(FieldYear, vs...))
-}
-
-// YearGT applies the GT predicate on the "year" field.
-func YearGT(v int) predicate.Contest {
-	return predicate.Contest(sql.FieldGT(FieldYear, v))
-}
-
-// YearGTE applies the GTE predicate on the "year" field.
-func YearGTE(v int) predicate.Contest {
-	return predicate.Contest(sql.FieldGTE(FieldYear, v))
-}
-
-// YearLT applies the LT predicate on the "year" field.
-func YearLT(v int) predicate.Contest {
-	return predicate.Contest(sql.FieldLT(FieldYear, v))
-}
-
-// YearLTE applies the LTE predicate on the "year" field.
-func YearLTE(v int) predicate.Contest {
-	return predicate.Contest(sql.FieldLTE(FieldYear, v))
 }
 
 // SlugEQ applies the EQ predicate on the "slug" field.

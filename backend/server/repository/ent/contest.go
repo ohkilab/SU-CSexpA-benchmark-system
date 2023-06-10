@@ -25,8 +25,6 @@ type Contest struct {
 	EndAt time.Time `json:"end_at,omitempty"`
 	// SubmitLimit holds the value of the "submit_limit" field.
 	SubmitLimit int `json:"submit_limit,omitempty"`
-	// Year holds the value of the "year" field.
-	Year int `json:"year,omitempty"`
 	// Slug holds the value of the "slug" field.
 	Slug string `json:"slug,omitempty"`
 	// TagSelectionLogic holds the value of the "tag_selection_logic" field.
@@ -64,7 +62,7 @@ func (*Contest) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case contest.FieldID, contest.FieldSubmitLimit, contest.FieldYear:
+		case contest.FieldID, contest.FieldSubmitLimit:
 			values[i] = new(sql.NullInt64)
 		case contest.FieldTitle, contest.FieldSlug, contest.FieldTagSelectionLogic:
 			values[i] = new(sql.NullString)
@@ -114,12 +112,6 @@ func (c *Contest) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field submit_limit", values[i])
 			} else if value.Valid {
 				c.SubmitLimit = int(value.Int64)
-			}
-		case contest.FieldYear:
-			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for field year", values[i])
-			} else if value.Valid {
-				c.Year = int(value.Int64)
 			}
 		case contest.FieldSlug:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -197,9 +189,6 @@ func (c *Contest) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("submit_limit=")
 	builder.WriteString(fmt.Sprintf("%v", c.SubmitLimit))
-	builder.WriteString(", ")
-	builder.WriteString("year=")
-	builder.WriteString(fmt.Sprintf("%v", c.Year))
 	builder.WriteString(", ")
 	builder.WriteString("slug=")
 	builder.WriteString(c.Slug)
