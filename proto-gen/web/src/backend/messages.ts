@@ -121,10 +121,6 @@ export interface ListSubmitsResponse {
  */
 export interface GetRankingRequest {
     /**
-     * @generated from protobuf field: int32 year = 1;
-     */
-    year: number;
-    /**
      * @generated from protobuf field: bool contain_guest = 2;
      */
     containGuest: boolean; // if it is true, return ranking which includes guests
@@ -222,10 +218,6 @@ export interface PingServerSideStreamingResponse {
  * @generated from protobuf message backend.ListContestsRequest
  */
 export interface ListContestsRequest {
-    /**
-     * @generated from protobuf field: int32 year = 1;
-     */
-    year: number;
 }
 /**
  * @generated from protobuf message backend.ListContestsResponse
@@ -683,12 +675,11 @@ export const ListSubmitsResponse = new ListSubmitsResponse$Type();
 class GetRankingRequest$Type extends MessageType<GetRankingRequest> {
     constructor() {
         super("backend.GetRankingRequest", [
-            { no: 1, name: "year", kind: "scalar", T: 5 /*ScalarType.INT32*/ },
             { no: 2, name: "contain_guest", kind: "scalar", T: 8 /*ScalarType.BOOL*/ }
         ]);
     }
     create(value?: PartialMessage<GetRankingRequest>): GetRankingRequest {
-        const message = { year: 0, containGuest: false };
+        const message = { containGuest: false };
         globalThis.Object.defineProperty(message, MESSAGE_TYPE, { enumerable: false, value: this });
         if (value !== undefined)
             reflectionMergePartial<GetRankingRequest>(this, message, value);
@@ -699,9 +690,6 @@ class GetRankingRequest$Type extends MessageType<GetRankingRequest> {
         while (reader.pos < end) {
             let [fieldNo, wireType] = reader.tag();
             switch (fieldNo) {
-                case /* int32 year */ 1:
-                    message.year = reader.int32();
-                    break;
                 case /* bool contain_guest */ 2:
                     message.containGuest = reader.bool();
                     break;
@@ -717,9 +705,6 @@ class GetRankingRequest$Type extends MessageType<GetRankingRequest> {
         return message;
     }
     internalBinaryWrite(message: GetRankingRequest, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
-        /* int32 year = 1; */
-        if (message.year !== 0)
-            writer.tag(1, WireType.Varint).int32(message.year);
         /* bool contain_guest = 2; */
         if (message.containGuest !== false)
             writer.tag(2, WireType.Varint).bool(message.containGuest);
@@ -1173,40 +1158,19 @@ export const PingServerSideStreamingResponse = new PingServerSideStreamingRespon
 // @generated message type with reflection information, may provide speed optimized methods
 class ListContestsRequest$Type extends MessageType<ListContestsRequest> {
     constructor() {
-        super("backend.ListContestsRequest", [
-            { no: 1, name: "year", kind: "scalar", T: 5 /*ScalarType.INT32*/ }
-        ]);
+        super("backend.ListContestsRequest", []);
     }
     create(value?: PartialMessage<ListContestsRequest>): ListContestsRequest {
-        const message = { year: 0 };
+        const message = {};
         globalThis.Object.defineProperty(message, MESSAGE_TYPE, { enumerable: false, value: this });
         if (value !== undefined)
             reflectionMergePartial<ListContestsRequest>(this, message, value);
         return message;
     }
     internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: ListContestsRequest): ListContestsRequest {
-        let message = target ?? this.create(), end = reader.pos + length;
-        while (reader.pos < end) {
-            let [fieldNo, wireType] = reader.tag();
-            switch (fieldNo) {
-                case /* int32 year */ 1:
-                    message.year = reader.int32();
-                    break;
-                default:
-                    let u = options.readUnknownField;
-                    if (u === "throw")
-                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
-                    let d = reader.skip(wireType);
-                    if (u !== false)
-                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
-            }
-        }
-        return message;
+        return target ?? this.create();
     }
     internalBinaryWrite(message: ListContestsRequest, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
-        /* int32 year = 1; */
-        if (message.year !== 0)
-            writer.tag(1, WireType.Varint).int32(message.year);
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);

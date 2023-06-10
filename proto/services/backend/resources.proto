@@ -12,21 +12,18 @@ message Contest {
   google.protobuf.Timestamp start_at = 4;
   google.protobuf.Timestamp end_at = 5;
   int32 submit_limit = 6;
-  int32 year = 7;
   string slug = 8;
 }
 
 message Group {
   string id = 1;
   int32 score = 2;
-  int32 year = 3;
   Role role = 4;
 }
 
 message Submit {
   int32 id = 1;
   string group_name = 2;
-  int32 year = 3;
   int32 score = 4;
   Language language = 5;
   google.protobuf.Timestamp submited_at = 6;

@@ -43,7 +43,6 @@ message ListSubmitsResponse {
 }
 
 message GetRankingRequest {
-  int32 year = 1;
   bool contain_guest = 2; // if it is true, return ranking which includes guests
 }
 
@@ -73,9 +72,7 @@ message PingServerSideStreamingRequest { string ping = 2; }
 
 message PingServerSideStreamingResponse { string pong = 2; }
 
-message ListContestsRequest {
-  int32 year = 1;
-}
+message ListContestsRequest {}
 
 message ListContestsResponse {
   repeated Contest contests = 2;
