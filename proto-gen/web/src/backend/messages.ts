@@ -121,6 +121,10 @@ export interface ListSubmitsResponse {
  */
 export interface GetRankingRequest {
     /**
+     * @generated from protobuf field: int32 contest_id = 1;
+     */
+    contestId: number;
+    /**
      * @generated from protobuf field: bool contain_guest = 2;
      */
     containGuest: boolean; // if it is true, return ranking which includes guests
@@ -675,11 +679,12 @@ export const ListSubmitsResponse = new ListSubmitsResponse$Type();
 class GetRankingRequest$Type extends MessageType<GetRankingRequest> {
     constructor() {
         super("backend.GetRankingRequest", [
+            { no: 1, name: "contest_id", kind: "scalar", T: 5 /*ScalarType.INT32*/ },
             { no: 2, name: "contain_guest", kind: "scalar", T: 8 /*ScalarType.BOOL*/ }
         ]);
     }
     create(value?: PartialMessage<GetRankingRequest>): GetRankingRequest {
-        const message = { containGuest: false };
+        const message = { contestId: 0, containGuest: false };
         globalThis.Object.defineProperty(message, MESSAGE_TYPE, { enumerable: false, value: this });
         if (value !== undefined)
             reflectionMergePartial<GetRankingRequest>(this, message, value);
@@ -690,6 +695,9 @@ class GetRankingRequest$Type extends MessageType<GetRankingRequest> {
         while (reader.pos < end) {
             let [fieldNo, wireType] = reader.tag();
             switch (fieldNo) {
+                case /* int32 contest_id */ 1:
+                    message.contestId = reader.int32();
+                    break;
                 case /* bool contain_guest */ 2:
                     message.containGuest = reader.bool();
                     break;
@@ -705,6 +713,9 @@ class GetRankingRequest$Type extends MessageType<GetRankingRequest> {
         return message;
     }
     internalBinaryWrite(message: GetRankingRequest, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* int32 contest_id = 1; */
+        if (message.contestId !== 0)
+            writer.tag(1, WireType.Varint).int32(message.contestId);
         /* bool contain_guest = 2; */
         if (message.containGuest !== false)
             writer.tag(2, WireType.Varint).bool(message.containGuest);

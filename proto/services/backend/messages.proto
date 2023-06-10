@@ -43,6 +43,7 @@ message ListSubmitsResponse {
 }
 
 message GetRankingRequest {
+  int32 contest_id = 1;
   bool contain_guest = 2; // if it is true, return ranking which includes guests
 }
 
