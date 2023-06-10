@@ -154,6 +154,7 @@ watch(urlList, urlList => {
       <pre>{{statusMessage(currentStatus)}}</pre>
       <input class="text-red-500" v-model="currentStatus" type="number">
       <pre>{{Status[currentStatus]}}</pre>
+      <button class="border border-red-500 p-2" @click="latestSubmit = {}">clear submit</button>
     </fieldset>
     <div class="text-red-500" v-if="errorMsg">Error: {{errorMsg}}</div>
     <div v-if="state.benchmarking">
@@ -215,7 +216,7 @@ watch(urlList, urlList => {
           :title="`最新結果`"
         />
       </div>
-      <div v-else>
+      <div v-else class="w-5/6 bg-gray-700 rounded-md flex justify-center items-center h-[500px]">
         {{noSubmissions ? 'まだベンチマーク結果がありません。' : '読み込み中...'}}
       </div>
     </div>
