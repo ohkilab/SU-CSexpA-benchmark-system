@@ -44,6 +44,12 @@ const handleLogin = (id:string, password:string) => {
   })
 }
 
+watch(loggedIn, loggedIn => {
+  if(loggedIn && route.name === 'index') {
+    router.push('/benchmark')
+  }
+})
+
 onMounted(() => {
   // try login with token
   if(state.token) {
