@@ -54,30 +54,36 @@ func Test_GetRanking(t *testing.T) {
 	require.NoError(t, err)
 	require.Equal(t, 3, len(resp.Records))
 	assert.Equal(t, int32(1), resp.Records[0].Rank)
-	assert.Equal(t, newPbGroup(a01.Name, a01Submit2.Score, string(a01.Role)), resp.Records[0].Group)
+	assert.Equal(t, newPbGroup(a01.Name, string(a01.Role)), resp.Records[0].Group)
+	assert.Equal(t, int32(a01Submit2.Score), *resp.Records[0].Score)
 	assert.Equal(t, int32(2), resp.Records[1].Rank)
-	assert.Equal(t, newPbGroup(a02.Name, a02Submit.Score, string(a02.Role)), resp.Records[1].Group)
+	assert.Equal(t, newPbGroup(a02.Name, string(a02.Role)), resp.Records[1].Group)
+	assert.Equal(t, int32(a02Submit.Score), *resp.Records[1].Score)
 	assert.Equal(t, int32(3), resp.Records[2].Rank)
-	assert.Equal(t, newPbGroup(a03.Name, a03Submit.Score, string(a03.Role)), resp.Records[2].Group)
+	assert.Equal(t, newPbGroup(a03.Name, string(a03.Role)), resp.Records[2].Group)
+	assert.Equal(t, int32(a03Submit.Score), *resp.Records[2].Score)
 
 	// contain guest
 	resp, err = client.GetRanking(ctx, &pb.GetRankingRequest{ContestId: int32(contest.ID), ContainGuest: true})
 	require.NoError(t, err)
 	require.Equal(t, 4, len(resp.Records))
 	assert.Equal(t, int32(1), resp.Records[0].Rank)
-	assert.Equal(t, newPbGroup(szpp.Name, szppSubmit.Score, string(szpp.Role)), resp.Records[0].Group)
+	assert.Equal(t, newPbGroup(szpp.Name, string(szpp.Role)), resp.Records[0].Group)
+	assert.Equal(t, int32(szppSubmit.Score), *resp.Records[0].Score)
 	assert.Equal(t, int32(2), resp.Records[1].Rank)
-	assert.Equal(t, newPbGroup(a01.Name, a01Submit2.Score, string(a01.Role)), resp.Records[1].Group)
+	assert.Equal(t, newPbGroup(a01.Name, string(a01.Role)), resp.Records[1].Group)
+	assert.Equal(t, int32(a01Submit2.Score), *resp.Records[1].Score)
 	assert.Equal(t, int32(3), resp.Records[2].Rank)
-	assert.Equal(t, newPbGroup(a02.Name, a02Submit.Score, string(a02.Role)), resp.Records[2].Group)
+	assert.Equal(t, newPbGroup(a02.Name, string(a02.Role)), resp.Records[2].Group)
+	assert.Equal(t, int32(a02Submit.Score), *resp.Records[2].Score)
 	assert.Equal(t, int32(4), resp.Records[3].Rank)
-	assert.Equal(t, newPbGroup(a03.Name, a03Submit.Score, string(a03.Role)), resp.Records[3].Group)
+	assert.Equal(t, newPbGroup(a03.Name, string(a03.Role)), resp.Records[3].Group)
+	assert.Equal(t, int32(a03Submit.Score), *resp.Records[3].Score)
 }
 
-func newPbGroup(id string, score int, role string) *pb.Group {
+func newPbGroup(id string, role string) *pb.Group {
 	return &pb.Group{
-		Id:    id,
-		Score: int32(score),
-		Role:  pb.Role(pb.Role_value[role]),
+		Id:   id,
+		Role: pb.Role(pb.Role_value[role]),
 	}
 }

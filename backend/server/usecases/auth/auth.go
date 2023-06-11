@@ -48,7 +48,7 @@ func (i *AuthInteractor) PostLogin(ctx context.Context, id, password string) (*p
 		return nil, err
 	}
 	return &pb.PostLoginResponse{
-		Group: &pb.PostLoginResponse_Group{
+		Group: &pb.Group{
 			Id:   group.Name,
 			Role: pb.Role(pb.Role_value[group.Role.String()]),
 		},

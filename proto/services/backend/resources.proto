@@ -17,7 +17,6 @@ message Contest {
 
 message Group {
   string id = 1;
-  int32 score = 2;
   Role role = 4;
 }
 

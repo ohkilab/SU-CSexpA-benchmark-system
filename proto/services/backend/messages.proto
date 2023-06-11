@@ -13,10 +13,6 @@ message PostLoginRequest {
 }
 
 message PostLoginResponse {
-  message Group {
-    string id = 1;
-    Role role = 2;
-  }
   Group group = 1;
   string token = 2;
 }
@@ -55,18 +51,9 @@ message GetRankingResponse {
   message Record {
     int32 rank = 1;
     Group group = 2;
+    optional int32 score = 3;
   }
   repeated Record records = 1;
-}
-
-message GetGroupRequest { string group_id = 1; }
-
-message GetGroupResponse {
-  message GroupInfo {
-    Group group = 1;
-    repeated Submit submits = 2;
-  }
-  repeated GroupInfo groups = 1;
 }
 
 message PingUnaryRequest { string ping = 1; }
@@ -79,9 +66,7 @@ message PingServerSideStreamingResponse { string pong = 2; }
 
 message ListContestsRequest {}
 
-message ListContestsResponse {
-  repeated Contest contests = 2;
-}
+message ListContestsResponse { repeated Contest contests = 2; }
 
 message VerifyTokenRequest {}
 

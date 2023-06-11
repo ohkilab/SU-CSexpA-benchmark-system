@@ -50,10 +50,6 @@ export interface Group {
      */
     id: string;
     /**
-     * @generated from protobuf field: int32 score = 2;
-     */
-    score: number;
-    /**
      * @generated from protobuf field: backend.Role role = 4;
      */
     role: Role;
@@ -350,12 +346,11 @@ class Group$Type extends MessageType<Group> {
     constructor() {
         super("backend.Group", [
             { no: 1, name: "id", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
-            { no: 2, name: "score", kind: "scalar", T: 5 /*ScalarType.INT32*/ },
             { no: 4, name: "role", kind: "enum", T: () => ["backend.Role", Role] }
         ]);
     }
     create(value?: PartialMessage<Group>): Group {
-        const message = { id: "", score: 0, role: 0 };
+        const message = { id: "", role: 0 };
         globalThis.Object.defineProperty(message, MESSAGE_TYPE, { enumerable: false, value: this });
         if (value !== undefined)
             reflectionMergePartial<Group>(this, message, value);
@@ -368,9 +363,6 @@ class Group$Type extends MessageType<Group> {
             switch (fieldNo) {
                 case /* string id */ 1:
                     message.id = reader.string();
-                    break;
-                case /* int32 score */ 2:
-                    message.score = reader.int32();
                     break;
                 case /* backend.Role role */ 4:
                     message.role = reader.int32();
@@ -390,9 +382,6 @@ class Group$Type extends MessageType<Group> {
         /* string id = 1; */
         if (message.id !== "")
             writer.tag(1, WireType.LengthDelimited).string(message.id);
-        /* int32 score = 2; */
-        if (message.score !== 0)
-            writer.tag(2, WireType.Varint).int32(message.score);
         /* backend.Role role = 4; */
         if (message.role !== 0)
             writer.tag(4, WireType.Varint).int32(message.role);

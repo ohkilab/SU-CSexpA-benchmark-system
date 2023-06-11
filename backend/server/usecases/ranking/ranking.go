@@ -2,6 +2,7 @@ package ranking
 
 import (
 	"context"
+	"log"
 
 	"entgo.io/ent/dialect/sql"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/repository/ent"
@@ -36,17 +37,22 @@ func (i *RankingInteractor) GetRanking(ctx context.Context, containGuest bool, c
 		return nil, err
 	}
 	slices.SortFunc(groups, func(x, y *ent.Group) bool {
+		log.Println(x.Name, len(x.Edges.Submits), y.Name, len(y.Edges.Submits))
 		return x.Edges.Submits[0].Score > y.Edges.Submits[0].Score
 	})
 
 	pbGroups := lo.Map(groups, func(group *ent.Group, i int) *pb.GetRankingResponse_Record {
+		var score *int32
+		if len(group.Edges.Submits) > 0 {
+			score = lo.ToPtr(int32(group.Edges.Submits[0].Score))
+		}
 		return &pb.GetRankingResponse_Record{
 			Rank: int32(i + 1),
 			Group: &pb.Group{
-				Id:    group.Name,
-				Score: int32(group.Edges.Submits[0].Score),
-				Role:  pb.Role(pb.Role_value[group.Role.String()]),
+				Id:   group.Name,
+				Role: pb.Role(pb.Role_value[group.Role.String()]),
 			},
+			Score: score,
 		}
 	})
 	return pbGroups, nil
