@@ -10,7 +10,7 @@ import { GetRankingResponse_Record } from 'proto-gen-web/src/backend/messages';
 import { useStateStore, IState } from '../stores/state';
 
 const state = useStateStore()
-const records:Ref<GetRankingResponse_Record[]> = ref(state.records ?? [])
+const records: Ref<GetRankingResponse_Record[]> = ref(state.records ?? [])
 
 const backend = new BackendServiceClient(
   new GrpcWebFetchTransport({
@@ -19,47 +19,38 @@ const backend = new BackendServiceClient(
 )
 
 onMounted(() => {
-  let opt = {meta: {'authorization' : 'Bearer ' + state.token}}
+  let opt = { meta: { 'authorization': 'Bearer ' + state.token } }
 
   backend.getRanking({
-    year: 2023,
+    contestId: 1,
     containGuest: false
   }, opt).then(res => {
     records.value = res.response.records
-    if(import.meta.env.DEV) console.log(res.response.records)
+    if (import.meta.env.DEV) console.log(res.response.records)
     // state.records = records.value
   })
 })
 
-const sortedRecords = computed(() => 
-    records.value.sort((a:GetRankingResponse_Record,b:GetRankingResponse_Record) => a.rank.toString().localeCompare(b.rank.toString()))
+const sortedRecords = computed(() =>
+  records.value.sort((a: GetRankingResponse_Record, b: GetRankingResponse_Record) => a.rank.toString().localeCompare(b.rank.toString()))
 )
 
 </script>
 <template>
-    <!-- container -->
-    <div v-if="records.length > 0" class="flex flex-col items-center gap-5 w-full px-4">
-      <!-- separator -->
-      <TopRank
-        v-for="(g, idx) in records.sort((a:GetRankingResponse_Record, b:GetRankingResponse_Record) => a.rank.toString().localeCompare(b.rank.toString())).filter((_, i:number) => i < 3)"
-        :key="g.group?.id"
-        :rank="idx + 1"
-        :class="state.group == g.group?.id ? 'bg-blue-700' : 'bg-gray-700'"
-        :name="g.group?.id ?? ''"
-        :score="g.group?.score ?? 0"
-      />
-      <!-- top rank and normal rank separator -->
-      <hr class="h-[2px] w-11/12 mx-8 text-white bg-gray-500 border-0" />
-      <RankItem
-        v-for="(g, idx) in sortedRecords.filter((_, i:number) => i >= 3)"
-        :key="g.group?.id"
-        :rank="idx + 4"
-        :class="state.group == g.group?.id ? 'bg-blue-700' : 'bg-gray-700'"
-        :name="g.group?.id ?? ''"
-        :score="g.group?.score ?? 0"
-      />
-    </div>
-    <div class="mt-auto" v-else>
-      <font-awesome-icon  class="animate-spin text-3xl" :icon="['fas', 'spinner']"></font-awesome-icon>
-    </div>
+  <!-- container -->
+  <div v-if="records.length > 0" class="flex flex-col items-center gap-5 w-full px-4">
+    <!-- separator -->
+    <TopRank
+      v-for="(g, idx) in records.sort((a: GetRankingResponse_Record, b: GetRankingResponse_Record) => a.rank.toString().localeCompare(b.rank.toString())).filter((_, i: number) => i < 3)"
+      :key="g.group?.id" :rank="idx + 1" :class="state.group == g.group?.id ? 'bg-blue-700' : 'bg-gray-700'"
+      :name="g.group?.id ?? ''" :score="g.score ?? 0" />
+    <!-- top rank and normal rank separator -->
+    <hr class="h-[2px] w-11/12 mx-8 text-white bg-gray-500 border-0" />
+    <RankItem v-for="(g, idx) in sortedRecords.filter((_, i: number) => i >= 3)" :key="g.group?.id" :rank="idx + 4"
+      :class="state.group == g.group?.id ? 'bg-blue-700' : 'bg-gray-700'" :name="g.group?.id ?? ''"
+      :score="g.score ?? 0" />
+  </div>
+  <div class="mt-auto" v-else>
+    <font-awesome-icon class="animate-spin text-3xl" :icon="['fas', 'spinner']"></font-awesome-icon>
+  </div>
 </template>
