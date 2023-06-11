@@ -80,7 +80,7 @@ onMounted(() => {
       <div class="mx-auto text-lg sm:text-xl">
         情報科学実験A：ベンチマークサーバ
       </div>
-      <button @click="handleLogout" v-if="loggedIn" class="p-2 w-32 rounded border border-red-500 transition hover:bg-red-700">ログアウト</button>
+      <button @click="handleLogout" v-if="loggedIn" class="p-2 w-32 rounded bg-red-500 transition hover:bg-red-700">ログアウト</button>
     </div>
     <!-- debug mode -->
     <fieldset v-if="state.debug" class="mx-8 border border-red-500 p-2 flex flex-col gap-2">
