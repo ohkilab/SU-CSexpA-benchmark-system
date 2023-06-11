@@ -41,19 +41,10 @@ func Test_ListContests(t *testing.T) {
 		SetTagSelectionLogic(contest.TagSelectionLogicAuto).
 		SetCreatedAt(timejst.Now()).
 		Save(ctx)
-	_, _ = entClient.Contest.Create().
-		SetTitle("test contest").
-		SetSlug("test-contest3").
-		SetStartAt(timejst.Now()).
-		SetEndAt(timejst.Now().AddDate(1, 0, 0)).
-		SetSubmitLimit(9999).
-		SetTagSelectionLogic(contest.TagSelectionLogicAuto).
-		SetCreatedAt(timejst.Now()).
-		Save(ctx)
 
 	resp, err := client.ListContests(ctx, &pb.ListContestsRequest{})
 	require.NoError(t, err)
-	assert.Equal(t, 2, len(resp.Contests))
+	require.Equal(t, 2, len(resp.Contests))
 	assert.Equal(t, contest1.ID, int(resp.Contests[0].Id))
 	assert.Equal(t, contest2.ID, int(resp.Contests[1].Id))
 }

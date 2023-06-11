@@ -13,12 +13,16 @@ import (
 	entsql "entgo.io/ent/dialect/sql"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/api/grpc"
+	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/core/timejst"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/repository/ent"
+	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/repository/ent/group"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/repository/ent/migrate"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/benchmark-service/benchmark"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/benchmark-service/service"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/benchmark-service/validation"
 	pb "github.com/ohkilab/SU-CSexpA-benchmark-system/proto-gen/go/benchmark"
+	"github.com/stretchr/testify/require"
+	"golang.org/x/crypto/bcrypt"
 	pkggrpc "google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 )
@@ -130,4 +134,32 @@ func EnttestOpen(ctx context.Context, t *testing.T) (*ent.Client, cleanupFunc) {
 		}
 	}
 	return entClient, cleanup
+}
+
+func CreateGroup(ctx context.Context, t *testing.T, entClient *ent.Client, name, password string, role group.Role) *ent.Group {
+	t.Helper()
+	encryptedPassword, _ := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+	group, err := entClient.Group.Create().
+		SetName(name).
+		SetEncryptedPassword(string(encryptedPassword)).
+		SetRole(role).
+		SetCreatedAt(timejst.Now()).
+		Save(ctx)
+	require.NoError(t, err)
+	return group
+}
+
+func CreateSubmit(ctx context.Context, t *testing.T, entClient *ent.Client, score int, status string, contest *ent.Contest, group *ent.Group) *ent.Submit {
+	t.Helper()
+	submit, err := entClient.Submit.Create().
+		SetURL("http://localhost:8080/program").
+		SetContests(contest).
+		SetGroups(group).
+		SetScore(score).
+		SetStatus(status).
+		SetSubmitedAt(timejst.Now()).
+		SetTaskNum(50).
+		Save(ctx)
+	require.NoError(t, err)
+	return submit
 }

@@ -28,18 +28,8 @@ func Test_ListSubmits(t *testing.T) {
 
 	// prepare
 	now := timejst.Now()
-	group1, _ := entClient.Group.Create().
-		SetName("test1").
-		SetEncryptedPassword(string("hoge")).
-		SetRole(group.RoleContestant).
-		SetCreatedAt(timejst.Now()).
-		Save(ctx)
-	group2, _ := entClient.Group.Create().
-		SetName("test2").
-		SetEncryptedPassword(string("hoge")).
-		SetRole(group.RoleContestant).
-		SetCreatedAt(timejst.Now()).
-		Save(ctx)
+	group1 := utils.CreateGroup(ctx, t, entClient, "test1", "hoge", group.RoleContestant)
+	group2 := utils.CreateGroup(ctx, t, entClient, "test2", "hoge", group.RoleContestant)
 	contest, _ := entClient.Contest.Create().
 		SetTitle("test contest").
 		SetSlug("test-contest").

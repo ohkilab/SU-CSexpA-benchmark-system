@@ -74,7 +74,6 @@ func Test_PostSubmit(t *testing.T) {
 		Url:       "http://10.255.255.255",
 		ContestId: int32(contest.ID),
 	}
-	t.Log(contest.ID)
 	resp, err := client.PostSubmit(ctx, req)
 	require.NoError(t, err)
 	assert.NotEmpty(t, resp.Id)
