@@ -60,19 +60,6 @@ func (cu *ContestUpdate) AddSubmitLimit(i int) *ContestUpdate {
 	return cu
 }
 
-// SetYear sets the "year" field.
-func (cu *ContestUpdate) SetYear(i int) *ContestUpdate {
-	cu.mutation.ResetYear()
-	cu.mutation.SetYear(i)
-	return cu
-}
-
-// AddYear adds i to the "year" field.
-func (cu *ContestUpdate) AddYear(i int) *ContestUpdate {
-	cu.mutation.AddYear(i)
-	return cu
-}
-
 // SetSlug sets the "slug" field.
 func (cu *ContestUpdate) SetSlug(s string) *ContestUpdate {
 	cu.mutation.SetSlug(s)
@@ -181,11 +168,6 @@ func (cu *ContestUpdate) ExecX(ctx context.Context) {
 
 // check runs all checks and user-defined validators on the builder.
 func (cu *ContestUpdate) check() error {
-	if v, ok := cu.mutation.Year(); ok {
-		if err := contest.YearValidator(v); err != nil {
-			return &ValidationError{Name: "year", err: fmt.Errorf(`ent: validator failed for field "Contest.year": %w`, err)}
-		}
-	}
 	if v, ok := cu.mutation.TagSelectionLogic(); ok {
 		if err := contest.TagSelectionLogicValidator(v); err != nil {
 			return &ValidationError{Name: "tag_selection_logic", err: fmt.Errorf(`ent: validator failed for field "Contest.tag_selection_logic": %w`, err)}
@@ -220,12 +202,6 @@ func (cu *ContestUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if value, ok := cu.mutation.AddedSubmitLimit(); ok {
 		_spec.AddField(contest.FieldSubmitLimit, field.TypeInt, value)
-	}
-	if value, ok := cu.mutation.Year(); ok {
-		_spec.SetField(contest.FieldYear, field.TypeInt, value)
-	}
-	if value, ok := cu.mutation.AddedYear(); ok {
-		_spec.AddField(contest.FieldYear, field.TypeInt, value)
 	}
 	if value, ok := cu.mutation.Slug(); ok {
 		_spec.SetField(contest.FieldSlug, field.TypeString, value)
@@ -335,19 +311,6 @@ func (cuo *ContestUpdateOne) SetSubmitLimit(i int) *ContestUpdateOne {
 // AddSubmitLimit adds i to the "submit_limit" field.
 func (cuo *ContestUpdateOne) AddSubmitLimit(i int) *ContestUpdateOne {
 	cuo.mutation.AddSubmitLimit(i)
-	return cuo
-}
-
-// SetYear sets the "year" field.
-func (cuo *ContestUpdateOne) SetYear(i int) *ContestUpdateOne {
-	cuo.mutation.ResetYear()
-	cuo.mutation.SetYear(i)
-	return cuo
-}
-
-// AddYear adds i to the "year" field.
-func (cuo *ContestUpdateOne) AddYear(i int) *ContestUpdateOne {
-	cuo.mutation.AddYear(i)
 	return cuo
 }
 
@@ -472,11 +435,6 @@ func (cuo *ContestUpdateOne) ExecX(ctx context.Context) {
 
 // check runs all checks and user-defined validators on the builder.
 func (cuo *ContestUpdateOne) check() error {
-	if v, ok := cuo.mutation.Year(); ok {
-		if err := contest.YearValidator(v); err != nil {
-			return &ValidationError{Name: "year", err: fmt.Errorf(`ent: validator failed for field "Contest.year": %w`, err)}
-		}
-	}
 	if v, ok := cuo.mutation.TagSelectionLogic(); ok {
 		if err := contest.TagSelectionLogicValidator(v); err != nil {
 			return &ValidationError{Name: "tag_selection_logic", err: fmt.Errorf(`ent: validator failed for field "Contest.tag_selection_logic": %w`, err)}
@@ -528,12 +486,6 @@ func (cuo *ContestUpdateOne) sqlSave(ctx context.Context) (_node *Contest, err e
 	}
 	if value, ok := cuo.mutation.AddedSubmitLimit(); ok {
 		_spec.AddField(contest.FieldSubmitLimit, field.TypeInt, value)
-	}
-	if value, ok := cuo.mutation.Year(); ok {
-		_spec.SetField(contest.FieldYear, field.TypeInt, value)
-	}
-	if value, ok := cuo.mutation.AddedYear(); ok {
-		_spec.AddField(contest.FieldYear, field.TypeInt, value)
 	}
 	if value, ok := cuo.mutation.Slug(); ok {
 		_spec.SetField(contest.FieldSlug, field.TypeString, value)

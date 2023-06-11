@@ -28,7 +28,6 @@ func Test_ListContests(t *testing.T) {
 		SetSlug("test-contest1").
 		SetStartAt(timejst.Now()).
 		SetEndAt(timejst.Now().AddDate(1, 0, 0)).
-		SetYear(2023).
 		SetSubmitLimit(9999).
 		SetCreatedAt(timejst.Now()).
 		SetTagSelectionLogic(contest.TagSelectionLogicAuto).
@@ -38,27 +37,14 @@ func Test_ListContests(t *testing.T) {
 		SetSlug("test-contest2").
 		SetStartAt(timejst.Now()).
 		SetEndAt(timejst.Now().AddDate(1, 0, 0)).
-		SetYear(2023).
-		SetSubmitLimit(9999).
-		SetTagSelectionLogic(contest.TagSelectionLogicAuto).
-		SetCreatedAt(timejst.Now()).
-		Save(ctx)
-	_, _ = entClient.Contest.Create().
-		SetTitle("test contest").
-		SetSlug("test-contest3").
-		SetStartAt(timejst.Now()).
-		SetEndAt(timejst.Now().AddDate(1, 0, 0)).
-		SetYear(2022).
 		SetSubmitLimit(9999).
 		SetTagSelectionLogic(contest.TagSelectionLogicAuto).
 		SetCreatedAt(timejst.Now()).
 		Save(ctx)
 
-	resp, err := client.ListContests(ctx, &pb.ListContestsRequest{
-		Year: 2023,
-	})
+	resp, err := client.ListContests(ctx, &pb.ListContestsRequest{})
 	require.NoError(t, err)
-	assert.Equal(t, 2, len(resp.Contests))
+	require.Equal(t, 2, len(resp.Contests))
 	assert.Equal(t, contest1.ID, int(resp.Contests[0].Id))
 	assert.Equal(t, contest2.ID, int(resp.Contests[1].Id))
 }

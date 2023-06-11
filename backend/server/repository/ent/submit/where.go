@@ -60,11 +60,6 @@ func URL(v string) predicate.Submit {
 	return predicate.Submit(sql.FieldEQ(FieldURL, v))
 }
 
-// Year applies equality check predicate on the "year" field. It's identical to YearEQ.
-func Year(v int) predicate.Submit {
-	return predicate.Submit(sql.FieldEQ(FieldYear, v))
-}
-
 // Score applies equality check predicate on the "score" field. It's identical to ScoreEQ.
 func Score(v int) predicate.Submit {
 	return predicate.Submit(sql.FieldEQ(FieldScore, v))
@@ -163,46 +158,6 @@ func URLEqualFold(v string) predicate.Submit {
 // URLContainsFold applies the ContainsFold predicate on the "url" field.
 func URLContainsFold(v string) predicate.Submit {
 	return predicate.Submit(sql.FieldContainsFold(FieldURL, v))
-}
-
-// YearEQ applies the EQ predicate on the "year" field.
-func YearEQ(v int) predicate.Submit {
-	return predicate.Submit(sql.FieldEQ(FieldYear, v))
-}
-
-// YearNEQ applies the NEQ predicate on the "year" field.
-func YearNEQ(v int) predicate.Submit {
-	return predicate.Submit(sql.FieldNEQ(FieldYear, v))
-}
-
-// YearIn applies the In predicate on the "year" field.
-func YearIn(vs ...int) predicate.Submit {
-	return predicate.Submit(sql.FieldIn(FieldYear, vs...))
-}
-
-// YearNotIn applies the NotIn predicate on the "year" field.
-func YearNotIn(vs ...int) predicate.Submit {
-	return predicate.Submit(sql.FieldNotIn(FieldYear, vs...))
-}
-
-// YearGT applies the GT predicate on the "year" field.
-func YearGT(v int) predicate.Submit {
-	return predicate.Submit(sql.FieldGT(FieldYear, v))
-}
-
-// YearGTE applies the GTE predicate on the "year" field.
-func YearGTE(v int) predicate.Submit {
-	return predicate.Submit(sql.FieldGTE(FieldYear, v))
-}
-
-// YearLT applies the LT predicate on the "year" field.
-func YearLT(v int) predicate.Submit {
-	return predicate.Submit(sql.FieldLT(FieldYear, v))
-}
-
-// YearLTE applies the LTE predicate on the "year" field.
-func YearLTE(v int) predicate.Submit {
-	return predicate.Submit(sql.FieldLTE(FieldYear, v))
 }
 
 // ScoreEQ applies the EQ predicate on the "score" field.

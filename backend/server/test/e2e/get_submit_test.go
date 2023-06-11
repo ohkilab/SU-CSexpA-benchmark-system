@@ -42,8 +42,6 @@ func Test_GetSubmit(t *testing.T) {
 		SetName("test").
 		SetEncryptedPassword(string("hoge")).
 		SetRole(group.RoleContestant).
-		SetScore(12345).
-		SetYear(2023).
 		SetCreatedAt(timejst.Now()).
 		Save(ctx)
 	contest, _ := entClient.Contest.Create().
@@ -51,7 +49,6 @@ func Test_GetSubmit(t *testing.T) {
 		SetSlug("test-contest").
 		SetStartAt(time.Date(2023, time.January, 1, 0, 0, 0, 0, time.UTC)).
 		SetEndAt(time.Date(2023, time.December, 31, 23, 59, 59, 0, time.UTC)).
-		SetYear(2023).
 		SetSubmitLimit(9999).
 		SetCreatedAt(timejst.Now()).
 		SetTagSelectionLogic(contest.TagSelectionLogicAuto).
@@ -61,13 +58,12 @@ func Test_GetSubmit(t *testing.T) {
 		SetContests(contest).
 		SetGroups(group).
 		SetStatus(pb.Status_SUCCESS.String()).
-		SetYear(2023).
 		SetTaskNum(50).
 		SetSubmitedAt(timejst.Now()).
 		SetCompletedAt(timejst.Now()).
 		Save(ctx)
 
-	jwtToken, err := auth.GenerateJWTToken([]byte("secret"), group.ID, group.Year)
+	jwtToken, err := auth.GenerateJWTToken([]byte("secret"), group.ID, group.CreatedAt.Year())
 	if err != nil {
 		t.Fatal(err)
 	}

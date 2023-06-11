@@ -28,28 +28,13 @@ func Test_ListSubmits(t *testing.T) {
 
 	// prepare
 	now := timejst.Now()
-	group1, _ := entClient.Group.Create().
-		SetName("test1").
-		SetEncryptedPassword(string("hoge")).
-		SetRole(group.RoleContestant).
-		SetScore(12345).
-		SetYear(2023).
-		SetCreatedAt(timejst.Now()).
-		Save(ctx)
-	group2, _ := entClient.Group.Create().
-		SetName("test2").
-		SetEncryptedPassword(string("hoge")).
-		SetRole(group.RoleContestant).
-		SetScore(123456).
-		SetYear(2023).
-		SetCreatedAt(timejst.Now()).
-		Save(ctx)
+	group1 := utils.CreateGroup(ctx, t, entClient, "test1", "hoge", group.RoleContestant)
+	group2 := utils.CreateGroup(ctx, t, entClient, "test2", "hoge", group.RoleContestant)
 	contest, _ := entClient.Contest.Create().
 		SetTitle("test contest").
 		SetSlug("test-contest").
 		SetStartAt(time.Date(2023, time.January, 1, 0, 0, 0, 0, time.UTC)).
 		SetEndAt(time.Date(2023, time.December, 31, 23, 59, 59, 0, time.UTC)).
-		SetYear(2023).
 		SetSubmitLimit(9999).
 		SetTagSelectionLogic(contest.TagSelectionLogicAuto).
 		SetCreatedAt(now).
@@ -59,7 +44,6 @@ func Test_ListSubmits(t *testing.T) {
 		SetContests(contest).
 		SetGroups(group1).
 		SetStatus(pb.Status_SUCCESS.String()).
-		SetYear(2023).
 		SetSubmitedAt(now.AddDate(0, 0, -2)).
 		SetTaskNum(50).
 		Save(ctx)
@@ -68,7 +52,6 @@ func Test_ListSubmits(t *testing.T) {
 		SetContests(contest).
 		SetGroups(group1).
 		SetStatus(pb.Status_SUCCESS.String()).
-		SetYear(2023).
 		SetSubmitedAt(now.AddDate(0, 0, -1)).
 		SetTaskNum(50).
 		Save(ctx)
@@ -77,12 +60,11 @@ func Test_ListSubmits(t *testing.T) {
 		SetContests(contest).
 		SetGroups(group2).
 		SetStatus(pb.Status_CONNECTION_FAILED.String()).
-		SetYear(2023).
 		SetSubmitedAt(now).
 		SetTaskNum(50).
 		Save(ctx)
 
-	jwtToken, err := auth.GenerateJWTToken([]byte("secret"), group1.ID, group1.Year)
+	jwtToken, err := auth.GenerateJWTToken([]byte("secret"), group1.ID, group1.CreatedAt.Year())
 	if err != nil {
 		t.Fatal(err)
 	}

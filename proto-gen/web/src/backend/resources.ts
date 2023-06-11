@@ -37,10 +37,6 @@ export interface Contest {
      */
     submitLimit: number;
     /**
-     * @generated from protobuf field: int32 year = 7;
-     */
-    year: number;
-    /**
      * @generated from protobuf field: string slug = 8;
      */
     slug: string;
@@ -53,14 +49,6 @@ export interface Group {
      * @generated from protobuf field: string id = 1;
      */
     id: string;
-    /**
-     * @generated from protobuf field: int32 score = 2;
-     */
-    score: number;
-    /**
-     * @generated from protobuf field: int32 year = 3;
-     */
-    year: number;
     /**
      * @generated from protobuf field: backend.Role role = 4;
      */
@@ -78,10 +66,6 @@ export interface Submit {
      * @generated from protobuf field: string group_name = 2;
      */
     groupName: string;
-    /**
-     * @generated from protobuf field: int32 year = 3;
-     */
-    year: number;
     /**
      * @generated from protobuf field: int32 score = 4;
      */
@@ -284,12 +268,11 @@ class Contest$Type extends MessageType<Contest> {
             { no: 4, name: "start_at", kind: "message", T: () => Timestamp },
             { no: 5, name: "end_at", kind: "message", T: () => Timestamp },
             { no: 6, name: "submit_limit", kind: "scalar", T: 5 /*ScalarType.INT32*/ },
-            { no: 7, name: "year", kind: "scalar", T: 5 /*ScalarType.INT32*/ },
             { no: 8, name: "slug", kind: "scalar", T: 9 /*ScalarType.STRING*/ }
         ]);
     }
     create(value?: PartialMessage<Contest>): Contest {
-        const message = { id: 0, title: "", submitLimit: 0, year: 0, slug: "" };
+        const message = { id: 0, title: "", submitLimit: 0, slug: "" };
         globalThis.Object.defineProperty(message, MESSAGE_TYPE, { enumerable: false, value: this });
         if (value !== undefined)
             reflectionMergePartial<Contest>(this, message, value);
@@ -314,9 +297,6 @@ class Contest$Type extends MessageType<Contest> {
                     break;
                 case /* int32 submit_limit */ 6:
                     message.submitLimit = reader.int32();
-                    break;
-                case /* int32 year */ 7:
-                    message.year = reader.int32();
                     break;
                 case /* string slug */ 8:
                     message.slug = reader.string();
@@ -348,9 +328,6 @@ class Contest$Type extends MessageType<Contest> {
         /* int32 submit_limit = 6; */
         if (message.submitLimit !== 0)
             writer.tag(6, WireType.Varint).int32(message.submitLimit);
-        /* int32 year = 7; */
-        if (message.year !== 0)
-            writer.tag(7, WireType.Varint).int32(message.year);
         /* string slug = 8; */
         if (message.slug !== "")
             writer.tag(8, WireType.LengthDelimited).string(message.slug);
@@ -369,13 +346,11 @@ class Group$Type extends MessageType<Group> {
     constructor() {
         super("backend.Group", [
             { no: 1, name: "id", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
-            { no: 2, name: "score", kind: "scalar", T: 5 /*ScalarType.INT32*/ },
-            { no: 3, name: "year", kind: "scalar", T: 5 /*ScalarType.INT32*/ },
             { no: 4, name: "role", kind: "enum", T: () => ["backend.Role", Role] }
         ]);
     }
     create(value?: PartialMessage<Group>): Group {
-        const message = { id: "", score: 0, year: 0, role: 0 };
+        const message = { id: "", role: 0 };
         globalThis.Object.defineProperty(message, MESSAGE_TYPE, { enumerable: false, value: this });
         if (value !== undefined)
             reflectionMergePartial<Group>(this, message, value);
@@ -388,12 +363,6 @@ class Group$Type extends MessageType<Group> {
             switch (fieldNo) {
                 case /* string id */ 1:
                     message.id = reader.string();
-                    break;
-                case /* int32 score */ 2:
-                    message.score = reader.int32();
-                    break;
-                case /* int32 year */ 3:
-                    message.year = reader.int32();
                     break;
                 case /* backend.Role role */ 4:
                     message.role = reader.int32();
@@ -413,12 +382,6 @@ class Group$Type extends MessageType<Group> {
         /* string id = 1; */
         if (message.id !== "")
             writer.tag(1, WireType.LengthDelimited).string(message.id);
-        /* int32 score = 2; */
-        if (message.score !== 0)
-            writer.tag(2, WireType.Varint).int32(message.score);
-        /* int32 year = 3; */
-        if (message.year !== 0)
-            writer.tag(3, WireType.Varint).int32(message.year);
         /* backend.Role role = 4; */
         if (message.role !== 0)
             writer.tag(4, WireType.Varint).int32(message.role);
@@ -438,7 +401,6 @@ class Submit$Type extends MessageType<Submit> {
         super("backend.Submit", [
             { no: 1, name: "id", kind: "scalar", T: 5 /*ScalarType.INT32*/ },
             { no: 2, name: "group_name", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
-            { no: 3, name: "year", kind: "scalar", T: 5 /*ScalarType.INT32*/ },
             { no: 4, name: "score", kind: "scalar", T: 5 /*ScalarType.INT32*/ },
             { no: 5, name: "language", kind: "enum", T: () => ["backend.Language", Language] },
             { no: 6, name: "submited_at", kind: "message", T: () => Timestamp },
@@ -450,7 +412,7 @@ class Submit$Type extends MessageType<Submit> {
         ]);
     }
     create(value?: PartialMessage<Submit>): Submit {
-        const message = { id: 0, groupName: "", year: 0, score: 0, language: 0, taskResults: [], status: 0, tagCount: 0 };
+        const message = { id: 0, groupName: "", score: 0, language: 0, taskResults: [], status: 0, tagCount: 0 };
         globalThis.Object.defineProperty(message, MESSAGE_TYPE, { enumerable: false, value: this });
         if (value !== undefined)
             reflectionMergePartial<Submit>(this, message, value);
@@ -466,9 +428,6 @@ class Submit$Type extends MessageType<Submit> {
                     break;
                 case /* string group_name */ 2:
                     message.groupName = reader.string();
-                    break;
-                case /* int32 year */ 3:
-                    message.year = reader.int32();
                     break;
                 case /* int32 score */ 4:
                     message.score = reader.int32();
@@ -512,9 +471,6 @@ class Submit$Type extends MessageType<Submit> {
         /* string group_name = 2; */
         if (message.groupName !== "")
             writer.tag(2, WireType.LengthDelimited).string(message.groupName);
-        /* int32 year = 3; */
-        if (message.year !== 0)
-            writer.tag(3, WireType.Varint).int32(message.year);
         /* int32 score = 4; */
         if (message.score !== 0)
             writer.tag(4, WireType.Varint).int32(message.score);

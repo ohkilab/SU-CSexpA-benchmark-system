@@ -45,12 +45,6 @@ func (cc *ContestCreate) SetSubmitLimit(i int) *ContestCreate {
 	return cc
 }
 
-// SetYear sets the "year" field.
-func (cc *ContestCreate) SetYear(i int) *ContestCreate {
-	cc.mutation.SetYear(i)
-	return cc
-}
-
 // SetSlug sets the "slug" field.
 func (cc *ContestCreate) SetSlug(s string) *ContestCreate {
 	cc.mutation.SetSlug(s)
@@ -150,14 +144,6 @@ func (cc *ContestCreate) check() error {
 	if _, ok := cc.mutation.SubmitLimit(); !ok {
 		return &ValidationError{Name: "submit_limit", err: errors.New(`ent: missing required field "Contest.submit_limit"`)}
 	}
-	if _, ok := cc.mutation.Year(); !ok {
-		return &ValidationError{Name: "year", err: errors.New(`ent: missing required field "Contest.year"`)}
-	}
-	if v, ok := cc.mutation.Year(); ok {
-		if err := contest.YearValidator(v); err != nil {
-			return &ValidationError{Name: "year", err: fmt.Errorf(`ent: validator failed for field "Contest.year": %w`, err)}
-		}
-	}
 	if _, ok := cc.mutation.Slug(); !ok {
 		return &ValidationError{Name: "slug", err: errors.New(`ent: missing required field "Contest.slug"`)}
 	}
@@ -219,10 +205,6 @@ func (cc *ContestCreate) createSpec() (*Contest, *sqlgraph.CreateSpec) {
 	if value, ok := cc.mutation.SubmitLimit(); ok {
 		_spec.SetField(contest.FieldSubmitLimit, field.TypeInt, value)
 		_node.SubmitLimit = value
-	}
-	if value, ok := cc.mutation.Year(); ok {
-		_spec.SetField(contest.FieldYear, field.TypeInt, value)
-		_node.Year = value
 	}
 	if value, ok := cc.mutation.Slug(); ok {
 		_spec.SetField(contest.FieldSlug, field.TypeString, value)

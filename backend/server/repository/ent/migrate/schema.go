@@ -15,7 +15,6 @@ var (
 		{Name: "start_at", Type: field.TypeTime},
 		{Name: "end_at", Type: field.TypeTime},
 		{Name: "submit_limit", Type: field.TypeInt},
-		{Name: "year", Type: field.TypeInt},
 		{Name: "slug", Type: field.TypeString, Unique: true},
 		{Name: "tag_selection_logic", Type: field.TypeEnum, Enums: []string{"auto", "manual"}},
 		{Name: "created_at", Type: field.TypeTime},
@@ -31,8 +30,6 @@ var (
 	GroupsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
 		{Name: "name", Type: field.TypeString},
-		{Name: "year", Type: field.TypeInt},
-		{Name: "score", Type: field.TypeInt, Nullable: true},
 		{Name: "role", Type: field.TypeEnum, Enums: []string{"contestant", "guest"}},
 		{Name: "encrypted_password", Type: field.TypeString},
 		{Name: "created_at", Type: field.TypeTime},
@@ -43,19 +40,11 @@ var (
 		Name:       "groups",
 		Columns:    GroupsColumns,
 		PrimaryKey: []*schema.Column{GroupsColumns[0]},
-		Indexes: []*schema.Index{
-			{
-				Name:    "group_score",
-				Unique:  false,
-				Columns: []*schema.Column{GroupsColumns[3]},
-			},
-		},
 	}
 	// SubmitsColumns holds the columns for the "submits" table.
 	SubmitsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
 		{Name: "url", Type: field.TypeString},
-		{Name: "year", Type: field.TypeInt},
 		{Name: "score", Type: field.TypeInt, Nullable: true},
 		{Name: "language", Type: field.TypeEnum, Nullable: true, Enums: []string{"php", "go", "rust", "javascript", "csharp", "cpp", "ruby", "python"}},
 		{Name: "message", Type: field.TypeString, Nullable: true},
@@ -75,13 +64,13 @@ var (
 		ForeignKeys: []*schema.ForeignKey{
 			{
 				Symbol:     "submits_contests_submits",
-				Columns:    []*schema.Column{SubmitsColumns[11]},
+				Columns:    []*schema.Column{SubmitsColumns[10]},
 				RefColumns: []*schema.Column{ContestsColumns[0]},
 				OnDelete:   schema.SetNull,
 			},
 			{
 				Symbol:     "submits_groups_submits",
-				Columns:    []*schema.Column{SubmitsColumns[12]},
+				Columns:    []*schema.Column{SubmitsColumns[11]},
 				RefColumns: []*schema.Column{GroupsColumns[0]},
 				OnDelete:   schema.SetNull,
 			},

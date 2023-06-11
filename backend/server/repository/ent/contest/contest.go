@@ -22,8 +22,6 @@ const (
 	FieldEndAt = "end_at"
 	// FieldSubmitLimit holds the string denoting the submit_limit field in the database.
 	FieldSubmitLimit = "submit_limit"
-	// FieldYear holds the string denoting the year field in the database.
-	FieldYear = "year"
 	// FieldSlug holds the string denoting the slug field in the database.
 	FieldSlug = "slug"
 	// FieldTagSelectionLogic holds the string denoting the tag_selection_logic field in the database.
@@ -52,7 +50,6 @@ var Columns = []string{
 	FieldStartAt,
 	FieldEndAt,
 	FieldSubmitLimit,
-	FieldYear,
 	FieldSlug,
 	FieldTagSelectionLogic,
 	FieldCreatedAt,
@@ -68,11 +65,6 @@ func ValidColumn(column string) bool {
 	}
 	return false
 }
-
-var (
-	// YearValidator is a validator for the "year" field. It is called by the builders before save.
-	YearValidator func(int) error
-)
 
 // TagSelectionLogic defines the type for the "tag_selection_logic" enum field.
 type TagSelectionLogic string
@@ -123,11 +115,6 @@ func ByEndAt(opts ...sql.OrderTermOption) OrderOption {
 // BySubmitLimit orders the results by the submit_limit field.
 func BySubmitLimit(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldSubmitLimit, opts...).ToFunc()
-}
-
-// ByYear orders the results by the year field.
-func ByYear(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldYear, opts...).ToFunc()
 }
 
 // BySlug orders the results by the slug field.

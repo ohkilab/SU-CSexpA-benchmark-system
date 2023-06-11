@@ -44,8 +44,6 @@ type ContestMutation struct {
 	end_at              *time.Time
 	submit_limit        *int
 	addsubmit_limit     *int
-	year                *int
-	addyear             *int
 	slug                *string
 	tag_selection_logic *contest.TagSelectionLogic
 	created_at          *time.Time
@@ -327,62 +325,6 @@ func (m *ContestMutation) ResetSubmitLimit() {
 	m.addsubmit_limit = nil
 }
 
-// SetYear sets the "year" field.
-func (m *ContestMutation) SetYear(i int) {
-	m.year = &i
-	m.addyear = nil
-}
-
-// Year returns the value of the "year" field in the mutation.
-func (m *ContestMutation) Year() (r int, exists bool) {
-	v := m.year
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldYear returns the old "year" field's value of the Contest entity.
-// If the Contest object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *ContestMutation) OldYear(ctx context.Context) (v int, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldYear is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldYear requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldYear: %w", err)
-	}
-	return oldValue.Year, nil
-}
-
-// AddYear adds i to the "year" field.
-func (m *ContestMutation) AddYear(i int) {
-	if m.addyear != nil {
-		*m.addyear += i
-	} else {
-		m.addyear = &i
-	}
-}
-
-// AddedYear returns the value that was added to the "year" field in this mutation.
-func (m *ContestMutation) AddedYear() (r int, exists bool) {
-	v := m.addyear
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// ResetYear resets all changes to the "year" field.
-func (m *ContestMutation) ResetYear() {
-	m.year = nil
-	m.addyear = nil
-}
-
 // SetSlug sets the "slug" field.
 func (m *ContestMutation) SetSlug(s string) {
 	m.slug = &s
@@ -628,7 +570,7 @@ func (m *ContestMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *ContestMutation) Fields() []string {
-	fields := make([]string, 0, 9)
+	fields := make([]string, 0, 8)
 	if m.title != nil {
 		fields = append(fields, contest.FieldTitle)
 	}
@@ -640,9 +582,6 @@ func (m *ContestMutation) Fields() []string {
 	}
 	if m.submit_limit != nil {
 		fields = append(fields, contest.FieldSubmitLimit)
-	}
-	if m.year != nil {
-		fields = append(fields, contest.FieldYear)
 	}
 	if m.slug != nil {
 		fields = append(fields, contest.FieldSlug)
@@ -672,8 +611,6 @@ func (m *ContestMutation) Field(name string) (ent.Value, bool) {
 		return m.EndAt()
 	case contest.FieldSubmitLimit:
 		return m.SubmitLimit()
-	case contest.FieldYear:
-		return m.Year()
 	case contest.FieldSlug:
 		return m.Slug()
 	case contest.FieldTagSelectionLogic:
@@ -699,8 +636,6 @@ func (m *ContestMutation) OldField(ctx context.Context, name string) (ent.Value,
 		return m.OldEndAt(ctx)
 	case contest.FieldSubmitLimit:
 		return m.OldSubmitLimit(ctx)
-	case contest.FieldYear:
-		return m.OldYear(ctx)
 	case contest.FieldSlug:
 		return m.OldSlug(ctx)
 	case contest.FieldTagSelectionLogic:
@@ -746,13 +681,6 @@ func (m *ContestMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetSubmitLimit(v)
 		return nil
-	case contest.FieldYear:
-		v, ok := value.(int)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetYear(v)
-		return nil
 	case contest.FieldSlug:
 		v, ok := value.(string)
 		if !ok {
@@ -792,9 +720,6 @@ func (m *ContestMutation) AddedFields() []string {
 	if m.addsubmit_limit != nil {
 		fields = append(fields, contest.FieldSubmitLimit)
 	}
-	if m.addyear != nil {
-		fields = append(fields, contest.FieldYear)
-	}
 	return fields
 }
 
@@ -805,8 +730,6 @@ func (m *ContestMutation) AddedField(name string) (ent.Value, bool) {
 	switch name {
 	case contest.FieldSubmitLimit:
 		return m.AddedSubmitLimit()
-	case contest.FieldYear:
-		return m.AddedYear()
 	}
 	return nil, false
 }
@@ -822,13 +745,6 @@ func (m *ContestMutation) AddField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.AddSubmitLimit(v)
-		return nil
-	case contest.FieldYear:
-		v, ok := value.(int)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.AddYear(v)
 		return nil
 	}
 	return fmt.Errorf("unknown Contest numeric field %s", name)
@@ -877,9 +793,6 @@ func (m *ContestMutation) ResetField(name string) error {
 		return nil
 	case contest.FieldSubmitLimit:
 		m.ResetSubmitLimit()
-		return nil
-	case contest.FieldYear:
-		m.ResetYear()
 		return nil
 	case contest.FieldSlug:
 		m.ResetSlug()
@@ -988,10 +901,6 @@ type GroupMutation struct {
 	typ                string
 	id                 *int
 	name               *string
-	year               *int
-	addyear            *int
-	score              *int
-	addscore           *int
 	role               *group.Role
 	encrypted_password *string
 	created_at         *time.Time
@@ -1143,132 +1052,6 @@ func (m *GroupMutation) OldName(ctx context.Context) (v string, err error) {
 // ResetName resets all changes to the "name" field.
 func (m *GroupMutation) ResetName() {
 	m.name = nil
-}
-
-// SetYear sets the "year" field.
-func (m *GroupMutation) SetYear(i int) {
-	m.year = &i
-	m.addyear = nil
-}
-
-// Year returns the value of the "year" field in the mutation.
-func (m *GroupMutation) Year() (r int, exists bool) {
-	v := m.year
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldYear returns the old "year" field's value of the Group entity.
-// If the Group object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *GroupMutation) OldYear(ctx context.Context) (v int, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldYear is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldYear requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldYear: %w", err)
-	}
-	return oldValue.Year, nil
-}
-
-// AddYear adds i to the "year" field.
-func (m *GroupMutation) AddYear(i int) {
-	if m.addyear != nil {
-		*m.addyear += i
-	} else {
-		m.addyear = &i
-	}
-}
-
-// AddedYear returns the value that was added to the "year" field in this mutation.
-func (m *GroupMutation) AddedYear() (r int, exists bool) {
-	v := m.addyear
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// ResetYear resets all changes to the "year" field.
-func (m *GroupMutation) ResetYear() {
-	m.year = nil
-	m.addyear = nil
-}
-
-// SetScore sets the "score" field.
-func (m *GroupMutation) SetScore(i int) {
-	m.score = &i
-	m.addscore = nil
-}
-
-// Score returns the value of the "score" field in the mutation.
-func (m *GroupMutation) Score() (r int, exists bool) {
-	v := m.score
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldScore returns the old "score" field's value of the Group entity.
-// If the Group object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *GroupMutation) OldScore(ctx context.Context) (v int, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldScore is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldScore requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldScore: %w", err)
-	}
-	return oldValue.Score, nil
-}
-
-// AddScore adds i to the "score" field.
-func (m *GroupMutation) AddScore(i int) {
-	if m.addscore != nil {
-		*m.addscore += i
-	} else {
-		m.addscore = &i
-	}
-}
-
-// AddedScore returns the value that was added to the "score" field in this mutation.
-func (m *GroupMutation) AddedScore() (r int, exists bool) {
-	v := m.addscore
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// ClearScore clears the value of the "score" field.
-func (m *GroupMutation) ClearScore() {
-	m.score = nil
-	m.addscore = nil
-	m.clearedFields[group.FieldScore] = struct{}{}
-}
-
-// ScoreCleared returns if the "score" field was cleared in this mutation.
-func (m *GroupMutation) ScoreCleared() bool {
-	_, ok := m.clearedFields[group.FieldScore]
-	return ok
-}
-
-// ResetScore resets all changes to the "score" field.
-func (m *GroupMutation) ResetScore() {
-	m.score = nil
-	m.addscore = nil
-	delete(m.clearedFields, group.FieldScore)
 }
 
 // SetRole sets the "role" field.
@@ -1516,15 +1299,9 @@ func (m *GroupMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *GroupMutation) Fields() []string {
-	fields := make([]string, 0, 7)
+	fields := make([]string, 0, 5)
 	if m.name != nil {
 		fields = append(fields, group.FieldName)
-	}
-	if m.year != nil {
-		fields = append(fields, group.FieldYear)
-	}
-	if m.score != nil {
-		fields = append(fields, group.FieldScore)
 	}
 	if m.role != nil {
 		fields = append(fields, group.FieldRole)
@@ -1548,10 +1325,6 @@ func (m *GroupMutation) Field(name string) (ent.Value, bool) {
 	switch name {
 	case group.FieldName:
 		return m.Name()
-	case group.FieldYear:
-		return m.Year()
-	case group.FieldScore:
-		return m.Score()
 	case group.FieldRole:
 		return m.Role()
 	case group.FieldEncryptedPassword:
@@ -1571,10 +1344,6 @@ func (m *GroupMutation) OldField(ctx context.Context, name string) (ent.Value, e
 	switch name {
 	case group.FieldName:
 		return m.OldName(ctx)
-	case group.FieldYear:
-		return m.OldYear(ctx)
-	case group.FieldScore:
-		return m.OldScore(ctx)
 	case group.FieldRole:
 		return m.OldRole(ctx)
 	case group.FieldEncryptedPassword:
@@ -1598,20 +1367,6 @@ func (m *GroupMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetName(v)
-		return nil
-	case group.FieldYear:
-		v, ok := value.(int)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetYear(v)
-		return nil
-	case group.FieldScore:
-		v, ok := value.(int)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetScore(v)
 		return nil
 	case group.FieldRole:
 		v, ok := value.(group.Role)
@@ -1648,26 +1403,13 @@ func (m *GroupMutation) SetField(name string, value ent.Value) error {
 // AddedFields returns all numeric fields that were incremented/decremented during
 // this mutation.
 func (m *GroupMutation) AddedFields() []string {
-	var fields []string
-	if m.addyear != nil {
-		fields = append(fields, group.FieldYear)
-	}
-	if m.addscore != nil {
-		fields = append(fields, group.FieldScore)
-	}
-	return fields
+	return nil
 }
 
 // AddedField returns the numeric value that was incremented/decremented on a field
 // with the given name. The second boolean return value indicates that this field
 // was not set, or was not defined in the schema.
 func (m *GroupMutation) AddedField(name string) (ent.Value, bool) {
-	switch name {
-	case group.FieldYear:
-		return m.AddedYear()
-	case group.FieldScore:
-		return m.AddedScore()
-	}
 	return nil, false
 }
 
@@ -1676,20 +1418,6 @@ func (m *GroupMutation) AddedField(name string) (ent.Value, bool) {
 // type.
 func (m *GroupMutation) AddField(name string, value ent.Value) error {
 	switch name {
-	case group.FieldYear:
-		v, ok := value.(int)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.AddYear(v)
-		return nil
-	case group.FieldScore:
-		v, ok := value.(int)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.AddScore(v)
-		return nil
 	}
 	return fmt.Errorf("unknown Group numeric field %s", name)
 }
@@ -1698,9 +1426,6 @@ func (m *GroupMutation) AddField(name string, value ent.Value) error {
 // mutation.
 func (m *GroupMutation) ClearedFields() []string {
 	var fields []string
-	if m.FieldCleared(group.FieldScore) {
-		fields = append(fields, group.FieldScore)
-	}
 	if m.FieldCleared(group.FieldUpdatedAt) {
 		fields = append(fields, group.FieldUpdatedAt)
 	}
@@ -1718,9 +1443,6 @@ func (m *GroupMutation) FieldCleared(name string) bool {
 // error if the field is not defined in the schema.
 func (m *GroupMutation) ClearField(name string) error {
 	switch name {
-	case group.FieldScore:
-		m.ClearScore()
-		return nil
 	case group.FieldUpdatedAt:
 		m.ClearUpdatedAt()
 		return nil
@@ -1734,12 +1456,6 @@ func (m *GroupMutation) ResetField(name string) error {
 	switch name {
 	case group.FieldName:
 		m.ResetName()
-		return nil
-	case group.FieldYear:
-		m.ResetYear()
-		return nil
-	case group.FieldScore:
-		m.ResetScore()
 		return nil
 	case group.FieldRole:
 		m.ResetRole()
@@ -1848,8 +1564,6 @@ type SubmitMutation struct {
 	typ                string
 	id                 *int
 	url                *string
-	year               *int
-	addyear            *int
 	score              *int
 	addscore           *int
 	language           *submit.Language
@@ -2011,62 +1725,6 @@ func (m *SubmitMutation) OldURL(ctx context.Context) (v string, err error) {
 // ResetURL resets all changes to the "url" field.
 func (m *SubmitMutation) ResetURL() {
 	m.url = nil
-}
-
-// SetYear sets the "year" field.
-func (m *SubmitMutation) SetYear(i int) {
-	m.year = &i
-	m.addyear = nil
-}
-
-// Year returns the value of the "year" field in the mutation.
-func (m *SubmitMutation) Year() (r int, exists bool) {
-	v := m.year
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldYear returns the old "year" field's value of the Submit entity.
-// If the Submit object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *SubmitMutation) OldYear(ctx context.Context) (v int, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldYear is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldYear requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldYear: %w", err)
-	}
-	return oldValue.Year, nil
-}
-
-// AddYear adds i to the "year" field.
-func (m *SubmitMutation) AddYear(i int) {
-	if m.addyear != nil {
-		*m.addyear += i
-	} else {
-		m.addyear = &i
-	}
-}
-
-// AddedYear returns the value that was added to the "year" field in this mutation.
-func (m *SubmitMutation) AddedYear() (r int, exists bool) {
-	v := m.addyear
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// ResetYear resets all changes to the "year" field.
-func (m *SubmitMutation) ResetYear() {
-	m.year = nil
-	m.addyear = nil
 }
 
 // SetScore sets the "score" field.
@@ -2629,12 +2287,9 @@ func (m *SubmitMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *SubmitMutation) Fields() []string {
-	fields := make([]string, 0, 10)
+	fields := make([]string, 0, 9)
 	if m.url != nil {
 		fields = append(fields, submit.FieldURL)
-	}
-	if m.year != nil {
-		fields = append(fields, submit.FieldYear)
 	}
 	if m.score != nil {
 		fields = append(fields, submit.FieldScore)
@@ -2670,8 +2325,6 @@ func (m *SubmitMutation) Field(name string) (ent.Value, bool) {
 	switch name {
 	case submit.FieldURL:
 		return m.URL()
-	case submit.FieldYear:
-		return m.Year()
 	case submit.FieldScore:
 		return m.Score()
 	case submit.FieldLanguage:
@@ -2699,8 +2352,6 @@ func (m *SubmitMutation) OldField(ctx context.Context, name string) (ent.Value, 
 	switch name {
 	case submit.FieldURL:
 		return m.OldURL(ctx)
-	case submit.FieldYear:
-		return m.OldYear(ctx)
 	case submit.FieldScore:
 		return m.OldScore(ctx)
 	case submit.FieldLanguage:
@@ -2732,13 +2383,6 @@ func (m *SubmitMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetURL(v)
-		return nil
-	case submit.FieldYear:
-		v, ok := value.(int)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetYear(v)
 		return nil
 	case submit.FieldScore:
 		v, ok := value.(int)
@@ -2804,9 +2448,6 @@ func (m *SubmitMutation) SetField(name string, value ent.Value) error {
 // this mutation.
 func (m *SubmitMutation) AddedFields() []string {
 	var fields []string
-	if m.addyear != nil {
-		fields = append(fields, submit.FieldYear)
-	}
 	if m.addscore != nil {
 		fields = append(fields, submit.FieldScore)
 	}
@@ -2821,8 +2462,6 @@ func (m *SubmitMutation) AddedFields() []string {
 // was not set, or was not defined in the schema.
 func (m *SubmitMutation) AddedField(name string) (ent.Value, bool) {
 	switch name {
-	case submit.FieldYear:
-		return m.AddedYear()
 	case submit.FieldScore:
 		return m.AddedScore()
 	case submit.FieldTaskNum:
@@ -2836,13 +2475,6 @@ func (m *SubmitMutation) AddedField(name string) (ent.Value, bool) {
 // type.
 func (m *SubmitMutation) AddField(name string, value ent.Value) error {
 	switch name {
-	case submit.FieldYear:
-		v, ok := value.(int)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.AddYear(v)
-		return nil
 	case submit.FieldScore:
 		v, ok := value.(int)
 		if !ok {
@@ -2919,9 +2551,6 @@ func (m *SubmitMutation) ResetField(name string) error {
 	switch name {
 	case submit.FieldURL:
 		m.ResetURL()
-		return nil
-	case submit.FieldYear:
-		m.ResetYear()
 		return nil
 	case submit.FieldScore:
 		m.ResetScore()

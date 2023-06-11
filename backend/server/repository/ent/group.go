@@ -19,10 +19,6 @@ type Group struct {
 	ID int `json:"id,omitempty"`
 	// Name holds the value of the "name" field.
 	Name string `json:"name,omitempty"`
-	// Year holds the value of the "year" field.
-	Year int `json:"year,omitempty"`
-	// Score holds the value of the "score" field.
-	Score int `json:"score,omitempty"`
 	// Role holds the value of the "role" field.
 	Role group.Role `json:"role,omitempty"`
 	// EncryptedPassword holds the value of the "encrypted_password" field.
@@ -60,7 +56,7 @@ func (*Group) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case group.FieldID, group.FieldYear, group.FieldScore:
+		case group.FieldID:
 			values[i] = new(sql.NullInt64)
 		case group.FieldName, group.FieldRole, group.FieldEncryptedPassword:
 			values[i] = new(sql.NullString)
@@ -92,18 +88,6 @@ func (gr *Group) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field name", values[i])
 			} else if value.Valid {
 				gr.Name = value.String
-			}
-		case group.FieldYear:
-			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for field year", values[i])
-			} else if value.Valid {
-				gr.Year = int(value.Int64)
-			}
-		case group.FieldScore:
-			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for field score", values[i])
-			} else if value.Valid {
-				gr.Score = int(value.Int64)
 			}
 		case group.FieldRole:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -172,12 +156,6 @@ func (gr *Group) String() string {
 	builder.WriteString(fmt.Sprintf("id=%v, ", gr.ID))
 	builder.WriteString("name=")
 	builder.WriteString(gr.Name)
-	builder.WriteString(", ")
-	builder.WriteString("year=")
-	builder.WriteString(fmt.Sprintf("%v", gr.Year))
-	builder.WriteString(", ")
-	builder.WriteString("score=")
-	builder.WriteString(fmt.Sprintf("%v", gr.Score))
 	builder.WriteString(", ")
 	builder.WriteString("role=")
 	builder.WriteString(fmt.Sprintf("%v", gr.Role))

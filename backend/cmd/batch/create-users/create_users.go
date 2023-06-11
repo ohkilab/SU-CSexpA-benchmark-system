@@ -59,8 +59,6 @@ var Command = &cobra.Command{
 				SetName(user.Name).
 				SetEncryptedPassword(string(b)).
 				SetRole(group.RoleContestant).
-				SetYear(user.Year).
-				SetScore(0).
 				SetCreatedAt(timejst.Now()).
 				Save(ctx)
 			if err != nil {

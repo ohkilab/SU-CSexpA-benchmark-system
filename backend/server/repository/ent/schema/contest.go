@@ -19,7 +19,6 @@ func (Contest) Fields() []ent.Field {
 		field.Time("start_at"),
 		field.Time("end_at"),
 		field.Int("submit_limit"),
-		field.Int("year").Positive(),
 		field.String("slug").Unique(),
 		// if auto, {contest_slug}/random.txt is used
 		// if manual, {contest_slug}/\d.txt is used (number means attempt count)
