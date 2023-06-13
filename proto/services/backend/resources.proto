@@ -61,6 +61,7 @@ enum Status {
   CONNECTION_FAILED = 3; // failed to connect
   VALIDATION_ERROR = 4;  // validation error
   INTERNAL_ERROR = 5;    // backend error
+  TIMEOUT = 6;           // timeout
 }
 
 enum Language {

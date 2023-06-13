@@ -207,7 +207,13 @@ export enum Status {
      *
      * @generated from protobuf enum value: INTERNAL_ERROR = 5;
      */
-    INTERNAL_ERROR = 5
+    INTERNAL_ERROR = 5,
+    /**
+     * timeout
+     *
+     * @generated from protobuf enum value: TIMEOUT = 6;
+     */
+    TIMEOUT = 6
 }
 /**
  * @generated from protobuf enum backend.Language
