@@ -30,6 +30,7 @@
               <div v-else-if="props.submit.status == Status.SUCCESS" class="p-1 w-40 bg-blue-600 rounded mx-2">Success</div>
               <div v-else-if="props.submit.status == Status.CONNECTION_FAILED" class="p-1 w-40 bg-red-600 rounded mx-2">Connection Failed</div>
               <div v-else-if="props.submit.status == Status.VALIDATION_ERROR" class="p-1 w-40 bg-orange-500 rounded mx-2">Validation Error</div>
+              <div v-else-if="props.submit.status == Status.TIMEOUT" class="p-1 w-40 bg-orange-500 rounded mx-2">Timeout</div>
               <div v-else-if="props.submit.status == Status.INTERNAL_ERROR" class="p-1 w-40 bg-orange-500 rounded mx-2">Internal Error</div>
               <div v-else class="p-1 w-40 bg-orange-500 rounded">Unknown Error</div>
             </div>

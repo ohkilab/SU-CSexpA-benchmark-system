@@ -116,6 +116,7 @@ onMounted(() => {
           <div v-else-if="s.status == Status.SUCCESS" class="p-1 w-40 bg-blue-600 rounded mx-auto">Success</div>
           <div v-else-if="s.status == Status.CONNECTION_FAILED" class="p-1 w-40 bg-red-600 rounded mx-auto">Connection Failed</div>
           <div v-else-if="s.status == Status.VALIDATION_ERROR" class="p-1 w-40 bg-orange-500 rounded mx-auto">Validation Error</div>
+          <div v-else-if="s.status == Status.TIMEOUT" class="p-1 w-40 bg-orange-500 rounded mx-2">Timeout</div>
           <div v-else-if="s.status == Status.INTERNAL_ERROR" class="p-1 w-40 bg-orange-500 rounded mx-auto">Internal Error</div>
           <div v-else class="p-1 w-40 bg-orange-500 rounded">Unknown Error</div>
        </td>
