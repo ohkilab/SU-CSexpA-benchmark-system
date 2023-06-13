@@ -9,7 +9,6 @@ import (
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/repository/ent"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/repository/ent/group"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/repository/ent/submit"
-	"github.com/ohkilab/SU-CSexpA-benchmark-system/proto-gen/go/backend"
 	backendpb "github.com/ohkilab/SU-CSexpA-benchmark-system/proto-gen/go/backend"
 	benchmarkpb "github.com/ohkilab/SU-CSexpA-benchmark-system/proto-gen/go/benchmark"
 	"github.com/samber/lo"
@@ -17,6 +16,8 @@ import (
 	"golang.org/x/exp/slog"
 	"golang.org/x/net/context"
 	"golang.org/x/sync/errgroup"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 )
 
 type Worker interface {
@@ -58,24 +59,25 @@ func (w *worker) Run() {
 
 		w.logger.Info("start benchmark", slog.Any("req", task.Req))
 		if err := w.runBenchmarkTask(task); err != nil {
+			w.logger.Error("failed to run benchmark", err)
 			_, err = w.entClient.Submit.UpdateOneID(task.SubmitID).
 				SetScore(0).
 				SetMessage("Internal Server Error(Please contact administrator)").
-				SetStatus(backend.Status_INTERNAL_ERROR.String()).
+				SetStatus(backendpb.Status_INTERNAL_ERROR.String()).
 				SetCompletedAt(timejst.Now()).
 				SetUpdatedAt(timejst.Now()).
 				Save(ctx)
 			if err != nil {
 				w.logger.Error("failed to update submit", err)
 			}
-			w.logger.Error("failed to run benchmark", err)
+			continue
 		}
 		w.logger.Info("benchmark succeeded")
 	}
 }
 
 func (w *worker) runBenchmarkTask(task *Task) error {
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Minute)
+	ctx, cancel := context.WithTimeout(context.Background(), 2*time.Minute)
 	defer cancel()
 
 	stream, err := w.benchmarkClient.Execute(ctx, task.Req)
@@ -94,7 +96,7 @@ func (w *worker) runBenchmarkTask(task *Task) error {
 
 	eg := &errgroup.Group{}
 	scores := make([]int, 0, len(task.Req.Tasks))
-	status := backend.Status_SUCCESS
+	pbStatus := backendpb.Status_SUCCESS
 	mu := sync.Mutex{}
 	for {
 		resp, err := stream.Recv()
@@ -124,6 +126,16 @@ func (w *worker) runBenchmarkTask(task *Task) error {
 			break
 		}
 		if err != nil {
+			if code := status.Code(err); code == codes.DeadlineExceeded || code == codes.Canceled {
+				now := timejst.Now()
+				_, err := w.entClient.Submit.
+					UpdateOneID(task.SubmitID).
+					SetCompletedAt(now).
+					SetUpdatedAt(now).
+					SetStatus(backendpb.Status_TIMEOUT.String()).
+					Save(context.Background())
+				return err
+			}
 			w.logger.Error("failed to receive benchmark response", err)
 			return err
 		}
@@ -136,9 +148,9 @@ func (w *worker) runBenchmarkTask(task *Task) error {
 			if resp.Ok {
 				scores = append(scores, int(resp.RequestsPerSecond))
 			}
-			if needsUpdateStatus(status, resp.Status) {
-				w.logger.Info("update status", slog.Any("current status", status), slog.Any("next status", resp.Status))
-				status = resp.Status
+			if needsUpdateStatus(pbStatus, resp.Status) {
+				w.logger.Info("update status", slog.Any("current status", pbStatus), slog.Any("next status", resp.Status))
+				pbStatus = resp.Status
 			}
 			mu.Unlock()
 
@@ -170,7 +182,7 @@ func (w *worker) runBenchmarkTask(task *Task) error {
 	}
 
 	score := 0
-	if status == backend.Status_SUCCESS {
+	if pbStatus == backendpb.Status_SUCCESS {
 		slices.SortFunc(scores, func(l, r int) bool {
 			return l > r
 		})
@@ -183,7 +195,7 @@ func (w *worker) runBenchmarkTask(task *Task) error {
 		SetCompletedAt(now).
 		SetUpdatedAt(now).
 		SetScore(score).
-		SetStatus(status.String()).
+		SetStatus(pbStatus.String()).
 		Save(ctx); err != nil {
 		w.logger.Error("failed to update submit", err)
 		return err
@@ -206,14 +218,15 @@ func (w *worker) runBenchmarkTask(task *Task) error {
 	return nil
 }
 
-func needsUpdateStatus(current, next backend.Status) bool {
-	priorityMap := map[backend.Status]int{
-		backend.Status_WAITING:           0,
-		backend.Status_IN_PROGRESS:       1,
-		backend.Status_SUCCESS:           2,
-		backend.Status_CONNECTION_FAILED: 3,
-		backend.Status_VALIDATION_ERROR:  4,
-		backend.Status_INTERNAL_ERROR:    5,
+func needsUpdateStatus(current, next backendpb.Status) bool {
+	priorityMap := map[backendpb.Status]int{
+		backendpb.Status_WAITING:           0,
+		backendpb.Status_IN_PROGRESS:       1,
+		backendpb.Status_SUCCESS:           2,
+		backendpb.Status_CONNECTION_FAILED: 3,
+		backendpb.Status_VALIDATION_ERROR:  4,
+		backendpb.Status_INTERNAL_ERROR:    5,
+		backendpb.Status_TIMEOUT:           6,
 	}
 	return priorityMap[current] < priorityMap[next]
 }
