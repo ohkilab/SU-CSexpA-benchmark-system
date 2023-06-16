@@ -206,7 +206,7 @@ watch(urlList, urlList => {
         <button @click="urlList.splice(idx, 1)" class="px-4 bg-red-500 rounded shadow-black shadow-md transition hover:scale-105">-</button>
       </div>
       <div class="w-5/6 flex gap-5">
-        <input class="w-full rounded bg-gray-700 p-2 hover:bg-gray-600 transition focus:outline-none focus:bg-gray-600" placeholder="Raspberry Pi の IPアドレス" type="text" v-model="url">
+        <input class="w-full rounded bg-gray-700 p-2 hover:bg-gray-600 transition focus:outline-none focus:bg-gray-600" placeholder="Raspberry Pi の IPアドレス。例：http://192.168.1.10:3000" type="text" v-model="url">
         <!-- <button @click="urlList.push(url)" class="px-4 bg-blue-500 rounded shadow-black shadow-md transition hover:scale-105">+</button> -->
       </div>
       <button class="p-5 mb-5 bg-blue-500 w-64 rounded text-xl shadow-md shadow-black hover:scale-105 transition" @click="benchmark">ベンチマーク開始</button>
