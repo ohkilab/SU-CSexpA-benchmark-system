@@ -12,13 +12,14 @@ import (
 	backendpb "github.com/ohkilab/SU-CSexpA-benchmark-system/proto-gen/go/backend"
 	benchmarkpb "github.com/ohkilab/SU-CSexpA-benchmark-system/proto-gen/go/benchmark"
 	"github.com/samber/lo"
-	"golang.org/x/exp/slices"
 	"golang.org/x/exp/slog"
 	"golang.org/x/net/context"
 	"golang.org/x/sync/errgroup"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
+
+const Timeout = 3 * time.Minute
 
 type Worker interface {
 	Push(*Task)
@@ -77,7 +78,7 @@ func (w *worker) Run() {
 }
 
 func (w *worker) runBenchmarkTask(task *Task) error {
-	ctx, cancel := context.WithTimeout(context.Background(), 2*time.Minute)
+	ctx, cancel := context.WithTimeout(context.Background(), Timeout)
 	defer cancel()
 
 	stream, err := w.benchmarkClient.Execute(ctx, task.Req)
@@ -183,10 +184,7 @@ func (w *worker) runBenchmarkTask(task *Task) error {
 
 	score := 0
 	if pbStatus == backendpb.Status_SUCCESS {
-		slices.SortFunc(scores, func(l, r int) bool {
-			return l > r
-		})
-		score = lo.Sum(scores[:len(task.Req.Tasks)-10])
+		score = lo.Sum(scores)
 	}
 
 	now := timejst.Now()

@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"io"
+	"log"
 	"net/http"
 	"sync"
 	"syscall"
@@ -36,17 +37,18 @@ func (c *Client) Run(ctx context.Context, url string, options ...optionFunc) ([]
 	for _, f := range options {
 		f(option)
 	}
-
-	ctx, cancel := context.WithTimeout(ctx, 30*time.Second)
-	defer cancel()
+	log.Printf("Start running benchmark(threadNum: %d, attemptCount: %d)\n", option.threadNum, option.attmptCount)
 
 	attemptCount := 0
 	results := make([]*HttpResult, 0)
 	mu := sync.Mutex{}
 	eg, ctx := errgroup.WithContext(ctx)
+	ctx, cancel := context.WithCancel(ctx)
+	defer cancel()
 	for range make([]struct{}, option.threadNum) {
 		eg.Go(func() error {
 			for {
+				log.Println("check", attemptCount)
 				select {
 				case <-ctx.Done():
 					return nil
@@ -55,14 +57,13 @@ func (c *Client) Run(ctx context.Context, url string, options ...optionFunc) ([]
 					if err != nil {
 						return err
 					}
+					b, err := io.ReadAll(resp.Body)
+					if err != nil {
+						return err
+					}
+					resp.Body.Close()
 
-					done, err := func() (bool, error) {
-						b, err := io.ReadAll(resp.Body)
-						if err != nil {
-							return false, err
-						}
-						resp.Body.Close()
-
+					done := func() bool {
 						mu.Lock()
 						defer mu.Unlock()
 						results = append(results, &HttpResult{
@@ -72,16 +73,11 @@ func (c *Client) Run(ctx context.Context, url string, options ...optionFunc) ([]
 							ResponseTime: took,
 						})
 						attemptCount++
-						if attemptCount == option.attmptCount {
-							return true, nil
-						}
-						return false, nil
+						return attemptCount == option.attmptCount
 					}()
-					if err != nil {
-						return err
-					}
 					if done {
 						cancel()
+						return nil
 					}
 				}
 			}

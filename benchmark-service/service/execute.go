@@ -26,6 +26,7 @@ func (s *service) Execute(req *pb.ExecuteRequest, stream pb.BenchmarkService_Exe
 		return status.Error(codes.InvalidArgument, "groupID must be 100 or less")
 	}
 
+	log.Println("Start executing: ", req)
 	validator, ok := s.validatorMap[req.ContestSlug]
 	if !ok {
 		return status.Error(codes.InvalidArgument, fmt.Sprintf("the validator is not supported(slug: %s)", req.ContestSlug))
