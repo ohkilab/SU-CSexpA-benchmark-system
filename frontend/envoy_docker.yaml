@@ -56,5 +56,5 @@ static_resources:
               - endpoint:
                   address:
                     socket_address:
-                      address: backend
+                      address: localhost
                       port_value: 50051
