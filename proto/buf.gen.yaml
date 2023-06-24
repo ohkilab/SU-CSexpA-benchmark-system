@@ -1,0 +1,16 @@
+version: v1
+managed:
+  enabled: true
+  go_package_prefix:
+    default: github.com/ohkilab/SU-CSexpA-benchmark-system/proto-gen/go
+plugins:
+  - plugin: buf.build/protocolbuffers/go
+    out: ../proto-gen/go
+    opt:
+      - paths=source_relative
+  - plugin: buf.build/grpc/go
+    out: ../proto-gen/go
+    opt:
+      - paths=source_relative
+  - plugin: buf.build/community/timostamm-protobuf-ts
+    out: ../proto-gen/web

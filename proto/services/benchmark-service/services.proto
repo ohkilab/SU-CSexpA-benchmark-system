@@ -1,0 +1,11 @@
+syntax = "proto3";
+
+import "services/benchmark-service/messages.proto";
+
+option go_package = "github.com/ohkilab/SU-CSexpA-benchmark-system/proto-gen/go/benchmark-service";
+
+package benchmark;
+
+service BenchmarkService {
+  rpc Execute(ExecuteRequest) returns (stream ExecuteResponse);
+}

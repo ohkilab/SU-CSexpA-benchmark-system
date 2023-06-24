@@ -1,15 +1,15 @@
 syntax = "proto3";
 
 import "google/protobuf/timestamp.proto";
-import "backend/resources.proto";
+import "services/backend/resources.proto";
 
-option go_package = "github.com/ohkilab/SU-CSexpA-benchmark-system/proto-gen/go/benchmark";
+option go_package = "github.com/ohkilab/SU-CSexpA-benchmark-system/proto-gen/go/benchmark-service";
 
 package benchmark;
 
 message ExecuteRequest {
   repeated Task tasks = 1;
-  string group_id = 2;     // for logging
+  string group_id = 2; // for logging
   string contest_slug = 3;
 }
 
@@ -30,7 +30,7 @@ enum HttpMethod {
 message ExecuteResponse {
   bool ok = 1;
   optional string error_message = 2; // if ok is false, this field is set
-  int64 time_elapsed = 3;  // in milliseconds
+  int64 time_elapsed = 3;            // in milliseconds
   int32 total_requests = 4;
   int32 requests_per_second = 5;
   Task task = 6;
@@ -38,7 +38,7 @@ message ExecuteResponse {
 }
 
 message HttpRequest {
-  string url = 1;        // e.g.) http://10.255.255.255/endpoint
+  string url = 1; // e.g.) http://10.255.255.255/endpoint
   HttpMethod method = 2;
   string content_type = 4;
   string body = 5;
