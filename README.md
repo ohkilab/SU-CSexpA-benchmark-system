@@ -18,7 +18,7 @@ $ make up
 
 ```shell
 $ cd backend
-$ make seed
+$ make batch/seed
 ```
 
 ## test
