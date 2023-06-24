@@ -1,30 +1,31 @@
 # SU-CSexpA-benchmark-system
 
-## how to work
+## requirements
 
-1. create `.env`
+- [docker](https://docs.docker.com/engine/install/)
+- [go](https://go.dev/doc/install)
+
+## launch
+
+### 1. create `.env`
 
 ```shell
 $ cp .env.sample .env
 ```
 
-2. run
+### 2. run
+
+You can access to the web application on http://localhost:80
 
 ```shell
 $ make up
 ```
 
-3. if you want to test, generate seeds
+### 3. if you want to test, generate seeds
+
+You can login with the user(id: `ohkilab`, password: `ohkilab`)
 
 ```shell
 $ cd backend
 $ make batch/seed
-```
-
-## test
-
-- e2e test
-
-```shell
-$ make e2e_test
 ```
