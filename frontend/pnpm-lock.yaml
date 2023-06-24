@@ -26,9 +26,6 @@ dependencies:
   axios:
     specifier: ^1.3.5
     version: 1.3.5
-  google-protobuf:
-    specifier: ^3.21.2
-    version: 3.21.2
   pinia:
     specifier: ^2.0.35
     version: 2.0.35(typescript@4.9.5)(vue@3.2.47)
@@ -823,10 +820,6 @@ packages:
       once: 1.4.0
       path-is-absolute: 1.0.1
     dev: true
-
-  /google-protobuf@3.21.2:
-    resolution: {integrity: sha512-3MSOYFO5U9mPGikIYCzK0SaThypfGgS6bHqrUGXG3DPHCrb+txNqeEcns1W0lkGfk0rCyNXm7xB9rMxnCiZOoA==}
-    dev: false
 
   /has@1.0.3:
     resolution: {integrity: sha512-f2dvO0VU6Oej7RkWJGrehjbzMAjFp5/VKPp5tTpWIV4JHHZK1/BxbFRtf/siA2SWTe09caDmVtYYzWEIbBS4zw==}
