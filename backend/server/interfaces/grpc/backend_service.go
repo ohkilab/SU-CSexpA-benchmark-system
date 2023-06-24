@@ -11,7 +11,7 @@ import (
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/usecases/ranking"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/usecases/submit"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/worker"
-	pb "github.com/ohkilab/SU-CSexpA-benchmark-system/proto-gen/go/backend"
+	pb "github.com/ohkilab/SU-CSexpA-benchmark-system/proto-gen/go/services/backend"
 	"golang.org/x/exp/slog"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"

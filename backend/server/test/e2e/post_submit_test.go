@@ -14,7 +14,7 @@ import (
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/repository/tag"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/test/utils"
 	mock_worker "github.com/ohkilab/SU-CSexpA-benchmark-system/backend/worker/mock"
-	pb "github.com/ohkilab/SU-CSexpA-benchmark-system/proto-gen/go/backend"
+	pb "github.com/ohkilab/SU-CSexpA-benchmark-system/proto-gen/go/services/backend"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"golang.org/x/crypto/bcrypt"

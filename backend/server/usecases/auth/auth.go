@@ -8,7 +8,7 @@ import (
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/core/timejst"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/repository/ent"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/repository/ent/group"
-	pb "github.com/ohkilab/SU-CSexpA-benchmark-system/proto-gen/go/backend"
+	pb "github.com/ohkilab/SU-CSexpA-benchmark-system/proto-gen/go/services/backend"
 	"golang.org/x/crypto/bcrypt"
 	"golang.org/x/exp/slog"
 	"google.golang.org/grpc/codes"

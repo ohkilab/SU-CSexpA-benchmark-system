@@ -6,10 +6,10 @@ import { useStateStore, IState } from '../stores/state'
 import type { Ref } from 'vue'
 
 import { GrpcWebFetchTransport } from '@protobuf-ts/grpcweb-transport'
-import { BackendServiceClient } from 'proto-gen-web/src/backend/services.client'
+import { BackendServiceClient } from 'proto-gen-web/services/backend/services.client'
 
-import { Group, Status, Submit, TaskResult } from 'proto-gen-web/src/backend/resources'
-import { GetSubmitRequest, ListSubmitsRequest } from 'proto-gen-web/src/backend/messages'
+import { Group, Status, Submit, TaskResult } from 'proto-gen-web/services/backend/resources'
+import { GetSubmitRequest, ListSubmitsRequest } from 'proto-gen-web/services/backend/messages'
 
 import Result from '../components/Result.vue'
 
@@ -149,75 +149,75 @@ watch(urlList, urlList => {
   <div class="flex flex-col mt-auto w-full items-center">
     <fieldset v-if="state.debug" class="border border-red-500 p-2">
       <legend>Debug</legend>
-      <pre>{{taskResults.length}}</pre>
-      <pre>{{Status}}</pre>
-      <pre>{{statusMessage(currentStatus)}}</pre>
+      <pre>{{ taskResults.length }}</pre>
+      <pre>{{ Status }}</pre>
+      <pre>{{ statusMessage(currentStatus) }}</pre>
       <input class="text-red-500" v-model="currentStatus" type="number">
-      <pre>{{Status[currentStatus]}}</pre>
+      <pre>{{ Status[currentStatus] }}</pre>
       <button class="border border-red-500 p-2" @click="latestSubmit = {}">clear submit</button>
     </fieldset>
-    <div class="text-red-500" v-if="errorMsg">Error: {{errorMsg}}</div>
+    <div class="text-red-500" v-if="errorMsg">Error: {{ errorMsg }}</div>
     <div v-if="state.benchmarking">
       <div class="flex flex-col gap-8 my-auto text-xl items-center justify-center">
         <div class="p-4 border-2 rounded border-gray-600 flex flex-col items-center gap-3">
           <div>
-             ステータス: {{statusMessage(currentStatus)}}
+            ステータス: {{ statusMessage(currentStatus) }}
           </div>
           <div>
-             {{ currentStatus == Status.IN_PROGRESS ? `タグ ${state.current+1}/${state.size} ベンチマーク中` : 
-                currentStatus == Status.SUCCESS ? `ベンチマーク成功` : ''
-             }}
+            {{ currentStatus == Status.IN_PROGRESS ? `タグ ${state.current + 1}/${state.size} ベンチマーク中` :
+              currentStatus == Status.SUCCESS ? `ベンチマーク成功` : ''
+            }}
           </div>
-          <font-awesome-icon v-if="currentStatus == Status.WAITING || currentStatus == Status.IN_PROGRESS" class="animate-spin" :icon="['fas', 'spinner']" />
+          <font-awesome-icon v-if="currentStatus == Status.WAITING || currentStatus == Status.IN_PROGRESS"
+            class="animate-spin" :icon="['fas', 'spinner']" />
         </div>
 
         <div class="flex flex-wrap gap-5 max-w-[1000px] justify-center">
-          <div
-            v-for="(t, i) in taskResults"
-            :key="i"
-              class="transition-all ease-out duration-200 w-20 p-3 text-center rounded shadow-md shadow-black"
-              :class="
-                t.status == Status.WAITING ? 'opacity-70' :
+          <div v-for="(t, i) in taskResults" :key="i"
+            class="transition-all ease-out duration-200 w-20 p-3 text-center rounded shadow-md shadow-black" :class="t.status == Status.WAITING ? 'opacity-70' :
                 t.status == Status.IN_PROGRESS ? 'bg-teal-500' :
-                t.status == Status.SUCCESS ? 'bg-blue-600' :
-                t.status == Status.CONNECTION_FAILED ? 'bg-red-500' :
-                t.status == Status.VALIDATION_ERROR ? 'bg-orange-500' :
-                t.status == Status.INTERNAL_ERROR ? 'bg-orange-500' : 'bg-gray-700 opacity-70'
-              "
-          >
+                  t.status == Status.SUCCESS ? 'bg-blue-600' :
+                    t.status == Status.CONNECTION_FAILED ? 'bg-red-500' :
+                      t.status == Status.VALIDATION_ERROR ? 'bg-orange-500' :
+                        t.status == Status.INTERNAL_ERROR ? 'bg-orange-500' : 'bg-gray-700 opacity-70'
+              ">
 
-            <font-awesome-icon v-if="state.current == i" class="animate-spin" :icon="['fas', 'spinner']"></font-awesome-icon>
+            <font-awesome-icon v-if="state.current == i" class="animate-spin"
+              :icon="['fas', 'spinner']"></font-awesome-icon>
             <font-awesome-icon v-else-if="t.status == Status.WAITING" :icon="['fas', 'minus']"></font-awesome-icon>
             <font-awesome-icon v-else-if="t.status == Status.IN_PROGRESS" :icon="['fas', 'spinner']"></font-awesome-icon>
             <font-awesome-icon v-else-if="t.status == Status.SUCCESS" :icon="['fas', 'check']"></font-awesome-icon>
             <font-awesome-icon v-else-if="t.status == Status.CONNECTION_FAILED" :icon="['fas', 'x']"></font-awesome-icon>
-            <font-awesome-icon v-else-if="t.status == Status.VALIDATION_ERROR" :icon="['fas', 'exclamation']"></font-awesome-icon>
+            <font-awesome-icon v-else-if="t.status == Status.VALIDATION_ERROR"
+              :icon="['fas', 'exclamation']"></font-awesome-icon>
             <font-awesome-icon v-else :icon="['fas', 'minus']"></font-awesome-icon>
-            {{ i+1 }}
+            {{ i + 1 }}
           </div>
         </div>
-        <button @click="handleStopBenchmark" class="p-5 bg-red-500 rounded shadow-black shadow-md hover:scale-105 transition">ベンチマーク停止</button>
+        <button @click="handleStopBenchmark"
+          class="p-5 bg-red-500 rounded shadow-black shadow-md hover:scale-105 transition">ベンチマーク停止</button>
       </div>
     </div>
     <div class="flex flex-col gap-5 w-full items-center" v-else>
       <!-- deprecated: url list -->
       <div class="flex gap-4 w-5/6" v-for="(u, idx) in urlList" :key="u">
-        <button @click="url = u" class="w-full rounded bg-gray-600 p-2 text-left hover:bg-gray-600 transition">{{u}}</button>
-        <button @click="urlList.splice(idx, 1)" class="px-4 bg-red-500 rounded shadow-black shadow-md transition hover:scale-105">-</button>
+        <button @click="url = u"
+          class="w-full rounded bg-gray-600 p-2 text-left hover:bg-gray-600 transition">{{ u }}</button>
+        <button @click="urlList.splice(idx, 1)"
+          class="px-4 bg-red-500 rounded shadow-black shadow-md transition hover:scale-105">-</button>
       </div>
       <div class="w-5/6 flex gap-5">
-        <input class="w-full rounded bg-gray-700 p-2 hover:bg-gray-600 transition focus:outline-none focus:bg-gray-600" placeholder="Raspberry Pi の IPアドレス。例：http://192.168.1.10:3000" type="text" v-model="url">
+        <input class="w-full rounded bg-gray-700 p-2 hover:bg-gray-600 transition focus:outline-none focus:bg-gray-600"
+          placeholder="Raspberry Pi の IPアドレス。例：http://192.168.1.10:3000" type="text" v-model="url">
         <!-- <button @click="urlList.push(url)" class="px-4 bg-blue-500 rounded shadow-black shadow-md transition hover:scale-105">+</button> -->
       </div>
-      <button class="p-5 mb-5 bg-blue-500 w-64 rounded text-xl shadow-md shadow-black hover:scale-105 transition" @click="benchmark">ベンチマーク開始</button>
+      <button class="p-5 mb-5 bg-blue-500 w-64 rounded text-xl shadow-md shadow-black hover:scale-105 transition"
+        @click="benchmark">ベンチマーク開始</button>
       <div v-if="Object.keys(latestSubmit).length > 0" class="w-5/6 h-[500px]">
-        <result
-          :submit="latestSubmit"
-          :title="`最新結果`"
-        />
+        <result :submit="latestSubmit" :title="`最新結果`" />
       </div>
       <div v-else class="w-5/6 bg-gray-700 rounded-md flex justify-center items-center h-[500px]">
-        {{noSubmissions ? 'まだベンチマーク結果がありません。' : '読み込み中...'}}
+        {{ noSubmissions ? 'まだベンチマーク結果がありません。' : '読み込み中...' }}
       </div>
     </div>
   </div>

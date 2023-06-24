@@ -3,7 +3,7 @@ package service
 import (
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/benchmark-service/benchmark"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/benchmark-service/validation"
-	pb "github.com/ohkilab/SU-CSexpA-benchmark-system/proto-gen/go/benchmark"
+	pb "github.com/ohkilab/SU-CSexpA-benchmark-system/proto-gen/go/services/benchmark-service"
 )
 
 type service struct {

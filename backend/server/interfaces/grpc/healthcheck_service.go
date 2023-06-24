@@ -5,7 +5,7 @@ import (
 	"time"
 
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/usecases/healthcheck"
-	pb "github.com/ohkilab/SU-CSexpA-benchmark-system/proto-gen/go/backend"
+	pb "github.com/ohkilab/SU-CSexpA-benchmark-system/proto-gen/go/services/backend"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )

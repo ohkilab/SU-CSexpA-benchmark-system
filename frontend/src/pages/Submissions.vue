@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { onMounted, Ref, ref } from 'vue';
 import { GrpcWebFetchTransport } from '@protobuf-ts/grpcweb-transport';
-import { BackendServiceClient } from 'proto-gen-web/src/backend/services.client';
+import { BackendServiceClient } from 'proto-gen-web/services/backend/services.client';
 import { IState, useStateStore } from '../stores/state';
-import { Status, Submit, TaskResult } from 'proto-gen-web/src/backend/resources';
-import { GetSubmitRequest, ListSubmitsRequest } from 'proto-gen-web/src/backend/messages';
+import { Status, Submit, TaskResult } from 'proto-gen-web/services/backend/resources';
+import { GetSubmitRequest, ListSubmitsRequest } from 'proto-gen-web/services/backend/messages';
 import Result from '../components/Result.vue'
 
 const state:IState = useStateStore()
@@ -69,20 +69,16 @@ onMounted(() => {
   <!-- TODO: show "no submissions" when server returns no submissions -->
 
   <!-- modal -->
-  <transition
-      enter-active-class="duration-100 ease-out"
-      enter-from-class="transform opacity-0"
-      enter-to-class="opacity-100"
-      leave-active-class="duration-100 ease-in"
-      leave-from-class="opacity-100"
-      leave-to-class="transform opacity-0"
-  >
+  <transition enter-active-class="duration-100 ease-out" enter-from-class="transform opacity-0"
+    enter-to-class="opacity-100" leave-active-class="duration-100 ease-in" leave-from-class="opacity-100"
+    leave-to-class="transform opacity-0">
 
 
-  <div v-if="Object.keys(modalItem).length > 0" @click.self="modalItem = {}" class="fixed flex justify-center items-center inset-0 bg-black bg-opacity-50 overflow-y-auto h-full w-full">
-    <div class="w-5/6 h-5/6">
-      <result :submit="modalItem" :title="'結果詳細'" :show-close-button="true" @close-modal="modalItem = {}" />
-    </div>
+    <div v-if="Object.keys(modalItem).length > 0" @click.self="modalItem = {}"
+      class="fixed flex justify-center items-center inset-0 bg-black bg-opacity-50 overflow-y-auto h-full w-full">
+      <div class="w-5/6 h-5/6">
+        <result :submit="modalItem" :title="'結果詳細'" :show-close-button="true" @close-modal="modalItem = {}" />
+      </div>
     </div>
 
   </transition>
@@ -97,35 +93,36 @@ onMounted(() => {
       </tr>
     </thead>
     <tbody>
-      <tr
-        v-for="(s, idx) in submits" class="bg-gray-900 border-b-2 border-gray-800 hover:bg-gray-700 cursor-pointer transition" 
-        @click.prevent="handleModal(s)"
-        key="idx"
-      >
-       <td class="w-20 text-center">{{s.id}}</td>
-       <td class="w-60 text-center">{{formatDate(Number(s.submitedAt?.seconds))}}</td>
-       <td class="w-30 text-center">{{s.groupName}}</td>
-       <td class="w-20 text-center px-5">
-         <div class="w-20 bg-gray-500 rounded text-center justify-center">
-          {{s.score}}
+      <tr v-for="(s, idx) in submits"
+        class="bg-gray-900 border-b-2 border-gray-800 hover:bg-gray-700 cursor-pointer transition"
+        @click.prevent="handleModal(s)" key="idx">
+        <td class="w-20 text-center">{{ s.id }}</td>
+        <td class="w-60 text-center">{{ formatDate(Number(s.submitedAt?.seconds)) }}</td>
+        <td class="w-30 text-center">{{ s.groupName }}</td>
+        <td class="w-20 text-center px-5">
+          <div class="w-20 bg-gray-500 rounded text-center justify-center">
+            {{ s.score }}
           </div>
-       </td>
-       <td class="py-2 transition-colors text-center">
+        </td>
+        <td class="py-2 transition-colors text-center">
           <div v-if="s.status == Status.WAITING" class="p-1 w-40 bg-teal-500 rounded mx-auto">Waiting</div>
           <div v-else-if="s.status == Status.IN_PROGRESS" class="p-1 w-40 bg-teal-500 rounded mx-auto">In Progress</div>
           <div v-else-if="s.status == Status.SUCCESS" class="p-1 w-40 bg-blue-600 rounded mx-auto">Success</div>
-          <div v-else-if="s.status == Status.CONNECTION_FAILED" class="p-1 w-40 bg-red-600 rounded mx-auto">Connection Failed</div>
-          <div v-else-if="s.status == Status.VALIDATION_ERROR" class="p-1 w-40 bg-orange-500 rounded mx-auto">Validation Error</div>
+          <div v-else-if="s.status == Status.CONNECTION_FAILED" class="p-1 w-40 bg-red-600 rounded mx-auto">Connection
+            Failed</div>
+          <div v-else-if="s.status == Status.VALIDATION_ERROR" class="p-1 w-40 bg-orange-500 rounded mx-auto">Validation
+            Error</div>
           <div v-else-if="s.status == Status.TIMEOUT" class="p-1 w-40 bg-orange-500 rounded mx-auto">Timeout</div>
-          <div v-else-if="s.status == Status.INTERNAL_ERROR" class="p-1 w-40 bg-orange-500 rounded mx-auto">Internal Error</div>
+          <div v-else-if="s.status == Status.INTERNAL_ERROR" class="p-1 w-40 bg-orange-500 rounded mx-auto">Internal Error
+          </div>
           <div v-else class="p-1 w-40 bg-orange-500 rounded">Unknown Error</div>
-       </td>
+        </td>
       </tr>
     </tbody>
   </table>
 
   <div class="mt-auto" v-else>
-    <font-awesome-icon v-if="!noSubmissions"  class="animate-spin text-3xl" :icon="['fas', 'spinner']"></font-awesome-icon>
+    <font-awesome-icon v-if="!noSubmissions" class="animate-spin text-3xl" :icon="['fas', 'spinner']"></font-awesome-icon>
     <div v-else>まだベンチマーク結果がありません。</div>
   </div>
   <div v-if="state.debug" class="flex flex-col gap-2 w-full">
@@ -135,6 +132,6 @@ onMounted(() => {
     <div class="p-1 w-40 bg-red-600 rounded">Connection Failed</div>
     <div class="p-1 w-40 bg-orange-500 rounded">Validation Error</div>
     <div class="p-1 w-40 bg-orange-500 rounded">Internal Error</div>
-    {{Status}}
+    {{ Status }}
   </div>
 </template>

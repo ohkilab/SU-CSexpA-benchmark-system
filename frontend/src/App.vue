@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { GrpcWebFetchTransport } from '@protobuf-ts/grpcweb-transport';
-import { BackendServiceClient } from 'proto-gen-web/src/backend/services.client';
+import { BackendServiceClient } from 'proto-gen-web/services/backend/services.client';
 import { onMounted, Ref, ref, watch } from 'vue';
 import { useRouter, useRoute } from 'vue-router'
 import Login from './pages/Login.vue'
