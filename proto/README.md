@@ -1,36 +1,11 @@
 # proto
 
-## install dependencies
+## requirements
 
-```shell
-$ make tools/install
-```
+- [buf cli](https://buf.build/docs/installation/)
 
 ## generate
 
 ```shell
 $ make generate
-```
-
-## service.yaml
-
-example is below
-
-```yaml
-grpc_server:
-  go:
-    dist: ../proto-gen/go
-    opts:
-      - paths=source_relative
-
-client:
-  go:
-    dist: ../proto-gen/go
-    opts:
-      - paths=source_relative
-  ts:
-    plugin:
-      name: protoc-gen-ts
-      path: ./node_modules/.bin/protoc-gen-ts
-    dist: ../proto-gen/ts
 ```

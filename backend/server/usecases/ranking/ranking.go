@@ -8,7 +8,7 @@ import (
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/repository/ent/contest"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/repository/ent/group"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/repository/ent/submit"
-	pb "github.com/ohkilab/SU-CSexpA-benchmark-system/proto-gen/go/backend"
+	pb "github.com/ohkilab/SU-CSexpA-benchmark-system/proto-gen/go/services/backend"
 	"github.com/samber/lo"
 	"golang.org/x/exp/slices"
 	"golang.org/x/exp/slog"

@@ -11,8 +11,8 @@ import (
 
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/benchmark-service/benchmark"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/benchmark-service/validation"
-	backendpb "github.com/ohkilab/SU-CSexpA-benchmark-system/proto-gen/go/backend"
-	pb "github.com/ohkilab/SU-CSexpA-benchmark-system/proto-gen/go/benchmark"
+	backendpb "github.com/ohkilab/SU-CSexpA-benchmark-system/proto-gen/go/services/backend"
+	pb "github.com/ohkilab/SU-CSexpA-benchmark-system/proto-gen/go/services/benchmark-service"
 	"golang.org/x/sync/errgroup"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"

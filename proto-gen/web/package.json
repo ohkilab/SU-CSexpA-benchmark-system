@@ -2,17 +2,9 @@
   "name": "proto-gen-web",
   "version": "1.0.0",
   "description": "",
-  "scripts": {
-    "build": "tsc -d"
-  },
-  "main": "dist/index.ts",
-  "types": "dist/index.d.ts",
-  "author": "",
-  "license": "ISC",
   "dependencies": {
-    "@protobuf-ts/runtime": "^2.8.3",
-    "@protobuf-ts/runtime-rpc": "^2.8.3",
-    "google-protobuf": "^3.21.2"
+    "@protobuf-ts/runtime": "^2.9.0",
+    "@protobuf-ts/runtime-rpc": "^2.9.0"
   },
   "devDependencies": {
     "typescript": "^5.0.4"

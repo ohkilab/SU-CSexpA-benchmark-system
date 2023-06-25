@@ -1,9 +1,7 @@
 syntax = "proto3";
 
-import "backend/resources.proto";
+import "services/backend/resources.proto";
 import "google/protobuf/timestamp.proto";
-
-option go_package = "github.com/ohkilab/SU-CSexpA-benchmark-system/proto-gen/go/backend";
 
 package backend;
 

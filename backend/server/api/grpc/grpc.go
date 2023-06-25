@@ -6,7 +6,7 @@ import (
 	"github.com/grpc-ecosystem/go-grpc-middleware/v2/interceptors/logging"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/api/grpc/interceptor"
 	interfaces "github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/interfaces/grpc"
-	"github.com/ohkilab/SU-CSexpA-benchmark-system/proto-gen/go/backend"
+	"github.com/ohkilab/SU-CSexpA-benchmark-system/proto-gen/go/services/backend"
 	"golang.org/x/exp/slog"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"

@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { GrpcWebFetchTransport } from '@protobuf-ts/grpcweb-transport';
-import { BackendServiceClient } from 'proto-gen-web/src/backend/services.client';
+import { BackendServiceClient } from 'proto-gen-web/services/backend/services.client';
 import { computed, onMounted, reactive, Ref, ref } from 'vue';
 import RankItem from '../components/RankItem.vue'
 import TopRank from '../components/TopRank.vue'
-import { GetRankingResponse_Record } from 'proto-gen-web/src/backend/messages';
+import { GetRankingResponse_Record } from 'proto-gen-web/services/backend/messages';
 
 import { useStateStore, IState } from '../stores/state';
 

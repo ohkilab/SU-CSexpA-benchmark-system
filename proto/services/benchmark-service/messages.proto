@@ -1,0 +1,45 @@
+syntax = "proto3";
+
+import "google/protobuf/timestamp.proto";
+import "services/backend/resources.proto";
+
+option go_package = "github.com/ohkilab/SU-CSexpA-benchmark-system/proto-gen/go/benchmark-service";
+
+package benchmark;
+
+message ExecuteRequest {
+  repeated Task tasks = 1;
+  string group_id = 2; // for logging
+  string contest_slug = 3;
+}
+
+message Task {
+  HttpRequest request = 1;
+
+  int32 thread_num = 6;    // the number of threads for a task
+  int32 attempt_count = 7; // the count of attempting for a task
+}
+
+enum HttpMethod {
+  GET = 0;
+  POST = 1;
+  PUT = 2;
+  DELETE = 3;
+}
+
+message ExecuteResponse {
+  bool ok = 1;
+  optional string error_message = 2; // if ok is false, this field is set
+  int64 time_elapsed = 3;            // in milliseconds
+  int32 total_requests = 4;
+  int32 requests_per_second = 5;
+  Task task = 6;
+  backend.Status status = 7;
+}
+
+message HttpRequest {
+  string url = 1; // e.g.) http://10.255.255.255/endpoint
+  HttpMethod method = 2;
+  string content_type = 4;
+  string body = 5;
+}

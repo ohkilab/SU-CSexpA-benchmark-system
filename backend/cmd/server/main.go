@@ -11,7 +11,7 @@ import (
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/repository/ent"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/repository/tag"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/worker"
-	"github.com/ohkilab/SU-CSexpA-benchmark-system/proto-gen/go/benchmark"
+	benchmarkpb "github.com/ohkilab/SU-CSexpA-benchmark-system/proto-gen/go/services/benchmark-service"
 	"golang.org/x/exp/slog"
 	pkgrpc "google.golang.org/grpc"
 )
@@ -43,7 +43,7 @@ func main() {
 		panic(err)
 	}
 	defer conn.Close()
-	benchmarkClient := benchmark.NewBenchmarkServiceClient(conn)
+	benchmarkClient := benchmarkpb.NewBenchmarkServiceClient(conn)
 	benchmarkWorker := worker.New(entClient, benchmarkClient, logger)
 	go benchmarkWorker.Run()
 

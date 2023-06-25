@@ -7,7 +7,7 @@ import (
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/api/grpc"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/core/auth"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/test/utils"
-	pb "github.com/ohkilab/SU-CSexpA-benchmark-system/proto-gen/go/backend"
+	pb "github.com/ohkilab/SU-CSexpA-benchmark-system/proto-gen/go/services/backend"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"google.golang.org/grpc/metadata"

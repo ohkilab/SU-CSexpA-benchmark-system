@@ -1,8 +1,6 @@
 syntax = "proto3";
 
-import "backend/messages.proto";
-
-option go_package = "github.com/ohkilab/SU-CSexpA-benchmark-system/proto-gen/go/backend";
+import "services/backend/messages.proto";
 
 package backend;
 
