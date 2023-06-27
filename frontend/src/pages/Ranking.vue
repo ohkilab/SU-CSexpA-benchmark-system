@@ -31,22 +31,18 @@ onMounted(() => {
   })
 })
 
-const sortedRecords = computed(() =>
-  records.value.sort((a: GetRankingResponse_Record, b: GetRankingResponse_Record) => a.rank.toString().localeCompare(b.rank.toString()))
-)
-
 </script>
 <template>
   <!-- container -->
   <div v-if="records.length > 0" class="flex flex-col items-center gap-5 w-full px-4">
     <!-- separator -->
     <TopRank
-      v-for="(g, idx) in records.sort((a: GetRankingResponse_Record, b: GetRankingResponse_Record) => a.rank.toString().localeCompare(b.rank.toString())).filter((_, i: number) => i < 3)"
+      v-for="(g, idx) in records.filter((_, i: number) => i < 3)"
       :key="g.group?.id" :rank="idx + 1" :class="state.group == g.group?.id ? 'bg-blue-700' : 'bg-gray-700'"
       :name="g.group?.id ?? ''" :score="g.score ?? 0" />
     <!-- top rank and normal rank separator -->
     <hr class="h-[2px] w-11/12 mx-8 text-white bg-gray-500 border-0" />
-    <RankItem v-for="(g, idx) in sortedRecords.filter((_, i: number) => i >= 3)" :key="g.group?.id" :rank="idx + 4"
+    <RankItem v-for="(g, idx) in records.filter((_, i: number) => i >= 3)" :key="g.group?.id" :rank="idx + 4"
       :class="state.group == g.group?.id ? 'bg-blue-700' : 'bg-gray-700'" :name="g.group?.id ?? ''"
       :score="g.score ?? 0" />
   </div>
