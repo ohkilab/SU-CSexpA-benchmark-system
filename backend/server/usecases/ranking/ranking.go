@@ -35,11 +35,16 @@ func (i *RankingInteractor) GetRanking(ctx context.Context, containGuest bool, c
 		i.logger.Error("failed to fetch groups", err)
 		return nil, err
 	}
-	slices.SortFunc(groups, func(x, y *ent.Group) bool {
-		if len(x.Edges.Submits) == 0 || len(y.Edges.Submits) == 0 {
-			return false
+	slices.SortFunc(groups, func(left, right *ent.Group) bool {
+		leftScore := 0
+		if len(left.Edges.Submits) > 0 {
+			leftScore = left.Edges.Submits[0].Score
 		}
-		return x.Edges.Submits[0].Score > y.Edges.Submits[0].Score
+		rightScore := 0
+		if len(right.Edges.Submits) > 0 {
+			rightScore = right.Edges.Submits[0].Score
+		}
+		return leftScore > rightScore
 	})
 
 	pbGroups := lo.Map(groups, func(group *ent.Group, i int) *pb.GetRankingResponse_Record {
