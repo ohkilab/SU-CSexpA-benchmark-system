@@ -172,7 +172,7 @@ watch(urlList, urlList => {
             class="animate-spin" :icon="['fas', 'spinner']" />
         </div>
 
-        <div class="flex flex-wrap gap-5 max-w-[1000px] justify-center">
+        <div v-if="currentStatus != Status.WAITING" class="flex flex-wrap gap-5 max-w-[1000px] justify-center">
           <div v-for="(t, i) in taskResults" :key="i"
             class="transition-all ease-out duration-200 w-20 p-3 text-center rounded shadow-md shadow-black" :class="t.status == Status.WAITING ? 'opacity-70' :
                 t.status == Status.IN_PROGRESS ? 'bg-teal-500' :
