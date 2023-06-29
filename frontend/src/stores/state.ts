@@ -1,4 +1,5 @@
 import { defineStore } from "pinia";
+import { Submit } from 'proto-gen-web/services/backend/resources';
 import {
   GetRankingResponse_Record,
   PostLoginRequest,
@@ -12,13 +13,14 @@ export interface IState {
   benchmarking: boolean;
   benchmarkInterval: number;
   lastResult: number;
-  records: Array<GetRankingResponse_Record> | null;
+  records: Array<GetRankingResponse_Record>;
   showResult: boolean;
   current: number;
   size: number;
   result: number;
   debug: boolean;
   devBaseUrl: string;
+  submits: Submit[]
 }
 
 export const useStateStore = defineStore<"state", IState>("state", {

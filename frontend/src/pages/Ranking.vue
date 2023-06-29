@@ -6,11 +6,12 @@ import { computed, onMounted, reactive, Ref, ref } from 'vue';
 import RankItem from '../components/RankItem.vue'
 import TopRank from '../components/TopRank.vue'
 import { GetRankingResponse_Record } from 'proto-gen-web/services/backend/messages';
+import Graph from '../components/Graph.vue'
 
 import { useStateStore, IState } from '../stores/state';
 
 const state = useStateStore()
-const records: Ref<GetRankingResponse_Record[]> = ref(state.records ?? [])
+// const records: Ref<GetRankingResponse_Record[]> = ref(state.records ?? [])
 
 const backend = new BackendServiceClient(
   new GrpcWebFetchTransport({
@@ -25,24 +26,27 @@ onMounted(() => {
     contestId: 1,
     containGuest: false
   }, opt).then(res => {
-    records.value = res.response.records
+    // records.value = res.response.records
     if (import.meta.env.DEV) console.log(res.response.records)
-    // state.records = records.value
+    state.records = res.response.records ?? []
   })
 })
 
 </script>
 <template>
+  <div class="rounded-md bg-gray-200 w-5/6 xs:w-full p-4 h-80">
+    <graph></graph>
+  </div>
   <!-- container -->
-  <div v-if="records.length > 0" class="flex flex-col items-center gap-5 w-full px-4">
+  <div v-if="state.records.length > 0" class="flex flex-col items-center gap-5 w-full px-4">
     <!-- separator -->
     <TopRank
-      v-for="(g, idx) in records.filter((_, i: number) => i < 3)"
+      v-for="(g, idx) in state.records.filter((_, i: number) => i < 3)"
       :key="g.group?.id" :rank="idx + 1" :class="state.group == g.group?.id ? 'bg-blue-700' : 'bg-gray-700'"
       :name="g.group?.id ?? ''" :score="g.score ?? 0" />
     <!-- top rank and normal rank separator -->
     <hr class="h-[2px] w-11/12 mx-8 text-white bg-gray-500 border-0" />
-    <RankItem v-for="(g, idx) in records.filter((_, i: number) => i >= 3)" :key="g.group?.id" :rank="idx + 4"
+    <RankItem v-for="(g, idx) in state.records.filter((_, i: number) => i >= 3)" :key="g.group?.id" :rank="idx + 4"
       :class="state.group == g.group?.id ? 'bg-blue-700' : 'bg-gray-700'" :name="g.group?.id ?? ''"
       :score="g.score ?? 0" />
   </div>
