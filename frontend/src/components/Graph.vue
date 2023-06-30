@@ -61,18 +61,39 @@ interface GraphData {
   }[]
 }
 
+// color pallete from https://lospec.com/palette-list/city28
 const colors:any = {
-  'A1': '#331832',
-  'A2': '#D81E5B',
-  'A3': '#F0544F',
-  'A4': '#C6D8D3',
-  'A5': '#FDF0D5',
-  'A6': '#DDC4DD',
-  'A7': '#DCCFEC',
-  'A8': '#4F517D'
+  'A1': '#ceddf0',
+  'A2': '#8a9ee6',
+  'A3': '#7169d1',
+  'A4': '#664db3',
+  'A5': '#4f2e87',
+  'A6': '#3a1a59',
+  'A7': '#45054d',
+  'A8': '#6b328c',
+  'A9': '#84449c',
+  'A10': '#8e60b3',
+  'A11': '#8f82c2',
+  'A12': '#f5b771',
+  'A13': '#e8865f',
+  'A14': '#f75e5e',
+  'A15': '#f03554',
+  'B1': '#b8185d',
+  'B2': '#730858',
+  'B3': '#f2bda2',
+  'B4': '#d6988b',
+  'B5': '#c77d77',
+  'B6': '#a65b5b',
+  'B7': '#8a3f54',
+  'B8': '#782a49',
+  'B9': '#521036',
+  'B10': '#85de8b',
+  'B11': '#41a681',
+  'B12': '#207d75',
+  'B13': '#104957'
 }
 
-const graphData:GraphData[] = Array.from(new Array(numberOfDays)).map((el, i) => {
+const graphData:GraphData[] = Array.from(new Array(numberOfDays)).map(_ => {
   startDate.setDate(startDate.getDate() + 1)
 
   return {
