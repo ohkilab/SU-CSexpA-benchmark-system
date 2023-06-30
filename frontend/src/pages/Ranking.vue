@@ -12,7 +12,8 @@ import { useBackendStore } from '../stores/backend'
 const state = useStateStore()
 const { backend } = useBackendStore()
 
-const loadGraph: Ref<boolean> = ref(false)
+const hasRanking: Ref<boolean> = ref(false)
+const hasSubmits: Ref<boolean> = ref(false)
 
 onMounted(() => {
   let opt = { meta: { 'authorization': 'Bearer ' + state.token } }
@@ -33,15 +34,13 @@ onMounted(() => {
     .then(res => {
       if(import.meta.env.DEV) console.log('Submits', res.response.submits)
       state.submits = res.response.submits
-
-      loadGraph.value = true
     })
 })
 
 </script>
 <template>
   <div class="text-black flex justify-center items-center rounded-md bg-gray-200 w-11/12 sm:w-5/6 p-4 h-80">
-    <graph v-if="loadGraph"></graph>
+    <graph v-if="hasRanking && hasSubmits"></graph>
     <div v-else class="">読み込み中...</div>
   </div>
   <!-- container -->
