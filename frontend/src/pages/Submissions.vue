@@ -9,8 +9,6 @@ import Result from '../components/Result.vue'
 
 const state:IState = useStateStore()
 
-const submits:Ref<Submit[]> = ref([])
-
 const noSubmissions:Ref<boolean> = ref(false)
 
 const backend = new BackendServiceClient(
@@ -57,7 +55,7 @@ onMounted(() => {
   backend.listSubmits(listSubmitsRequest, opt)
     .then(res => {
       if(import.meta.env.DEV) console.log('Submits', res.response.submits)
-      submits.value = res.response.submits
+      state.submits = res.response.submits
 
       if(res.response.submits.length == 0) {
         noSubmissions.value = true
@@ -82,7 +80,7 @@ onMounted(() => {
     </div>
 
   </transition>
-  <table v-if="submits.length > 0" class="table-auto">
+  <table v-if="state.submits.length > 0" class="table-auto">
     <thead class="bg-gray-700">
       <tr>
         <th class="px-2 py-3">提出ID</th>
@@ -93,7 +91,7 @@ onMounted(() => {
       </tr>
     </thead>
     <tbody>
-      <tr v-for="(s, idx) in submits"
+      <tr v-for="(s, idx) in state.submits"
         class="bg-gray-900 border-b-2 border-gray-800 hover:bg-gray-700 cursor-pointer transition"
         @click.prevent="handleModal(s)" key="idx">
         <td class="w-20 text-center">{{ s.id }}</td>

@@ -34,7 +34,7 @@ onMounted(() => {
 
 </script>
 <template>
-  <div class="rounded-md bg-gray-200 w-5/6 xs:w-full p-4 h-80">
+  <div class="rounded-md bg-gray-200 w-11/12 sm:w-5/6 p-4 h-80">
     <graph></graph>
   </div>
   <!-- container -->
