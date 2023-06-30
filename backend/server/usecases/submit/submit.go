@@ -41,6 +41,8 @@ func NewInteractor(entClient *ent.Client, worker worker.Worker, logger *slog.Log
 }
 
 func (i *Interactor) PostSubmit(ctx context.Context, req *backendpb.PostSubmitRequest) (*backendpb.PostSubmitResponse, error) {
+	now := timejst.Now()
+
 	claims := interceptor.GetClaimsFromContext(ctx)
 	c, err := i.entClient.Contest.Get(ctx, int(req.ContestId))
 	if err != nil {
@@ -49,6 +51,22 @@ func (i *Interactor) PostSubmit(ctx context.Context, req *backendpb.PostSubmitRe
 		}
 		i.logger.Error("failed to fetch contest", err)
 		return nil, status.Error(codes.Internal, err.Error())
+	}
+
+	if now.Before(c.StartAt) {
+		return nil, status.Error(codes.FailedPrecondition, "the contest is not started yet")
+	}
+	if now.After(c.EndAt) {
+		return nil, status.Error(codes.FailedPrecondition, "the contest has been finished")
+	}
+
+	submitCount, err := i.entClient.Submit.Query().Where(submit.HasGroupsWith(group.ID(claims.GroupID))).Count(ctx)
+	if err != nil {
+		i.logger.Error("failed to fetch submits", "error", err)
+		return nil, status.Error(codes.Internal, err.Error())
+	}
+	if submitCount > c.SubmitLimit {
+		return nil, status.Error(codes.FailedPrecondition, "the count of submits is exceeded the limit")
 	}
 
 	var tags []string
