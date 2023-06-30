@@ -28,12 +28,16 @@ onMounted(() => {
   }, opt).then(res => {
     if (import.meta.env.DEV) console.log(res.response.records)
     state.records = res.response.records ?? []
+
+    hasRanking.value = true
   })
 
   backend.listSubmits(listSubmitsRequest, opt)
     .then(res => {
       if(import.meta.env.DEV) console.log('Submits', res.response.submits)
       state.submits = res.response.submits
+
+      hasSubmits.value = true
     })
 })
 
