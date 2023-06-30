@@ -26,12 +26,9 @@ ChartJS.register(
 
 const state = useStateStore()
 
-const random = (min: number, max: number) => Math.floor(Math.random() * (max - min) + min)
-
 const formatDate = (timestamp: number): string => {
   const dateObject: Date = new Date(timestamp * 1000)
   const date: string = dateObject.toLocaleDateString()
-  const time: string = dateObject.toLocaleTimeString()
 
   return `${date}`
 }
@@ -117,7 +114,7 @@ if(import.meta.env.DEV) console.log('graphdata',graphData)
 
 const chartData = {
   labels: graphData.map(g => g.date),
-  datasets: state.records.map(record => {
+  datasets: state.records.filter(record => (record.score ?? 0) > 0).map(record => {
     return {
       label: record.group?.id,
       backgroundColor: colors[record.group?.id ?? 0] ?? '#f0f', // unity material error color if color not found
