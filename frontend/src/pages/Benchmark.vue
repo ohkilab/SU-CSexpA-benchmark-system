@@ -114,7 +114,7 @@ onMounted(() => {
 
   fetchLatestSubmit()
   // fix BigInt problem
-  if(import.meta.env.DEV) BigInt.prototype.toJSON = function() {return this.toString()}
+  // if(import.meta.env.DEV) BigInt.prototype.toJSON = function() {return this.toString()}
 })
 
 const statusMessage = (status: Status) => {

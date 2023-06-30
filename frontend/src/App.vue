@@ -100,7 +100,17 @@ onMounted(() => {
     <!-- debug mode -->
     <fieldset v-if="state.debug" class="mx-8 border border-red-500 p-2 flex flex-col gap-2">
       <legend>Debug Panel</legend>
-      <pre class="break-all whitespace-pre-wrap">state: {{JSON.stringify(state, null, 4)}}</pre>
+      <!-- <pre class="break-all whitespace-pre-wrap">state: {{JSON.stringify(state, null, 4)}}</pre> -->
+      <pre class="break-all whitespace-pre-wrap">token: {{state.token}}</pre>
+      <pre class="break-all whitespace-pre-wrap">group: {{state.benchmarking}}</pre>
+      <pre class="break-all whitespace-pre-wrap">benchmarking: {{state.benchmarkInterval}}</pre>
+      <pre class="break-all whitespace-pre-wrap">lastResult: {{state.lastResult}}</pre>
+      <pre class="break-all whitespace-pre-wrap">showResult: {{state.showResult}}</pre>
+      <pre class="break-all whitespace-pre-wrap">current: {{state.current}}</pre>
+      <pre class="break-all whitespace-pre-wrap">result: {{state.result}}</pre>
+      <pre class="break-all whitespace-pre-wrap">debug: {{state.debug}}</pre>
+      <pre class="break-all whitespace-pre-wrap">devBaseUrl: {{state.devBaseUrl}}</pre>
+
 
       <button class="bg-green-500 p-2" @click="state.benchmarking = !state.benchmarking">Toggle benchmarking</button>
       <input type="text" v-model="state.devBaseUrl" placeholder="baseUrl" class="bg-gray-700 p-2 rounded transition hover:bg-gray-600 focus:outline-none" />
