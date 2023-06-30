@@ -6,16 +6,12 @@ import { IState, useStateStore } from '../stores/state';
 import { Status, Submit, TaskResult } from 'proto-gen-web/services/backend/resources';
 import { GetSubmitRequest, ListSubmitsRequest } from 'proto-gen-web/services/backend/messages';
 import Result from '../components/Result.vue'
+import { useBackendStore } from '../stores/backend'
 
 const state:IState = useStateStore()
+const { backend } = useBackendStore()
 
 const noSubmissions:Ref<boolean> = ref(false)
-
-const backend = new BackendServiceClient(
-  new GrpcWebFetchTransport({
-    baseUrl: import.meta.env.PROD ? `http://${window.location.hostname}:8080` : state.devBaseUrl
-  })
-)
 
 const modalItem:Ref<Partial<Submit>> = ref({})
 

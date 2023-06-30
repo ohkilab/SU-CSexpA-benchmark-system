@@ -9,15 +9,11 @@ import { GetRankingResponse_Record } from 'proto-gen-web/services/backend/messag
 import Graph from '../components/Graph.vue'
 
 import { useStateStore, IState } from '../stores/state';
+import { useBackendStore } from '../stores/backend'
 
 const state = useStateStore()
+const { backend } = useBackendStore()
 // const records: Ref<GetRankingResponse_Record[]> = ref(state.records ?? [])
-
-const backend = new BackendServiceClient(
-  new GrpcWebFetchTransport({
-    baseUrl: import.meta.env.PROD ? `http://${window.location.hostname}:8080` : state.devBaseUrl
-  })
-)
 
 onMounted(() => {
   let opt = { meta: { 'authorization': 'Bearer ' + state.token } }

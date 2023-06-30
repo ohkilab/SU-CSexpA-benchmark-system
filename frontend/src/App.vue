@@ -4,10 +4,12 @@ import { BackendServiceClient } from 'proto-gen-web/services/backend/services.cl
 import { onMounted, Ref, ref, watch } from 'vue';
 import { useRouter, useRoute } from 'vue-router'
 import Login from './pages/Login.vue'
-import {useStateStore} from './stores/state'
+import {IState, useStateStore} from './stores/state'
+import {IBackendStore, useBackendStore} from './stores/backend'
 
 const loggedIn = ref(false)
 const state = useStateStore()
+const backendStore = useBackendStore()
 const router = useRouter()
 const route = useRoute()
 
@@ -25,15 +27,17 @@ const errMsg = ref('')
 
 const handleLogin = (id:string, password:string) => {
 
-  const backend = new BackendServiceClient(
+  backendStore.backend = new BackendServiceClient(
     new GrpcWebFetchTransport({
       baseUrl: import.meta.env.PROD ? `http://${window.location.hostname}:8080` : state.devBaseUrl
     })
   )
 
-  backend.postLogin({ id, password }).then(value => {
+  backendStore.backend.postLogin({ id, password }).then(value => {
     if(import.meta.env.DEV) console.log('Login', value)
+    console.log('login response', value.response.token)
     state.token = value.response.token
+    console.log(state.token)
     state.group = id
     loggedIn.value = true
     errMsg.value = ''
@@ -51,19 +55,24 @@ watch(loggedIn, loggedIn => {
 })
 
 onMounted(() => {
+  // if(import.meta.env.DEV) BigInt.prototype.toJSON = function() {return this.toString()}
+
   // try login with token
   if(state.token) {
-    const backend = new BackendServiceClient(
+    console.log('try login with token')
+    backendStore.backend = new BackendServiceClient(
       new GrpcWebFetchTransport({
         baseUrl: import.meta.env.PROD ? `http://${window.location.hostname}:8080` : state.devBaseUrl
       })
     )
 
-    backend.verifyToken({token: state.token})
+    backendStore.backend.verifyToken({token: state.token})
     .then(_ => {
+      console.log(_)
       // successfully logged in with token, load token and group name into app
       loggedIn.value = true
     }).catch(_ => {
+      console.log(_)
       // login with token failed
       router.push('/login')
       errMsg.value = 'Session expired, please login again'

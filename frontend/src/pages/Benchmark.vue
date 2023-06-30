@@ -12,14 +12,10 @@ import { Group, Status, Submit, TaskResult } from 'proto-gen-web/services/backen
 import { GetSubmitRequest, ListSubmitsRequest } from 'proto-gen-web/services/backend/messages'
 
 import Result from '../components/Result.vue'
+import { useBackendStore } from '../stores/backend'
 
 const state:IState = useStateStore()
-
-const backend = new BackendServiceClient(
-  new GrpcWebFetchTransport({
-    baseUrl: import.meta.env.PROD ? `http://${window.location.hostname}:8080` : state.devBaseUrl
-  })
-)
+const { backend } = useBackendStore()
 
 const latestSubmit:Ref<Partial<Submit>> = ref({})
 
@@ -118,7 +114,7 @@ onMounted(() => {
 
   fetchLatestSubmit()
   // fix BigInt problem
-  // if(import.meta.env.DEV) BigInt.prototype.toJSON = function() {return this.toString()}
+  if(import.meta.env.DEV) BigInt.prototype.toJSON = function() {return this.toString()}
 })
 
 const statusMessage = (status: Status) => {

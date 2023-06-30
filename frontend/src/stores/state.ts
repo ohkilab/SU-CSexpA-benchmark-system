@@ -1,9 +1,6 @@
 import { defineStore } from "pinia";
+import { GetRankingResponse_Record } from "proto-gen-web/services/backend/messages";
 import { Submit } from 'proto-gen-web/services/backend/resources';
-import {
-  GetRankingResponse_Record,
-  PostLoginRequest,
-} from "proto-gen-web/services/backend/messages";
 
 // TODO: add logout action
 
@@ -37,7 +34,7 @@ export const useStateStore = defineStore<"state", IState>("state", {
     size: 0,
     debug: false,
     devBaseUrl: "http://localhost:8080",
-    submits: []
+    submits: [],
   }),
   persist: true,
 });
