@@ -5,7 +5,7 @@ import { BackendServiceClient } from 'proto-gen-web/services/backend/services.cl
 import { computed, onMounted, reactive, Ref, ref } from 'vue';
 import RankItem from '../components/RankItem.vue'
 import TopRank from '../components/TopRank.vue'
-import { GetRankingResponse_Record } from 'proto-gen-web/services/backend/messages';
+import { GetRankingResponse_Record, ListSubmitsRequest } from 'proto-gen-web/services/backend/messages';
 import Graph from '../components/Graph.vue'
 
 import { useStateStore, IState } from '../stores/state';
@@ -15,8 +15,14 @@ const state = useStateStore()
 const { backend } = useBackendStore()
 // const records: Ref<GetRankingResponse_Record[]> = ref(state.records ?? [])
 
+const loadGraph: Ref<boolean> = ref(false)
+
 onMounted(() => {
   let opt = { meta: { 'authorization': 'Bearer ' + state.token } }
+  const listSubmitsRequest:ListSubmitsRequest = {
+    // groupName: 'a01',
+    // status: Status.VALIDATION_ERROR
+  }
 
   backend.getRanking({
     contestId: 1,
@@ -26,12 +32,21 @@ onMounted(() => {
     if (import.meta.env.DEV) console.log(res.response.records)
     state.records = res.response.records ?? []
   })
+
+  backend.listSubmits(listSubmitsRequest, opt)
+    .then(res => {
+      if(import.meta.env.DEV) console.log('Submits', res.response.submits)
+      state.submits = res.response.submits
+
+      loadGraph.value = true
+    })
 })
 
 </script>
 <template>
-  <div class="rounded-md bg-gray-200 w-11/12 sm:w-5/6 p-4 h-80">
-    <graph></graph>
+  <div class="text-black flex justify-center items-center rounded-md bg-gray-200 w-11/12 sm:w-5/6 p-4 h-80">
+    <graph v-if="loadGraph"></graph>
+    <div v-else class="">読み込み中...</div>
   </div>
   <!-- container -->
   <div v-if="state.records.length > 0" class="flex flex-col items-center gap-5 w-full px-4">

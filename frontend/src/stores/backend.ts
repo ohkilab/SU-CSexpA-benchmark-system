@@ -14,5 +14,6 @@ export const useBackendStore = defineStore<"state", IBackendStore>("state", {
   state: (): IBackendStore => ({
     backend: null
   }),
+  actions: {},
   persist: false,
 });
