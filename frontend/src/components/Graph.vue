@@ -38,8 +38,8 @@ const startDate = new Date()
 // one day before actual start date
 //const startDate = new Date('2023-06-26')
 
-// show 4 days before
-startDate.setDate(today.getDate() - 5)
+// show 7 days before
+startDate.setDate(today.getDate() - 8)
 
 
 const numberOfDays = Math.floor((Date.now() - Number(startDate)) / (1000 * 60 * 60 * 24))
