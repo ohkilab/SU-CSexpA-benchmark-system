@@ -1,96 +1,131 @@
 <script setup lang="ts">
-  import {
-    Chart as ChartJS,
-    CategoryScale,
-    LinearScale,
-    PointElement,
-    LineElement,
-    Title,
-    Tooltip,
-    Legend
-  } from 'chart.js'
-  import { useStateStore } from '../stores/state'
-  import { Line } from 'vue-chartjs'
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend
+} from 'chart.js'
+import { useStateStore } from '../stores/state'
+import { Line } from 'vue-chartjs'
 import { onMounted } from 'vue'
-import { Status } from 'proto-gen-web/services/backend/resources'
+import { Status, Submit } from 'proto-gen-web/services/backend/resources'
 
-  ChartJS.register(
-    CategoryScale,
-    LinearScale,
-    PointElement,
-    LineElement,
-    Title,
-    Tooltip,
-    Legend
-  )
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend
+)
 
-  const state = useStateStore()
+const state = useStateStore()
 
-  const random = (min: number, max: number) => Math.floor(Math.random() * (max - min) + min)
+const random = (min: number, max: number) => Math.floor(Math.random() * (max - min) + min)
 
-  const formatDate = (timestamp: number):string => {
-    const dateObject: Date = new Date(timestamp * 1000)
-    const date: string = dateObject.toLocaleDateString()
-    const time: string = dateObject.toLocaleTimeString()
-    
-    return `${date}`
+const formatDate = (timestamp: number): string => {
+  const dateObject: Date = new Date(timestamp * 1000)
+  const date: string = dateObject.toLocaleDateString()
+  const time: string = dateObject.toLocaleTimeString()
+
+  return `${date}`
+}
+
+const today = new Date()
+const startDate = new Date()
+// one day before actual start date
+//const startDate = new Date('2023-06-26')
+
+// show 4 days before
+startDate.setDate(today.getDate() - 5)
+
+
+const numberOfDays = Math.floor((Date.now() - Number(startDate)) / (1000 * 60 * 60 * 24))
+
+/** schema
+    [{date: '',scores: [{group: '', score: 0}]}]
+*/
+// [{"key": "a"},{"key": "b"},{"key": "b"}].reduce((sum, a) => {a.key in sum ? sum[a.key].push(a) : sum[a.key] = [a]; return sum}, {})
+
+// TODO: move fetchSubmits to state actions
+
+interface GraphData {
+  date: string,
+  maxScores: {
+    group: string,
+    score: number
+  }[]
+}
+
+const colors:any = {
+  'A1': '#331832',
+  'A2': '#D81E5B',
+  'A3': '#F0544F',
+  'A4': '#C6D8D3',
+  'A5': '#FDF0D5',
+  'A6': '#DDC4DD',
+}
+
+const graphData:GraphData[] = Array.from(new Array(numberOfDays)).map((el, i) => {
+  startDate.setDate(startDate.getDate() + 1)
+
+  return {
+    date: startDate.toLocaleDateString(),
+    maxScores: state.submits // filter by Status.SUCCESS -> filter by date -> sort by desc score -> separate by group (should return highest score)
+      .filter(submit => submit.status === Status.SUCCESS)
+      .filter(submit => startDate.toLocaleDateString() === formatDate(Number(submit.submitedAt?.seconds)))
+      .sort((a, b) => b.score - a.score)
+      .reduce((acc:any, cur:Submit) => { // separate scores by group
+        if(cur.groupName in acc) {
+          return acc
+        } else {
+          acc[cur.groupName] = cur
+        }
+        return acc
+      }, {})
   }
+})
 
-  // one day before actual start date
-  const startDate = new Date('2023-06-26')
+if(import.meta.env.DEV) console.log('graphdata',graphData)
 
-  const numberOfDays = Math.floor((Date.now() - Number(startDate)) / (1000 * 60 * 60 * 24))
-
-  const graphData = Array.from(new Array(numberOfDays)).map((el, i) => {
-    startDate.setDate(startDate.getDate() + 1)
-
+const chartData = {
+  // labels: Array.from(new Array(numberOfDays)).map((el, i) => {
+  //   // startDate.setDate(startDate.getDate() + 1)
+  //
+  //   return startDate.toLocaleDateString()
+  // }),
+  labels: graphData.map(g => g.date),
+  // {
+  //   label: 'A01',
+  //   backgroundColor: '#f87979',
+  //   data: [400, 500, 500, 600]
+  // },
+  datasets: state.records.map(record => {
     return {
-      date: startDate.toLocaleDateString(),
-      maxScore: state.submits // filter by Status.SUCCESS -> filter by date -> sort by desc score -> get first index
-                  .filter(submit => submit.status === Status.SUCCESS)
-                  .filter(submit => startDate.toLocaleDateString() === formatDate(Number(submit.submitedAt?.seconds)))
-                  .sort((a, b) => b.score - a.score)
-                  .at(0)
-                  ?.score
+      label: record.group?.id,
+      backgroundColor: colors[record.group?.id ?? 0] ?? '#f0f', // unity material error color if color not found
+      // data: [random(0, 400), random(500, 600), random(600, 800), random(900, 4000)]
+      data: graphData.map((g: any) => g.maxScores[record.group?.id ?? 0]?.score ?? null)
     }
   })
+}
+const chartOptions = {
+  responsive: true,
+  maintainAspectRatio: false
+}
 
-  const chartData = {
-    // labels: Array.from(new Array(numberOfDays)).map((el, i) => {
-    //   // startDate.setDate(startDate.getDate() + 1)
-    //
-    //   return startDate.toLocaleDateString()
-    // }),
-    labels: graphData.map(g => g.date),
-      // {
-      //   label: 'A01',
-      //   backgroundColor: '#f87979',
-      //   data: [400, 500, 500, 600]
-      // },
-    datasets: state.records.map(record => {
-      return {
-        label: record.group?.id,
-        backgroundColor: `#${record.rank}${record.rank}${record.rank}`,
-        // data: [random(0, 400), random(500, 600), random(600, 800), random(900, 4000)]
-        data: graphData.map(g => g.maxScore)
-      }
-    })
-  }
-  const chartOptions = {
-    responsive: true,
-    maintainAspectRatio: false
-  }
-
-  onMounted(() => {
-    // if(import.meta.env.DEV) BigInt.prototype.toJSON = function() {return this.toString()}
-  })
+onMounted(() => {
+  // if(import.meta.env.DEV) BigInt.prototype.toJSON = function() {return this.toString()}
+  if(import.meta.env.DEV) console.log('chartdata', chartData)
+})
 </script>
 <template>
-    <!-- <pre>{{state.submits.map(submit => formatDate(Number(submit.submitedAt?.seconds)))}}</pre> -->
-    <!-- <pre>{{graphData}}</pre> -->
-    <Line
-        id="id"
-        :options="chartOptions"
-        :data="chartData"
-    />
+  <!-- <pre>{{state.submits.map(submit => formatDate(Number(submit.submitedAt?.seconds)))}}</pre> -->
+  <!-- <pre>{{graphData}}</pre> -->
+  <Line id="id" :options="chartOptions" :data="chartData" />
 </template>
