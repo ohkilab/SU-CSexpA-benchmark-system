@@ -12,8 +12,18 @@ export interface IBackendStore {
 
 export const useBackendStore = defineStore<"state", IBackendStore>("state", {
   state: (): IBackendStore => ({
-    backend: null
+    // backend is initialized here, so do this later
+    // - only reinitialize for dev environment
+    backend: new BackendServiceClient(
+        new GrpcWebFetchTransport({
+          baseUrl: `http://${window.location.hostname}:8080`
+        })
+      )
   }),
-  actions: {},
+  actions: {
+    getSubmissions() {
+
+    }
+  },
   persist: false,
 });
