@@ -1,11 +1,10 @@
 <script setup lang="ts">
 import { GrpcWebFetchTransport } from '@protobuf-ts/grpcweb-transport';
 import { BackendServiceClient } from 'proto-gen-web/services/backend/services.client';
-import { onMounted, Ref, ref, watch } from 'vue';
+import { onMounted, ref, watch } from 'vue';
 import { useRouter, useRoute } from 'vue-router'
-import Login from './pages/Login.vue'
-import {IState, useStateStore} from './stores/state'
-import {IBackendStore, useBackendStore} from './stores/backend'
+import { useStateStore } from './stores/state'
+import { useBackendStore } from './stores/backend'
 
 const loggedIn = ref(false)
 const state = useStateStore()

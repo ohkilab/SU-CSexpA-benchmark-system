@@ -1,19 +1,16 @@
 <script setup lang="ts">
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
-import { GrpcWebFetchTransport } from '@protobuf-ts/grpcweb-transport';
-import { BackendServiceClient } from 'proto-gen-web/services/backend/services.client';
-import { computed, onMounted, reactive, Ref, ref } from 'vue';
+import { onMounted, Ref, ref } from 'vue';
 import RankItem from '../components/RankItem.vue'
 import TopRank from '../components/TopRank.vue'
-import { GetRankingResponse_Record, ListSubmitsRequest } from 'proto-gen-web/services/backend/messages';
+import { ListSubmitsRequest } from 'proto-gen-web/services/backend/messages';
 import Graph from '../components/Graph.vue'
 
-import { useStateStore, IState } from '../stores/state';
+import { useStateStore } from '../stores/state';
 import { useBackendStore } from '../stores/backend'
 
 const state = useStateStore()
 const { backend } = useBackendStore()
-// const records: Ref<GetRankingResponse_Record[]> = ref(state.records ?? [])
 
 const loadGraph: Ref<boolean> = ref(false)
 
@@ -28,7 +25,6 @@ onMounted(() => {
     contestId: 1,
     containGuest: false
   }, opt).then(res => {
-    // records.value = res.response.records
     if (import.meta.env.DEV) console.log(res.response.records)
     state.records = res.response.records ?? []
   })

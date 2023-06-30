@@ -1,9 +1,7 @@
 <script setup lang="ts">
 import { onMounted, Ref, ref } from 'vue';
-import { GrpcWebFetchTransport } from '@protobuf-ts/grpcweb-transport';
-import { BackendServiceClient } from 'proto-gen-web/services/backend/services.client';
 import { IState, useStateStore } from '../stores/state';
-import { Status, Submit, TaskResult } from 'proto-gen-web/services/backend/resources';
+import { Status, Submit } from 'proto-gen-web/services/backend/resources';
 import { GetSubmitRequest, ListSubmitsRequest } from 'proto-gen-web/services/backend/messages';
 import Result from '../components/Result.vue'
 import { useBackendStore } from '../stores/backend'
