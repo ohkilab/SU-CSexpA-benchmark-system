@@ -50,7 +50,6 @@ const numberOfDays = Math.floor((Date.now() - Number(startDate)) / (1000 * 60 * 
 /** schema
     [{date: '',scores: [{group: '', score: 0}]}]
 */
-// [{"key": "a"},{"key": "b"},{"key": "b"}].reduce((sum, a) => {a.key in sum ? sum[a.key].push(a) : sum[a.key] = [a]; return sum}, {})
 
 // TODO: move fetchSubmits to state actions
 
@@ -69,6 +68,8 @@ const colors:any = {
   'A4': '#C6D8D3',
   'A5': '#FDF0D5',
   'A6': '#DDC4DD',
+  'A7': '#DCCFEC',
+  'A8': '#4F517D'
 }
 
 const graphData:GraphData[] = Array.from(new Array(numberOfDays)).map((el, i) => {
@@ -94,17 +95,7 @@ const graphData:GraphData[] = Array.from(new Array(numberOfDays)).map((el, i) =>
 if(import.meta.env.DEV) console.log('graphdata',graphData)
 
 const chartData = {
-  // labels: Array.from(new Array(numberOfDays)).map((el, i) => {
-  //   // startDate.setDate(startDate.getDate() + 1)
-  //
-  //   return startDate.toLocaleDateString()
-  // }),
   labels: graphData.map(g => g.date),
-  // {
-  //   label: 'A01',
-  //   backgroundColor: '#f87979',
-  //   data: [400, 500, 500, 600]
-  // },
   datasets: state.records.map(record => {
     return {
       label: record.group?.id,
@@ -125,7 +116,5 @@ onMounted(() => {
 })
 </script>
 <template>
-  <!-- <pre>{{state.submits.map(submit => formatDate(Number(submit.submitedAt?.seconds)))}}</pre> -->
-  <!-- <pre>{{graphData}}</pre> -->
   <Line id="id" :options="chartOptions" :data="chartData" />
 </template>
