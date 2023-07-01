@@ -1,13 +1,14 @@
 <script setup lang="ts">
 import { GrpcWebFetchTransport } from '@protobuf-ts/grpcweb-transport';
 import { BackendServiceClient } from 'proto-gen-web/services/backend/services.client';
-import { onMounted, Ref, ref, watch } from 'vue';
+import { onMounted, ref, watch } from 'vue';
 import { useRouter, useRoute } from 'vue-router'
-import Login from './pages/Login.vue'
-import {useStateStore} from './stores/state'
+import { useStateStore } from './stores/state'
+import { useBackendStore } from './stores/backend'
 
 const loggedIn = ref(false)
 const state = useStateStore()
+const backendStore = useBackendStore()
 const router = useRouter()
 const route = useRoute()
 
@@ -25,15 +26,17 @@ const errMsg = ref('')
 
 const handleLogin = (id:string, password:string) => {
 
-  const backend = new BackendServiceClient(
+  backendStore.backend = new BackendServiceClient(
     new GrpcWebFetchTransport({
       baseUrl: import.meta.env.PROD ? `http://${window.location.hostname}:8080` : state.devBaseUrl
     })
   )
 
-  backend.postLogin({ id, password }).then(value => {
+  backendStore.backend.postLogin({ id, password }).then(value => {
     if(import.meta.env.DEV) console.log('Login', value)
+    console.log('login response', value.response.token)
     state.token = value.response.token
+    console.log(state.token)
     state.group = id
     loggedIn.value = true
     errMsg.value = ''
@@ -51,19 +54,24 @@ watch(loggedIn, loggedIn => {
 })
 
 onMounted(() => {
+  // if(import.meta.env.DEV) BigInt.prototype.toJSON = function() {return this.toString()}
+
   // try login with token
   if(state.token) {
-    const backend = new BackendServiceClient(
+    console.log('try login with token')
+    backendStore.backend = new BackendServiceClient(
       new GrpcWebFetchTransport({
         baseUrl: import.meta.env.PROD ? `http://${window.location.hostname}:8080` : state.devBaseUrl
       })
     )
 
-    backend.verifyToken({token: state.token})
+    backendStore.backend.verifyToken({token: state.token})
     .then(_ => {
+      console.log(_)
       // successfully logged in with token, load token and group name into app
       loggedIn.value = true
     }).catch(_ => {
+      console.log(_)
       // login with token failed
       router.push('/login')
       errMsg.value = 'Session expired, please login again'
@@ -91,7 +99,17 @@ onMounted(() => {
     <!-- debug mode -->
     <fieldset v-if="state.debug" class="mx-8 border border-red-500 p-2 flex flex-col gap-2">
       <legend>Debug Panel</legend>
-      <pre class="break-all whitespace-pre-wrap">state: {{JSON.stringify(state, null, 4)}}</pre>
+      <!-- <pre class="break-all whitespace-pre-wrap">state: {{JSON.stringify(state, null, 4)}}</pre> -->
+      <pre class="break-all whitespace-pre-wrap">token: {{state.token}}</pre>
+      <pre class="break-all whitespace-pre-wrap">group: {{state.benchmarking}}</pre>
+      <pre class="break-all whitespace-pre-wrap">benchmarking: {{state.benchmarkInterval}}</pre>
+      <pre class="break-all whitespace-pre-wrap">lastResult: {{state.lastResult}}</pre>
+      <pre class="break-all whitespace-pre-wrap">showResult: {{state.showResult}}</pre>
+      <pre class="break-all whitespace-pre-wrap">current: {{state.current}}</pre>
+      <pre class="break-all whitespace-pre-wrap">result: {{state.result}}</pre>
+      <pre class="break-all whitespace-pre-wrap">debug: {{state.debug}}</pre>
+      <pre class="break-all whitespace-pre-wrap">devBaseUrl: {{state.devBaseUrl}}</pre>
+
 
       <button class="bg-green-500 p-2" @click="state.benchmarking = !state.benchmarking">Toggle benchmarking</button>
       <input type="text" v-model="state.devBaseUrl" placeholder="baseUrl" class="bg-gray-700 p-2 rounded transition hover:bg-gray-600 focus:outline-none" />

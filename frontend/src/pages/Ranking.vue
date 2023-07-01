@@ -1,48 +1,62 @@
 <script setup lang="ts">
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
-import { GrpcWebFetchTransport } from '@protobuf-ts/grpcweb-transport';
-import { BackendServiceClient } from 'proto-gen-web/services/backend/services.client';
-import { computed, onMounted, reactive, Ref, ref } from 'vue';
+import { onMounted, Ref, ref } from 'vue';
 import RankItem from '../components/RankItem.vue'
 import TopRank from '../components/TopRank.vue'
-import { GetRankingResponse_Record } from 'proto-gen-web/services/backend/messages';
+import { ListSubmitsRequest } from 'proto-gen-web/services/backend/messages';
+import Graph from '../components/Graph.vue'
 
-import { useStateStore, IState } from '../stores/state';
+import { useStateStore } from '../stores/state';
+import { useBackendStore } from '../stores/backend'
 
 const state = useStateStore()
-const records: Ref<GetRankingResponse_Record[]> = ref(state.records ?? [])
+const { backend } = useBackendStore()
 
-const backend = new BackendServiceClient(
-  new GrpcWebFetchTransport({
-    baseUrl: import.meta.env.PROD ? `http://${window.location.hostname}:8080` : state.devBaseUrl
-  })
-)
+const hasRanking: Ref<boolean> = ref(false)
+const hasSubmits: Ref<boolean> = ref(false)
 
 onMounted(() => {
   let opt = { meta: { 'authorization': 'Bearer ' + state.token } }
+  const listSubmitsRequest: ListSubmitsRequest = {
+    contestId: 1, // TODO: fix
+    // groupName: 'a01',
+    // status: Status.VALIDATION_ERROR
+  }
 
   backend.getRanking({
     contestId: 1,
     containGuest: false
   }, opt).then(res => {
-    records.value = res.response.records
     if (import.meta.env.DEV) console.log(res.response.records)
-    // state.records = records.value
+    state.records = res.response.records ?? []
+
+    hasRanking.value = true
   })
+
+  backend.listSubmits(listSubmitsRequest, opt)
+    .then(res => {
+      if (import.meta.env.DEV) console.log('Submits', res.response.submits)
+      state.submits = res.response.submits
+
+      hasSubmits.value = true
+    })
 })
 
 </script>
 <template>
+  <div class="text-black flex justify-center items-center rounded-md bg-gray-200 w-11/12 sm:w-5/6 p-4 h-80">
+    <graph v-if="hasRanking && hasSubmits"></graph>
+    <div v-else class="">読み込み中...</div>
+  </div>
   <!-- container -->
-  <div v-if="records.length > 0" class="flex flex-col items-center gap-5 w-full px-4">
+  <div v-if="state.records.length > 0" class="flex flex-col items-center gap-5 w-full px-4">
     <!-- separator -->
-    <TopRank
-      v-for="(g, idx) in records.filter((_, i: number) => i < 3)"
-      :key="g.group?.id" :rank="idx + 1" :class="state.group == g.group?.id ? 'bg-blue-700' : 'bg-gray-700'"
-      :name="g.group?.id ?? ''" :score="g.score ?? 0" />
+    <TopRank v-for="(g, idx) in state.records.filter((_, i: number) => i < 3)" :key="g.group?.id" :rank="idx + 1"
+      :class="state.group == g.group?.id ? 'bg-blue-700' : 'bg-gray-700'" :name="g.group?.id ?? ''"
+      :score="g.score ?? 0" />
     <!-- top rank and normal rank separator -->
     <hr class="h-[2px] w-11/12 mx-8 text-white bg-gray-500 border-0" />
-    <RankItem v-for="(g, idx) in records.filter((_, i: number) => i >= 3)" :key="g.group?.id" :rank="idx + 4"
+    <RankItem v-for="(g, idx) in state.records.filter((_, i: number) => i >= 3)" :key="g.group?.id" :rank="idx + 4"
       :class="state.group == g.group?.id ? 'bg-blue-700' : 'bg-gray-700'" :name="g.group?.id ?? ''"
       :score="g.score ?? 0" />
   </div>

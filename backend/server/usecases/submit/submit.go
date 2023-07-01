@@ -195,13 +195,13 @@ func toPbSubmit(submit *ent.Submit) *backendpb.Submit {
 	}
 }
 
-func (i *Interactor) ListSubmits(ctx context.Context, groupName *string, st *backendpb.Status) (*backendpb.ListSubmitsResponse, error) {
-	q := i.entClient.Submit.Query().WithGroups()
-	if groupName != nil {
-		q.Where(submit.HasGroupsWith(group.NameContains(*groupName)))
+func (i *Interactor) ListSubmits(ctx context.Context, req *backendpb.ListSubmitsRequest) (*backendpb.ListSubmitsResponse, error) {
+	q := i.entClient.Submit.Query().WithGroups().Where(submit.HasContestsWith(contest.ID(int(req.ContestId))))
+	if req.GroupName != nil {
+		q.Where(submit.HasGroupsWith(group.NameContains(*req.GroupName)))
 	}
-	if st != nil {
-		q.Where(submit.StatusEQ(st.String()))
+	if req.Status != nil {
+		q.Where(submit.StatusEQ(req.Status.String()))
 	}
 	submits, err := q.Order(submit.BySubmitedAt(sql.OrderDesc())).All(ctx)
 	if err != nil {

@@ -1,25 +1,18 @@
 <script setup lang="ts">
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
-import { computed, onMounted, reactive, ref, watch } from 'vue'
+import { onMounted, ref, watch } from 'vue'
 import { useStateStore, IState } from '../stores/state'
 
 import type { Ref } from 'vue'
 
-import { GrpcWebFetchTransport } from '@protobuf-ts/grpcweb-transport'
-import { BackendServiceClient } from 'proto-gen-web/services/backend/services.client'
-
-import { Group, Status, Submit, TaskResult } from 'proto-gen-web/services/backend/resources'
+import { Status, Submit, TaskResult } from 'proto-gen-web/services/backend/resources'
 import { GetSubmitRequest, ListSubmitsRequest } from 'proto-gen-web/services/backend/messages'
 
 import Result from '../components/Result.vue'
+import { useBackendStore } from '../stores/backend'
 
 const state:IState = useStateStore()
-
-const backend = new BackendServiceClient(
-  new GrpcWebFetchTransport({
-    baseUrl: import.meta.env.PROD ? `http://${window.location.hostname}:8080` : state.devBaseUrl
-  })
-)
+const { backend } = useBackendStore()
 
 const latestSubmit:Ref<Partial<Submit>> = ref({})
 
@@ -37,6 +30,7 @@ const noSubmissions: Ref<boolean> = ref(false)
 
 const fetchLatestSubmit = () => {
   const listSubmitsRequest:ListSubmitsRequest = {
+    contestId: 1, // TODO: fix
     groupName: state.group,
     // status: Status.VALIDATION_ERROR
   }

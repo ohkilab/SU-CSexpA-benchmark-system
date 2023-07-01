@@ -1,23 +1,15 @@
 <script setup lang="ts">
 import { onMounted, Ref, ref } from 'vue';
-import { GrpcWebFetchTransport } from '@protobuf-ts/grpcweb-transport';
-import { BackendServiceClient } from 'proto-gen-web/services/backend/services.client';
 import { IState, useStateStore } from '../stores/state';
-import { Status, Submit, TaskResult } from 'proto-gen-web/services/backend/resources';
+import { Status, Submit } from 'proto-gen-web/services/backend/resources';
 import { GetSubmitRequest, ListSubmitsRequest } from 'proto-gen-web/services/backend/messages';
 import Result from '../components/Result.vue'
+import { useBackendStore } from '../stores/backend'
 
 const state:IState = useStateStore()
-
-const submits:Ref<Submit[]> = ref([])
+const { backend } = useBackendStore()
 
 const noSubmissions:Ref<boolean> = ref(false)
-
-const backend = new BackendServiceClient(
-  new GrpcWebFetchTransport({
-    baseUrl: import.meta.env.PROD ? `http://${window.location.hostname}:8080` : state.devBaseUrl
-  })
-)
 
 const modalItem:Ref<Partial<Submit>> = ref({})
 
@@ -50,6 +42,7 @@ onMounted(() => {
   const opt = {meta: {'authorization' : 'Bearer ' + state.token}}
   // TODO: get own submissions, filter functionality
   const listSubmitsRequest:ListSubmitsRequest = {
+    contestId: 1, // TODO: fix
     // groupName: 'a01',
     // status: Status.VALIDATION_ERROR
   }
@@ -57,7 +50,7 @@ onMounted(() => {
   backend.listSubmits(listSubmitsRequest, opt)
     .then(res => {
       if(import.meta.env.DEV) console.log('Submits', res.response.submits)
-      submits.value = res.response.submits
+      state.submits = res.response.submits
 
       if(res.response.submits.length == 0) {
         noSubmissions.value = true
@@ -82,7 +75,7 @@ onMounted(() => {
     </div>
 
   </transition>
-  <table v-if="submits.length > 0" class="table-auto">
+  <table v-if="state.submits.length > 0" class="table-auto">
     <thead class="bg-gray-700">
       <tr>
         <th class="px-2 py-3">提出ID</th>
@@ -93,7 +86,7 @@ onMounted(() => {
       </tr>
     </thead>
     <tbody>
-      <tr v-for="(s, idx) in submits"
+      <tr v-for="(s, idx) in state.submits"
         class="bg-gray-900 border-b-2 border-gray-800 hover:bg-gray-700 cursor-pointer transition"
         @click.prevent="handleModal(s)" key="idx">
         <td class="w-20 text-center">{{ s.id }}</td>
