@@ -72,6 +72,12 @@ func (cu *ContestUpdate) SetTagSelectionLogic(csl contest.TagSelectionLogic) *Co
 	return cu
 }
 
+// SetValidator sets the "validator" field.
+func (cu *ContestUpdate) SetValidator(s string) *ContestUpdate {
+	cu.mutation.SetValidator(s)
+	return cu
+}
+
 // SetCreatedAt sets the "created_at" field.
 func (cu *ContestUpdate) SetCreatedAt(t time.Time) *ContestUpdate {
 	cu.mutation.SetCreatedAt(t)
@@ -209,6 +215,9 @@ func (cu *ContestUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if value, ok := cu.mutation.TagSelectionLogic(); ok {
 		_spec.SetField(contest.FieldTagSelectionLogic, field.TypeEnum, value)
 	}
+	if value, ok := cu.mutation.Validator(); ok {
+		_spec.SetField(contest.FieldValidator, field.TypeString, value)
+	}
 	if value, ok := cu.mutation.CreatedAt(); ok {
 		_spec.SetField(contest.FieldCreatedAt, field.TypeTime, value)
 	}
@@ -323,6 +332,12 @@ func (cuo *ContestUpdateOne) SetSlug(s string) *ContestUpdateOne {
 // SetTagSelectionLogic sets the "tag_selection_logic" field.
 func (cuo *ContestUpdateOne) SetTagSelectionLogic(csl contest.TagSelectionLogic) *ContestUpdateOne {
 	cuo.mutation.SetTagSelectionLogic(csl)
+	return cuo
+}
+
+// SetValidator sets the "validator" field.
+func (cuo *ContestUpdateOne) SetValidator(s string) *ContestUpdateOne {
+	cuo.mutation.SetValidator(s)
 	return cuo
 }
 
@@ -492,6 +507,9 @@ func (cuo *ContestUpdateOne) sqlSave(ctx context.Context) (_node *Contest, err e
 	}
 	if value, ok := cuo.mutation.TagSelectionLogic(); ok {
 		_spec.SetField(contest.FieldTagSelectionLogic, field.TypeEnum, value)
+	}
+	if value, ok := cuo.mutation.Validator(); ok {
+		_spec.SetField(contest.FieldValidator, field.TypeString, value)
 	}
 	if value, ok := cuo.mutation.CreatedAt(); ok {
 		_spec.SetField(contest.FieldCreatedAt, field.TypeTime, value)

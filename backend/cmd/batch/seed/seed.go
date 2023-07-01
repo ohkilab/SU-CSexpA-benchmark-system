@@ -12,6 +12,7 @@ import (
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/repository/ent/contest"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/repository/ent/group"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/repository/ent/migrate"
+	"github.com/ohkilab/SU-CSexpA-benchmark-system/proto-gen/go/services/backend"
 	"github.com/spf13/cobra"
 	"golang.org/x/crypto/bcrypt"
 )
@@ -63,6 +64,7 @@ var Command = &cobra.Command{
 			SetSubmitLimit(9999).
 			SetTagSelectionLogic(contest.TagSelectionLogicAuto).
 			SetCreatedAt(timejst.Now()).
+			SetValidator(backend.Validator_V2023.String()).
 			Save(ctx)
 		if err != nil {
 			return err

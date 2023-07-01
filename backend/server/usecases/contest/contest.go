@@ -77,6 +77,7 @@ func (i *Interactor) CreateContest(ctx context.Context, req *pb.CreateContestReq
 		SetEndAt(req.EndAt.AsTime()).
 		SetSubmitLimit(int(req.SubmitLimit)).
 		SetTagSelectionLogic(tagSelectionLogic).
+		SetValidator(req.Validator.String()).
 		SetCreatedAt(timejst.Now()).
 		Save(ctx)
 	if err != nil {
@@ -108,6 +109,9 @@ func (i *Interactor) UpdateContest(ctx context.Context, req *pb.UpdateContestReq
 	if req.SubmitLimit != nil {
 		contest.SubmitLimit = int(*req.SubmitLimit)
 	}
+	if req.Validator != nil {
+		contest.Validator = req.Validator.String()
+	}
 
 	contest, err = contest.Update().Save(ctx)
 	if err != nil {
@@ -138,5 +142,6 @@ func toPbContest(contest *ent.Contest) *pb.Contest {
 				return -1 // unreachable
 			}
 		}(),
+		Validator: pb.Validator(pb.Validator_value[contest.Validator]),
 	}
 }

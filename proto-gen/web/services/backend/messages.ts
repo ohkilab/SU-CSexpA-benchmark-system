@@ -12,6 +12,7 @@ import { reflectionMergePartial } from "@protobuf-ts/runtime";
 import { MESSAGE_TYPE } from "@protobuf-ts/runtime";
 import { MessageType } from "@protobuf-ts/runtime";
 import { Contest } from "./resources";
+import { Validator } from "./resources";
 import { TagSelectionLogicManual } from "./resources";
 import { TagSelectionLogicAuto } from "./resources";
 import { Status } from "./resources";
@@ -160,6 +161,10 @@ export interface CreateContestRequest {
     } | {
         oneofKind: undefined;
     };
+    /**
+     * @generated from protobuf field: backend.Validator validator = 11;
+     */
+    validator: Validator;
 }
 /**
  * @generated from protobuf message backend.CreateContestResponse
@@ -214,6 +219,10 @@ export interface UpdateContestRequest {
      * @generated from protobuf field: optional int32 submit_limit = 6;
      */
     submitLimit?: number;
+    /**
+     * @generated from protobuf field: optional backend.Validator validator = 9;
+     */
+    validator?: Validator;
 }
 /**
  * @generated from protobuf message backend.UpdateContestResponse
@@ -766,11 +775,12 @@ class CreateContestRequest$Type extends MessageType<CreateContestRequest> {
             { no: 6, name: "submit_limit", kind: "scalar", T: 5 /*ScalarType.INT32*/ },
             { no: 8, name: "slug", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
             { no: 9, name: "auto", kind: "message", oneof: "tagSelection", T: () => TagSelectionLogicAuto },
-            { no: 10, name: "manual", kind: "message", oneof: "tagSelection", T: () => TagSelectionLogicManual }
+            { no: 10, name: "manual", kind: "message", oneof: "tagSelection", T: () => TagSelectionLogicManual },
+            { no: 11, name: "validator", kind: "enum", T: () => ["backend.Validator", Validator] }
         ]);
     }
     create(value?: PartialMessage<CreateContestRequest>): CreateContestRequest {
-        const message = { title: "", submitLimit: 0, slug: "", tagSelection: { oneofKind: undefined } };
+        const message = { title: "", submitLimit: 0, slug: "", tagSelection: { oneofKind: undefined }, validator: 0 };
         globalThis.Object.defineProperty(message, MESSAGE_TYPE, { enumerable: false, value: this });
         if (value !== undefined)
             reflectionMergePartial<CreateContestRequest>(this, message, value);
@@ -808,6 +818,9 @@ class CreateContestRequest$Type extends MessageType<CreateContestRequest> {
                         manual: TagSelectionLogicManual.internalBinaryRead(reader, reader.uint32(), options, (message.tagSelection as any).manual)
                     };
                     break;
+                case /* backend.Validator validator */ 11:
+                    message.validator = reader.int32();
+                    break;
                 default:
                     let u = options.readUnknownField;
                     if (u === "throw")
@@ -841,6 +854,9 @@ class CreateContestRequest$Type extends MessageType<CreateContestRequest> {
         /* backend.TagSelectionLogicManual manual = 10; */
         if (message.tagSelection.oneofKind === "manual")
             TagSelectionLogicManual.internalBinaryWrite(message.tagSelection.manual, writer.tag(10, WireType.LengthDelimited).fork(), options).join();
+        /* backend.Validator validator = 11; */
+        if (message.validator !== 0)
+            writer.tag(11, WireType.Varint).int32(message.validator);
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
@@ -1000,7 +1016,8 @@ class UpdateContestRequest$Type extends MessageType<UpdateContestRequest> {
             { no: 2, name: "title", kind: "scalar", opt: true, T: 9 /*ScalarType.STRING*/ },
             { no: 4, name: "start_at", kind: "message", T: () => Timestamp },
             { no: 5, name: "end_at", kind: "message", T: () => Timestamp },
-            { no: 6, name: "submit_limit", kind: "scalar", opt: true, T: 5 /*ScalarType.INT32*/ }
+            { no: 6, name: "submit_limit", kind: "scalar", opt: true, T: 5 /*ScalarType.INT32*/ },
+            { no: 9, name: "validator", kind: "enum", opt: true, T: () => ["backend.Validator", Validator] }
         ]);
     }
     create(value?: PartialMessage<UpdateContestRequest>): UpdateContestRequest {
@@ -1030,6 +1047,9 @@ class UpdateContestRequest$Type extends MessageType<UpdateContestRequest> {
                 case /* optional int32 submit_limit */ 6:
                     message.submitLimit = reader.int32();
                     break;
+                case /* optional backend.Validator validator */ 9:
+                    message.validator = reader.int32();
+                    break;
                 default:
                     let u = options.readUnknownField;
                     if (u === "throw")
@@ -1057,6 +1077,9 @@ class UpdateContestRequest$Type extends MessageType<UpdateContestRequest> {
         /* optional int32 submit_limit = 6; */
         if (message.submitLimit !== undefined)
             writer.tag(6, WireType.Varint).int32(message.submitLimit);
+        /* optional backend.Validator validator = 9; */
+        if (message.validator !== undefined)
+            writer.tag(9, WireType.Varint).int32(message.validator);
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);

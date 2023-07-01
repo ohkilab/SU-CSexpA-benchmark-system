@@ -12,6 +12,7 @@ message Contest {
   int32 submit_limit = 6;
   string slug = 8;
   TagSelectionLogicType tag_selection_logic = 9;
+  Validator validator = 10;
 }
 
 message TagSelectionLogicManual {
@@ -96,4 +97,13 @@ enum Language {
 enum Role {
   CONTESTANT = 0;
   GUEST = 1;
+}
+
+// 運用的に難があるけど仕方ない・・
+// DB だけでここら辺をやるとしたら、AtCoder のスペシャルジャッジみたいに
+// シングルの Go や C++ で書かれた validator を download & compile して
+// request と response を渡してチェックしてもらうとかの形にしないといけない気がする
+enum Validator {
+  V2022 = 0;
+  V2023 = 1;
 }

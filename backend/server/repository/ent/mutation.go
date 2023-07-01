@@ -46,6 +46,7 @@ type ContestMutation struct {
 	addsubmit_limit     *int
 	slug                *string
 	tag_selection_logic *contest.TagSelectionLogic
+	validator           *string
 	created_at          *time.Time
 	updated_at          *time.Time
 	clearedFields       map[string]struct{}
@@ -397,6 +398,42 @@ func (m *ContestMutation) ResetTagSelectionLogic() {
 	m.tag_selection_logic = nil
 }
 
+// SetValidator sets the "validator" field.
+func (m *ContestMutation) SetValidator(s string) {
+	m.validator = &s
+}
+
+// Validator returns the value of the "validator" field in the mutation.
+func (m *ContestMutation) Validator() (r string, exists bool) {
+	v := m.validator
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldValidator returns the old "validator" field's value of the Contest entity.
+// If the Contest object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ContestMutation) OldValidator(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldValidator is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldValidator requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldValidator: %w", err)
+	}
+	return oldValue.Validator, nil
+}
+
+// ResetValidator resets all changes to the "validator" field.
+func (m *ContestMutation) ResetValidator() {
+	m.validator = nil
+}
+
 // SetCreatedAt sets the "created_at" field.
 func (m *ContestMutation) SetCreatedAt(t time.Time) {
 	m.created_at = &t
@@ -570,7 +607,7 @@ func (m *ContestMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *ContestMutation) Fields() []string {
-	fields := make([]string, 0, 8)
+	fields := make([]string, 0, 9)
 	if m.title != nil {
 		fields = append(fields, contest.FieldTitle)
 	}
@@ -588,6 +625,9 @@ func (m *ContestMutation) Fields() []string {
 	}
 	if m.tag_selection_logic != nil {
 		fields = append(fields, contest.FieldTagSelectionLogic)
+	}
+	if m.validator != nil {
+		fields = append(fields, contest.FieldValidator)
 	}
 	if m.created_at != nil {
 		fields = append(fields, contest.FieldCreatedAt)
@@ -615,6 +655,8 @@ func (m *ContestMutation) Field(name string) (ent.Value, bool) {
 		return m.Slug()
 	case contest.FieldTagSelectionLogic:
 		return m.TagSelectionLogic()
+	case contest.FieldValidator:
+		return m.Validator()
 	case contest.FieldCreatedAt:
 		return m.CreatedAt()
 	case contest.FieldUpdatedAt:
@@ -640,6 +682,8 @@ func (m *ContestMutation) OldField(ctx context.Context, name string) (ent.Value,
 		return m.OldSlug(ctx)
 	case contest.FieldTagSelectionLogic:
 		return m.OldTagSelectionLogic(ctx)
+	case contest.FieldValidator:
+		return m.OldValidator(ctx)
 	case contest.FieldCreatedAt:
 		return m.OldCreatedAt(ctx)
 	case contest.FieldUpdatedAt:
@@ -694,6 +738,13 @@ func (m *ContestMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetTagSelectionLogic(v)
+		return nil
+	case contest.FieldValidator:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetValidator(v)
 		return nil
 	case contest.FieldCreatedAt:
 		v, ok := value.(time.Time)
@@ -799,6 +850,9 @@ func (m *ContestMutation) ResetField(name string) error {
 		return nil
 	case contest.FieldTagSelectionLogic:
 		m.ResetTagSelectionLogic()
+		return nil
+	case contest.FieldValidator:
+		m.ResetValidator()
 		return nil
 	case contest.FieldCreatedAt:
 		m.ResetCreatedAt()

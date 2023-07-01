@@ -80,6 +80,11 @@ func Slug(v string) predicate.Contest {
 	return predicate.Contest(sql.FieldEQ(FieldSlug, v))
 }
 
+// Validator applies equality check predicate on the "validator" field. It's identical to ValidatorEQ.
+func Validator(v string) predicate.Contest {
+	return predicate.Contest(sql.FieldEQ(FieldValidator, v))
+}
+
 // CreatedAt applies equality check predicate on the "created_at" field. It's identical to CreatedAtEQ.
 func CreatedAt(v time.Time) predicate.Contest {
 	return predicate.Contest(sql.FieldEQ(FieldCreatedAt, v))
@@ -358,6 +363,71 @@ func TagSelectionLogicIn(vs ...TagSelectionLogic) predicate.Contest {
 // TagSelectionLogicNotIn applies the NotIn predicate on the "tag_selection_logic" field.
 func TagSelectionLogicNotIn(vs ...TagSelectionLogic) predicate.Contest {
 	return predicate.Contest(sql.FieldNotIn(FieldTagSelectionLogic, vs...))
+}
+
+// ValidatorEQ applies the EQ predicate on the "validator" field.
+func ValidatorEQ(v string) predicate.Contest {
+	return predicate.Contest(sql.FieldEQ(FieldValidator, v))
+}
+
+// ValidatorNEQ applies the NEQ predicate on the "validator" field.
+func ValidatorNEQ(v string) predicate.Contest {
+	return predicate.Contest(sql.FieldNEQ(FieldValidator, v))
+}
+
+// ValidatorIn applies the In predicate on the "validator" field.
+func ValidatorIn(vs ...string) predicate.Contest {
+	return predicate.Contest(sql.FieldIn(FieldValidator, vs...))
+}
+
+// ValidatorNotIn applies the NotIn predicate on the "validator" field.
+func ValidatorNotIn(vs ...string) predicate.Contest {
+	return predicate.Contest(sql.FieldNotIn(FieldValidator, vs...))
+}
+
+// ValidatorGT applies the GT predicate on the "validator" field.
+func ValidatorGT(v string) predicate.Contest {
+	return predicate.Contest(sql.FieldGT(FieldValidator, v))
+}
+
+// ValidatorGTE applies the GTE predicate on the "validator" field.
+func ValidatorGTE(v string) predicate.Contest {
+	return predicate.Contest(sql.FieldGTE(FieldValidator, v))
+}
+
+// ValidatorLT applies the LT predicate on the "validator" field.
+func ValidatorLT(v string) predicate.Contest {
+	return predicate.Contest(sql.FieldLT(FieldValidator, v))
+}
+
+// ValidatorLTE applies the LTE predicate on the "validator" field.
+func ValidatorLTE(v string) predicate.Contest {
+	return predicate.Contest(sql.FieldLTE(FieldValidator, v))
+}
+
+// ValidatorContains applies the Contains predicate on the "validator" field.
+func ValidatorContains(v string) predicate.Contest {
+	return predicate.Contest(sql.FieldContains(FieldValidator, v))
+}
+
+// ValidatorHasPrefix applies the HasPrefix predicate on the "validator" field.
+func ValidatorHasPrefix(v string) predicate.Contest {
+	return predicate.Contest(sql.FieldHasPrefix(FieldValidator, v))
+}
+
+// ValidatorHasSuffix applies the HasSuffix predicate on the "validator" field.
+func ValidatorHasSuffix(v string) predicate.Contest {
+	return predicate.Contest(sql.FieldHasSuffix(FieldValidator, v))
+}
+
+// ValidatorEqualFold applies the EqualFold predicate on the "validator" field.
+func ValidatorEqualFold(v string) predicate.Contest {
+	return predicate.Contest(sql.FieldEqualFold(FieldValidator, v))
+}
+
+// ValidatorContainsFold applies the ContainsFold predicate on the "validator" field.
+func ValidatorContainsFold(v string) predicate.Contest {
+	return predicate.Contest(sql.FieldContainsFold(FieldValidator, v))
 }
 
 // CreatedAtEQ applies the EQ predicate on the "created_at" field.

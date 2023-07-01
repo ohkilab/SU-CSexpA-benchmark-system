@@ -23,6 +23,7 @@ func (Contest) Fields() []ent.Field {
 		// if auto, {contest_slug}/random.txt is used
 		// if manual, {contest_slug}/\d.txt is used (number means attempt count)
 		field.Enum("tag_selection_logic").Values("auto", "manual"),
+		field.String("validator"),
 		field.Time("created_at"),
 		field.Time("updated_at").Optional(),
 	}

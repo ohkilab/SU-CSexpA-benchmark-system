@@ -27,9 +27,9 @@ func (s *service) Execute(req *pb.ExecuteRequest, stream pb.BenchmarkService_Exe
 	}
 
 	log.Println("Start executing: ", req)
-	validator, ok := s.validatorMap[req.ContestSlug]
+	validator, ok := s.validatorMap[req.Validator.String()]
 	if !ok {
-		return status.Error(codes.InvalidArgument, fmt.Sprintf("the validator is not supported(slug: %s)", req.ContestSlug))
+		return status.Error(codes.InvalidArgument, fmt.Sprintf("the validator is not supported(slug: %s)", req.Validator.String()))
 	}
 
 	mu := &sync.Mutex{}

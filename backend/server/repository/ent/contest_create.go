@@ -57,6 +57,12 @@ func (cc *ContestCreate) SetTagSelectionLogic(csl contest.TagSelectionLogic) *Co
 	return cc
 }
 
+// SetValidator sets the "validator" field.
+func (cc *ContestCreate) SetValidator(s string) *ContestCreate {
+	cc.mutation.SetValidator(s)
+	return cc
+}
+
 // SetCreatedAt sets the "created_at" field.
 func (cc *ContestCreate) SetCreatedAt(t time.Time) *ContestCreate {
 	cc.mutation.SetCreatedAt(t)
@@ -155,6 +161,9 @@ func (cc *ContestCreate) check() error {
 			return &ValidationError{Name: "tag_selection_logic", err: fmt.Errorf(`ent: validator failed for field "Contest.tag_selection_logic": %w`, err)}
 		}
 	}
+	if _, ok := cc.mutation.Validator(); !ok {
+		return &ValidationError{Name: "validator", err: errors.New(`ent: missing required field "Contest.validator"`)}
+	}
 	if _, ok := cc.mutation.CreatedAt(); !ok {
 		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "Contest.created_at"`)}
 	}
@@ -213,6 +222,10 @@ func (cc *ContestCreate) createSpec() (*Contest, *sqlgraph.CreateSpec) {
 	if value, ok := cc.mutation.TagSelectionLogic(); ok {
 		_spec.SetField(contest.FieldTagSelectionLogic, field.TypeEnum, value)
 		_node.TagSelectionLogic = value
+	}
+	if value, ok := cc.mutation.Validator(); ok {
+		_spec.SetField(contest.FieldValidator, field.TypeString, value)
+		_node.Validator = value
 	}
 	if value, ok := cc.mutation.CreatedAt(); ok {
 		_spec.SetField(contest.FieldCreatedAt, field.TypeTime, value)

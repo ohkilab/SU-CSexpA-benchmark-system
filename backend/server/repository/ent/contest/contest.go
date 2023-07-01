@@ -26,6 +26,8 @@ const (
 	FieldSlug = "slug"
 	// FieldTagSelectionLogic holds the string denoting the tag_selection_logic field in the database.
 	FieldTagSelectionLogic = "tag_selection_logic"
+	// FieldValidator holds the string denoting the validator field in the database.
+	FieldValidator = "validator"
 	// FieldCreatedAt holds the string denoting the created_at field in the database.
 	FieldCreatedAt = "created_at"
 	// FieldUpdatedAt holds the string denoting the updated_at field in the database.
@@ -52,6 +54,7 @@ var Columns = []string{
 	FieldSubmitLimit,
 	FieldSlug,
 	FieldTagSelectionLogic,
+	FieldValidator,
 	FieldCreatedAt,
 	FieldUpdatedAt,
 }
@@ -125,6 +128,11 @@ func BySlug(opts ...sql.OrderTermOption) OrderOption {
 // ByTagSelectionLogic orders the results by the tag_selection_logic field.
 func ByTagSelectionLogic(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldTagSelectionLogic, opts...).ToFunc()
+}
+
+// ByValidator orders the results by the validator field.
+func ByValidator(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldValidator, opts...).ToFunc()
 }
 
 // ByCreatedAt orders the results by the created_at field.

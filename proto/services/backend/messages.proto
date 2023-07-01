@@ -50,6 +50,7 @@ message CreateContestRequest {
     TagSelectionLogicAuto auto = 9;
     TagSelectionLogicManual manual = 10;
   }
+  backend.Validator validator = 11;
 }
 
 message CreateContestResponse {
@@ -71,6 +72,7 @@ message UpdateContestRequest {
   optional google.protobuf.Timestamp start_at = 4;
   optional google.protobuf.Timestamp end_at = 5;
   optional int32 submit_limit = 6;
+  optional backend.Validator validator = 9;
 }
 
 message UpdateContestResponse {

@@ -99,7 +99,7 @@ func (i *Interactor) PostSubmit(ctx context.Context, req *backendpb.PostSubmitRe
 	}
 
 	// add a task to worker
-	executeRequest := buildTask(claims.GroupID, c.Slug, submit, tags)
+	executeRequest := buildTask(claims.GroupID, c.Slug, backendpb.Validator(backendpb.Validator_value[c.Validator]), submit, tags)
 	i.worker.Push(executeRequest)
 
 	return &backendpb.PostSubmitResponse{
@@ -110,7 +110,7 @@ func (i *Interactor) PostSubmit(ctx context.Context, req *backendpb.PostSubmitRe
 	}, nil
 }
 
-func buildTask(groupID int, contestSlug string, submit *ent.Submit, tags []string) *worker.Task {
+func buildTask(groupID int, contestSlug string, validator backendpb.Validator, submit *ent.Submit, tags []string) *worker.Task {
 	return &worker.Task{
 		Req: &benchmarkpb.ExecuteRequest{
 			GroupId: strconv.Itoa(groupID),
@@ -127,6 +127,7 @@ func buildTask(groupID int, contestSlug string, submit *ent.Submit, tags []strin
 				}
 			}),
 			ContestSlug: contestSlug,
+			Validator:   validator,
 		},
 		SubmitID: submit.ID,
 		GroupID:  groupID,

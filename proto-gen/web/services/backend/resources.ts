@@ -44,6 +44,10 @@ export interface Contest {
      * @generated from protobuf field: backend.TagSelectionLogicType tag_selection_logic = 9;
      */
     tagSelectionLogic: TagSelectionLogicType;
+    /**
+     * @generated from protobuf field: backend.Validator validator = 10;
+     */
+    validator: Validator;
 }
 /**
  * @generated from protobuf message backend.TagSelectionLogicManual
@@ -317,6 +321,24 @@ export enum Role {
      */
     GUEST = 1
 }
+/**
+ * 運用的に難があるけど仕方ない・・
+ * DB だけでここら辺をやるとしたら、AtCoder のスペシャルジャッジみたいに
+ * シングルの Go や C++ で書かれた validator を download & compile して
+ * request と response を渡してチェックしてもらうとかの形にしないといけない気がする
+ *
+ * @generated from protobuf enum backend.Validator
+ */
+export enum Validator {
+    /**
+     * @generated from protobuf enum value: V2022 = 0;
+     */
+    V2022 = 0,
+    /**
+     * @generated from protobuf enum value: V2023 = 1;
+     */
+    V2023 = 1
+}
 // @generated message type with reflection information, may provide speed optimized methods
 class Contest$Type extends MessageType<Contest> {
     constructor() {
@@ -327,11 +349,12 @@ class Contest$Type extends MessageType<Contest> {
             { no: 5, name: "end_at", kind: "message", T: () => Timestamp },
             { no: 6, name: "submit_limit", kind: "scalar", T: 5 /*ScalarType.INT32*/ },
             { no: 8, name: "slug", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
-            { no: 9, name: "tag_selection_logic", kind: "enum", T: () => ["backend.TagSelectionLogicType", TagSelectionLogicType] }
+            { no: 9, name: "tag_selection_logic", kind: "enum", T: () => ["backend.TagSelectionLogicType", TagSelectionLogicType] },
+            { no: 10, name: "validator", kind: "enum", T: () => ["backend.Validator", Validator] }
         ]);
     }
     create(value?: PartialMessage<Contest>): Contest {
-        const message = { id: 0, title: "", submitLimit: 0, slug: "", tagSelectionLogic: 0 };
+        const message = { id: 0, title: "", submitLimit: 0, slug: "", tagSelectionLogic: 0, validator: 0 };
         globalThis.Object.defineProperty(message, MESSAGE_TYPE, { enumerable: false, value: this });
         if (value !== undefined)
             reflectionMergePartial<Contest>(this, message, value);
@@ -362,6 +385,9 @@ class Contest$Type extends MessageType<Contest> {
                     break;
                 case /* backend.TagSelectionLogicType tag_selection_logic */ 9:
                     message.tagSelectionLogic = reader.int32();
+                    break;
+                case /* backend.Validator validator */ 10:
+                    message.validator = reader.int32();
                     break;
                 default:
                     let u = options.readUnknownField;
@@ -396,6 +422,9 @@ class Contest$Type extends MessageType<Contest> {
         /* backend.TagSelectionLogicType tag_selection_logic = 9; */
         if (message.tagSelectionLogic !== 0)
             writer.tag(9, WireType.Varint).int32(message.tagSelectionLogic);
+        /* backend.Validator validator = 10; */
+        if (message.validator !== 0)
+            writer.tag(10, WireType.Varint).int32(message.validator);
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
