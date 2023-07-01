@@ -13,6 +13,7 @@ import (
 	entsql "entgo.io/ent/dialect/sql"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/api/grpc"
+	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/core/auth"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/core/timejst"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/repository/ent"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/repository/ent/group"
@@ -25,6 +26,7 @@ import (
 	"golang.org/x/crypto/bcrypt"
 	pkggrpc "google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
+	"google.golang.org/grpc/metadata"
 )
 
 func LaunchBenchmarkGrpcServer(t *testing.T) (*pkggrpc.ClientConn, func()) {
@@ -111,27 +113,15 @@ func EnttestOpen(ctx context.Context, t *testing.T) (*ent.Client, cleanupFunc) {
 		}
 	}
 	cleanup := func(t *testing.T) {
-		defer entClient.Close()
-
-		rows, err := db.Query("SHOW TABLES;")
-		if err != nil {
-			t.Fatal(err)
-		}
-		defer rows.Close()
-		for rows.Next() {
-			var tableName string
-			if err := rows.Scan(&tableName); err != nil {
-				t.Fatal(err)
-			}
-			// for truncating forcely
-			if _, err := db.Exec("SET FOREIGN_KEY_CHECKS = 0;"); err != nil {
-				t.Fatal(err)
-			}
-			_, _ = db.Exec("TRUNCATE TABLE " + tableName + ";")
-			if _, err := db.Exec("SET FOREIGN_KEY_CHECKS = 1;"); err != nil {
-				t.Fatal(err)
-			}
-		}
+		_, err = entClient.Contest.Delete().Exec(ctx)
+		require.NoError(t, err)
+		_, err = entClient.Group.Delete().Exec(ctx)
+		require.NoError(t, err)
+		_, err = entClient.Submit.Delete().Exec(ctx)
+		require.NoError(t, err)
+		_, err = entClient.TaskResult.Delete().Exec(ctx)
+		require.NoError(t, err)
+		entClient.Close()
 	}
 	return entClient, cleanup
 }
@@ -162,4 +152,11 @@ func CreateSubmit(ctx context.Context, t *testing.T, entClient *ent.Client, scor
 		Save(ctx)
 	require.NoError(t, err)
 	return submit
+}
+
+func WithJWT(ctx context.Context, t *testing.T, id, year int) context.Context {
+	token, err := auth.GenerateJWTToken([]byte("secret"), id, year)
+	require.NoError(t, err)
+	meta := metadata.New(map[string]string{"authorization": "Bearer " + token})
+	return metadata.NewOutgoingContext(ctx, meta)
 }

@@ -5,7 +5,7 @@ import (
 
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/core/timejst"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/repository/ent"
-	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/repository/ent/contest"
+	pkgcontest "github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/repository/ent/contest"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/repository/tag"
 	pb "github.com/ohkilab/SU-CSexpA-benchmark-system/proto-gen/go/services/backend"
 	"github.com/samber/lo"
@@ -50,16 +50,16 @@ func (i *Interactor) GetContest(ctx context.Context, req *pb.GetContestRequest) 
 }
 
 func (i *Interactor) CreateContest(ctx context.Context, req *pb.CreateContestRequest) (*pb.CreateContestResponse, error) {
-	var tagSelectionLogic contest.TagSelectionLogic
+	var tagSelectionLogic pkgcontest.TagSelectionLogic
 	switch req.TagSelection.(type) {
 	case *pb.CreateContestRequest_Auto:
-		tagSelectionLogic = contest.TagSelectionLogicAuto
+		tagSelectionLogic = pkgcontest.TagSelectionLogicAuto
 		if err := i.tagRepository.CreateRandomTag(req.Slug, req.GetAuto().Tags.Tags); err != nil {
 			i.logger.Error("failed to create random tags", "error", err)
 			return nil, status.Error(codes.Internal, "failed to create random tags")
 		}
 	case *pb.CreateContestRequest_Manual:
-		tagSelectionLogic = contest.TagSelectionLogicManual
+		tagSelectionLogic = pkgcontest.TagSelectionLogicManual
 		tagsList := make([][]string, 0, len(req.GetManual().TagsList))
 		for _, tags := range req.GetManual().TagsList {
 			tagsList = append(tagsList, tags.Tags)
@@ -123,9 +123,20 @@ func (i *Interactor) UpdateContest(ctx context.Context, req *pb.UpdateContestReq
 func toPbContest(contest *ent.Contest) *pb.Contest {
 	return &pb.Contest{
 		Id:          int32(contest.ID),
+		Slug:        contest.Slug,
 		Title:       contest.Title,
 		StartAt:     timestamppb.New(contest.StartAt),
 		EndAt:       timestamppb.New(contest.EndAt),
 		SubmitLimit: int32(contest.SubmitLimit),
+		TagSelectionLogic: func() pb.TagSelectionLogicType {
+			switch contest.TagSelectionLogic {
+			case pkgcontest.TagSelectionLogicAuto:
+				return pb.TagSelectionLogicType_AUTO
+			case pkgcontest.TagSelectionLogicManual:
+				return pb.TagSelectionLogicType_MANUAL
+			default:
+				return -1 // unreachable
+			}
+		}(),
 	}
 }

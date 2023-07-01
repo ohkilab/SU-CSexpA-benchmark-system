@@ -212,13 +212,13 @@ export interface TaskResult {
  */
 export enum TagSelectionLogicType {
     /**
-     * @generated from protobuf enum value: RANDOM = 0;
+     * @generated from protobuf enum value: AUTO = 0;
      */
-    RANDOM = 0,
+    AUTO = 0,
     /**
-     * @generated from protobuf enum value: AUTO = 1;
+     * @generated from protobuf enum value: MANUAL = 1;
      */
-    AUTO = 1
+    MANUAL = 1
 }
 /**
  * @generated from protobuf enum backend.Status

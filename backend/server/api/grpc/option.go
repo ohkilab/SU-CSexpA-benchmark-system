@@ -8,11 +8,12 @@ import (
 )
 
 type option struct {
-	entClient     *ent.Client
-	jwtSecret     []byte
-	worker        worker.Worker
-	logger        *slog.Logger
-	tagRepository tag.Repository
+	entClient        *ent.Client
+	jwtSecret        []byte
+	worker           worker.Worker
+	logger           *slog.Logger
+	tagRepository    tag.Repository
+	useLogMiddleware bool
 }
 
 type OptionFunc func(*option)
@@ -44,5 +45,11 @@ func WithLogger(logger *slog.Logger) OptionFunc {
 func WithTagRepository(r tag.Repository) OptionFunc {
 	return func(o *option) {
 		o.tagRepository = r
+	}
+}
+
+func UseLogMiddleware() OptionFunc {
+	return func(o *option) {
+		o.useLogMiddleware = true
 	}
 }

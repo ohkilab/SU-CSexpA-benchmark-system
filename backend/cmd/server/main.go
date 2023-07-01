@@ -54,6 +54,7 @@ func main() {
 		grpc.WithWorker(benchmarkWorker),
 		grpc.WithLogger(logger),
 		grpc.WithTagRepository(tag.NewRespository(".")),
+		grpc.UseLogMiddleware(),
 	)
 
 	// launch grpc server

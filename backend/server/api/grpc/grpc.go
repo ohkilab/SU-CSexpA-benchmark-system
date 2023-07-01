@@ -20,15 +20,14 @@ func NewServer(optionFuncs ...OptionFunc) *grpc.Server {
 		optionFunc(opt)
 	}
 
-	grpcServer := grpc.NewServer(
-		grpc.UnaryInterceptor(interceptor.Auth(opt.jwtSecret)),
-		grpc.ChainUnaryInterceptor(
-			logging.UnaryServerInterceptor(interceptorLogger(opt.logger)),
-		),
-		grpc.ChainStreamInterceptor(
-			logging.StreamServerInterceptor(interceptorLogger(opt.logger)),
-		),
-	)
+	serverOptions := []grpc.ServerOption{grpc.UnaryInterceptor(interceptor.Auth(opt.jwtSecret))}
+	if opt.useLogMiddleware {
+		serverOptions = append(serverOptions,
+			grpc.ChainUnaryInterceptor(logging.UnaryServerInterceptor(interceptorLogger(opt.logger))),
+			grpc.ChainStreamInterceptor(logging.StreamServerInterceptor(interceptorLogger(opt.logger))),
+		)
+	}
+	grpcServer := grpc.NewServer(serverOptions...)
 
 	backendService := interfaces.NewBackendService(opt.jwtSecret, opt.entClient, opt.worker, opt.logger, opt.tagRepository)
 	backend.RegisterBackendServiceServer(grpcServer, backendService)

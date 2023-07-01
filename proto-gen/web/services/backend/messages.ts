@@ -189,6 +189,8 @@ export interface GetContestResponse {
     contest?: Contest;
 }
 /**
+ * NOTE: cannot change slug and tag selection logic
+ *
  * @generated from protobuf message backend.UpdateContestRequest
  */
 export interface UpdateContestRequest {
@@ -212,24 +214,6 @@ export interface UpdateContestRequest {
      * @generated from protobuf field: optional int32 submit_limit = 6;
      */
     submitLimit?: number;
-    /**
-     * @generated from protobuf oneof: tag_selection
-     */
-    tagSelection: {
-        oneofKind: "auto";
-        /**
-         * @generated from protobuf field: backend.TagSelectionLogicAuto auto = 9;
-         */
-        auto: TagSelectionLogicAuto;
-    } | {
-        oneofKind: "manual";
-        /**
-         * @generated from protobuf field: backend.TagSelectionLogicManual manual = 10;
-         */
-        manual: TagSelectionLogicManual;
-    } | {
-        oneofKind: undefined;
-    };
 }
 /**
  * @generated from protobuf message backend.UpdateContestResponse
@@ -1016,13 +1000,11 @@ class UpdateContestRequest$Type extends MessageType<UpdateContestRequest> {
             { no: 2, name: "title", kind: "scalar", opt: true, T: 9 /*ScalarType.STRING*/ },
             { no: 4, name: "start_at", kind: "message", T: () => Timestamp },
             { no: 5, name: "end_at", kind: "message", T: () => Timestamp },
-            { no: 6, name: "submit_limit", kind: "scalar", opt: true, T: 5 /*ScalarType.INT32*/ },
-            { no: 9, name: "auto", kind: "message", oneof: "tagSelection", T: () => TagSelectionLogicAuto },
-            { no: 10, name: "manual", kind: "message", oneof: "tagSelection", T: () => TagSelectionLogicManual }
+            { no: 6, name: "submit_limit", kind: "scalar", opt: true, T: 5 /*ScalarType.INT32*/ }
         ]);
     }
     create(value?: PartialMessage<UpdateContestRequest>): UpdateContestRequest {
-        const message = { id: 0, tagSelection: { oneofKind: undefined } };
+        const message = { id: 0 };
         globalThis.Object.defineProperty(message, MESSAGE_TYPE, { enumerable: false, value: this });
         if (value !== undefined)
             reflectionMergePartial<UpdateContestRequest>(this, message, value);
@@ -1047,18 +1029,6 @@ class UpdateContestRequest$Type extends MessageType<UpdateContestRequest> {
                     break;
                 case /* optional int32 submit_limit */ 6:
                     message.submitLimit = reader.int32();
-                    break;
-                case /* backend.TagSelectionLogicAuto auto */ 9:
-                    message.tagSelection = {
-                        oneofKind: "auto",
-                        auto: TagSelectionLogicAuto.internalBinaryRead(reader, reader.uint32(), options, (message.tagSelection as any).auto)
-                    };
-                    break;
-                case /* backend.TagSelectionLogicManual manual */ 10:
-                    message.tagSelection = {
-                        oneofKind: "manual",
-                        manual: TagSelectionLogicManual.internalBinaryRead(reader, reader.uint32(), options, (message.tagSelection as any).manual)
-                    };
                     break;
                 default:
                     let u = options.readUnknownField;
@@ -1087,12 +1057,6 @@ class UpdateContestRequest$Type extends MessageType<UpdateContestRequest> {
         /* optional int32 submit_limit = 6; */
         if (message.submitLimit !== undefined)
             writer.tag(6, WireType.Varint).int32(message.submitLimit);
-        /* backend.TagSelectionLogicAuto auto = 9; */
-        if (message.tagSelection.oneofKind === "auto")
-            TagSelectionLogicAuto.internalBinaryWrite(message.tagSelection.auto, writer.tag(9, WireType.LengthDelimited).fork(), options).join();
-        /* backend.TagSelectionLogicManual manual = 10; */
-        if (message.tagSelection.oneofKind === "manual")
-            TagSelectionLogicManual.internalBinaryWrite(message.tagSelection.manual, writer.tag(10, WireType.LengthDelimited).fork(), options).join();
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
