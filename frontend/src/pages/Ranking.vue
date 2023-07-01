@@ -17,7 +17,8 @@ const hasSubmits: Ref<boolean> = ref(false)
 
 onMounted(() => {
   let opt = { meta: { 'authorization': 'Bearer ' + state.token } }
-  const listSubmitsRequest:ListSubmitsRequest = {
+  const listSubmitsRequest: ListSubmitsRequest = {
+    contestId: 1, // TODO: fix
     // groupName: 'a01',
     // status: Status.VALIDATION_ERROR
   }
@@ -34,7 +35,7 @@ onMounted(() => {
 
   backend.listSubmits(listSubmitsRequest, opt)
     .then(res => {
-      if(import.meta.env.DEV) console.log('Submits', res.response.submits)
+      if (import.meta.env.DEV) console.log('Submits', res.response.submits)
       state.submits = res.response.submits
 
       hasSubmits.value = true
@@ -50,10 +51,9 @@ onMounted(() => {
   <!-- container -->
   <div v-if="state.records.length > 0" class="flex flex-col items-center gap-5 w-full px-4">
     <!-- separator -->
-    <TopRank
-      v-for="(g, idx) in state.records.filter((_, i: number) => i < 3)"
-      :key="g.group?.id" :rank="idx + 1" :class="state.group == g.group?.id ? 'bg-blue-700' : 'bg-gray-700'"
-      :name="g.group?.id ?? ''" :score="g.score ?? 0" />
+    <TopRank v-for="(g, idx) in state.records.filter((_, i: number) => i < 3)" :key="g.group?.id" :rank="idx + 1"
+      :class="state.group == g.group?.id ? 'bg-blue-700' : 'bg-gray-700'" :name="g.group?.id ?? ''"
+      :score="g.score ?? 0" />
     <!-- top rank and normal rank separator -->
     <hr class="h-[2px] w-11/12 mx-8 text-white bg-gray-500 border-0" />
     <RankItem v-for="(g, idx) in state.records.filter((_, i: number) => i >= 3)" :key="g.group?.id" :rank="idx + 4"

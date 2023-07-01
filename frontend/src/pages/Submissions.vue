@@ -42,6 +42,7 @@ onMounted(() => {
   const opt = {meta: {'authorization' : 'Bearer ' + state.token}}
   // TODO: get own submissions, filter functionality
   const listSubmitsRequest:ListSubmitsRequest = {
+    contestId: 1, // TODO: fix
     // groupName: 'a01',
     // status: Status.VALIDATION_ERROR
   }

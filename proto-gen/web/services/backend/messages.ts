@@ -99,6 +99,10 @@ export interface GetSubmitResponse {
  */
 export interface ListSubmitsRequest {
     /**
+     * @generated from protobuf field: int32 contest_id = 1;
+     */
+    contestId: number;
+    /**
      * @generated from protobuf field: optional string group_name = 2;
      */
     groupName?: string; // middle match
@@ -551,12 +555,13 @@ export const GetSubmitResponse = new GetSubmitResponse$Type();
 class ListSubmitsRequest$Type extends MessageType<ListSubmitsRequest> {
     constructor() {
         super("backend.ListSubmitsRequest", [
+            { no: 1, name: "contest_id", kind: "scalar", T: 5 /*ScalarType.INT32*/ },
             { no: 2, name: "group_name", kind: "scalar", opt: true, T: 9 /*ScalarType.STRING*/ },
             { no: 3, name: "status", kind: "enum", opt: true, T: () => ["backend.Status", Status] }
         ]);
     }
     create(value?: PartialMessage<ListSubmitsRequest>): ListSubmitsRequest {
-        const message = {};
+        const message = { contestId: 0 };
         globalThis.Object.defineProperty(message, MESSAGE_TYPE, { enumerable: false, value: this });
         if (value !== undefined)
             reflectionMergePartial<ListSubmitsRequest>(this, message, value);
@@ -567,6 +572,9 @@ class ListSubmitsRequest$Type extends MessageType<ListSubmitsRequest> {
         while (reader.pos < end) {
             let [fieldNo, wireType] = reader.tag();
             switch (fieldNo) {
+                case /* int32 contest_id */ 1:
+                    message.contestId = reader.int32();
+                    break;
                 case /* optional string group_name */ 2:
                     message.groupName = reader.string();
                     break;
@@ -585,6 +593,9 @@ class ListSubmitsRequest$Type extends MessageType<ListSubmitsRequest> {
         return message;
     }
     internalBinaryWrite(message: ListSubmitsRequest, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* int32 contest_id = 1; */
+        if (message.contestId !== 0)
+            writer.tag(1, WireType.Varint).int32(message.contestId);
         /* optional string group_name = 2; */
         if (message.groupName !== undefined)
             writer.tag(2, WireType.LengthDelimited).string(message.groupName);

@@ -30,6 +30,7 @@ const noSubmissions: Ref<boolean> = ref(false)
 
 const fetchLatestSubmit = () => {
   const listSubmitsRequest:ListSubmitsRequest = {
+    contestId: 1, // TODO: fix
     groupName: state.group,
     // status: Status.VALIDATION_ERROR
   }
