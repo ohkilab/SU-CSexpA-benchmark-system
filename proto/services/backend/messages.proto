@@ -35,6 +35,7 @@ message ListSubmitsRequest {
   int32 contest_id = 1;
   optional string group_name = 2; // middle match
   optional Status status = 3;
+  optional bool contains_guest = 4; // default: false
 }
 
 message ListSubmitsResponse {

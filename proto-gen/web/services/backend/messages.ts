@@ -113,6 +113,10 @@ export interface ListSubmitsRequest {
      * @generated from protobuf field: optional backend.Status status = 3;
      */
     status?: Status;
+    /**
+     * @generated from protobuf field: optional bool contains_guest = 4;
+     */
+    containsGuest?: boolean; // default: false
 }
 /**
  * @generated from protobuf message backend.ListSubmitsResponse
@@ -674,7 +678,8 @@ class ListSubmitsRequest$Type extends MessageType<ListSubmitsRequest> {
         super("backend.ListSubmitsRequest", [
             { no: 1, name: "contest_id", kind: "scalar", T: 5 /*ScalarType.INT32*/ },
             { no: 2, name: "group_name", kind: "scalar", opt: true, T: 9 /*ScalarType.STRING*/ },
-            { no: 3, name: "status", kind: "enum", opt: true, T: () => ["backend.Status", Status] }
+            { no: 3, name: "status", kind: "enum", opt: true, T: () => ["backend.Status", Status] },
+            { no: 4, name: "contains_guest", kind: "scalar", opt: true, T: 8 /*ScalarType.BOOL*/ }
         ]);
     }
     create(value?: PartialMessage<ListSubmitsRequest>): ListSubmitsRequest {
@@ -698,6 +703,9 @@ class ListSubmitsRequest$Type extends MessageType<ListSubmitsRequest> {
                 case /* optional backend.Status status */ 3:
                     message.status = reader.int32();
                     break;
+                case /* optional bool contains_guest */ 4:
+                    message.containsGuest = reader.bool();
+                    break;
                 default:
                     let u = options.readUnknownField;
                     if (u === "throw")
@@ -719,6 +727,9 @@ class ListSubmitsRequest$Type extends MessageType<ListSubmitsRequest> {
         /* optional backend.Status status = 3; */
         if (message.status !== undefined)
             writer.tag(3, WireType.Varint).int32(message.status);
+        /* optional bool contains_guest = 4; */
+        if (message.containsGuest !== undefined)
+            writer.tag(4, WireType.Varint).bool(message.containsGuest);
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
