@@ -13,7 +13,8 @@ import (
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/worker"
 	benchmarkpb "github.com/ohkilab/SU-CSexpA-benchmark-system/proto-gen/go/services/benchmark-service"
 	"golang.org/x/exp/slog"
-	pkgrpc "google.golang.org/grpc"
+	pkggrpc "google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
 )
 
 func main() {
@@ -29,6 +30,7 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
+	defer entClient.Close()
 	// migration
 	if err := entClient.Schema.Create(context.Background()); err != nil {
 		panic(err)
@@ -38,7 +40,10 @@ func main() {
 	logger := slog.Default()
 
 	// benchmark worker
-	conn, err := pkgrpc.Dial(fmt.Sprintf("%s:%s", config.BenchmarkHost, config.BenchmarkPort), pkgrpc.WithInsecure())
+	conn, err := pkggrpc.Dial(
+		fmt.Sprintf("%s:%s", config.BenchmarkHost, config.BenchmarkPort),
+		pkggrpc.WithTransportCredentials(insecure.NewCredentials()),
+	)
 	if err != nil {
 		panic(err)
 	}
