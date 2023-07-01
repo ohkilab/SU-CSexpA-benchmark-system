@@ -40,6 +40,45 @@ export interface Contest {
      * @generated from protobuf field: string slug = 8;
      */
     slug: string;
+    /**
+     * @generated from protobuf field: backend.TagSelectionLogicType tag_selection_logic = 9;
+     */
+    tagSelectionLogic: TagSelectionLogicType;
+}
+/**
+ * @generated from protobuf message backend.TagSelectionLogicManual
+ */
+export interface TagSelectionLogicManual {
+    /**
+     * @generated from protobuf field: backend.TagSelectionLogicType type = 1;
+     */
+    type: TagSelectionLogicType;
+    /**
+     * @generated from protobuf field: repeated backend.Tags tags_list = 2;
+     */
+    tagsList: Tags[]; // tags_list[i] .. used if the attempt count is i+1
+}
+/**
+ * @generated from protobuf message backend.TagSelectionLogicAuto
+ */
+export interface TagSelectionLogicAuto {
+    /**
+     * @generated from protobuf field: backend.TagSelectionLogicType type = 1;
+     */
+    type: TagSelectionLogicType;
+    /**
+     * @generated from protobuf field: backend.Tags tags = 2;
+     */
+    tags?: Tags;
+}
+/**
+ * @generated from protobuf message backend.Tags
+ */
+export interface Tags {
+    /**
+     * @generated from protobuf field: repeated string tags = 1;
+     */
+    tags: string[];
 }
 /**
  * @generated from protobuf message backend.Group
@@ -169,6 +208,19 @@ export interface TaskResult {
     status: Status;
 }
 /**
+ * @generated from protobuf enum backend.TagSelectionLogicType
+ */
+export enum TagSelectionLogicType {
+    /**
+     * @generated from protobuf enum value: RANDOM = 0;
+     */
+    RANDOM = 0,
+    /**
+     * @generated from protobuf enum value: AUTO = 1;
+     */
+    AUTO = 1
+}
+/**
  * @generated from protobuf enum backend.Status
  */
 export enum Status {
@@ -274,11 +326,12 @@ class Contest$Type extends MessageType<Contest> {
             { no: 4, name: "start_at", kind: "message", T: () => Timestamp },
             { no: 5, name: "end_at", kind: "message", T: () => Timestamp },
             { no: 6, name: "submit_limit", kind: "scalar", T: 5 /*ScalarType.INT32*/ },
-            { no: 8, name: "slug", kind: "scalar", T: 9 /*ScalarType.STRING*/ }
+            { no: 8, name: "slug", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 9, name: "tag_selection_logic", kind: "enum", T: () => ["backend.TagSelectionLogicType", TagSelectionLogicType] }
         ]);
     }
     create(value?: PartialMessage<Contest>): Contest {
-        const message = { id: 0, title: "", submitLimit: 0, slug: "" };
+        const message = { id: 0, title: "", submitLimit: 0, slug: "", tagSelectionLogic: 0 };
         globalThis.Object.defineProperty(message, MESSAGE_TYPE, { enumerable: false, value: this });
         if (value !== undefined)
             reflectionMergePartial<Contest>(this, message, value);
@@ -306,6 +359,9 @@ class Contest$Type extends MessageType<Contest> {
                     break;
                 case /* string slug */ 8:
                     message.slug = reader.string();
+                    break;
+                case /* backend.TagSelectionLogicType tag_selection_logic */ 9:
+                    message.tagSelectionLogic = reader.int32();
                     break;
                 default:
                     let u = options.readUnknownField;
@@ -337,6 +393,9 @@ class Contest$Type extends MessageType<Contest> {
         /* string slug = 8; */
         if (message.slug !== "")
             writer.tag(8, WireType.LengthDelimited).string(message.slug);
+        /* backend.TagSelectionLogicType tag_selection_logic = 9; */
+        if (message.tagSelectionLogic !== 0)
+            writer.tag(9, WireType.Varint).int32(message.tagSelectionLogic);
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
@@ -347,6 +406,161 @@ class Contest$Type extends MessageType<Contest> {
  * @generated MessageType for protobuf message backend.Contest
  */
 export const Contest = new Contest$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class TagSelectionLogicManual$Type extends MessageType<TagSelectionLogicManual> {
+    constructor() {
+        super("backend.TagSelectionLogicManual", [
+            { no: 1, name: "type", kind: "enum", T: () => ["backend.TagSelectionLogicType", TagSelectionLogicType] },
+            { no: 2, name: "tags_list", kind: "message", repeat: 1 /*RepeatType.PACKED*/, T: () => Tags }
+        ]);
+    }
+    create(value?: PartialMessage<TagSelectionLogicManual>): TagSelectionLogicManual {
+        const message = { type: 0, tagsList: [] };
+        globalThis.Object.defineProperty(message, MESSAGE_TYPE, { enumerable: false, value: this });
+        if (value !== undefined)
+            reflectionMergePartial<TagSelectionLogicManual>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: TagSelectionLogicManual): TagSelectionLogicManual {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* backend.TagSelectionLogicType type */ 1:
+                    message.type = reader.int32();
+                    break;
+                case /* repeated backend.Tags tags_list */ 2:
+                    message.tagsList.push(Tags.internalBinaryRead(reader, reader.uint32(), options));
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: TagSelectionLogicManual, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* backend.TagSelectionLogicType type = 1; */
+        if (message.type !== 0)
+            writer.tag(1, WireType.Varint).int32(message.type);
+        /* repeated backend.Tags tags_list = 2; */
+        for (let i = 0; i < message.tagsList.length; i++)
+            Tags.internalBinaryWrite(message.tagsList[i], writer.tag(2, WireType.LengthDelimited).fork(), options).join();
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message backend.TagSelectionLogicManual
+ */
+export const TagSelectionLogicManual = new TagSelectionLogicManual$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class TagSelectionLogicAuto$Type extends MessageType<TagSelectionLogicAuto> {
+    constructor() {
+        super("backend.TagSelectionLogicAuto", [
+            { no: 1, name: "type", kind: "enum", T: () => ["backend.TagSelectionLogicType", TagSelectionLogicType] },
+            { no: 2, name: "tags", kind: "message", T: () => Tags }
+        ]);
+    }
+    create(value?: PartialMessage<TagSelectionLogicAuto>): TagSelectionLogicAuto {
+        const message = { type: 0 };
+        globalThis.Object.defineProperty(message, MESSAGE_TYPE, { enumerable: false, value: this });
+        if (value !== undefined)
+            reflectionMergePartial<TagSelectionLogicAuto>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: TagSelectionLogicAuto): TagSelectionLogicAuto {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* backend.TagSelectionLogicType type */ 1:
+                    message.type = reader.int32();
+                    break;
+                case /* backend.Tags tags */ 2:
+                    message.tags = Tags.internalBinaryRead(reader, reader.uint32(), options, message.tags);
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: TagSelectionLogicAuto, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* backend.TagSelectionLogicType type = 1; */
+        if (message.type !== 0)
+            writer.tag(1, WireType.Varint).int32(message.type);
+        /* backend.Tags tags = 2; */
+        if (message.tags)
+            Tags.internalBinaryWrite(message.tags, writer.tag(2, WireType.LengthDelimited).fork(), options).join();
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message backend.TagSelectionLogicAuto
+ */
+export const TagSelectionLogicAuto = new TagSelectionLogicAuto$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class Tags$Type extends MessageType<Tags> {
+    constructor() {
+        super("backend.Tags", [
+            { no: 1, name: "tags", kind: "scalar", repeat: 2 /*RepeatType.UNPACKED*/, T: 9 /*ScalarType.STRING*/ }
+        ]);
+    }
+    create(value?: PartialMessage<Tags>): Tags {
+        const message = { tags: [] };
+        globalThis.Object.defineProperty(message, MESSAGE_TYPE, { enumerable: false, value: this });
+        if (value !== undefined)
+            reflectionMergePartial<Tags>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: Tags): Tags {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* repeated string tags */ 1:
+                    message.tags.push(reader.string());
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: Tags, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* repeated string tags = 1; */
+        for (let i = 0; i < message.tags.length; i++)
+            writer.tag(1, WireType.LengthDelimited).string(message.tags[i]);
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message backend.Tags
+ */
+export const Tags = new Tags$Type();
 // @generated message type with reflection information, may provide speed optimized methods
 class Group$Type extends MessageType<Group> {
     constructor() {

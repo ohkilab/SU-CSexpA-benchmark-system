@@ -12,6 +12,8 @@ import { reflectionMergePartial } from "@protobuf-ts/runtime";
 import { MESSAGE_TYPE } from "@protobuf-ts/runtime";
 import { MessageType } from "@protobuf-ts/runtime";
 import { Contest } from "./resources";
+import { TagSelectionLogicManual } from "./resources";
+import { TagSelectionLogicAuto } from "./resources";
 import { Status } from "./resources";
 import { Submit } from "./resources";
 import { Timestamp } from "../../google/protobuf/timestamp";
@@ -115,6 +117,128 @@ export interface ListSubmitsResponse {
      * @generated from protobuf field: repeated backend.Submit submits = 1;
      */
     submits: Submit[]; // NOTE: task_results will be empty
+}
+/**
+ * @generated from protobuf message backend.CreateContestRequest
+ */
+export interface CreateContestRequest {
+    /**
+     * @generated from protobuf field: string title = 2;
+     */
+    title: string;
+    /**
+     * @generated from protobuf field: google.protobuf.Timestamp start_at = 4;
+     */
+    startAt?: Timestamp;
+    /**
+     * @generated from protobuf field: google.protobuf.Timestamp end_at = 5;
+     */
+    endAt?: Timestamp;
+    /**
+     * @generated from protobuf field: int32 submit_limit = 6;
+     */
+    submitLimit: number;
+    /**
+     * @generated from protobuf field: string slug = 8;
+     */
+    slug: string;
+    /**
+     * @generated from protobuf oneof: tag_selection
+     */
+    tagSelection: {
+        oneofKind: "auto";
+        /**
+         * @generated from protobuf field: backend.TagSelectionLogicAuto auto = 9;
+         */
+        auto: TagSelectionLogicAuto;
+    } | {
+        oneofKind: "manual";
+        /**
+         * @generated from protobuf field: backend.TagSelectionLogicManual manual = 10;
+         */
+        manual: TagSelectionLogicManual;
+    } | {
+        oneofKind: undefined;
+    };
+}
+/**
+ * @generated from protobuf message backend.CreateContestResponse
+ */
+export interface CreateContestResponse {
+    /**
+     * @generated from protobuf field: backend.Contest contest = 1;
+     */
+    contest?: Contest;
+}
+/**
+ * @generated from protobuf message backend.GetContestRequest
+ */
+export interface GetContestRequest {
+    /**
+     * @generated from protobuf field: int32 id = 1;
+     */
+    id: number;
+}
+/**
+ * @generated from protobuf message backend.GetContestResponse
+ */
+export interface GetContestResponse {
+    /**
+     * @generated from protobuf field: backend.Contest contest = 1;
+     */
+    contest?: Contest;
+}
+/**
+ * @generated from protobuf message backend.UpdateContestRequest
+ */
+export interface UpdateContestRequest {
+    /**
+     * @generated from protobuf field: int32 id = 1;
+     */
+    id: number;
+    /**
+     * @generated from protobuf field: optional string title = 2;
+     */
+    title?: string;
+    /**
+     * @generated from protobuf field: optional google.protobuf.Timestamp start_at = 4;
+     */
+    startAt?: Timestamp;
+    /**
+     * @generated from protobuf field: optional google.protobuf.Timestamp end_at = 5;
+     */
+    endAt?: Timestamp;
+    /**
+     * @generated from protobuf field: optional int32 submit_limit = 6;
+     */
+    submitLimit?: number;
+    /**
+     * @generated from protobuf oneof: tag_selection
+     */
+    tagSelection: {
+        oneofKind: "auto";
+        /**
+         * @generated from protobuf field: backend.TagSelectionLogicAuto auto = 9;
+         */
+        auto: TagSelectionLogicAuto;
+    } | {
+        oneofKind: "manual";
+        /**
+         * @generated from protobuf field: backend.TagSelectionLogicManual manual = 10;
+         */
+        manual: TagSelectionLogicManual;
+    } | {
+        oneofKind: undefined;
+    };
+}
+/**
+ * @generated from protobuf message backend.UpdateContestResponse
+ */
+export interface UpdateContestResponse {
+    /**
+     * @generated from protobuf field: backend.Contest contest = 1;
+     */
+    contest?: Contest;
 }
 /**
  * @generated from protobuf message backend.GetRankingRequest
@@ -648,6 +772,384 @@ class ListSubmitsResponse$Type extends MessageType<ListSubmitsResponse> {
  * @generated MessageType for protobuf message backend.ListSubmitsResponse
  */
 export const ListSubmitsResponse = new ListSubmitsResponse$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class CreateContestRequest$Type extends MessageType<CreateContestRequest> {
+    constructor() {
+        super("backend.CreateContestRequest", [
+            { no: 2, name: "title", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 4, name: "start_at", kind: "message", T: () => Timestamp },
+            { no: 5, name: "end_at", kind: "message", T: () => Timestamp },
+            { no: 6, name: "submit_limit", kind: "scalar", T: 5 /*ScalarType.INT32*/ },
+            { no: 8, name: "slug", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 9, name: "auto", kind: "message", oneof: "tagSelection", T: () => TagSelectionLogicAuto },
+            { no: 10, name: "manual", kind: "message", oneof: "tagSelection", T: () => TagSelectionLogicManual }
+        ]);
+    }
+    create(value?: PartialMessage<CreateContestRequest>): CreateContestRequest {
+        const message = { title: "", submitLimit: 0, slug: "", tagSelection: { oneofKind: undefined } };
+        globalThis.Object.defineProperty(message, MESSAGE_TYPE, { enumerable: false, value: this });
+        if (value !== undefined)
+            reflectionMergePartial<CreateContestRequest>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: CreateContestRequest): CreateContestRequest {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* string title */ 2:
+                    message.title = reader.string();
+                    break;
+                case /* google.protobuf.Timestamp start_at */ 4:
+                    message.startAt = Timestamp.internalBinaryRead(reader, reader.uint32(), options, message.startAt);
+                    break;
+                case /* google.protobuf.Timestamp end_at */ 5:
+                    message.endAt = Timestamp.internalBinaryRead(reader, reader.uint32(), options, message.endAt);
+                    break;
+                case /* int32 submit_limit */ 6:
+                    message.submitLimit = reader.int32();
+                    break;
+                case /* string slug */ 8:
+                    message.slug = reader.string();
+                    break;
+                case /* backend.TagSelectionLogicAuto auto */ 9:
+                    message.tagSelection = {
+                        oneofKind: "auto",
+                        auto: TagSelectionLogicAuto.internalBinaryRead(reader, reader.uint32(), options, (message.tagSelection as any).auto)
+                    };
+                    break;
+                case /* backend.TagSelectionLogicManual manual */ 10:
+                    message.tagSelection = {
+                        oneofKind: "manual",
+                        manual: TagSelectionLogicManual.internalBinaryRead(reader, reader.uint32(), options, (message.tagSelection as any).manual)
+                    };
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: CreateContestRequest, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* string title = 2; */
+        if (message.title !== "")
+            writer.tag(2, WireType.LengthDelimited).string(message.title);
+        /* google.protobuf.Timestamp start_at = 4; */
+        if (message.startAt)
+            Timestamp.internalBinaryWrite(message.startAt, writer.tag(4, WireType.LengthDelimited).fork(), options).join();
+        /* google.protobuf.Timestamp end_at = 5; */
+        if (message.endAt)
+            Timestamp.internalBinaryWrite(message.endAt, writer.tag(5, WireType.LengthDelimited).fork(), options).join();
+        /* int32 submit_limit = 6; */
+        if (message.submitLimit !== 0)
+            writer.tag(6, WireType.Varint).int32(message.submitLimit);
+        /* string slug = 8; */
+        if (message.slug !== "")
+            writer.tag(8, WireType.LengthDelimited).string(message.slug);
+        /* backend.TagSelectionLogicAuto auto = 9; */
+        if (message.tagSelection.oneofKind === "auto")
+            TagSelectionLogicAuto.internalBinaryWrite(message.tagSelection.auto, writer.tag(9, WireType.LengthDelimited).fork(), options).join();
+        /* backend.TagSelectionLogicManual manual = 10; */
+        if (message.tagSelection.oneofKind === "manual")
+            TagSelectionLogicManual.internalBinaryWrite(message.tagSelection.manual, writer.tag(10, WireType.LengthDelimited).fork(), options).join();
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message backend.CreateContestRequest
+ */
+export const CreateContestRequest = new CreateContestRequest$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class CreateContestResponse$Type extends MessageType<CreateContestResponse> {
+    constructor() {
+        super("backend.CreateContestResponse", [
+            { no: 1, name: "contest", kind: "message", T: () => Contest }
+        ]);
+    }
+    create(value?: PartialMessage<CreateContestResponse>): CreateContestResponse {
+        const message = {};
+        globalThis.Object.defineProperty(message, MESSAGE_TYPE, { enumerable: false, value: this });
+        if (value !== undefined)
+            reflectionMergePartial<CreateContestResponse>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: CreateContestResponse): CreateContestResponse {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* backend.Contest contest */ 1:
+                    message.contest = Contest.internalBinaryRead(reader, reader.uint32(), options, message.contest);
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: CreateContestResponse, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* backend.Contest contest = 1; */
+        if (message.contest)
+            Contest.internalBinaryWrite(message.contest, writer.tag(1, WireType.LengthDelimited).fork(), options).join();
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message backend.CreateContestResponse
+ */
+export const CreateContestResponse = new CreateContestResponse$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class GetContestRequest$Type extends MessageType<GetContestRequest> {
+    constructor() {
+        super("backend.GetContestRequest", [
+            { no: 1, name: "id", kind: "scalar", T: 5 /*ScalarType.INT32*/ }
+        ]);
+    }
+    create(value?: PartialMessage<GetContestRequest>): GetContestRequest {
+        const message = { id: 0 };
+        globalThis.Object.defineProperty(message, MESSAGE_TYPE, { enumerable: false, value: this });
+        if (value !== undefined)
+            reflectionMergePartial<GetContestRequest>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: GetContestRequest): GetContestRequest {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* int32 id */ 1:
+                    message.id = reader.int32();
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: GetContestRequest, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* int32 id = 1; */
+        if (message.id !== 0)
+            writer.tag(1, WireType.Varint).int32(message.id);
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message backend.GetContestRequest
+ */
+export const GetContestRequest = new GetContestRequest$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class GetContestResponse$Type extends MessageType<GetContestResponse> {
+    constructor() {
+        super("backend.GetContestResponse", [
+            { no: 1, name: "contest", kind: "message", T: () => Contest }
+        ]);
+    }
+    create(value?: PartialMessage<GetContestResponse>): GetContestResponse {
+        const message = {};
+        globalThis.Object.defineProperty(message, MESSAGE_TYPE, { enumerable: false, value: this });
+        if (value !== undefined)
+            reflectionMergePartial<GetContestResponse>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: GetContestResponse): GetContestResponse {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* backend.Contest contest */ 1:
+                    message.contest = Contest.internalBinaryRead(reader, reader.uint32(), options, message.contest);
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: GetContestResponse, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* backend.Contest contest = 1; */
+        if (message.contest)
+            Contest.internalBinaryWrite(message.contest, writer.tag(1, WireType.LengthDelimited).fork(), options).join();
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message backend.GetContestResponse
+ */
+export const GetContestResponse = new GetContestResponse$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class UpdateContestRequest$Type extends MessageType<UpdateContestRequest> {
+    constructor() {
+        super("backend.UpdateContestRequest", [
+            { no: 1, name: "id", kind: "scalar", T: 5 /*ScalarType.INT32*/ },
+            { no: 2, name: "title", kind: "scalar", opt: true, T: 9 /*ScalarType.STRING*/ },
+            { no: 4, name: "start_at", kind: "message", T: () => Timestamp },
+            { no: 5, name: "end_at", kind: "message", T: () => Timestamp },
+            { no: 6, name: "submit_limit", kind: "scalar", opt: true, T: 5 /*ScalarType.INT32*/ },
+            { no: 9, name: "auto", kind: "message", oneof: "tagSelection", T: () => TagSelectionLogicAuto },
+            { no: 10, name: "manual", kind: "message", oneof: "tagSelection", T: () => TagSelectionLogicManual }
+        ]);
+    }
+    create(value?: PartialMessage<UpdateContestRequest>): UpdateContestRequest {
+        const message = { id: 0, tagSelection: { oneofKind: undefined } };
+        globalThis.Object.defineProperty(message, MESSAGE_TYPE, { enumerable: false, value: this });
+        if (value !== undefined)
+            reflectionMergePartial<UpdateContestRequest>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: UpdateContestRequest): UpdateContestRequest {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* int32 id */ 1:
+                    message.id = reader.int32();
+                    break;
+                case /* optional string title */ 2:
+                    message.title = reader.string();
+                    break;
+                case /* optional google.protobuf.Timestamp start_at */ 4:
+                    message.startAt = Timestamp.internalBinaryRead(reader, reader.uint32(), options, message.startAt);
+                    break;
+                case /* optional google.protobuf.Timestamp end_at */ 5:
+                    message.endAt = Timestamp.internalBinaryRead(reader, reader.uint32(), options, message.endAt);
+                    break;
+                case /* optional int32 submit_limit */ 6:
+                    message.submitLimit = reader.int32();
+                    break;
+                case /* backend.TagSelectionLogicAuto auto */ 9:
+                    message.tagSelection = {
+                        oneofKind: "auto",
+                        auto: TagSelectionLogicAuto.internalBinaryRead(reader, reader.uint32(), options, (message.tagSelection as any).auto)
+                    };
+                    break;
+                case /* backend.TagSelectionLogicManual manual */ 10:
+                    message.tagSelection = {
+                        oneofKind: "manual",
+                        manual: TagSelectionLogicManual.internalBinaryRead(reader, reader.uint32(), options, (message.tagSelection as any).manual)
+                    };
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: UpdateContestRequest, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* int32 id = 1; */
+        if (message.id !== 0)
+            writer.tag(1, WireType.Varint).int32(message.id);
+        /* optional string title = 2; */
+        if (message.title !== undefined)
+            writer.tag(2, WireType.LengthDelimited).string(message.title);
+        /* optional google.protobuf.Timestamp start_at = 4; */
+        if (message.startAt)
+            Timestamp.internalBinaryWrite(message.startAt, writer.tag(4, WireType.LengthDelimited).fork(), options).join();
+        /* optional google.protobuf.Timestamp end_at = 5; */
+        if (message.endAt)
+            Timestamp.internalBinaryWrite(message.endAt, writer.tag(5, WireType.LengthDelimited).fork(), options).join();
+        /* optional int32 submit_limit = 6; */
+        if (message.submitLimit !== undefined)
+            writer.tag(6, WireType.Varint).int32(message.submitLimit);
+        /* backend.TagSelectionLogicAuto auto = 9; */
+        if (message.tagSelection.oneofKind === "auto")
+            TagSelectionLogicAuto.internalBinaryWrite(message.tagSelection.auto, writer.tag(9, WireType.LengthDelimited).fork(), options).join();
+        /* backend.TagSelectionLogicManual manual = 10; */
+        if (message.tagSelection.oneofKind === "manual")
+            TagSelectionLogicManual.internalBinaryWrite(message.tagSelection.manual, writer.tag(10, WireType.LengthDelimited).fork(), options).join();
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message backend.UpdateContestRequest
+ */
+export const UpdateContestRequest = new UpdateContestRequest$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class UpdateContestResponse$Type extends MessageType<UpdateContestResponse> {
+    constructor() {
+        super("backend.UpdateContestResponse", [
+            { no: 1, name: "contest", kind: "message", T: () => Contest }
+        ]);
+    }
+    create(value?: PartialMessage<UpdateContestResponse>): UpdateContestResponse {
+        const message = {};
+        globalThis.Object.defineProperty(message, MESSAGE_TYPE, { enumerable: false, value: this });
+        if (value !== undefined)
+            reflectionMergePartial<UpdateContestResponse>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: UpdateContestResponse): UpdateContestResponse {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* backend.Contest contest */ 1:
+                    message.contest = Contest.internalBinaryRead(reader, reader.uint32(), options, message.contest);
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: UpdateContestResponse, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* backend.Contest contest = 1; */
+        if (message.contest)
+            Contest.internalBinaryWrite(message.contest, writer.tag(1, WireType.LengthDelimited).fork(), options).join();
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message backend.UpdateContestResponse
+ */
+export const UpdateContestResponse = new UpdateContestResponse$Type();
 // @generated message type with reflection information, may provide speed optimized methods
 class GetRankingRequest$Type extends MessageType<GetRankingRequest> {
     constructor() {

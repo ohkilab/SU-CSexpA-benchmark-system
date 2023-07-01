@@ -19,26 +19,36 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	BackendService_GetRanking_FullMethodName   = "/backend.BackendService/GetRanking"
-	BackendService_PostSubmit_FullMethodName   = "/backend.BackendService/PostSubmit"
-	BackendService_GetSubmit_FullMethodName    = "/backend.BackendService/GetSubmit"
-	BackendService_ListSubmits_FullMethodName  = "/backend.BackendService/ListSubmits"
-	BackendService_PostLogin_FullMethodName    = "/backend.BackendService/PostLogin"
-	BackendService_ListContests_FullMethodName = "/backend.BackendService/ListContests"
-	BackendService_VerifyToken_FullMethodName  = "/backend.BackendService/VerifyToken"
+	BackendService_PostSubmit_FullMethodName    = "/backend.BackendService/PostSubmit"
+	BackendService_GetSubmit_FullMethodName     = "/backend.BackendService/GetSubmit"
+	BackendService_ListSubmits_FullMethodName   = "/backend.BackendService/ListSubmits"
+	BackendService_CreateContest_FullMethodName = "/backend.BackendService/CreateContest"
+	BackendService_ListContests_FullMethodName  = "/backend.BackendService/ListContests"
+	BackendService_GetContest_FullMethodName    = "/backend.BackendService/GetContest"
+	BackendService_UpdateContest_FullMethodName = "/backend.BackendService/UpdateContest"
+	BackendService_GetRanking_FullMethodName    = "/backend.BackendService/GetRanking"
+	BackendService_VerifyToken_FullMethodName   = "/backend.BackendService/VerifyToken"
+	BackendService_PostLogin_FullMethodName     = "/backend.BackendService/PostLogin"
 )
 
 // BackendServiceClient is the client API for BackendService service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type BackendServiceClient interface {
-	GetRanking(ctx context.Context, in *GetRankingRequest, opts ...grpc.CallOption) (*GetRankingResponse, error)
+	// submit
 	PostSubmit(ctx context.Context, in *PostSubmitRequest, opts ...grpc.CallOption) (*PostSubmitResponse, error)
 	GetSubmit(ctx context.Context, in *GetSubmitRequest, opts ...grpc.CallOption) (BackendService_GetSubmitClient, error)
 	ListSubmits(ctx context.Context, in *ListSubmitsRequest, opts ...grpc.CallOption) (*ListSubmitsResponse, error)
-	PostLogin(ctx context.Context, in *PostLoginRequest, opts ...grpc.CallOption) (*PostLoginResponse, error)
+	// contest
+	CreateContest(ctx context.Context, in *CreateContestRequest, opts ...grpc.CallOption) (*CreateContestResponse, error)
 	ListContests(ctx context.Context, in *ListContestsRequest, opts ...grpc.CallOption) (*ListContestsResponse, error)
+	GetContest(ctx context.Context, in *GetContestRequest, opts ...grpc.CallOption) (*GetContestResponse, error)
+	UpdateContest(ctx context.Context, in *UpdateContestRequest, opts ...grpc.CallOption) (*UpdateContestResponse, error)
+	// ranking
+	GetRanking(ctx context.Context, in *GetRankingRequest, opts ...grpc.CallOption) (*GetRankingResponse, error)
+	// auth
 	VerifyToken(ctx context.Context, in *VerifyTokenRequest, opts ...grpc.CallOption) (*VerifyTokenResponse, error)
+	PostLogin(ctx context.Context, in *PostLoginRequest, opts ...grpc.CallOption) (*PostLoginResponse, error)
 }
 
 type backendServiceClient struct {
@@ -47,15 +57,6 @@ type backendServiceClient struct {
 
 func NewBackendServiceClient(cc grpc.ClientConnInterface) BackendServiceClient {
 	return &backendServiceClient{cc}
-}
-
-func (c *backendServiceClient) GetRanking(ctx context.Context, in *GetRankingRequest, opts ...grpc.CallOption) (*GetRankingResponse, error) {
-	out := new(GetRankingResponse)
-	err := c.cc.Invoke(ctx, BackendService_GetRanking_FullMethodName, in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
 }
 
 func (c *backendServiceClient) PostSubmit(ctx context.Context, in *PostSubmitRequest, opts ...grpc.CallOption) (*PostSubmitResponse, error) {
@@ -108,9 +109,9 @@ func (c *backendServiceClient) ListSubmits(ctx context.Context, in *ListSubmitsR
 	return out, nil
 }
 
-func (c *backendServiceClient) PostLogin(ctx context.Context, in *PostLoginRequest, opts ...grpc.CallOption) (*PostLoginResponse, error) {
-	out := new(PostLoginResponse)
-	err := c.cc.Invoke(ctx, BackendService_PostLogin_FullMethodName, in, out, opts...)
+func (c *backendServiceClient) CreateContest(ctx context.Context, in *CreateContestRequest, opts ...grpc.CallOption) (*CreateContestResponse, error) {
+	out := new(CreateContestResponse)
+	err := c.cc.Invoke(ctx, BackendService_CreateContest_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -126,9 +127,45 @@ func (c *backendServiceClient) ListContests(ctx context.Context, in *ListContest
 	return out, nil
 }
 
+func (c *backendServiceClient) GetContest(ctx context.Context, in *GetContestRequest, opts ...grpc.CallOption) (*GetContestResponse, error) {
+	out := new(GetContestResponse)
+	err := c.cc.Invoke(ctx, BackendService_GetContest_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *backendServiceClient) UpdateContest(ctx context.Context, in *UpdateContestRequest, opts ...grpc.CallOption) (*UpdateContestResponse, error) {
+	out := new(UpdateContestResponse)
+	err := c.cc.Invoke(ctx, BackendService_UpdateContest_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *backendServiceClient) GetRanking(ctx context.Context, in *GetRankingRequest, opts ...grpc.CallOption) (*GetRankingResponse, error) {
+	out := new(GetRankingResponse)
+	err := c.cc.Invoke(ctx, BackendService_GetRanking_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *backendServiceClient) VerifyToken(ctx context.Context, in *VerifyTokenRequest, opts ...grpc.CallOption) (*VerifyTokenResponse, error) {
 	out := new(VerifyTokenResponse)
 	err := c.cc.Invoke(ctx, BackendService_VerifyToken_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *backendServiceClient) PostLogin(ctx context.Context, in *PostLoginRequest, opts ...grpc.CallOption) (*PostLoginResponse, error) {
+	out := new(PostLoginResponse)
+	err := c.cc.Invoke(ctx, BackendService_PostLogin_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -139,13 +176,20 @@ func (c *backendServiceClient) VerifyToken(ctx context.Context, in *VerifyTokenR
 // All implementations must embed UnimplementedBackendServiceServer
 // for forward compatibility
 type BackendServiceServer interface {
-	GetRanking(context.Context, *GetRankingRequest) (*GetRankingResponse, error)
+	// submit
 	PostSubmit(context.Context, *PostSubmitRequest) (*PostSubmitResponse, error)
 	GetSubmit(*GetSubmitRequest, BackendService_GetSubmitServer) error
 	ListSubmits(context.Context, *ListSubmitsRequest) (*ListSubmitsResponse, error)
-	PostLogin(context.Context, *PostLoginRequest) (*PostLoginResponse, error)
+	// contest
+	CreateContest(context.Context, *CreateContestRequest) (*CreateContestResponse, error)
 	ListContests(context.Context, *ListContestsRequest) (*ListContestsResponse, error)
+	GetContest(context.Context, *GetContestRequest) (*GetContestResponse, error)
+	UpdateContest(context.Context, *UpdateContestRequest) (*UpdateContestResponse, error)
+	// ranking
+	GetRanking(context.Context, *GetRankingRequest) (*GetRankingResponse, error)
+	// auth
 	VerifyToken(context.Context, *VerifyTokenRequest) (*VerifyTokenResponse, error)
+	PostLogin(context.Context, *PostLoginRequest) (*PostLoginResponse, error)
 	mustEmbedUnimplementedBackendServiceServer()
 }
 
@@ -153,9 +197,6 @@ type BackendServiceServer interface {
 type UnimplementedBackendServiceServer struct {
 }
 
-func (UnimplementedBackendServiceServer) GetRanking(context.Context, *GetRankingRequest) (*GetRankingResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetRanking not implemented")
-}
 func (UnimplementedBackendServiceServer) PostSubmit(context.Context, *PostSubmitRequest) (*PostSubmitResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method PostSubmit not implemented")
 }
@@ -165,14 +206,26 @@ func (UnimplementedBackendServiceServer) GetSubmit(*GetSubmitRequest, BackendSer
 func (UnimplementedBackendServiceServer) ListSubmits(context.Context, *ListSubmitsRequest) (*ListSubmitsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListSubmits not implemented")
 }
-func (UnimplementedBackendServiceServer) PostLogin(context.Context, *PostLoginRequest) (*PostLoginResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method PostLogin not implemented")
+func (UnimplementedBackendServiceServer) CreateContest(context.Context, *CreateContestRequest) (*CreateContestResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateContest not implemented")
 }
 func (UnimplementedBackendServiceServer) ListContests(context.Context, *ListContestsRequest) (*ListContestsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListContests not implemented")
 }
+func (UnimplementedBackendServiceServer) GetContest(context.Context, *GetContestRequest) (*GetContestResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetContest not implemented")
+}
+func (UnimplementedBackendServiceServer) UpdateContest(context.Context, *UpdateContestRequest) (*UpdateContestResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateContest not implemented")
+}
+func (UnimplementedBackendServiceServer) GetRanking(context.Context, *GetRankingRequest) (*GetRankingResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetRanking not implemented")
+}
 func (UnimplementedBackendServiceServer) VerifyToken(context.Context, *VerifyTokenRequest) (*VerifyTokenResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method VerifyToken not implemented")
+}
+func (UnimplementedBackendServiceServer) PostLogin(context.Context, *PostLoginRequest) (*PostLoginResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method PostLogin not implemented")
 }
 func (UnimplementedBackendServiceServer) mustEmbedUnimplementedBackendServiceServer() {}
 
@@ -185,24 +238,6 @@ type UnsafeBackendServiceServer interface {
 
 func RegisterBackendServiceServer(s grpc.ServiceRegistrar, srv BackendServiceServer) {
 	s.RegisterService(&BackendService_ServiceDesc, srv)
-}
-
-func _BackendService_GetRanking_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetRankingRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(BackendServiceServer).GetRanking(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: BackendService_GetRanking_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(BackendServiceServer).GetRanking(ctx, req.(*GetRankingRequest))
-	}
-	return interceptor(ctx, in, info, handler)
 }
 
 func _BackendService_PostSubmit_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -262,20 +297,20 @@ func _BackendService_ListSubmits_Handler(srv interface{}, ctx context.Context, d
 	return interceptor(ctx, in, info, handler)
 }
 
-func _BackendService_PostLogin_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(PostLoginRequest)
+func _BackendService_CreateContest_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateContestRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(BackendServiceServer).PostLogin(ctx, in)
+		return srv.(BackendServiceServer).CreateContest(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: BackendService_PostLogin_FullMethodName,
+		FullMethod: BackendService_CreateContest_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(BackendServiceServer).PostLogin(ctx, req.(*PostLoginRequest))
+		return srv.(BackendServiceServer).CreateContest(ctx, req.(*CreateContestRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -298,6 +333,60 @@ func _BackendService_ListContests_Handler(srv interface{}, ctx context.Context, 
 	return interceptor(ctx, in, info, handler)
 }
 
+func _BackendService_GetContest_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetContestRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BackendServiceServer).GetContest(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: BackendService_GetContest_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BackendServiceServer).GetContest(ctx, req.(*GetContestRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _BackendService_UpdateContest_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateContestRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BackendServiceServer).UpdateContest(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: BackendService_UpdateContest_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BackendServiceServer).UpdateContest(ctx, req.(*UpdateContestRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _BackendService_GetRanking_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetRankingRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BackendServiceServer).GetRanking(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: BackendService_GetRanking_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BackendServiceServer).GetRanking(ctx, req.(*GetRankingRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _BackendService_VerifyToken_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(VerifyTokenRequest)
 	if err := dec(in); err != nil {
@@ -316,6 +405,24 @@ func _BackendService_VerifyToken_Handler(srv interface{}, ctx context.Context, d
 	return interceptor(ctx, in, info, handler)
 }
 
+func _BackendService_PostLogin_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(PostLoginRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BackendServiceServer).PostLogin(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: BackendService_PostLogin_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BackendServiceServer).PostLogin(ctx, req.(*PostLoginRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // BackendService_ServiceDesc is the grpc.ServiceDesc for BackendService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -323,10 +430,6 @@ var BackendService_ServiceDesc = grpc.ServiceDesc{
 	ServiceName: "backend.BackendService",
 	HandlerType: (*BackendServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
-		{
-			MethodName: "GetRanking",
-			Handler:    _BackendService_GetRanking_Handler,
-		},
 		{
 			MethodName: "PostSubmit",
 			Handler:    _BackendService_PostSubmit_Handler,
@@ -336,16 +439,32 @@ var BackendService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _BackendService_ListSubmits_Handler,
 		},
 		{
-			MethodName: "PostLogin",
-			Handler:    _BackendService_PostLogin_Handler,
+			MethodName: "CreateContest",
+			Handler:    _BackendService_CreateContest_Handler,
 		},
 		{
 			MethodName: "ListContests",
 			Handler:    _BackendService_ListContests_Handler,
 		},
 		{
+			MethodName: "GetContest",
+			Handler:    _BackendService_GetContest_Handler,
+		},
+		{
+			MethodName: "UpdateContest",
+			Handler:    _BackendService_UpdateContest_Handler,
+		},
+		{
+			MethodName: "GetRanking",
+			Handler:    _BackendService_GetRanking_Handler,
+		},
+		{
 			MethodName: "VerifyToken",
 			Handler:    _BackendService_VerifyToken_Handler,
+		},
+		{
+			MethodName: "PostLogin",
+			Handler:    _BackendService_PostLogin_Handler,
 		},
 	},
 	Streams: []grpc.StreamDesc{

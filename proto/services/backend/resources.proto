@@ -11,6 +11,26 @@ message Contest {
   google.protobuf.Timestamp end_at = 5;
   int32 submit_limit = 6;
   string slug = 8;
+  TagSelectionLogicType tag_selection_logic = 9;
+}
+
+message TagSelectionLogicManual {
+  TagSelectionLogicType type = 1;
+  repeated Tags tags_list = 2; // tags_list[i] .. used if the attempt count is i+1
+}
+
+message TagSelectionLogicAuto {
+  TagSelectionLogicType type = 1;
+  Tags tags = 2;
+}
+
+message Tags {
+  repeated string tags = 1;
+}
+
+enum TagSelectionLogicType {
+  RANDOM = 0;
+  AUTO = 1;
 }
 
 message Group {

@@ -5,13 +5,24 @@ import "services/backend/messages.proto";
 package backend;
 
 service BackendService {
-  rpc GetRanking(GetRankingRequest) returns (GetRankingResponse);
+  // submit
   rpc PostSubmit(PostSubmitRequest) returns (PostSubmitResponse);
   rpc GetSubmit(GetSubmitRequest) returns (stream GetSubmitResponse);
   rpc ListSubmits(ListSubmitsRequest) returns (ListSubmitsResponse);
-  rpc PostLogin(PostLoginRequest) returns (PostLoginResponse);
+  
+
+  // contest
+  rpc CreateContest(CreateContestRequest) returns (CreateContestResponse);
   rpc ListContests(ListContestsRequest) returns (ListContestsResponse);
+  rpc GetContest(GetContestRequest) returns (GetContestResponse);
+  rpc UpdateContest(UpdateContestRequest) returns (UpdateContestResponse);
+
+  // ranking
+  rpc GetRanking(GetRankingRequest) returns (GetRankingResponse);
+
+  // auth
   rpc VerifyToken(VerifyTokenRequest) returns (VerifyTokenResponse);
+  rpc PostLogin(PostLoginRequest) returns (PostLoginResponse);
 }
 
 service HealthcheckService {

@@ -40,6 +40,43 @@ message ListSubmitsResponse {
   repeated Submit submits = 1; // NOTE: task_results will be empty
 }
 
+message CreateContestRequest {
+  string title = 2;
+  google.protobuf.Timestamp start_at = 4;
+  google.protobuf.Timestamp end_at = 5;
+  int32 submit_limit = 6;
+  string slug = 8;
+  oneof tag_selection {
+    TagSelectionLogicAuto auto = 9;
+    TagSelectionLogicManual manual = 10;
+  }
+}
+
+message CreateContestResponse {
+  Contest contest = 1;
+}
+
+message GetContestRequest {
+  int32 id = 1;
+}
+
+message GetContestResponse {
+  Contest contest = 1;
+}
+
+// NOTE: cannot change slug and tag selection logic
+message UpdateContestRequest {
+  int32 id = 1;
+  optional string title = 2;
+  optional google.protobuf.Timestamp start_at = 4;
+  optional google.protobuf.Timestamp end_at = 5;
+  optional int32 submit_limit = 6;
+}
+
+message UpdateContestResponse {
+  Contest contest = 1;
+}
+
 message GetRankingRequest {
   int32 contest_id = 1;
   bool contain_guest = 2; // if it is true, return ranking which includes guests
