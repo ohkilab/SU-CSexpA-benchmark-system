@@ -12,6 +12,7 @@ import (
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/repository/ent"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/repository/ent/contest"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/repository/ent/group"
+	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/repository/ent/predicate"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/repository/ent/submit"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/repository/tag"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/worker"
@@ -197,9 +198,17 @@ func toPbSubmit(submit *ent.Submit) *backendpb.Submit {
 
 func (i *Interactor) ListSubmits(ctx context.Context, req *backendpb.ListSubmitsRequest) (*backendpb.ListSubmitsResponse, error) {
 	q := i.entClient.Submit.Query().WithGroups().Where(submit.HasContestsWith(contest.ID(int(req.ContestId))))
+	groupPredicates := []predicate.Group{}
 	if req.GroupName != nil {
-		q.Where(submit.HasGroupsWith(group.NameContains(*req.GroupName)))
+		groupPredicates = append(groupPredicates, group.NameContains(*req.GroupName))
 	}
+	groupPredicates = append(groupPredicates, group.RoleEQ(group.RoleContestant))
+	if req.ContainsGuest != nil {
+		if *req.ContainsGuest {
+			groupPredicates = append(groupPredicates, group.RoleEQ(group.RoleGuest))
+		}
+	}
+	q.Where(submit.HasGroupsWith(groupPredicates...))
 	if req.Status != nil {
 		q.Where(submit.StatusEQ(req.Status.String()))
 	}
