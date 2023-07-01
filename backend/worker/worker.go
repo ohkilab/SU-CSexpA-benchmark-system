@@ -127,10 +127,14 @@ func (w *worker) runBenchmarkTask(task *Task) error {
 			break
 		}
 		if err != nil {
-			if code := status.Code(err); code != codes.DeadlineExceeded && code != codes.Canceled {
+			code := status.Code(err)
+			if code == codes.FailedPrecondition {
+				pbStatus = backendpb.Status_CONNECTION_FAILED
+			} else if code != codes.DeadlineExceeded && code != codes.Canceled {
 				w.logger.Error("failed to receive benchmark response", "error", err)
 				return err
 			}
+			break
 		}
 		w.logger.Info("received benchmark response", slog.Any("resp", resp))
 

@@ -1,6 +1,7 @@
 package service
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"log"
@@ -25,11 +26,21 @@ func (s *service) Execute(req *pb.ExecuteRequest, stream pb.BenchmarkService_Exe
 	if len(req.GroupId) > 100 {
 		return status.Error(codes.InvalidArgument, "groupID must be 100 or less")
 	}
+	if len(req.Tasks) == 0 {
+		return status.Error(codes.InvalidArgument, "tasks must not be empty")
+	}
 
 	log.Println("Start executing: ", req)
 	validator, ok := s.validatorMap[req.Validator.String()]
 	if !ok {
 		return status.Error(codes.InvalidArgument, fmt.Sprintf("the validator is not supported(slug: %s)", req.Validator.String()))
+	}
+
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	defer cancel()
+	if err := s.client.CheckConnection(ctx, req.Tasks[0].Request.Url); err != nil {
+		log.Println(err)
+		return status.Error(codes.FailedPrecondition, "failed to connect with the server")
 	}
 
 	mu := &sync.Mutex{}

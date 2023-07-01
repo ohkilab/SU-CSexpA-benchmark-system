@@ -29,6 +29,19 @@ func NewClient() *Client {
 	}
 }
 
+func (c *Client) CheckConnection(ctx context.Context, url string) error {
+	req, _ := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
+	resp, err := c.httpClient.Do(req)
+	if err != nil {
+		return err
+	}
+	defer func() {
+		_, _ = io.Copy(io.Discard, resp.Body)
+		resp.Body.Close()
+	}()
+	return err
+}
+
 func (c *Client) Run(ctx context.Context, url string, options ...optionFunc) ([]*HttpResult, error) {
 	option := &option{
 		threadNum:   5,
