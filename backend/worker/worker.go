@@ -127,18 +127,10 @@ func (w *worker) runBenchmarkTask(task *Task) error {
 			break
 		}
 		if err != nil {
-			if code := status.Code(err); code == codes.DeadlineExceeded || code == codes.Canceled {
-				now := timejst.Now()
-				_, err := w.entClient.Submit.
-					UpdateOneID(task.SubmitID).
-					SetCompletedAt(now).
-					SetUpdatedAt(now).
-					SetStatus(backendpb.Status_TIMEOUT.String()).
-					Save(context.Background())
+			if code := status.Code(err); code != codes.DeadlineExceeded && code != codes.Canceled {
+				w.logger.Error("failed to receive benchmark response", "error", err)
 				return err
 			}
-			w.logger.Error("failed to receive benchmark response", err)
-			return err
 		}
 		w.logger.Info("received benchmark response", slog.Any("resp", resp))
 
