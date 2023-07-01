@@ -4,15 +4,19 @@ package tag
 // 現状はローカルに置いているので運用があまりにも大変
 
 type mockRepository struct {
-	getRandomTags func(contestSlug string, num int) ([]string, error)
-	getTags       func(contestSlug string, count int) ([]string, error)
+	getRandomTags   func(contestSlug string, num int) ([]string, error)
+	getTags         func(contestSlug string, count int) ([]string, error)
+	createRandomTag func(contestSlug string, tags []string) error
+	createTags      func(contestSlug string, tagsList [][]string) error
 }
 
 func MockRepository(
 	getRandomTags func(contestSlug string, num int) ([]string, error),
 	getTags func(contestSlug string, count int) ([]string, error),
+	createRandomTag func(contestSlug string, tags []string) error,
+	createTags func(contestSlug string, tagsList [][]string) error,
 ) Repository {
-	return &mockRepository{getRandomTags, getTags}
+	return &mockRepository{getRandomTags, getTags, createRandomTag, createTags}
 }
 
 func (r *mockRepository) GetRandomTags(contestSlug string, num int) ([]string, error) {
@@ -27,4 +31,18 @@ func (r *mockRepository) GetTags(contestSlug string, count int) ([]string, error
 		return r.getTags(contestSlug, count)
 	}
 	return []string{}, nil
+}
+
+func (r *mockRepository) CreateRandomTag(contestSlug string, tags []string) error {
+	if r.createRandomTag != nil {
+		return r.createRandomTag(contestSlug, tags)
+	}
+	return nil
+}
+
+func (r *mockRepository) CreateTags(contestSlug string, tagsList [][]string) error {
+	if r.createTags != nil {
+		return r.createTags(contestSlug, tagsList)
+	}
+	return nil
 }

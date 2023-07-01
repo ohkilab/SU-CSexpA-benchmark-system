@@ -33,7 +33,7 @@ func Test_PostSubmit(t *testing.T) {
 	mockRepository := tag.MockRepository(
 		func(contestSlug string, num int) ([]string, error) {
 			return []string{"a", "b", "c"}, nil
-		}, nil)
+		}, nil, nil, nil)
 	conn, closeFunc := utils.LaunchGrpcServer(t, grpc.WithJwtSecret("secret"), grpc.WithEntClient(entClient), grpc.WithWorker(worker), grpc.WithTagRepository(mockRepository))
 	defer closeFunc()
 	client := pb.NewBackendServiceClient(conn)
