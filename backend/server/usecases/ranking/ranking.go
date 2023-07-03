@@ -2,6 +2,7 @@ package ranking
 
 import (
 	"context"
+	"time"
 
 	"entgo.io/ent/dialect/sql"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/repository/ent"
@@ -36,24 +37,22 @@ func (i *RankingInteractor) GetRanking(ctx context.Context, containGuest bool, c
 		return nil, err
 	}
 	slices.SortFunc(groups, func(left, right *ent.Group) bool {
-		leftScore := 0
-		if len(left.Edges.Submits) > 0 {
-			leftScore = left.Edges.Submits[0].Score
-		}
-		rightScore := 0
-		if len(right.Edges.Submits) > 0 {
-			rightScore = right.Edges.Submits[0].Score
-		}
-		return leftScore > rightScore
+		return compareGroup(left, right) == -1
 	})
 
+	rank := int32(1)
 	pbGroups := lo.Map(groups, func(group *ent.Group, i int) *pb.GetRankingResponse_Record {
 		var score *int32
 		if len(group.Edges.Submits) > 0 {
 			score = lo.ToPtr(int32(group.Edges.Submits[0].Score))
 		}
+		if i-1 >= 0 {
+			if compareGroup(groups[i-1], group) != 0 {
+				rank++
+			}
+		}
 		return &pb.GetRankingResponse_Record{
-			Rank: int32(i + 1),
+			Rank: rank,
 			Group: &pb.Group{
 				Id:   group.Name,
 				Role: pb.Role(pb.Role_value[group.Role.String()]),
@@ -62,4 +61,26 @@ func (i *RankingInteractor) GetRanking(ctx context.Context, containGuest bool, c
 		}
 	})
 	return pbGroups, nil
+}
+
+func compareGroup(left, right *ent.Group) int {
+	leftScore := 0
+	var leftDate time.Time
+	if len(left.Edges.Submits) > 0 {
+		leftScore = left.Edges.Submits[0].Score
+		leftDate = left.Edges.Submits[0].SubmitedAt
+	}
+	rightScore := 0
+	var rightDate time.Time
+	if len(right.Edges.Submits) > 0 {
+		rightScore = right.Edges.Submits[0].Score
+		rightDate = right.Edges.Submits[0].SubmitedAt
+	}
+	if leftScore > rightScore {
+		return -1
+	} else if leftScore == rightScore {
+		return leftDate.Compare(rightDate)
+	} else {
+		return 1
+	}
 }
