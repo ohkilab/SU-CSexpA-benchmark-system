@@ -61,7 +61,6 @@ func (c *Client) Run(ctx context.Context, url string, options ...optionFunc) ([]
 	for range make([]struct{}, option.threadNum) {
 		eg.Go(func() error {
 			for {
-				log.Println("check", attemptCount)
 				select {
 				case <-ctx.Done():
 					return nil
