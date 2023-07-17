@@ -4,6 +4,7 @@ import (
 	"entgo.io/ent"
 	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
+	"entgo.io/ent/schema/index"
 )
 
 // Contest holds the schema definition for the Contest entity.
@@ -33,5 +34,11 @@ func (Contest) Fields() []ent.Field {
 func (Contest) Edges() []ent.Edge {
 	return []ent.Edge{
 		edge.To("submits", Submit.Type),
+	}
+}
+
+func (Contest) Indexes() []ent.Index {
+	return []ent.Index{
+		index.Fields("slug").Unique(),
 	}
 }

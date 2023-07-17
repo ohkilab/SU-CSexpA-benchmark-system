@@ -56,20 +56,20 @@ func Test_PostSubmit(t *testing.T) {
 
 	// success
 	req := &pb.PostSubmitRequest{
-		Url:       "http://10.255.255.255",
-		ContestId: int32(contest.ID),
+		Url:         "http://10.255.255.255",
+		ContestSlug: contest.Slug,
 	}
 	resp, err := client.PostSubmit(ctx, req)
 	require.NoError(t, err)
 	assert.NotEmpty(t, resp.Id)
 	assert.Equal(t, req.Url, resp.Url)
-	assert.Equal(t, req.ContestId, resp.ContestId)
+	assert.Equal(t, req.ContestSlug, resp.ContestSlug)
 	assert.NotEmpty(t, resp.SubmitedAt)
 
 	// failed
 	req = &pb.PostSubmitRequest{
-		Url:       "http://10.255.255.255",
-		ContestId: 0,
+		Url:         "http://10.255.255.255",
+		ContestSlug: "",
 	}
 	_, err = client.PostSubmit(ctx, req)
 	assert.Error(t, err)

@@ -42,7 +42,7 @@ func Test_GetRanking(t *testing.T) {
 	ctx = metadata.NewOutgoingContext(ctx, meta)
 
 	// not contain guest
-	resp, err := client.GetRanking(ctx, &pb.GetRankingRequest{ContestId: int32(contest.ID)})
+	resp, err := client.GetRanking(ctx, &pb.GetRankingRequest{ContestSlug: contest.Slug})
 	require.NoError(t, err)
 	require.Equal(t, 3, len(resp.Records))
 	assert.Equal(t, int32(1), resp.Records[0].Rank)
@@ -56,7 +56,7 @@ func Test_GetRanking(t *testing.T) {
 	assert.Equal(t, int32(a03Submit.Score), *resp.Records[2].Score)
 
 	// contain guest
-	resp, err = client.GetRanking(ctx, &pb.GetRankingRequest{ContestId: int32(contest.ID), ContainGuest: true})
+	resp, err = client.GetRanking(ctx, &pb.GetRankingRequest{ContestSlug: contest.Slug, ContainGuest: true})
 	require.NoError(t, err)
 	require.Equal(t, 4, len(resp.Records))
 	assert.Equal(t, int32(1), resp.Records[0].Rank)

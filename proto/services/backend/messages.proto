@@ -60,7 +60,7 @@ message CreateContestResponse {
 }
 
 message GetContestRequest {
-  int32 id = 1;
+  string contest_slug = 1;
 }
 
 message GetContestResponse {
@@ -69,7 +69,7 @@ message GetContestResponse {
 
 // NOTE: cannot change slug and tag selection logic
 message UpdateContestRequest {
-  int32 id = 1;
+  string contest_slug = 1;
   optional string title = 2;
   optional google.protobuf.Timestamp start_at = 4;
   optional google.protobuf.Timestamp end_at = 5;

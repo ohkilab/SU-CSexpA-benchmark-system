@@ -24,9 +24,9 @@ func NewInteractor(entClient *ent.Client, logger *slog.Logger) *RankingInteracto
 	return &RankingInteractor{entClient, logger}
 }
 
-func (i *RankingInteractor) GetRanking(ctx context.Context, containGuest bool, contestID int) ([]*pb.GetRankingResponse_Record, error) {
+func (i *RankingInteractor) GetRanking(ctx context.Context, containGuest bool, contestSlug string) ([]*pb.GetRankingResponse_Record, error) {
 	query := i.entClient.Group.Query().WithSubmits(func(sq *ent.SubmitQuery) {
-		sq.Where(submit.HasContestsWith(contest.ID(contestID))).Order(submit.ByScore(sql.OrderDesc()))
+		sq.Where(submit.HasContestsWith(contest.Slug(contestSlug))).Order(submit.ByScore(sql.OrderDesc()))
 	})
 	if !containGuest {
 		query.Where(group.RoleEQ(group.RoleContestant))

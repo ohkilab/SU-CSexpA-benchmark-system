@@ -188,9 +188,9 @@ export interface CreateContestResponse {
  */
 export interface GetContestRequest {
     /**
-     * @generated from protobuf field: int32 id = 1;
+     * @generated from protobuf field: string contest_slug = 1;
      */
-    id: number;
+    contestSlug: string;
 }
 /**
  * @generated from protobuf message backend.GetContestResponse
@@ -208,9 +208,9 @@ export interface GetContestResponse {
  */
 export interface UpdateContestRequest {
     /**
-     * @generated from protobuf field: int32 id = 1;
+     * @generated from protobuf field: string contest_slug = 1;
      */
-    id: number;
+    contestSlug: string;
     /**
      * @generated from protobuf field: optional string title = 2;
      */
@@ -940,11 +940,11 @@ export const CreateContestResponse = new CreateContestResponse$Type();
 class GetContestRequest$Type extends MessageType<GetContestRequest> {
     constructor() {
         super("backend.GetContestRequest", [
-            { no: 1, name: "id", kind: "scalar", T: 5 /*ScalarType.INT32*/ }
+            { no: 1, name: "contest_slug", kind: "scalar", T: 9 /*ScalarType.STRING*/ }
         ]);
     }
     create(value?: PartialMessage<GetContestRequest>): GetContestRequest {
-        const message = { id: 0 };
+        const message = { contestSlug: "" };
         globalThis.Object.defineProperty(message, MESSAGE_TYPE, { enumerable: false, value: this });
         if (value !== undefined)
             reflectionMergePartial<GetContestRequest>(this, message, value);
@@ -955,8 +955,8 @@ class GetContestRequest$Type extends MessageType<GetContestRequest> {
         while (reader.pos < end) {
             let [fieldNo, wireType] = reader.tag();
             switch (fieldNo) {
-                case /* int32 id */ 1:
-                    message.id = reader.int32();
+                case /* string contest_slug */ 1:
+                    message.contestSlug = reader.string();
                     break;
                 default:
                     let u = options.readUnknownField;
@@ -970,9 +970,9 @@ class GetContestRequest$Type extends MessageType<GetContestRequest> {
         return message;
     }
     internalBinaryWrite(message: GetContestRequest, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
-        /* int32 id = 1; */
-        if (message.id !== 0)
-            writer.tag(1, WireType.Varint).int32(message.id);
+        /* string contest_slug = 1; */
+        if (message.contestSlug !== "")
+            writer.tag(1, WireType.LengthDelimited).string(message.contestSlug);
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
@@ -1034,7 +1034,7 @@ export const GetContestResponse = new GetContestResponse$Type();
 class UpdateContestRequest$Type extends MessageType<UpdateContestRequest> {
     constructor() {
         super("backend.UpdateContestRequest", [
-            { no: 1, name: "id", kind: "scalar", T: 5 /*ScalarType.INT32*/ },
+            { no: 1, name: "contest_slug", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
             { no: 2, name: "title", kind: "scalar", opt: true, T: 9 /*ScalarType.STRING*/ },
             { no: 4, name: "start_at", kind: "message", T: () => Timestamp },
             { no: 5, name: "end_at", kind: "message", T: () => Timestamp },
@@ -1043,7 +1043,7 @@ class UpdateContestRequest$Type extends MessageType<UpdateContestRequest> {
         ]);
     }
     create(value?: PartialMessage<UpdateContestRequest>): UpdateContestRequest {
-        const message = { id: 0 };
+        const message = { contestSlug: "" };
         globalThis.Object.defineProperty(message, MESSAGE_TYPE, { enumerable: false, value: this });
         if (value !== undefined)
             reflectionMergePartial<UpdateContestRequest>(this, message, value);
@@ -1054,8 +1054,8 @@ class UpdateContestRequest$Type extends MessageType<UpdateContestRequest> {
         while (reader.pos < end) {
             let [fieldNo, wireType] = reader.tag();
             switch (fieldNo) {
-                case /* int32 id */ 1:
-                    message.id = reader.int32();
+                case /* string contest_slug */ 1:
+                    message.contestSlug = reader.string();
                     break;
                 case /* optional string title */ 2:
                     message.title = reader.string();
@@ -1084,9 +1084,9 @@ class UpdateContestRequest$Type extends MessageType<UpdateContestRequest> {
         return message;
     }
     internalBinaryWrite(message: UpdateContestRequest, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
-        /* int32 id = 1; */
-        if (message.id !== 0)
-            writer.tag(1, WireType.Varint).int32(message.id);
+        /* string contest_slug = 1; */
+        if (message.contestSlug !== "")
+            writer.tag(1, WireType.LengthDelimited).string(message.contestSlug);
         /* optional string title = 2; */
         if (message.title !== undefined)
             writer.tag(2, WireType.LengthDelimited).string(message.title);

@@ -5,6 +5,7 @@ import (
 
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/core/timejst"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/repository/ent"
+	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/repository/ent/contest"
 	pkgcontest "github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/repository/ent/contest"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/repository/tag"
 	pb "github.com/ohkilab/SU-CSexpA-benchmark-system/proto-gen/go/services/backend"
@@ -39,7 +40,7 @@ func (i *Interactor) ListContests(ctx context.Context, req *pb.ListContestsReque
 }
 
 func (i *Interactor) GetContest(ctx context.Context, req *pb.GetContestRequest) (*pb.GetContestResponse, error) {
-	contest, err := i.entClient.Contest.Get(ctx, int(req.Id))
+	contest, err := i.entClient.Contest.Query().Where(contest.Slug(req.ContestSlug)).Only(ctx)
 	if err != nil {
 		i.logger.Error("failed to fetch contest", err)
 		return nil, status.Error(codes.Internal, "failed to fetch contest")
@@ -91,7 +92,7 @@ func (i *Interactor) CreateContest(ctx context.Context, req *pb.CreateContestReq
 }
 
 func (i *Interactor) UpdateContest(ctx context.Context, req *pb.UpdateContestRequest) (*pb.UpdateContestResponse, error) {
-	contest, err := i.entClient.Contest.Get(ctx, int(req.Id))
+	contest, err := i.entClient.Contest.Query().Where(contest.Slug(req.ContestSlug)).Only(ctx)
 	if err != nil {
 		i.logger.Error("failed to fetch contest", err)
 		return nil, status.Error(codes.Internal, "failed to fetch contest")
