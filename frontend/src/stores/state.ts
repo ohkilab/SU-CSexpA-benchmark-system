@@ -17,7 +17,8 @@ export interface IState {
   result: number;
   debug: boolean;
   devBaseUrl: string;
-  submits: Submit[]
+  submits: Submit[];
+  contestSlug: string;
 }
 
 export const useStateStore = defineStore<"state", IState>("state", {
@@ -35,6 +36,7 @@ export const useStateStore = defineStore<"state", IState>("state", {
     debug: false,
     devBaseUrl: "http://localhost:8080",
     submits: [],
+    contestSlug: '2023-qual'
   }),
   persist: true,
 });

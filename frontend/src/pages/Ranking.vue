@@ -19,13 +19,13 @@ const hasSubmits: Ref<boolean> = ref(false)
 onMounted(() => {
   let opt = { meta: { 'authorization': 'Bearer ' + state.token } }
   const listSubmitsRequest: ListSubmitsRequest = {
-    contestSlug: "test-contest", // TODO: fix
+    contestSlug: state.contestSlug,
     // groupName: 'a01',
     // status: Status.VALIDATION_ERROR
   }
 
   backend.getRanking({
-    contestSlug: "test-contest", // TODO: fix
+    contestSlug: state.contestSlug,
     containGuest: false
   }, opt).then(res => {
     if (import.meta.env.DEV) console.log(res.response.records)

@@ -30,7 +30,7 @@ const noSubmissions: Ref<boolean> = ref(false)
 
 const fetchLatestSubmit = () => {
   const listSubmitsRequest:ListSubmitsRequest = {
-    contestSlug: "test-contest", // TODO: fix
+    contestSlug: state.contestSlug,
     groupName: state.group,
     // status: Status.VALIDATION_ERROR
   }
@@ -68,7 +68,7 @@ const benchmark = () => {
 
   backend.postSubmit({
     url: url.value, //'http://host.docker.internal:3001',
-    contestSlug: "test-contest", // TODO: fix
+    contestSlug: state.contestSlug,
   },opt).then(async res => {
     if(import.meta.env.DEV) console.log("postSubmit res: ", res)
     state.benchmarking = true
