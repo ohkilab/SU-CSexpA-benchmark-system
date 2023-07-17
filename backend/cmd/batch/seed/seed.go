@@ -65,7 +65,11 @@ var Command = &cobra.Command{
 			SetTagSelectionLogic(contest.TagSelectionLogicAuto).
 			SetCreatedAt(timejst.Now()).
 			SetValidator(backend.Validator_V2023.String()).
+			SetTimeLimitPerTask(int64(30 * time.Second)).
 			Save(ctx)
+		if err != nil {
+			return err
+		}
 		_, err = entClient.Contest.Create().
 			SetTitle("test contest(本戦)").
 			SetSlug("test-contest-ho").
@@ -75,6 +79,7 @@ var Command = &cobra.Command{
 			SetTagSelectionLogic(contest.TagSelectionLogicManual).
 			SetCreatedAt(timejst.Now()).
 			SetValidator(backend.Validator_V2023.String()).
+			SetTimeLimitPerTask(int64(30 * time.Second)).
 			Save(ctx)
 		if err != nil {
 			return err
