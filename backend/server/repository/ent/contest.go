@@ -31,6 +31,8 @@ type Contest struct {
 	TagSelectionLogic contest.TagSelectionLogic `json:"tag_selection_logic,omitempty"`
 	// Validator holds the value of the "validator" field.
 	Validator string `json:"validator,omitempty"`
+	// TimeLimitPerTask holds the value of the "time_limit_per_task" field.
+	TimeLimitPerTask int64 `json:"time_limit_per_task,omitempty"`
 	// CreatedAt holds the value of the "created_at" field.
 	CreatedAt time.Time `json:"created_at,omitempty"`
 	// UpdatedAt holds the value of the "updated_at" field.
@@ -64,7 +66,7 @@ func (*Contest) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case contest.FieldID, contest.FieldSubmitLimit:
+		case contest.FieldID, contest.FieldSubmitLimit, contest.FieldTimeLimitPerTask:
 			values[i] = new(sql.NullInt64)
 		case contest.FieldTitle, contest.FieldSlug, contest.FieldTagSelectionLogic, contest.FieldValidator:
 			values[i] = new(sql.NullString)
@@ -132,6 +134,12 @@ func (c *Contest) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field validator", values[i])
 			} else if value.Valid {
 				c.Validator = value.String
+			}
+		case contest.FieldTimeLimitPerTask:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field time_limit_per_task", values[i])
+			} else if value.Valid {
+				c.TimeLimitPerTask = value.Int64
 			}
 		case contest.FieldCreatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
@@ -206,6 +214,9 @@ func (c *Contest) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("validator=")
 	builder.WriteString(c.Validator)
+	builder.WriteString(", ")
+	builder.WriteString("time_limit_per_task=")
+	builder.WriteString(fmt.Sprintf("%v", c.TimeLimitPerTask))
 	builder.WriteString(", ")
 	builder.WriteString("created_at=")
 	builder.WriteString(c.CreatedAt.Format(time.ANSIC))

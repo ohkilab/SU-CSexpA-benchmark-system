@@ -101,7 +101,7 @@ func (i *Interactor) PostSubmit(ctx context.Context, req *backendpb.PostSubmitRe
 	}
 
 	// add a task to worker
-	executeRequest := buildTask(claims.GroupID, c.Slug, backendpb.Validator(backendpb.Validator_value[c.Validator]), submit, tags)
+	executeRequest := buildTask(claims.GroupID, c.Slug, backendpb.Validator(backendpb.Validator_value[c.Validator]), submit, tags, time.Duration(c.TimeLimitPerTask))
 	i.worker.Push(executeRequest)
 
 	return &backendpb.PostSubmitResponse{
@@ -112,7 +112,7 @@ func (i *Interactor) PostSubmit(ctx context.Context, req *backendpb.PostSubmitRe
 	}, nil
 }
 
-func buildTask(groupID int, contestSlug string, validator backendpb.Validator, submit *ent.Submit, tags []string) *worker.Task {
+func buildTask(groupID int, contestSlug string, validator backendpb.Validator, submit *ent.Submit, tags []string, timeLimitPerTask time.Duration) *worker.Task {
 	return &worker.Task{
 		Req: &benchmarkpb.ExecuteRequest{
 			GroupId: strconv.Itoa(groupID),
@@ -128,8 +128,9 @@ func buildTask(groupID int, contestSlug string, validator backendpb.Validator, s
 					AttemptCount: int32(attemptCount),
 				}
 			}),
-			ContestSlug: contestSlug,
-			Validator:   validator,
+			ContestSlug:      contestSlug,
+			Validator:        validator,
+			TimeLimitPerTask: int64(timeLimitPerTask),
 		},
 		SubmitID: submit.ID,
 		GroupID:  groupID,

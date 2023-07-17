@@ -78,6 +78,19 @@ func (cu *ContestUpdate) SetValidator(s string) *ContestUpdate {
 	return cu
 }
 
+// SetTimeLimitPerTask sets the "time_limit_per_task" field.
+func (cu *ContestUpdate) SetTimeLimitPerTask(i int64) *ContestUpdate {
+	cu.mutation.ResetTimeLimitPerTask()
+	cu.mutation.SetTimeLimitPerTask(i)
+	return cu
+}
+
+// AddTimeLimitPerTask adds i to the "time_limit_per_task" field.
+func (cu *ContestUpdate) AddTimeLimitPerTask(i int64) *ContestUpdate {
+	cu.mutation.AddTimeLimitPerTask(i)
+	return cu
+}
+
 // SetCreatedAt sets the "created_at" field.
 func (cu *ContestUpdate) SetCreatedAt(t time.Time) *ContestUpdate {
 	cu.mutation.SetCreatedAt(t)
@@ -218,6 +231,12 @@ func (cu *ContestUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if value, ok := cu.mutation.Validator(); ok {
 		_spec.SetField(contest.FieldValidator, field.TypeString, value)
 	}
+	if value, ok := cu.mutation.TimeLimitPerTask(); ok {
+		_spec.SetField(contest.FieldTimeLimitPerTask, field.TypeInt64, value)
+	}
+	if value, ok := cu.mutation.AddedTimeLimitPerTask(); ok {
+		_spec.AddField(contest.FieldTimeLimitPerTask, field.TypeInt64, value)
+	}
 	if value, ok := cu.mutation.CreatedAt(); ok {
 		_spec.SetField(contest.FieldCreatedAt, field.TypeTime, value)
 	}
@@ -338,6 +357,19 @@ func (cuo *ContestUpdateOne) SetTagSelectionLogic(csl contest.TagSelectionLogic)
 // SetValidator sets the "validator" field.
 func (cuo *ContestUpdateOne) SetValidator(s string) *ContestUpdateOne {
 	cuo.mutation.SetValidator(s)
+	return cuo
+}
+
+// SetTimeLimitPerTask sets the "time_limit_per_task" field.
+func (cuo *ContestUpdateOne) SetTimeLimitPerTask(i int64) *ContestUpdateOne {
+	cuo.mutation.ResetTimeLimitPerTask()
+	cuo.mutation.SetTimeLimitPerTask(i)
+	return cuo
+}
+
+// AddTimeLimitPerTask adds i to the "time_limit_per_task" field.
+func (cuo *ContestUpdateOne) AddTimeLimitPerTask(i int64) *ContestUpdateOne {
+	cuo.mutation.AddTimeLimitPerTask(i)
 	return cuo
 }
 
@@ -510,6 +542,12 @@ func (cuo *ContestUpdateOne) sqlSave(ctx context.Context) (_node *Contest, err e
 	}
 	if value, ok := cuo.mutation.Validator(); ok {
 		_spec.SetField(contest.FieldValidator, field.TypeString, value)
+	}
+	if value, ok := cuo.mutation.TimeLimitPerTask(); ok {
+		_spec.SetField(contest.FieldTimeLimitPerTask, field.TypeInt64, value)
+	}
+	if value, ok := cuo.mutation.AddedTimeLimitPerTask(); ok {
+		_spec.AddField(contest.FieldTimeLimitPerTask, field.TypeInt64, value)
 	}
 	if value, ok := cuo.mutation.CreatedAt(); ok {
 		_spec.SetField(contest.FieldCreatedAt, field.TypeTime, value)

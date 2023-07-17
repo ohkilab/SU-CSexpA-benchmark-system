@@ -28,6 +28,8 @@ const (
 	FieldTagSelectionLogic = "tag_selection_logic"
 	// FieldValidator holds the string denoting the validator field in the database.
 	FieldValidator = "validator"
+	// FieldTimeLimitPerTask holds the string denoting the time_limit_per_task field in the database.
+	FieldTimeLimitPerTask = "time_limit_per_task"
 	// FieldCreatedAt holds the string denoting the created_at field in the database.
 	FieldCreatedAt = "created_at"
 	// FieldUpdatedAt holds the string denoting the updated_at field in the database.
@@ -55,6 +57,7 @@ var Columns = []string{
 	FieldSlug,
 	FieldTagSelectionLogic,
 	FieldValidator,
+	FieldTimeLimitPerTask,
 	FieldCreatedAt,
 	FieldUpdatedAt,
 }
@@ -133,6 +136,11 @@ func ByTagSelectionLogic(opts ...sql.OrderTermOption) OrderOption {
 // ByValidator orders the results by the validator field.
 func ByValidator(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldValidator, opts...).ToFunc()
+}
+
+// ByTimeLimitPerTask orders the results by the time_limit_per_task field.
+func ByTimeLimitPerTask(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldTimeLimitPerTask, opts...).ToFunc()
 }
 
 // ByCreatedAt orders the results by the created_at field.

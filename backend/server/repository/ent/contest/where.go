@@ -85,6 +85,11 @@ func Validator(v string) predicate.Contest {
 	return predicate.Contest(sql.FieldEQ(FieldValidator, v))
 }
 
+// TimeLimitPerTask applies equality check predicate on the "time_limit_per_task" field. It's identical to TimeLimitPerTaskEQ.
+func TimeLimitPerTask(v int64) predicate.Contest {
+	return predicate.Contest(sql.FieldEQ(FieldTimeLimitPerTask, v))
+}
+
 // CreatedAt applies equality check predicate on the "created_at" field. It's identical to CreatedAtEQ.
 func CreatedAt(v time.Time) predicate.Contest {
 	return predicate.Contest(sql.FieldEQ(FieldCreatedAt, v))
@@ -428,6 +433,46 @@ func ValidatorEqualFold(v string) predicate.Contest {
 // ValidatorContainsFold applies the ContainsFold predicate on the "validator" field.
 func ValidatorContainsFold(v string) predicate.Contest {
 	return predicate.Contest(sql.FieldContainsFold(FieldValidator, v))
+}
+
+// TimeLimitPerTaskEQ applies the EQ predicate on the "time_limit_per_task" field.
+func TimeLimitPerTaskEQ(v int64) predicate.Contest {
+	return predicate.Contest(sql.FieldEQ(FieldTimeLimitPerTask, v))
+}
+
+// TimeLimitPerTaskNEQ applies the NEQ predicate on the "time_limit_per_task" field.
+func TimeLimitPerTaskNEQ(v int64) predicate.Contest {
+	return predicate.Contest(sql.FieldNEQ(FieldTimeLimitPerTask, v))
+}
+
+// TimeLimitPerTaskIn applies the In predicate on the "time_limit_per_task" field.
+func TimeLimitPerTaskIn(vs ...int64) predicate.Contest {
+	return predicate.Contest(sql.FieldIn(FieldTimeLimitPerTask, vs...))
+}
+
+// TimeLimitPerTaskNotIn applies the NotIn predicate on the "time_limit_per_task" field.
+func TimeLimitPerTaskNotIn(vs ...int64) predicate.Contest {
+	return predicate.Contest(sql.FieldNotIn(FieldTimeLimitPerTask, vs...))
+}
+
+// TimeLimitPerTaskGT applies the GT predicate on the "time_limit_per_task" field.
+func TimeLimitPerTaskGT(v int64) predicate.Contest {
+	return predicate.Contest(sql.FieldGT(FieldTimeLimitPerTask, v))
+}
+
+// TimeLimitPerTaskGTE applies the GTE predicate on the "time_limit_per_task" field.
+func TimeLimitPerTaskGTE(v int64) predicate.Contest {
+	return predicate.Contest(sql.FieldGTE(FieldTimeLimitPerTask, v))
+}
+
+// TimeLimitPerTaskLT applies the LT predicate on the "time_limit_per_task" field.
+func TimeLimitPerTaskLT(v int64) predicate.Contest {
+	return predicate.Contest(sql.FieldLT(FieldTimeLimitPerTask, v))
+}
+
+// TimeLimitPerTaskLTE applies the LTE predicate on the "time_limit_per_task" field.
+func TimeLimitPerTaskLTE(v int64) predicate.Contest {
+	return predicate.Contest(sql.FieldLTE(FieldTimeLimitPerTask, v))
 }
 
 // CreatedAtEQ applies the EQ predicate on the "created_at" field.

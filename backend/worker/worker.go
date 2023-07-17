@@ -19,7 +19,7 @@ import (
 	"google.golang.org/grpc/status"
 )
 
-const Timeout = 3 * time.Minute
+const Timeout = 5 * time.Minute
 
 type Worker interface {
 	Push(*Task)

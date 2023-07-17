@@ -63,6 +63,12 @@ func (cc *ContestCreate) SetValidator(s string) *ContestCreate {
 	return cc
 }
 
+// SetTimeLimitPerTask sets the "time_limit_per_task" field.
+func (cc *ContestCreate) SetTimeLimitPerTask(i int64) *ContestCreate {
+	cc.mutation.SetTimeLimitPerTask(i)
+	return cc
+}
+
 // SetCreatedAt sets the "created_at" field.
 func (cc *ContestCreate) SetCreatedAt(t time.Time) *ContestCreate {
 	cc.mutation.SetCreatedAt(t)
@@ -164,6 +170,9 @@ func (cc *ContestCreate) check() error {
 	if _, ok := cc.mutation.Validator(); !ok {
 		return &ValidationError{Name: "validator", err: errors.New(`ent: missing required field "Contest.validator"`)}
 	}
+	if _, ok := cc.mutation.TimeLimitPerTask(); !ok {
+		return &ValidationError{Name: "time_limit_per_task", err: errors.New(`ent: missing required field "Contest.time_limit_per_task"`)}
+	}
 	if _, ok := cc.mutation.CreatedAt(); !ok {
 		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "Contest.created_at"`)}
 	}
@@ -226,6 +235,10 @@ func (cc *ContestCreate) createSpec() (*Contest, *sqlgraph.CreateSpec) {
 	if value, ok := cc.mutation.Validator(); ok {
 		_spec.SetField(contest.FieldValidator, field.TypeString, value)
 		_node.Validator = value
+	}
+	if value, ok := cc.mutation.TimeLimitPerTask(); ok {
+		_spec.SetField(contest.FieldTimeLimitPerTask, field.TypeInt64, value)
+		_node.TimeLimitPerTask = value
 	}
 	if value, ok := cc.mutation.CreatedAt(); ok {
 		_spec.SetField(contest.FieldCreatedAt, field.TypeTime, value)

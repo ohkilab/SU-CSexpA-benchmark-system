@@ -36,26 +36,28 @@ const (
 // ContestMutation represents an operation that mutates the Contest nodes in the graph.
 type ContestMutation struct {
 	config
-	op                  Op
-	typ                 string
-	id                  *int
-	title               *string
-	start_at            *time.Time
-	end_at              *time.Time
-	submit_limit        *int
-	addsubmit_limit     *int
-	slug                *string
-	tag_selection_logic *contest.TagSelectionLogic
-	validator           *string
-	created_at          *time.Time
-	updated_at          *time.Time
-	clearedFields       map[string]struct{}
-	submits             map[int]struct{}
-	removedsubmits      map[int]struct{}
-	clearedsubmits      bool
-	done                bool
-	oldValue            func(context.Context) (*Contest, error)
-	predicates          []predicate.Contest
+	op                     Op
+	typ                    string
+	id                     *int
+	title                  *string
+	start_at               *time.Time
+	end_at                 *time.Time
+	submit_limit           *int
+	addsubmit_limit        *int
+	slug                   *string
+	tag_selection_logic    *contest.TagSelectionLogic
+	validator              *string
+	time_limit_per_task    *int64
+	addtime_limit_per_task *int64
+	created_at             *time.Time
+	updated_at             *time.Time
+	clearedFields          map[string]struct{}
+	submits                map[int]struct{}
+	removedsubmits         map[int]struct{}
+	clearedsubmits         bool
+	done                   bool
+	oldValue               func(context.Context) (*Contest, error)
+	predicates             []predicate.Contest
 }
 
 var _ ent.Mutation = (*ContestMutation)(nil)
@@ -434,6 +436,62 @@ func (m *ContestMutation) ResetValidator() {
 	m.validator = nil
 }
 
+// SetTimeLimitPerTask sets the "time_limit_per_task" field.
+func (m *ContestMutation) SetTimeLimitPerTask(i int64) {
+	m.time_limit_per_task = &i
+	m.addtime_limit_per_task = nil
+}
+
+// TimeLimitPerTask returns the value of the "time_limit_per_task" field in the mutation.
+func (m *ContestMutation) TimeLimitPerTask() (r int64, exists bool) {
+	v := m.time_limit_per_task
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldTimeLimitPerTask returns the old "time_limit_per_task" field's value of the Contest entity.
+// If the Contest object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ContestMutation) OldTimeLimitPerTask(ctx context.Context) (v int64, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldTimeLimitPerTask is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldTimeLimitPerTask requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldTimeLimitPerTask: %w", err)
+	}
+	return oldValue.TimeLimitPerTask, nil
+}
+
+// AddTimeLimitPerTask adds i to the "time_limit_per_task" field.
+func (m *ContestMutation) AddTimeLimitPerTask(i int64) {
+	if m.addtime_limit_per_task != nil {
+		*m.addtime_limit_per_task += i
+	} else {
+		m.addtime_limit_per_task = &i
+	}
+}
+
+// AddedTimeLimitPerTask returns the value that was added to the "time_limit_per_task" field in this mutation.
+func (m *ContestMutation) AddedTimeLimitPerTask() (r int64, exists bool) {
+	v := m.addtime_limit_per_task
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetTimeLimitPerTask resets all changes to the "time_limit_per_task" field.
+func (m *ContestMutation) ResetTimeLimitPerTask() {
+	m.time_limit_per_task = nil
+	m.addtime_limit_per_task = nil
+}
+
 // SetCreatedAt sets the "created_at" field.
 func (m *ContestMutation) SetCreatedAt(t time.Time) {
 	m.created_at = &t
@@ -607,7 +665,7 @@ func (m *ContestMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *ContestMutation) Fields() []string {
-	fields := make([]string, 0, 9)
+	fields := make([]string, 0, 10)
 	if m.title != nil {
 		fields = append(fields, contest.FieldTitle)
 	}
@@ -628,6 +686,9 @@ func (m *ContestMutation) Fields() []string {
 	}
 	if m.validator != nil {
 		fields = append(fields, contest.FieldValidator)
+	}
+	if m.time_limit_per_task != nil {
+		fields = append(fields, contest.FieldTimeLimitPerTask)
 	}
 	if m.created_at != nil {
 		fields = append(fields, contest.FieldCreatedAt)
@@ -657,6 +718,8 @@ func (m *ContestMutation) Field(name string) (ent.Value, bool) {
 		return m.TagSelectionLogic()
 	case contest.FieldValidator:
 		return m.Validator()
+	case contest.FieldTimeLimitPerTask:
+		return m.TimeLimitPerTask()
 	case contest.FieldCreatedAt:
 		return m.CreatedAt()
 	case contest.FieldUpdatedAt:
@@ -684,6 +747,8 @@ func (m *ContestMutation) OldField(ctx context.Context, name string) (ent.Value,
 		return m.OldTagSelectionLogic(ctx)
 	case contest.FieldValidator:
 		return m.OldValidator(ctx)
+	case contest.FieldTimeLimitPerTask:
+		return m.OldTimeLimitPerTask(ctx)
 	case contest.FieldCreatedAt:
 		return m.OldCreatedAt(ctx)
 	case contest.FieldUpdatedAt:
@@ -746,6 +811,13 @@ func (m *ContestMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetValidator(v)
 		return nil
+	case contest.FieldTimeLimitPerTask:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetTimeLimitPerTask(v)
+		return nil
 	case contest.FieldCreatedAt:
 		v, ok := value.(time.Time)
 		if !ok {
@@ -771,6 +843,9 @@ func (m *ContestMutation) AddedFields() []string {
 	if m.addsubmit_limit != nil {
 		fields = append(fields, contest.FieldSubmitLimit)
 	}
+	if m.addtime_limit_per_task != nil {
+		fields = append(fields, contest.FieldTimeLimitPerTask)
+	}
 	return fields
 }
 
@@ -781,6 +856,8 @@ func (m *ContestMutation) AddedField(name string) (ent.Value, bool) {
 	switch name {
 	case contest.FieldSubmitLimit:
 		return m.AddedSubmitLimit()
+	case contest.FieldTimeLimitPerTask:
+		return m.AddedTimeLimitPerTask()
 	}
 	return nil, false
 }
@@ -796,6 +873,13 @@ func (m *ContestMutation) AddField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.AddSubmitLimit(v)
+		return nil
+	case contest.FieldTimeLimitPerTask:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddTimeLimitPerTask(v)
 		return nil
 	}
 	return fmt.Errorf("unknown Contest numeric field %s", name)
@@ -853,6 +937,9 @@ func (m *ContestMutation) ResetField(name string) error {
 		return nil
 	case contest.FieldValidator:
 		m.ResetValidator()
+		return nil
+	case contest.FieldTimeLimitPerTask:
+		m.ResetTimeLimitPerTask()
 		return nil
 	case contest.FieldCreatedAt:
 		m.ResetCreatedAt()

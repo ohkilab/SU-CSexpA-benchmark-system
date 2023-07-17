@@ -1,6 +1,8 @@
 package schema
 
 import (
+	"time"
+
 	"entgo.io/ent"
 	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
@@ -25,6 +27,7 @@ func (Contest) Fields() []ent.Field {
 		// if manual, {contest_slug}/\d.txt is used (number means attempt count)
 		field.Enum("tag_selection_logic").Values("auto", "manual"),
 		field.String("validator"),
+		field.Int64("time_limit_per_task").Optional().Default(int64(30 * time.Second)),
 		field.Time("created_at"),
 		field.Time("updated_at").Optional(),
 	}
