@@ -61,12 +61,13 @@ func (i *Interactor) PostSubmit(ctx context.Context, req *backendpb.PostSubmitRe
 		return nil, status.Error(codes.FailedPrecondition, "the contest has been finished")
 	}
 
-	submitCount, err := i.entClient.Submit.Query().Where(submit.HasGroupsWith(group.ID(claims.GroupID))).Count(ctx)
+	predicates := []predicate.Submit{submit.HasGroupsWith(group.ID(claims.GroupID)), submit.StatusEQ(backendpb.Status_SUCCESS.String())}
+	submitCount, err := i.entClient.Submit.Query().Where(predicates...).Count(ctx)
 	if err != nil {
 		i.logger.Error("failed to fetch submits", "error", err)
 		return nil, status.Error(codes.Internal, err.Error())
 	}
-	if submitCount > c.SubmitLimit {
+	if submitCount >= c.SubmitLimit {
 		return nil, status.Error(codes.FailedPrecondition, "the count of submits is exceeded the limit")
 	}
 
@@ -79,7 +80,7 @@ func (i *Interactor) PostSubmit(ctx context.Context, req *backendpb.PostSubmitRe
 			return nil, status.Error(codes.Internal, "failed to generate tags")
 		}
 	case contest.TagSelectionLogicManual:
-		tags, err = i.tagRepository.GetRandomTags(c.Slug, 1) // TODO: fix it
+		tags, err = i.tagRepository.GetTags(c.Slug, submitCount+1)
 		if err != nil {
 			i.logger.Error("failed to generate tags", err)
 			return nil, status.Error(codes.Internal, "failed to generate tags")
