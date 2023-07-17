@@ -16,6 +16,5 @@ ENV TZ Asia/Tokyo
 
 WORKDIR /app
 COPY --from=builder /src/backend-server .
-COPY --from=builder /src/storage ./storage
 
 ENTRYPOINT [ "/app/backend-server" ]

@@ -2,9 +2,10 @@ package worker
 
 import (
 	"io"
-	"sync"
+	"log"
 	"time"
 
+	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/core/entutil"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/core/timejst"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/repository/ent"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/repository/ent/group"
@@ -76,6 +77,7 @@ func (w *worker) Run() {
 }
 
 func (w *worker) runBenchmarkTask(task *Task) error {
+	entCtx := context.Background()
 	ctx, cancel := context.WithTimeout(context.Background(), Timeout)
 	defer cancel()
 
@@ -88,7 +90,7 @@ func (w *worker) runBenchmarkTask(task *Task) error {
 	_, err = w.entClient.Submit.UpdateOneID(task.SubmitID).
 		SetStatus(backendpb.Status_IN_PROGRESS.String()).
 		SetUpdatedAt(timejst.Now()).
-		Save(context.Background())
+		Save(entCtx)
 	if err != nil {
 		w.logger.Error("failed to update submit", err)
 		return err
@@ -97,7 +99,6 @@ func (w *worker) runBenchmarkTask(task *Task) error {
 	eg := &errgroup.Group{}
 	scores := make([]int, 0, len(task.Req.Tasks))
 	pbStatus := backendpb.Status_SUCCESS
-	mu := sync.Mutex{}
 	for {
 		resp, err := stream.Recv()
 		if err == io.EOF {
@@ -106,7 +107,7 @@ func (w *worker) runBenchmarkTask(task *Task) error {
 				return err
 			}
 
-			submit, err := w.entClient.Submit.Query().WithTaskResults().Where(submit.ID(task.SubmitID)).Only(context.Background())
+			submit, err := w.entClient.Submit.Query().WithTaskResults().Where(submit.ID(task.SubmitID)).Only(entCtx)
 			if err != nil {
 				w.logger.Error("failed to get submit", err)
 				return err
@@ -118,7 +119,7 @@ func (w *worker) runBenchmarkTask(task *Task) error {
 			if mp := lo.Associate(submit.Edges.TaskResults, func(tr *ent.TaskResult) (string, struct{}) {
 				return tr.ErrorMessage, struct{}{}
 			}); len(mp) == 1 {
-				if _, err := w.entClient.Submit.UpdateOneID(task.SubmitID).SetMessage(submit.Edges.TaskResults[0].ErrorMessage).Save(context.Background()); err != nil {
+				if _, err := w.entClient.Submit.UpdateOneID(task.SubmitID).SetMessage(submit.Edges.TaskResults[0].ErrorMessage).Save(entCtx); err != nil {
 					w.logger.Error("failed to update submit", err)
 					return err
 				}
@@ -137,24 +138,19 @@ func (w *worker) runBenchmarkTask(task *Task) error {
 		}
 		w.logger.Info("received benchmark response", slog.Any("resp", resp))
 
-		eg.Go(func() error {
-			resp := resp
-
-			mu.Lock()
-			if resp.Ok {
-				scores = append(scores, int(resp.RequestsPerSecond))
-			}
-			if needsUpdateStatus(pbStatus, resp.Status) {
-				w.logger.Info("update status", slog.Any("current status", pbStatus), slog.Any("next status", resp.Status))
-				pbStatus = resp.Status
-			}
-			mu.Unlock()
-
-			var errorMessage string
-			if resp.ErrorMessage != nil {
-				errorMessage = *resp.ErrorMessage
-			}
-			if _, err := w.entClient.TaskResult.Create().
+		if resp.Ok {
+			scores = append(scores, int(resp.RequestsPerSecond))
+		}
+		if needsUpdateStatus(pbStatus, resp.Status) {
+			w.logger.Info("update status", slog.Any("current status", pbStatus), slog.Any("next status", resp.Status))
+			pbStatus = resp.Status
+		}
+		var errorMessage string
+		if resp.ErrorMessage != nil {
+			errorMessage = *resp.ErrorMessage
+		}
+		if err := entutil.RunInTransaction(entCtx, w.entClient, func(tx *ent.Tx) error {
+			if _, err := tx.TaskResult.Create().
 				SetRequestPerSec(int(resp.RequestsPerSecond)).
 				SetURL(resp.Task.Request.Url).
 				SetMethod(resp.Task.Request.Method.String()).
@@ -166,12 +162,15 @@ func (w *worker) runBenchmarkTask(task *Task) error {
 				SetStatus(resp.Status.String()).
 				SetCreatedAt(timejst.Now()).
 				SetSubmitsID(task.SubmitID).
-				Save(context.Background()); err != nil {
+				Save(entCtx); err != nil {
 				w.logger.Error("failed to save task result", err)
 				return err
 			}
+			log.Println("succeed to save task result")
 			return nil
-		})
+		}); err != nil {
+			return err
+		}
 	}
 	if err := eg.Wait(); err != nil {
 		return err
@@ -189,7 +188,7 @@ func (w *worker) runBenchmarkTask(task *Task) error {
 		SetUpdatedAt(now).
 		SetScore(score).
 		SetStatus(pbStatus.String()).
-		Save(context.Background()); err != nil {
+		Save(entCtx); err != nil {
 		w.logger.Error("failed to update submit", err)
 		return err
 	}
@@ -198,7 +197,7 @@ func (w *worker) runBenchmarkTask(task *Task) error {
 		WithGroups().
 		Where(submit.HasGroupsWith(group.ID(task.GroupID))).
 		Order(ent.Desc(submit.FieldScore)).
-		First(context.Background())
+		First(entCtx)
 	if err != nil {
 		w.logger.Error("failed to get max submit", "error", err)
 		return err
@@ -207,7 +206,7 @@ func (w *worker) runBenchmarkTask(task *Task) error {
 		if _, err := w.entClient.Group.
 			UpdateOneID(maxSubmit.Edges.Groups.ID).
 			SetUpdatedAt(now).
-			Save(context.Background()); err != nil {
+			Save(entCtx); err != nil {
 			w.logger.Error("failed to update group", err)
 			return err
 		}

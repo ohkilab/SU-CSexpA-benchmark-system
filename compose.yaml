@@ -10,6 +10,8 @@ services:
     depends_on:
       - db
       - benchmark-service
+    volumes:
+      - "./backend/storage:/app/storage"
     extra_hosts:
       - "host.docker.internal:host-gateway"
   benchmark-service:
