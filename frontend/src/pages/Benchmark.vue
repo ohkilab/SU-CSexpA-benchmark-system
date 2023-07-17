@@ -95,7 +95,12 @@ const benchmark = () => {
       console.log(call.trailers)
     }
   }).catch(err => {
-    console.log(err)
+    if(import.meta.env.DEV) console.log(err)
+    if(err.code === "FAILED_PRECONDITION") {
+      errorMsg.value = "Contest is over"
+    } else {
+      errorMsg.value = JSON.stringify(err) ?? ''
+    }
   })
 }
 
@@ -150,7 +155,7 @@ watch(urlList, urlList => {
       <pre>{{ Status[currentStatus] }}</pre>
       <button class="border border-red-500 p-2" @click="latestSubmit = {}">clear submit</button>
     </fieldset>
-    <div class="text-red-500" v-if="errorMsg">Error: {{ errorMsg }}</div>
+    <div class="text-red-500 text-center" v-if="errorMsg">Error: {{ errorMsg }}</div>
     <div v-if="state.benchmarking">
       <div class="flex flex-col gap-8 my-auto text-xl items-center justify-center">
         <div class="p-4 border-2 rounded border-gray-600 flex flex-col items-center gap-3">
