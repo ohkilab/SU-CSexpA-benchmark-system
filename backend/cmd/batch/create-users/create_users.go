@@ -20,6 +20,7 @@ type User struct {
 	Name     string `yaml:"name"`
 	Password string `yaml:"password"`
 	Year     int    `yaml:"year"`
+	Role     string `yaml:"role"`
 }
 
 var Command = &cobra.Command{
@@ -55,10 +56,13 @@ var Command = &cobra.Command{
 			if err != nil {
 				return err
 			}
+			if err := group.RoleValidator(group.Role(user.Role)); err != nil {
+				log.Fatal("role の形式が正しくありません: ", err)
+			}
 			group, err := entClient.Group.Create().
 				SetName(user.Name).
 				SetEncryptedPassword(string(b)).
-				SetRole(group.RoleContestant).
+				SetRole(group.Role(user.Role)).
 				SetCreatedAt(timejst.Now()).
 				Save(ctx)
 			if err != nil {
