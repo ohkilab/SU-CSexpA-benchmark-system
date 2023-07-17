@@ -57,12 +57,22 @@ var Command = &cobra.Command{
 		}
 
 		_, err = entClient.Contest.Create().
-			SetTitle("test contest").
+			SetTitle("test contest(予選)").
 			SetSlug("test-contest").
 			SetStartAt(time.Date(2023, time.January, 1, 0, 0, 0, 0, time.UTC)).
 			SetEndAt(time.Date(2023, time.December, 31, 23, 59, 59, 0, time.UTC)).
 			SetSubmitLimit(9999).
 			SetTagSelectionLogic(contest.TagSelectionLogicAuto).
+			SetCreatedAt(timejst.Now()).
+			SetValidator(backend.Validator_V2023.String()).
+			Save(ctx)
+		_, err = entClient.Contest.Create().
+			SetTitle("test contest(本戦)").
+			SetSlug("test-contest-ho").
+			SetStartAt(time.Date(2023, time.January, 1, 0, 0, 0, 0, time.UTC)).
+			SetEndAt(time.Date(2023, time.December, 31, 23, 59, 59, 0, time.UTC)).
+			SetSubmitLimit(10).
+			SetTagSelectionLogic(contest.TagSelectionLogicManual).
 			SetCreatedAt(timejst.Now()).
 			SetValidator(backend.Validator_V2023.String()).
 			Save(ctx)
