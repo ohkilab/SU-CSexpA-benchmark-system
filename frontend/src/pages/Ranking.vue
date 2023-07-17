@@ -15,16 +15,17 @@ const { backend } = useBackendStore()
 const hasRanking: Ref<boolean> = ref(false)
 const hasSubmits: Ref<boolean> = ref(false)
 
+
 onMounted(() => {
   let opt = { meta: { 'authorization': 'Bearer ' + state.token } }
   const listSubmitsRequest: ListSubmitsRequest = {
-    contestId: 1, // TODO: fix
+    contestSlug: "test-contest", // TODO: fix
     // groupName: 'a01',
     // status: Status.VALIDATION_ERROR
   }
 
   backend.getRanking({
-    contestId: 1,
+    contestSlug: "test-contest", // TODO: fix
     containGuest: false
   }, opt).then(res => {
     if (import.meta.env.DEV) console.log(res.response.records)
