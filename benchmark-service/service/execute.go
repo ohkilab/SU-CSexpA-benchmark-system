@@ -58,7 +58,9 @@ func (s *service) Execute(req *pb.ExecuteRequest, stream pb.BenchmarkService_Exe
 		}
 		uri.RawQuery = uri.Query().Encode()
 
-		results, err := s.client.Run(stream.Context(), uri.String(), benchmark.OptThreadNum(int(task.ThreadNum)), benchmark.OptAttemptCount(int(task.AttemptCount)))
+		ctx, cancel := context.WithTimeout(stream.Context(), time.Duration(req.TimeLimitPerTask))
+		defer cancel()
+		results, err := s.client.Run(ctx, uri.String(), benchmark.OptThreadNum(int(task.ThreadNum)), benchmark.OptAttemptCount(int(task.AttemptCount)))
 		if err != nil {
 			log.Println(err)
 			if errors.Is(err, syscall.ECONNREFUSED) {
