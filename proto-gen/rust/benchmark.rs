@@ -11,9 +11,9 @@ pub struct ExecuteRequest {
     pub contest_slug: ::prost::alloc::string::String,
     #[prost(enumeration="super::backend::Validator", tag="4")]
     pub validator: i32,
-    /// sec
-    #[prost(int32, tag="5")]
-    pub time_limit_per_task: i32,
+    /// must use as duration
+    #[prost(int64, tag="5")]
+    pub time_limit_per_task: i64,
 }
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]

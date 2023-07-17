@@ -2,7 +2,6 @@ syntax = "proto3";
 
 package benchmark;
 
-import "google/protobuf/timestamp.proto";
 import "services/backend/resources.proto";
 
 option go_package = "github.com/ohkilab/SU-CSexpA-benchmark-system/proto-gen/go/benchmark-service";
@@ -12,7 +11,7 @@ message ExecuteRequest {
   string group_id = 2; // for logging
   string contest_slug = 3;
   backend.Validator validator = 4;
-  int32 time_limit_per_task = 5; // sec
+  int64 time_limit_per_task = 5; // must use as duration
 }
 
 message Task {

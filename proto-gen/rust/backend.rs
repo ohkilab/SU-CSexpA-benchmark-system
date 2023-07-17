@@ -267,8 +267,6 @@ pub enum Validator {
     V2022 = 0,
     /// 2023年度 予選
     V2023 = 1,
-    /// 2023年度 本戦
-    V2023ho = 2,
 }
 impl Validator {
     /// String value of the enum field names used in the ProtoBuf definition.
@@ -279,7 +277,6 @@ impl Validator {
         match self {
             Validator::V2022 => "V2022",
             Validator::V2023 => "V2023",
-            Validator::V2023ho => "V2023HO",
         }
     }
     /// Creates an enum from field names used in the ProtoBuf definition.
@@ -287,7 +284,6 @@ impl Validator {
         match value {
             "V2022" => Some(Self::V2022),
             "V2023" => Some(Self::V2023),
-            "V2023HO" => Some(Self::V2023ho),
             _ => None,
         }
     }

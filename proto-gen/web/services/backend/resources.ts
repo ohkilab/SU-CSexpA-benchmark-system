@@ -341,13 +341,7 @@ export enum Validator {
      *
      * @generated from protobuf enum value: V2023 = 1;
      */
-    V2023 = 1,
-    /**
-     * 2023年度 本戦
-     *
-     * @generated from protobuf enum value: V2023HO = 2;
-     */
-    V2023HO = 2
+    V2023 = 1
 }
 // @generated message type with reflection information, may provide speed optimized methods
 class Contest$Type extends MessageType<Contest> {
