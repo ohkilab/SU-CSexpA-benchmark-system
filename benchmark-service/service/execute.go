@@ -38,7 +38,12 @@ func (s *service) Execute(req *pb.ExecuteRequest, stream pb.BenchmarkService_Exe
 
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
-	if err := s.client.CheckConnection(ctx, req.Tasks[0].Request.Url); err != nil {
+	uri, err := url.ParseRequestURI(req.Tasks[0].Request.Url)
+	if err != nil {
+		log.Println(err)
+		return status.Error(codes.InvalidArgument, "invalid url")
+	}
+	if err := s.client.CheckConnection(ctx, fmt.Sprintf("%s://%s", uri.Scheme, uri.Host)); err != nil {
 		log.Println(err)
 		return status.Error(codes.FailedPrecondition, "failed to connect with the server")
 	}
