@@ -40,9 +40,12 @@ func NewBackendService(secret []byte, entClient *ent.Client, worker worker.Worke
 }
 
 func (s *backendServiceServer) GetRanking(ctx context.Context, req *pb.GetRankingRequest) (*pb.GetRankingResponse, error) {
-	records, err := s.rankingInteractor.GetRanking(ctx, req.ContainGuest, int(req.ContestId))
+	records, err := s.rankingInteractor.GetRanking(ctx, req.ContainGuest, req.ContestSlug)
 	if err != nil {
 		return nil, err
+	}
+	if req.ContestSlug == "" {
+		return nil, status.Error(codes.InvalidArgument, "contest_slug is required")
 	}
 	return &pb.GetRankingResponse{Records: records}, nil
 }
@@ -50,6 +53,9 @@ func (s *backendServiceServer) GetRanking(ctx context.Context, req *pb.GetRankin
 func (s *backendServiceServer) PostSubmit(ctx context.Context, req *pb.PostSubmitRequest) (*pb.PostSubmitResponse, error) {
 	if _, err := url.ParseRequestURI(req.Url); err != nil {
 		return nil, status.Error(codes.InvalidArgument, err.Error())
+	}
+	if req.ContestSlug == "" {
+		return nil, status.Error(codes.InvalidArgument, "contest_slug is required")
 	}
 	return s.submitInteractor.PostSubmit(ctx, req)
 }
@@ -63,8 +69,8 @@ func (s *backendServiceServer) PostLogin(ctx context.Context, req *pb.PostLoginR
 }
 
 func (s *backendServiceServer) ListSubmits(ctx context.Context, req *pb.ListSubmitsRequest) (*pb.ListSubmitsResponse, error) {
-	if req.ContestId == 0 {
-		return nil, status.Error(codes.InvalidArgument, "contest_id is required")
+	if req.ContestSlug == "" {
+		return nil, status.Error(codes.InvalidArgument, "contest_slug is required")
 	}
 	return s.submitInteractor.ListSubmits(ctx, req)
 }
@@ -82,6 +88,9 @@ func (s *backendServiceServer) CreateContest(ctx context.Context, req *pb.Create
 }
 
 func (s *backendServiceServer) GetContest(ctx context.Context, req *pb.GetContestRequest) (*pb.GetContestResponse, error) {
+	if req.ContestSlug == "" {
+		return nil, status.Error(codes.InvalidArgument, "contest_slug is required")
+	}
 	return s.contestInteractor.GetContest(ctx, req)
 }
 

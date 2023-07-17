@@ -45,7 +45,7 @@ func (i *Interactor) PostSubmit(ctx context.Context, req *backendpb.PostSubmitRe
 	now := timejst.Now()
 
 	claims := interceptor.GetClaimsFromContext(ctx)
-	c, err := i.entClient.Contest.Get(ctx, int(req.ContestId))
+	c, err := i.entClient.Contest.Query().Where(contest.Slug(req.ContestSlug)).Only(ctx)
 	if err != nil {
 		if ent.IsNotFound(err) {
 			return nil, status.Error(codes.InvalidArgument, "no such contest")
@@ -90,7 +90,7 @@ func (i *Interactor) PostSubmit(ctx context.Context, req *backendpb.PostSubmitRe
 	submit, err := i.entClient.Submit.Create().
 		SetURL(req.Url).
 		SetSubmitedAt(timejst.Now()).
-		SetContestsID(int(req.ContestId)).
+		SetContestsID(c.ID).
 		SetGroupsID(claims.GroupID).
 		SetStatus(backendpb.Status_WAITING.String()).
 		SetTaskNum(len(tags)).
@@ -105,10 +105,10 @@ func (i *Interactor) PostSubmit(ctx context.Context, req *backendpb.PostSubmitRe
 	i.worker.Push(executeRequest)
 
 	return &backendpb.PostSubmitResponse{
-		Id:         int32(submit.ID),
-		Url:        submit.URL,
-		ContestId:  req.ContestId,
-		SubmitedAt: timestamppb.New(submit.SubmitedAt),
+		Id:          int32(submit.ID),
+		Url:         submit.URL,
+		ContestSlug: c.Slug,
+		SubmitedAt:  timestamppb.New(submit.SubmitedAt),
 	}, nil
 }
 
@@ -198,7 +198,7 @@ func toPbSubmit(submit *ent.Submit) *backendpb.Submit {
 }
 
 func (i *Interactor) ListSubmits(ctx context.Context, req *backendpb.ListSubmitsRequest) (*backendpb.ListSubmitsResponse, error) {
-	q := i.entClient.Submit.Query().WithGroups().Where(submit.HasContestsWith(contest.ID(int(req.ContestId))))
+	q := i.entClient.Submit.Query().WithGroups().Where(submit.HasContestsWith(contest.Slug(req.ContestSlug)))
 	groupPredicates := []predicate.Group{}
 	if req.GroupName != nil {
 		groupPredicates = append(groupPredicates, group.NameContains(*req.GroupName))

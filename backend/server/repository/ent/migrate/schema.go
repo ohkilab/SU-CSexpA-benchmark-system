@@ -26,6 +26,13 @@ var (
 		Name:       "contests",
 		Columns:    ContestsColumns,
 		PrimaryKey: []*schema.Column{ContestsColumns[0]},
+		Indexes: []*schema.Index{
+			{
+				Name:    "contest_slug",
+				Unique:  true,
+				Columns: []*schema.Column{ContestsColumns[5]},
+			},
+		},
 	}
 	// GroupsColumns holds the columns for the "groups" table.
 	GroupsColumns = []*schema.Column{

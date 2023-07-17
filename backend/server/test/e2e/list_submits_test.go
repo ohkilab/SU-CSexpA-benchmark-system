@@ -65,7 +65,7 @@ func Test_ListSubmits(t *testing.T) {
 	ctx = metadata.NewOutgoingContext(ctx, meta)
 
 	resp, err := client.ListSubmits(ctx, &pb.ListSubmitsRequest{
-		ContestId: int32(c.ID),
+		ContestSlug: c.Slug,
 	})
 	require.NoError(t, err)
 	require.Len(t, resp.Submits, 3)
@@ -74,8 +74,8 @@ func Test_ListSubmits(t *testing.T) {
 	assert.Equal(t, submit1.ID, int(resp.Submits[2].Id))
 
 	resp, err = client.ListSubmits(ctx, &pb.ListSubmitsRequest{
-		ContestId: int32(c.ID),
-		GroupName: lo.ToPtr("test2"),
+		ContestSlug: c.Slug,
+		GroupName:   lo.ToPtr("test2"),
 	})
 	require.NoError(t, err)
 	require.Len(t, resp.Submits, 1)
@@ -83,8 +83,8 @@ func Test_ListSubmits(t *testing.T) {
 	assert.Equal(t, group2.Name, resp.Submits[0].GroupName)
 
 	resp, err = client.ListSubmits(ctx, &pb.ListSubmitsRequest{
-		ContestId: int32(c.ID),
-		Status:    lo.ToPtr(pb.Status_CONNECTION_FAILED),
+		ContestSlug: c.Slug,
+		Status:      lo.ToPtr(pb.Status_CONNECTION_FAILED),
 	})
 	require.NoError(t, err)
 	require.Len(t, resp.Submits, 1)
