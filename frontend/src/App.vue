@@ -40,7 +40,7 @@ const handleLogin = (id:string, password:string) => {
     state.group = id
     loggedIn.value = true
     errMsg.value = ''
-    router.push('/benchmark')
+    router.push('/contests')
   }).catch(err => {
     console.log(err)
     errMsg.value = err.message
