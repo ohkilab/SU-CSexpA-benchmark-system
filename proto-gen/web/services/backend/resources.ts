@@ -331,13 +331,23 @@ export enum Role {
  */
 export enum Validator {
     /**
+     * 2022年度
+     *
      * @generated from protobuf enum value: V2022 = 0;
      */
     V2022 = 0,
     /**
+     * 2023年度 予選
+     *
      * @generated from protobuf enum value: V2023 = 1;
      */
-    V2023 = 1
+    V2023 = 1,
+    /**
+     * 2023年度 本戦
+     *
+     * @generated from protobuf enum value: V2023HO = 2;
+     */
+    V2023HO = 2
 }
 // @generated message type with reflection information, may provide speed optimized methods
 class Contest$Type extends MessageType<Contest> {

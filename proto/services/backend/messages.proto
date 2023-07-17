@@ -17,13 +17,13 @@ message PostLoginResponse {
 
 message PostSubmitRequest {
   string url = 1;
-  int32 contest_id = 2;
+  string contest_slug = 2;
 }
 
 message PostSubmitResponse {
   int32 id = 1;
   string url = 2;
-  int32 contest_id = 3;
+  string contest_slug = 3;
   google.protobuf.Timestamp submited_at = 4;
 }
 
@@ -32,7 +32,7 @@ message GetSubmitRequest { int32 submit_id = 1; }
 message GetSubmitResponse { Submit submit = 1; }
 
 message ListSubmitsRequest {
-  int32 contest_id = 1;
+  string contest_slug = 1;
   optional string group_name = 2; // middle match
   optional Status status = 3;
   optional bool contains_guest = 4; // default: false
@@ -82,7 +82,7 @@ message UpdateContestResponse {
 }
 
 message GetRankingRequest {
-  int32 contest_id = 1;
+  string contest_slug = 1;
   bool contain_guest = 2; // if it is true, return ranking which includes guests
 }
 
