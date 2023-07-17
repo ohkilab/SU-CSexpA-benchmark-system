@@ -38,21 +38,15 @@ func Test_GetSubmit(t *testing.T) {
 	client := pb.NewBackendServiceClient(conn)
 
 	// prepare
-	group, _ := entClient.Group.Create().
+	group, err := entClient.Group.Create().
 		SetName("test").
 		SetEncryptedPassword(string("hoge")).
 		SetRole(group.RoleContestant).
 		SetCreatedAt(timejst.Now()).
 		Save(ctx)
-	contest, _ := entClient.Contest.Create().
-		SetTitle("test contest").
-		SetSlug("test-contest").
-		SetStartAt(time.Date(2023, time.January, 1, 0, 0, 0, 0, time.UTC)).
-		SetEndAt(time.Date(2023, time.December, 31, 23, 59, 59, 0, time.UTC)).
-		SetSubmitLimit(9999).
-		SetCreatedAt(timejst.Now()).
-		SetTagSelectionLogic(contest.TagSelectionLogicAuto).
-		Save(ctx)
+	require.NoError(t, err)
+	contest := utils.CreateContest(ctx, t, entClient, "test contest", "test-contest", pb.Validator_V2023.String(), time.Date(2023, time.January, 1, 0, 0, 0, 0, time.UTC), time.Date(2023, time.December, 31, 23, 59, 59, 0, time.UTC), 9999, contest.TagSelectionLogicAuto)
+	require.NoError(t, err)
 	submit, err := entClient.Submit.Create().
 		SetURL("http://localhost:8080/program").
 		SetContests(contest).
@@ -62,11 +56,10 @@ func Test_GetSubmit(t *testing.T) {
 		SetSubmitedAt(timejst.Now()).
 		SetCompletedAt(timejst.Now()).
 		Save(ctx)
+	require.NoError(t, err)
 
 	jwtToken, err := auth.GenerateJWTToken([]byte("secret"), group.ID, group.CreatedAt.Year())
-	if err != nil {
-		t.Fatal(err)
-	}
+	require.NoError(t, err)
 	meta := metadata.New(map[string]string{"authorization": "Bearer " + jwtToken})
 	ctx = metadata.NewOutgoingContext(ctx, meta)
 
@@ -85,7 +78,6 @@ func Test_GetSubmit(t *testing.T) {
 		for _, taskRes := range msg.Submit.TaskResults {
 			dbtaskRes, err := entClient.TaskResult.Get(ctx, int(taskRes.Id))
 			require.NoError(t, err)
-			t.Log(taskRes.Url, dbtaskRes.ErrorMessage)
 			assert.Equal(t, dbtaskRes.RequestPerSec, int(taskRes.RequestPerSec))
 		}
 

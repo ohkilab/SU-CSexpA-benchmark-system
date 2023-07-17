@@ -2,11 +2,10 @@ package e2e
 
 import (
 	"context"
-	"log"
 	"testing"
+	"time"
 
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/api/grpc"
-	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/core/timejst"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/repository/ent/contest"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/repository/ent/group"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/repository/tag"
@@ -27,24 +26,8 @@ func Test_ListContests(t *testing.T) {
 	client := pb.NewBackendServiceClient(conn)
 
 	// prepare
-	contest1, _ := entClient.Contest.Create().
-		SetTitle("test contest").
-		SetSlug("test-contest1").
-		SetStartAt(timejst.Now()).
-		SetEndAt(timejst.Now().AddDate(1, 0, 0)).
-		SetSubmitLimit(9999).
-		SetCreatedAt(timejst.Now()).
-		SetTagSelectionLogic(contest.TagSelectionLogicAuto).
-		Save(ctx)
-	contest2, _ := entClient.Contest.Create().
-		SetTitle("test contest").
-		SetSlug("test-contest2").
-		SetStartAt(timejst.Now()).
-		SetEndAt(timejst.Now().AddDate(1, 0, 0)).
-		SetSubmitLimit(9999).
-		SetTagSelectionLogic(contest.TagSelectionLogicAuto).
-		SetCreatedAt(timejst.Now()).
-		Save(ctx)
+	contest1 := utils.CreateContest(ctx, t, entClient, "test contest", "test-contest1", pb.Validator_V2023.String(), time.Date(2023, time.January, 1, 0, 0, 0, 0, time.UTC), time.Date(2023, time.December, 31, 23, 59, 59, 0, time.UTC), 9999, contest.TagSelectionLogicAuto)
+	contest2 := utils.CreateContest(ctx, t, entClient, "test contest", "test-contest2", pb.Validator_V2023.String(), time.Date(2023, time.January, 1, 0, 0, 0, 0, time.UTC), time.Date(2023, time.December, 31, 23, 59, 59, 0, time.UTC), 9999, contest.TagSelectionLogicAuto)
 
 	resp, err := client.ListContests(ctx, &pb.ListContestsRequest{})
 	require.NoError(t, err)
@@ -60,11 +43,9 @@ func Test_CreateContest(t *testing.T) {
 
 	tagRepository := tag.MockRepository(nil, nil,
 		func(contestSlug string, tags []string) error {
-			log.Println(contestSlug, tags)
 			return nil
 		},
 		func(contestSlug string, tagsList [][]string) error {
-			log.Println(contestSlug, tagsList)
 			return nil
 		},
 	)

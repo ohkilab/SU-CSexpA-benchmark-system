@@ -3,10 +3,10 @@ package e2e
 import (
 	"context"
 	"testing"
+	"time"
 
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/api/grpc"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/core/auth"
-	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/core/timejst"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/repository/ent/contest"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/repository/ent/group"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/test/utils"
@@ -30,15 +30,7 @@ func Test_GetRanking(t *testing.T) {
 	a02 := utils.CreateGroup(ctx, t, entClient, "a02", "aaaa", group.RoleContestant)
 	a03 := utils.CreateGroup(ctx, t, entClient, "a03", "aaaa", group.RoleContestant)
 	szpp := utils.CreateGroup(ctx, t, entClient, "szpp", "aaaa", group.RoleGuest)
-	contest, _ := entClient.Contest.Create().
-		SetTitle("test contest").
-		SetSlug("test-contest1").
-		SetStartAt(timejst.Now()).
-		SetEndAt(timejst.Now().AddDate(1, 0, 0)).
-		SetSubmitLimit(9999).
-		SetCreatedAt(timejst.Now()).
-		SetTagSelectionLogic(contest.TagSelectionLogicAuto).
-		Save(ctx)
+	contest := utils.CreateContest(ctx, t, entClient, "test contest", "test-contest", pb.Validator_V2023.String(), time.Date(2023, time.January, 1, 0, 0, 0, 0, time.UTC), time.Date(2023, time.December, 31, 23, 59, 59, 0, time.UTC), 9999, contest.TagSelectionLogicAuto)
 	_ = utils.CreateSubmit(ctx, t, entClient, 100, pb.Status_SUCCESS.String(), contest, a01)
 	a01Submit2 := utils.CreateSubmit(ctx, t, entClient, 1000, pb.Status_SUCCESS.String(), contest, a01)
 	a02Submit := utils.CreateSubmit(ctx, t, entClient, 900, pb.Status_SUCCESS.String(), contest, a02)

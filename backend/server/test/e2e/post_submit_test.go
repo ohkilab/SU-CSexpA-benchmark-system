@@ -46,26 +46,11 @@ func Test_PostSubmit(t *testing.T) {
 		SetRole(group.RoleContestant).
 		SetCreatedAt(timejst.Now()).
 		Save(ctx)
-	if err != nil {
-		t.Fatal(err)
-	}
-	contest, err := entClient.Contest.Create().
-		SetTitle("test contest").
-		SetSlug("test-contest").
-		SetStartAt(time.Date(2023, time.January, 1, 0, 0, 0, 0, time.UTC)).
-		SetEndAt(time.Date(2023, time.December, 31, 23, 59, 59, 0, time.UTC)).
-		SetSubmitLimit(9999).
-		SetTagSelectionLogic(contest.TagSelectionLogicAuto).
-		SetCreatedAt(timejst.Now()).
-		Save(ctx)
-	if err != nil {
-		t.Fatal(err)
-	}
+	require.NoError(t, err)
+	contest := utils.CreateContest(ctx, t, entClient, "test contest", "test-contest", pb.Validator_V2023.String(), time.Date(2023, time.January, 1, 0, 0, 0, 0, time.UTC), time.Date(2023, time.December, 31, 23, 59, 59, 0, time.UTC), 9999, contest.TagSelectionLogicAuto)
 
 	jwtToken, err := auth.GenerateJWTToken(secret, group.ID, group.CreatedAt.Year())
-	if err != nil {
-		t.Fatal(err)
-	}
+	require.NoError(t, err)
 	meta := metadata.New(map[string]string{"authorization": "Bearer " + jwtToken})
 	ctx = metadata.NewOutgoingContext(ctx, meta)
 

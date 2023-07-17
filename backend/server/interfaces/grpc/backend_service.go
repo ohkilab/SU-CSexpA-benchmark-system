@@ -63,6 +63,9 @@ func (s *backendServiceServer) PostLogin(ctx context.Context, req *pb.PostLoginR
 }
 
 func (s *backendServiceServer) ListSubmits(ctx context.Context, req *pb.ListSubmitsRequest) (*pb.ListSubmitsResponse, error) {
+	if req.ContestId == 0 {
+		return nil, status.Error(codes.InvalidArgument, "contest_id is required")
+	}
 	return s.submitInteractor.ListSubmits(ctx, req)
 }
 

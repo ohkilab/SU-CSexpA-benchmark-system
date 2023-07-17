@@ -16,6 +16,7 @@ import (
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/core/auth"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/core/timejst"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/repository/ent"
+	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/repository/ent/contest"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/repository/ent/group"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/repository/ent/migrate"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/benchmark-service/benchmark"
@@ -152,6 +153,21 @@ func CreateSubmit(ctx context.Context, t *testing.T, entClient *ent.Client, scor
 		Save(ctx)
 	require.NoError(t, err)
 	return submit
+}
+
+func CreateContest(ctx context.Context, t *testing.T, entClient *ent.Client, title, slug, validator string, startAt, endAt time.Time, submitLimit int, logic contest.TagSelectionLogic) *ent.Contest {
+	contest, err := entClient.Contest.Create().
+		SetTitle(title).
+		SetSlug(slug).
+		SetStartAt(startAt).
+		SetEndAt(endAt).
+		SetValidator(validator).
+		SetSubmitLimit(submitLimit).
+		SetTagSelectionLogic(logic).
+		SetCreatedAt(timejst.Now()).
+		Save(ctx)
+	require.NoError(t, err)
+	return contest
 }
 
 func WithJWT(ctx context.Context, t *testing.T, id, year int) context.Context {
