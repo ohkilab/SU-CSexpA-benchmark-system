@@ -1,15 +1,14 @@
 syntax = "proto3";
 
-import "services/backend/messages.proto";
-
 package backend;
+
+import "services/backend/messages.proto";
 
 service BackendService {
   // submit
   rpc PostSubmit(PostSubmitRequest) returns (PostSubmitResponse);
   rpc GetSubmit(GetSubmitRequest) returns (stream GetSubmitResponse);
   rpc ListSubmits(ListSubmitsRequest) returns (ListSubmitsResponse);
-  
 
   // contest
   rpc CreateContest(CreateContestRequest) returns (CreateContestResponse);
@@ -27,6 +26,5 @@ service BackendService {
 
 service HealthcheckService {
   rpc PingUnary(PingUnaryRequest) returns (PingUnaryResponse);
-  rpc PingServerSideStreaming(PingServerSideStreamingRequest)
-      returns (stream PingServerSideStreamingResponse);
+  rpc PingServerSideStreaming(PingServerSideStreamingRequest) returns (stream PingServerSideStreamingResponse);
 }

@@ -1,8 +1,8 @@
 syntax = "proto3";
 
-import "google/protobuf/timestamp.proto";
-
 package backend;
+
+import "google/protobuf/timestamp.proto";
 
 message Contest {
   int32 id = 1;
@@ -45,12 +45,10 @@ message Submit {
   int32 score = 4;
   Language language = 5;
   google.protobuf.Timestamp submited_at = 6;
-  optional google.protobuf.Timestamp completed_at =
-      7; // it this field is not null, this submit is completed
+  optional google.protobuf.Timestamp completed_at = 7; // it this field is not null, this submit is completed
   repeated TaskResult task_results = 8;
   Status status = 9;
-  optional string error_message =
-      10; // if the connection error occurs, then this field is filled
+  optional string error_message = 10; // if the connection error occurs, then this field is filled
   int32 tag_count = 11;
 }
 
@@ -74,13 +72,13 @@ message TaskResult {
 }
 
 enum Status {
-  WAITING = 0;           // waiting for benchmark
-  IN_PROGRESS = 1;       // in progress
-  SUCCESS = 2;           // benchmark succeeded
+  WAITING = 0; // waiting for benchmark
+  IN_PROGRESS = 1; // in progress
+  SUCCESS = 2; // benchmark succeeded
   CONNECTION_FAILED = 3; // failed to connect
-  VALIDATION_ERROR = 4;  // validation error
-  INTERNAL_ERROR = 5;    // backend error
-  TIMEOUT = 6;           // timeout
+  VALIDATION_ERROR = 4; // validation error
+  INTERNAL_ERROR = 5; // backend error
+  TIMEOUT = 6; // timeout
 }
 
 enum Language {
@@ -104,7 +102,7 @@ enum Role {
 // シングルの Go や C++ で書かれた validator を download & compile して
 // request と response を渡してチェックしてもらうとかの形にしないといけない気がする
 enum Validator {
-  V2022 = 0;   // 2022年度
-  V2023 = 1;   // 2023年度 予選
+  V2022 = 0; // 2022年度
+  V2023 = 1; // 2023年度 予選
   V2023HO = 2; // 2023年度 本戦
 }

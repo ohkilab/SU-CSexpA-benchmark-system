@@ -1,9 +1,9 @@
 syntax = "proto3";
 
-import "services/backend/resources.proto";
-import "google/protobuf/timestamp.proto";
-
 package backend;
+
+import "google/protobuf/timestamp.proto";
+import "services/backend/resources.proto";
 
 message PostLoginRequest {
   string id = 1; // it means group_id
@@ -27,9 +27,13 @@ message PostSubmitResponse {
   google.protobuf.Timestamp submited_at = 4;
 }
 
-message GetSubmitRequest { int32 submit_id = 1; }
+message GetSubmitRequest {
+  int32 submit_id = 1;
+}
 
-message GetSubmitResponse { Submit submit = 1; }
+message GetSubmitResponse {
+  Submit submit = 1;
+}
 
 message ListSubmitsRequest {
   string contest_slug = 1;
@@ -95,17 +99,27 @@ message GetRankingResponse {
   repeated Record records = 1;
 }
 
-message PingUnaryRequest { string ping = 1; }
+message PingUnaryRequest {
+  string ping = 1;
+}
 
-message PingUnaryResponse { string pong = 1; }
+message PingUnaryResponse {
+  string pong = 1;
+}
 
-message PingServerSideStreamingRequest { string ping = 2; }
+message PingServerSideStreamingRequest {
+  string ping = 2;
+}
 
-message PingServerSideStreamingResponse { string pong = 2; }
+message PingServerSideStreamingResponse {
+  string pong = 2;
+}
 
 message ListContestsRequest {}
 
-message ListContestsResponse { repeated Contest contests = 2; }
+message ListContestsResponse {
+  repeated Contest contests = 2;
+}
 
 message VerifyTokenRequest {}
 

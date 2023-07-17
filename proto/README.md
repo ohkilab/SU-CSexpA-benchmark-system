@@ -9,3 +9,9 @@
 ```shell
 $ make generate
 ```
+
+## format
+
+```shell
+$ make format
+```

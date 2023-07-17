@@ -33,6 +33,10 @@ export interface ExecuteRequest {
      * @generated from protobuf field: backend.Validator validator = 4;
      */
     validator: Validator;
+    /**
+     * @generated from protobuf field: int32 time_limit_per_task = 5;
+     */
+    timeLimitPerTask: number; // sec
 }
 /**
  * @generated from protobuf message benchmark.Task
@@ -133,11 +137,12 @@ class ExecuteRequest$Type extends MessageType<ExecuteRequest> {
             { no: 1, name: "tasks", kind: "message", repeat: 1 /*RepeatType.PACKED*/, T: () => Task },
             { no: 2, name: "group_id", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
             { no: 3, name: "contest_slug", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
-            { no: 4, name: "validator", kind: "enum", T: () => ["backend.Validator", Validator] }
+            { no: 4, name: "validator", kind: "enum", T: () => ["backend.Validator", Validator] },
+            { no: 5, name: "time_limit_per_task", kind: "scalar", T: 5 /*ScalarType.INT32*/ }
         ]);
     }
     create(value?: PartialMessage<ExecuteRequest>): ExecuteRequest {
-        const message = { tasks: [], groupId: "", contestSlug: "", validator: 0 };
+        const message = { tasks: [], groupId: "", contestSlug: "", validator: 0, timeLimitPerTask: 0 };
         globalThis.Object.defineProperty(message, MESSAGE_TYPE, { enumerable: false, value: this });
         if (value !== undefined)
             reflectionMergePartial<ExecuteRequest>(this, message, value);
@@ -159,6 +164,9 @@ class ExecuteRequest$Type extends MessageType<ExecuteRequest> {
                     break;
                 case /* backend.Validator validator */ 4:
                     message.validator = reader.int32();
+                    break;
+                case /* int32 time_limit_per_task */ 5:
+                    message.timeLimitPerTask = reader.int32();
                     break;
                 default:
                     let u = options.readUnknownField;
@@ -184,6 +192,9 @@ class ExecuteRequest$Type extends MessageType<ExecuteRequest> {
         /* backend.Validator validator = 4; */
         if (message.validator !== 0)
             writer.tag(4, WireType.Varint).int32(message.validator);
+        /* int32 time_limit_per_task = 5; */
+        if (message.timeLimitPerTask !== 0)
+            writer.tag(5, WireType.Varint).int32(message.timeLimitPerTask);
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);

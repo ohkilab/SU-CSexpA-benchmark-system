@@ -1,23 +1,24 @@
 syntax = "proto3";
 
+package benchmark;
+
 import "google/protobuf/timestamp.proto";
 import "services/backend/resources.proto";
 
 option go_package = "github.com/ohkilab/SU-CSexpA-benchmark-system/proto-gen/go/benchmark-service";
-
-package benchmark;
 
 message ExecuteRequest {
   repeated Task tasks = 1;
   string group_id = 2; // for logging
   string contest_slug = 3;
   backend.Validator validator = 4;
+  int32 time_limit_per_task = 5; // sec
 }
 
 message Task {
   HttpRequest request = 1;
 
-  int32 thread_num = 6;    // the number of threads for a task
+  int32 thread_num = 6; // the number of threads for a task
   int32 attempt_count = 7; // the count of attempting for a task
 }
 
@@ -31,7 +32,7 @@ enum HttpMethod {
 message ExecuteResponse {
   bool ok = 1;
   optional string error_message = 2; // if ok is false, this field is set
-  int64 time_elapsed = 3;            // in milliseconds
+  int64 time_elapsed = 3; // in milliseconds
   int32 total_requests = 4;
   int32 requests_per_second = 5;
   Task task = 6;
