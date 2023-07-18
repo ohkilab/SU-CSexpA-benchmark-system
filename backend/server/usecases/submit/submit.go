@@ -61,7 +61,11 @@ func (i *Interactor) PostSubmit(ctx context.Context, req *backendpb.PostSubmitRe
 		return nil, status.Error(codes.FailedPrecondition, "the contest has been finished")
 	}
 
-	predicates := []predicate.Submit{submit.HasGroupsWith(group.ID(claims.GroupID)), submit.StatusEQ(backendpb.Status_SUCCESS.String())}
+	predicates := []predicate.Submit{
+		submit.HasGroupsWith(group.ID(claims.GroupID)),
+		submit.StatusEQ(backendpb.Status_SUCCESS.String()),
+		submit.HasContestsWith(contest.Slug(req.ContestSlug)),
+	}
 	submitCount, err := i.entClient.Submit.Query().Where(predicates...).Count(ctx)
 	if err != nil {
 		i.logger.Error("failed to fetch submits", "error", err)
