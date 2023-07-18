@@ -57,6 +57,7 @@ message CreateContestRequest {
     TagSelectionLogicManual manual = 10;
   }
   backend.Validator validator = 11;
+  int32 time_limit_per_task = 12; // sec
 }
 
 message CreateContestResponse {

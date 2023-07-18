@@ -373,6 +373,9 @@ pub struct CreateContestRequest {
     pub slug: ::prost::alloc::string::String,
     #[prost(enumeration="Validator", tag="11")]
     pub validator: i32,
+    /// sec
+    #[prost(int32, tag="12")]
+    pub time_limit_per_task: i32,
     #[prost(oneof="create_contest_request::TagSelection", tags="9, 10")]
     pub tag_selection: ::core::option::Option<create_contest_request::TagSelection>,
 }

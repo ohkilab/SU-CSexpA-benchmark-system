@@ -173,6 +173,10 @@ export interface CreateContestRequest {
      * @generated from protobuf field: backend.Validator validator = 11;
      */
     validator: Validator;
+    /**
+     * @generated from protobuf field: int32 time_limit_per_task = 12;
+     */
+    timeLimitPerTask: number; // sec
 }
 /**
  * @generated from protobuf message backend.CreateContestResponse
@@ -812,11 +816,12 @@ class CreateContestRequest$Type extends MessageType<CreateContestRequest> {
             { no: 8, name: "slug", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
             { no: 9, name: "auto", kind: "message", oneof: "tagSelection", T: () => TagSelectionLogicAuto },
             { no: 10, name: "manual", kind: "message", oneof: "tagSelection", T: () => TagSelectionLogicManual },
-            { no: 11, name: "validator", kind: "enum", T: () => ["backend.Validator", Validator] }
+            { no: 11, name: "validator", kind: "enum", T: () => ["backend.Validator", Validator] },
+            { no: 12, name: "time_limit_per_task", kind: "scalar", T: 5 /*ScalarType.INT32*/ }
         ]);
     }
     create(value?: PartialMessage<CreateContestRequest>): CreateContestRequest {
-        const message = { title: "", submitLimit: 0, slug: "", tagSelection: { oneofKind: undefined }, validator: 0 };
+        const message = { title: "", submitLimit: 0, slug: "", tagSelection: { oneofKind: undefined }, validator: 0, timeLimitPerTask: 0 };
         globalThis.Object.defineProperty(message, MESSAGE_TYPE, { enumerable: false, value: this });
         if (value !== undefined)
             reflectionMergePartial<CreateContestRequest>(this, message, value);
@@ -857,6 +862,9 @@ class CreateContestRequest$Type extends MessageType<CreateContestRequest> {
                 case /* backend.Validator validator */ 11:
                     message.validator = reader.int32();
                     break;
+                case /* int32 time_limit_per_task */ 12:
+                    message.timeLimitPerTask = reader.int32();
+                    break;
                 default:
                     let u = options.readUnknownField;
                     if (u === "throw")
@@ -893,6 +901,9 @@ class CreateContestRequest$Type extends MessageType<CreateContestRequest> {
         /* backend.Validator validator = 11; */
         if (message.validator !== 0)
             writer.tag(11, WireType.Varint).int32(message.validator);
+        /* int32 time_limit_per_task = 12; */
+        if (message.timeLimitPerTask !== 0)
+            writer.tag(12, WireType.Varint).int32(message.timeLimitPerTask);
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
