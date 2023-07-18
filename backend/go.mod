@@ -6,8 +6,6 @@ replace github.com/ohkilab/SU-CSexpA-benchmark-system/proto-gen/go => ../proto-g
 
 replace github.com/ohkilab/SU-CSexpA-benchmark-system/benchmark-service => ../benchmark-service
 
-replace cloud.google.com/go => cloud.google.com/go v0.110.3
-
 require (
 	entgo.io/ent v0.12.3
 	github.com/go-sql-driver/mysql v1.7.1
@@ -21,11 +19,11 @@ require (
 	github.com/samber/lo v1.38.1
 	github.com/spf13/cobra v1.7.0
 	github.com/stretchr/testify v1.8.2
-	golang.org/x/crypto v0.10.0
-	golang.org/x/exp v0.0.0-20230626212559-97b1e661b5df
-	golang.org/x/net v0.11.0
+	golang.org/x/crypto v0.11.0
+	golang.org/x/exp v0.0.0-20230713183714-613f0c0eb8a1
+	golang.org/x/net v0.12.0
 	golang.org/x/sync v0.3.0
-	google.golang.org/grpc v1.56.1
+	google.golang.org/grpc v1.56.2
 	google.golang.org/protobuf v1.31.0
 	gopkg.in/yaml.v3 v3.0.1
 )
@@ -48,10 +46,10 @@ require (
 	github.com/rogpeppe/go-internal v1.9.0 // indirect
 	github.com/spf13/pflag v1.0.5 // indirect
 	github.com/zclconf/go-cty v1.13.2 // indirect
-	golang.org/x/mod v0.11.0 // indirect
+	golang.org/x/mod v0.12.0 // indirect
 	golang.org/x/oauth2 v0.8.0 // indirect
-	golang.org/x/sys v0.9.0 // indirect
-	golang.org/x/text v0.10.0 // indirect
-	google.golang.org/genproto/googleapis/rpc v0.0.0-20230629202037-9506855d4529 // indirect
+	golang.org/x/sys v0.10.0 // indirect
+	golang.org/x/text v0.11.0 // indirect
+	google.golang.org/genproto/googleapis/rpc v0.0.0-20230717213848-3f92550aa753 // indirect
 	gopkg.in/check.v1 v1.0.0-20201130134442-10cb98267c6c // indirect
 )
