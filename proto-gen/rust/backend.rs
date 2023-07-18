@@ -502,5 +502,15 @@ pub struct VerifyTokenResponse {
     #[prost(string, tag="2")]
     pub message: ::prost::alloc::string::String,
 }
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct GetLatestSubmitRequest {
+}
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct GetLatestSubmitResponse {
+    #[prost(message, optional, tag="1")]
+    pub submit: ::core::option::Option<Submit>,
+}
 include!("backend.tonic.rs");
 // @@protoc_insertion_point(module)

@@ -1342,6 +1342,91 @@ func (x *VerifyTokenResponse) GetMessage() string {
 	return ""
 }
 
+type GetLatestSubmitRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+}
+
+func (x *GetLatestSubmitRequest) Reset() {
+	*x = GetLatestSubmitRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_services_backend_messages_proto_msgTypes[24]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *GetLatestSubmitRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetLatestSubmitRequest) ProtoMessage() {}
+
+func (x *GetLatestSubmitRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_services_backend_messages_proto_msgTypes[24]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetLatestSubmitRequest.ProtoReflect.Descriptor instead.
+func (*GetLatestSubmitRequest) Descriptor() ([]byte, []int) {
+	return file_services_backend_messages_proto_rawDescGZIP(), []int{24}
+}
+
+type GetLatestSubmitResponse struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Submit *Submit `protobuf:"bytes,1,opt,name=submit,proto3" json:"submit,omitempty"`
+}
+
+func (x *GetLatestSubmitResponse) Reset() {
+	*x = GetLatestSubmitResponse{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_services_backend_messages_proto_msgTypes[25]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *GetLatestSubmitResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetLatestSubmitResponse) ProtoMessage() {}
+
+func (x *GetLatestSubmitResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_services_backend_messages_proto_msgTypes[25]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetLatestSubmitResponse.ProtoReflect.Descriptor instead.
+func (*GetLatestSubmitResponse) Descriptor() ([]byte, []int) {
+	return file_services_backend_messages_proto_rawDescGZIP(), []int{25}
+}
+
+func (x *GetLatestSubmitResponse) GetSubmit() *Submit {
+	if x != nil {
+		return x.Submit
+	}
+	return nil
+}
+
 type GetRankingResponse_Record struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -1355,7 +1440,7 @@ type GetRankingResponse_Record struct {
 func (x *GetRankingResponse_Record) Reset() {
 	*x = GetRankingResponse_Record{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_services_backend_messages_proto_msgTypes[24]
+		mi := &file_services_backend_messages_proto_msgTypes[26]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1368,7 +1453,7 @@ func (x *GetRankingResponse_Record) String() string {
 func (*GetRankingResponse_Record) ProtoMessage() {}
 
 func (x *GetRankingResponse_Record) ProtoReflect() protoreflect.Message {
-	mi := &file_services_backend_messages_proto_msgTypes[24]
+	mi := &file_services_backend_messages_proto_msgTypes[26]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1567,18 +1652,24 @@ var file_services_backend_messages_proto_rawDesc = []byte{
 	0x79, 0x54, 0x6f, 0x6b, 0x65, 0x6e, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x0e,
 	0x0a, 0x02, 0x6f, 0x6b, 0x18, 0x01, 0x20, 0x01, 0x28, 0x08, 0x52, 0x02, 0x6f, 0x6b, 0x12, 0x18,
 	0x0a, 0x07, 0x6d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52,
-	0x07, 0x6d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x42, 0xa5, 0x01, 0x0a, 0x0b, 0x63, 0x6f, 0x6d,
-	0x2e, 0x62, 0x61, 0x63, 0x6b, 0x65, 0x6e, 0x64, 0x42, 0x0d, 0x4d, 0x65, 0x73, 0x73, 0x61, 0x67,
-	0x65, 0x73, 0x50, 0x72, 0x6f, 0x74, 0x6f, 0x50, 0x01, 0x5a, 0x4b, 0x67, 0x69, 0x74, 0x68, 0x75,
-	0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x6f, 0x68, 0x6b, 0x69, 0x6c, 0x61, 0x62, 0x2f, 0x53, 0x55,
-	0x2d, 0x43, 0x53, 0x65, 0x78, 0x70, 0x41, 0x2d, 0x62, 0x65, 0x6e, 0x63, 0x68, 0x6d, 0x61, 0x72,
-	0x6b, 0x2d, 0x73, 0x79, 0x73, 0x74, 0x65, 0x6d, 0x2f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2d, 0x67,
-	0x65, 0x6e, 0x2f, 0x67, 0x6f, 0x2f, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x73, 0x2f, 0x62,
-	0x61, 0x63, 0x6b, 0x65, 0x6e, 0x64, 0xa2, 0x02, 0x03, 0x42, 0x58, 0x58, 0xaa, 0x02, 0x07, 0x42,
-	0x61, 0x63, 0x6b, 0x65, 0x6e, 0x64, 0xca, 0x02, 0x07, 0x42, 0x61, 0x63, 0x6b, 0x65, 0x6e, 0x64,
-	0xe2, 0x02, 0x13, 0x42, 0x61, 0x63, 0x6b, 0x65, 0x6e, 0x64, 0x5c, 0x47, 0x50, 0x42, 0x4d, 0x65,
-	0x74, 0x61, 0x64, 0x61, 0x74, 0x61, 0xea, 0x02, 0x07, 0x42, 0x61, 0x63, 0x6b, 0x65, 0x6e, 0x64,
-	0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x07, 0x6d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x22, 0x18, 0x0a, 0x16, 0x47, 0x65, 0x74, 0x4c,
+	0x61, 0x74, 0x65, 0x73, 0x74, 0x53, 0x75, 0x62, 0x6d, 0x69, 0x74, 0x52, 0x65, 0x71, 0x75, 0x65,
+	0x73, 0x74, 0x22, 0x42, 0x0a, 0x17, 0x47, 0x65, 0x74, 0x4c, 0x61, 0x74, 0x65, 0x73, 0x74, 0x53,
+	0x75, 0x62, 0x6d, 0x69, 0x74, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x27, 0x0a,
+	0x06, 0x73, 0x75, 0x62, 0x6d, 0x69, 0x74, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x0f, 0x2e,
+	0x62, 0x61, 0x63, 0x6b, 0x65, 0x6e, 0x64, 0x2e, 0x53, 0x75, 0x62, 0x6d, 0x69, 0x74, 0x52, 0x06,
+	0x73, 0x75, 0x62, 0x6d, 0x69, 0x74, 0x42, 0xa5, 0x01, 0x0a, 0x0b, 0x63, 0x6f, 0x6d, 0x2e, 0x62,
+	0x61, 0x63, 0x6b, 0x65, 0x6e, 0x64, 0x42, 0x0d, 0x4d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x73,
+	0x50, 0x72, 0x6f, 0x74, 0x6f, 0x50, 0x01, 0x5a, 0x4b, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e,
+	0x63, 0x6f, 0x6d, 0x2f, 0x6f, 0x68, 0x6b, 0x69, 0x6c, 0x61, 0x62, 0x2f, 0x53, 0x55, 0x2d, 0x43,
+	0x53, 0x65, 0x78, 0x70, 0x41, 0x2d, 0x62, 0x65, 0x6e, 0x63, 0x68, 0x6d, 0x61, 0x72, 0x6b, 0x2d,
+	0x73, 0x79, 0x73, 0x74, 0x65, 0x6d, 0x2f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2d, 0x67, 0x65, 0x6e,
+	0x2f, 0x67, 0x6f, 0x2f, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x73, 0x2f, 0x62, 0x61, 0x63,
+	0x6b, 0x65, 0x6e, 0x64, 0xa2, 0x02, 0x03, 0x42, 0x58, 0x58, 0xaa, 0x02, 0x07, 0x42, 0x61, 0x63,
+	0x6b, 0x65, 0x6e, 0x64, 0xca, 0x02, 0x07, 0x42, 0x61, 0x63, 0x6b, 0x65, 0x6e, 0x64, 0xe2, 0x02,
+	0x13, 0x42, 0x61, 0x63, 0x6b, 0x65, 0x6e, 0x64, 0x5c, 0x47, 0x50, 0x42, 0x4d, 0x65, 0x74, 0x61,
+	0x64, 0x61, 0x74, 0x61, 0xea, 0x02, 0x07, 0x42, 0x61, 0x63, 0x6b, 0x65, 0x6e, 0x64, 0x62, 0x06,
+	0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -1593,7 +1684,7 @@ func file_services_backend_messages_proto_rawDescGZIP() []byte {
 	return file_services_backend_messages_proto_rawDescData
 }
 
-var file_services_backend_messages_proto_msgTypes = make([]protoimpl.MessageInfo, 25)
+var file_services_backend_messages_proto_msgTypes = make([]protoimpl.MessageInfo, 27)
 var file_services_backend_messages_proto_goTypes = []interface{}{
 	(*PostLoginRequest)(nil),                // 0: backend.PostLoginRequest
 	(*PostLoginResponse)(nil),               // 1: backend.PostLoginResponse
@@ -1619,41 +1710,44 @@ var file_services_backend_messages_proto_goTypes = []interface{}{
 	(*ListContestsResponse)(nil),            // 21: backend.ListContestsResponse
 	(*VerifyTokenRequest)(nil),              // 22: backend.VerifyTokenRequest
 	(*VerifyTokenResponse)(nil),             // 23: backend.VerifyTokenResponse
-	(*GetRankingResponse_Record)(nil),       // 24: backend.GetRankingResponse.Record
-	(*Group)(nil),                           // 25: backend.Group
-	(*timestamppb.Timestamp)(nil),           // 26: google.protobuf.Timestamp
-	(*Submit)(nil),                          // 27: backend.Submit
-	(Status)(0),                             // 28: backend.Status
-	(*TagSelectionLogicAuto)(nil),           // 29: backend.TagSelectionLogicAuto
-	(*TagSelectionLogicManual)(nil),         // 30: backend.TagSelectionLogicManual
-	(Validator)(0),                          // 31: backend.Validator
-	(*Contest)(nil),                         // 32: backend.Contest
+	(*GetLatestSubmitRequest)(nil),          // 24: backend.GetLatestSubmitRequest
+	(*GetLatestSubmitResponse)(nil),         // 25: backend.GetLatestSubmitResponse
+	(*GetRankingResponse_Record)(nil),       // 26: backend.GetRankingResponse.Record
+	(*Group)(nil),                           // 27: backend.Group
+	(*timestamppb.Timestamp)(nil),           // 28: google.protobuf.Timestamp
+	(*Submit)(nil),                          // 29: backend.Submit
+	(Status)(0),                             // 30: backend.Status
+	(*TagSelectionLogicAuto)(nil),           // 31: backend.TagSelectionLogicAuto
+	(*TagSelectionLogicManual)(nil),         // 32: backend.TagSelectionLogicManual
+	(Validator)(0),                          // 33: backend.Validator
+	(*Contest)(nil),                         // 34: backend.Contest
 }
 var file_services_backend_messages_proto_depIdxs = []int32{
-	25, // 0: backend.PostLoginResponse.group:type_name -> backend.Group
-	26, // 1: backend.PostSubmitResponse.submited_at:type_name -> google.protobuf.Timestamp
-	27, // 2: backend.GetSubmitResponse.submit:type_name -> backend.Submit
-	28, // 3: backend.ListSubmitsRequest.status:type_name -> backend.Status
-	27, // 4: backend.ListSubmitsResponse.submits:type_name -> backend.Submit
-	26, // 5: backend.CreateContestRequest.start_at:type_name -> google.protobuf.Timestamp
-	26, // 6: backend.CreateContestRequest.end_at:type_name -> google.protobuf.Timestamp
-	29, // 7: backend.CreateContestRequest.auto:type_name -> backend.TagSelectionLogicAuto
-	30, // 8: backend.CreateContestRequest.manual:type_name -> backend.TagSelectionLogicManual
-	31, // 9: backend.CreateContestRequest.validator:type_name -> backend.Validator
-	32, // 10: backend.CreateContestResponse.contest:type_name -> backend.Contest
-	32, // 11: backend.GetContestResponse.contest:type_name -> backend.Contest
-	26, // 12: backend.UpdateContestRequest.start_at:type_name -> google.protobuf.Timestamp
-	26, // 13: backend.UpdateContestRequest.end_at:type_name -> google.protobuf.Timestamp
-	31, // 14: backend.UpdateContestRequest.validator:type_name -> backend.Validator
-	32, // 15: backend.UpdateContestResponse.contest:type_name -> backend.Contest
-	24, // 16: backend.GetRankingResponse.records:type_name -> backend.GetRankingResponse.Record
-	32, // 17: backend.ListContestsResponse.contests:type_name -> backend.Contest
-	25, // 18: backend.GetRankingResponse.Record.group:type_name -> backend.Group
-	19, // [19:19] is the sub-list for method output_type
-	19, // [19:19] is the sub-list for method input_type
-	19, // [19:19] is the sub-list for extension type_name
-	19, // [19:19] is the sub-list for extension extendee
-	0,  // [0:19] is the sub-list for field type_name
+	27, // 0: backend.PostLoginResponse.group:type_name -> backend.Group
+	28, // 1: backend.PostSubmitResponse.submited_at:type_name -> google.protobuf.Timestamp
+	29, // 2: backend.GetSubmitResponse.submit:type_name -> backend.Submit
+	30, // 3: backend.ListSubmitsRequest.status:type_name -> backend.Status
+	29, // 4: backend.ListSubmitsResponse.submits:type_name -> backend.Submit
+	28, // 5: backend.CreateContestRequest.start_at:type_name -> google.protobuf.Timestamp
+	28, // 6: backend.CreateContestRequest.end_at:type_name -> google.protobuf.Timestamp
+	31, // 7: backend.CreateContestRequest.auto:type_name -> backend.TagSelectionLogicAuto
+	32, // 8: backend.CreateContestRequest.manual:type_name -> backend.TagSelectionLogicManual
+	33, // 9: backend.CreateContestRequest.validator:type_name -> backend.Validator
+	34, // 10: backend.CreateContestResponse.contest:type_name -> backend.Contest
+	34, // 11: backend.GetContestResponse.contest:type_name -> backend.Contest
+	28, // 12: backend.UpdateContestRequest.start_at:type_name -> google.protobuf.Timestamp
+	28, // 13: backend.UpdateContestRequest.end_at:type_name -> google.protobuf.Timestamp
+	33, // 14: backend.UpdateContestRequest.validator:type_name -> backend.Validator
+	34, // 15: backend.UpdateContestResponse.contest:type_name -> backend.Contest
+	26, // 16: backend.GetRankingResponse.records:type_name -> backend.GetRankingResponse.Record
+	34, // 17: backend.ListContestsResponse.contests:type_name -> backend.Contest
+	29, // 18: backend.GetLatestSubmitResponse.submit:type_name -> backend.Submit
+	27, // 19: backend.GetRankingResponse.Record.group:type_name -> backend.Group
+	20, // [20:20] is the sub-list for method output_type
+	20, // [20:20] is the sub-list for method input_type
+	20, // [20:20] is the sub-list for extension type_name
+	20, // [20:20] is the sub-list for extension extendee
+	0,  // [0:20] is the sub-list for field type_name
 }
 
 func init() { file_services_backend_messages_proto_init() }
@@ -1952,6 +2046,30 @@ func file_services_backend_messages_proto_init() {
 			}
 		}
 		file_services_backend_messages_proto_msgTypes[24].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*GetLatestSubmitRequest); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_services_backend_messages_proto_msgTypes[25].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*GetLatestSubmitResponse); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_services_backend_messages_proto_msgTypes[26].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*GetRankingResponse_Record); i {
 			case 0:
 				return &v.state
@@ -1970,14 +2088,14 @@ func file_services_backend_messages_proto_init() {
 		(*CreateContestRequest_Manual)(nil),
 	}
 	file_services_backend_messages_proto_msgTypes[12].OneofWrappers = []interface{}{}
-	file_services_backend_messages_proto_msgTypes[24].OneofWrappers = []interface{}{}
+	file_services_backend_messages_proto_msgTypes[26].OneofWrappers = []interface{}{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_services_backend_messages_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   25,
+			NumMessages:   27,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

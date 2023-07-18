@@ -127,3 +127,9 @@ message VerifyTokenResponse {
   bool ok = 1;
   string message = 2;
 }
+
+message GetLatestSubmitRequest {}
+
+message GetLatestSubmitResponse {
+  Submit submit = 1;
+}

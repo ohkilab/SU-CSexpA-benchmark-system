@@ -19,16 +19,17 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	BackendService_PostSubmit_FullMethodName    = "/backend.BackendService/PostSubmit"
-	BackendService_GetSubmit_FullMethodName     = "/backend.BackendService/GetSubmit"
-	BackendService_ListSubmits_FullMethodName   = "/backend.BackendService/ListSubmits"
-	BackendService_CreateContest_FullMethodName = "/backend.BackendService/CreateContest"
-	BackendService_ListContests_FullMethodName  = "/backend.BackendService/ListContests"
-	BackendService_GetContest_FullMethodName    = "/backend.BackendService/GetContest"
-	BackendService_UpdateContest_FullMethodName = "/backend.BackendService/UpdateContest"
-	BackendService_GetRanking_FullMethodName    = "/backend.BackendService/GetRanking"
-	BackendService_VerifyToken_FullMethodName   = "/backend.BackendService/VerifyToken"
-	BackendService_PostLogin_FullMethodName     = "/backend.BackendService/PostLogin"
+	BackendService_PostSubmit_FullMethodName      = "/backend.BackendService/PostSubmit"
+	BackendService_GetSubmit_FullMethodName       = "/backend.BackendService/GetSubmit"
+	BackendService_ListSubmits_FullMethodName     = "/backend.BackendService/ListSubmits"
+	BackendService_GetLatestSubmit_FullMethodName = "/backend.BackendService/GetLatestSubmit"
+	BackendService_CreateContest_FullMethodName   = "/backend.BackendService/CreateContest"
+	BackendService_ListContests_FullMethodName    = "/backend.BackendService/ListContests"
+	BackendService_GetContest_FullMethodName      = "/backend.BackendService/GetContest"
+	BackendService_UpdateContest_FullMethodName   = "/backend.BackendService/UpdateContest"
+	BackendService_GetRanking_FullMethodName      = "/backend.BackendService/GetRanking"
+	BackendService_VerifyToken_FullMethodName     = "/backend.BackendService/VerifyToken"
+	BackendService_PostLogin_FullMethodName       = "/backend.BackendService/PostLogin"
 )
 
 // BackendServiceClient is the client API for BackendService service.
@@ -39,6 +40,7 @@ type BackendServiceClient interface {
 	PostSubmit(ctx context.Context, in *PostSubmitRequest, opts ...grpc.CallOption) (*PostSubmitResponse, error)
 	GetSubmit(ctx context.Context, in *GetSubmitRequest, opts ...grpc.CallOption) (BackendService_GetSubmitClient, error)
 	ListSubmits(ctx context.Context, in *ListSubmitsRequest, opts ...grpc.CallOption) (*ListSubmitsResponse, error)
+	GetLatestSubmit(ctx context.Context, in *GetLatestSubmitRequest, opts ...grpc.CallOption) (*GetLatestSubmitResponse, error)
 	// contest
 	CreateContest(ctx context.Context, in *CreateContestRequest, opts ...grpc.CallOption) (*CreateContestResponse, error)
 	ListContests(ctx context.Context, in *ListContestsRequest, opts ...grpc.CallOption) (*ListContestsResponse, error)
@@ -103,6 +105,15 @@ func (x *backendServiceGetSubmitClient) Recv() (*GetSubmitResponse, error) {
 func (c *backendServiceClient) ListSubmits(ctx context.Context, in *ListSubmitsRequest, opts ...grpc.CallOption) (*ListSubmitsResponse, error) {
 	out := new(ListSubmitsResponse)
 	err := c.cc.Invoke(ctx, BackendService_ListSubmits_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *backendServiceClient) GetLatestSubmit(ctx context.Context, in *GetLatestSubmitRequest, opts ...grpc.CallOption) (*GetLatestSubmitResponse, error) {
+	out := new(GetLatestSubmitResponse)
+	err := c.cc.Invoke(ctx, BackendService_GetLatestSubmit_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -180,6 +191,7 @@ type BackendServiceServer interface {
 	PostSubmit(context.Context, *PostSubmitRequest) (*PostSubmitResponse, error)
 	GetSubmit(*GetSubmitRequest, BackendService_GetSubmitServer) error
 	ListSubmits(context.Context, *ListSubmitsRequest) (*ListSubmitsResponse, error)
+	GetLatestSubmit(context.Context, *GetLatestSubmitRequest) (*GetLatestSubmitResponse, error)
 	// contest
 	CreateContest(context.Context, *CreateContestRequest) (*CreateContestResponse, error)
 	ListContests(context.Context, *ListContestsRequest) (*ListContestsResponse, error)
@@ -205,6 +217,9 @@ func (UnimplementedBackendServiceServer) GetSubmit(*GetSubmitRequest, BackendSer
 }
 func (UnimplementedBackendServiceServer) ListSubmits(context.Context, *ListSubmitsRequest) (*ListSubmitsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListSubmits not implemented")
+}
+func (UnimplementedBackendServiceServer) GetLatestSubmit(context.Context, *GetLatestSubmitRequest) (*GetLatestSubmitResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetLatestSubmit not implemented")
 }
 func (UnimplementedBackendServiceServer) CreateContest(context.Context, *CreateContestRequest) (*CreateContestResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateContest not implemented")
@@ -293,6 +308,24 @@ func _BackendService_ListSubmits_Handler(srv interface{}, ctx context.Context, d
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(BackendServiceServer).ListSubmits(ctx, req.(*ListSubmitsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _BackendService_GetLatestSubmit_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetLatestSubmitRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BackendServiceServer).GetLatestSubmit(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: BackendService_GetLatestSubmit_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BackendServiceServer).GetLatestSubmit(ctx, req.(*GetLatestSubmitRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -437,6 +470,10 @@ var BackendService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "ListSubmits",
 			Handler:    _BackendService_ListSubmits_Handler,
+		},
+		{
+			MethodName: "GetLatestSubmit",
+			Handler:    _BackendService_GetLatestSubmit_Handler,
 		},
 		{
 			MethodName: "CreateContest",

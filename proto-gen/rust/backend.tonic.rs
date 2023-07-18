@@ -164,6 +164,32 @@ pub mod backend_service_client {
                 .insert(GrpcMethod::new("backend.BackendService", "ListSubmits"));
             self.inner.unary(req, path, codec).await
         }
+        ///
+        pub async fn get_latest_submit(
+            &mut self,
+            request: impl tonic::IntoRequest<super::GetLatestSubmitRequest>,
+        ) -> std::result::Result<
+            tonic::Response<super::GetLatestSubmitResponse>,
+            tonic::Status,
+        > {
+            self.inner
+                .ready()
+                .await
+                .map_err(|e| {
+                    tonic::Status::new(
+                        tonic::Code::Unknown,
+                        format!("Service was not ready: {}", e.into()),
+                    )
+                })?;
+            let codec = tonic::codec::ProstCodec::default();
+            let path = http::uri::PathAndQuery::from_static(
+                "/backend.BackendService/GetLatestSubmit",
+            );
+            let mut req = request.into_request();
+            req.extensions_mut()
+                .insert(GrpcMethod::new("backend.BackendService", "GetLatestSubmit"));
+            self.inner.unary(req, path, codec).await
+        }
         /** contest
 */
         pub async fn create_contest(
@@ -384,6 +410,14 @@ pub mod backend_service_server {
             request: tonic::Request<super::ListSubmitsRequest>,
         ) -> std::result::Result<
             tonic::Response<super::ListSubmitsResponse>,
+            tonic::Status,
+        >;
+        ///
+        async fn get_latest_submit(
+            &self,
+            request: tonic::Request<super::GetLatestSubmitRequest>,
+        ) -> std::result::Result<
+            tonic::Response<super::GetLatestSubmitResponse>,
             tonic::Status,
         >;
         /** contest
@@ -646,6 +680,52 @@ pub mod backend_service_server {
                     let fut = async move {
                         let inner = inner.0;
                         let method = ListSubmitsSvc(inner);
+                        let codec = tonic::codec::ProstCodec::default();
+                        let mut grpc = tonic::server::Grpc::new(codec)
+                            .apply_compression_config(
+                                accept_compression_encodings,
+                                send_compression_encodings,
+                            )
+                            .apply_max_message_size_config(
+                                max_decoding_message_size,
+                                max_encoding_message_size,
+                            );
+                        let res = grpc.unary(method, req).await;
+                        Ok(res)
+                    };
+                    Box::pin(fut)
+                }
+                "/backend.BackendService/GetLatestSubmit" => {
+                    #[allow(non_camel_case_types)]
+                    struct GetLatestSubmitSvc<T: BackendService>(pub Arc<T>);
+                    impl<
+                        T: BackendService,
+                    > tonic::server::UnaryService<super::GetLatestSubmitRequest>
+                    for GetLatestSubmitSvc<T> {
+                        type Response = super::GetLatestSubmitResponse;
+                        type Future = BoxFuture<
+                            tonic::Response<Self::Response>,
+                            tonic::Status,
+                        >;
+                        fn call(
+                            &mut self,
+                            request: tonic::Request<super::GetLatestSubmitRequest>,
+                        ) -> Self::Future {
+                            let inner = Arc::clone(&self.0);
+                            let fut = async move {
+                                (*inner).get_latest_submit(request).await
+                            };
+                            Box::pin(fut)
+                        }
+                    }
+                    let accept_compression_encodings = self.accept_compression_encodings;
+                    let send_compression_encodings = self.send_compression_encodings;
+                    let max_decoding_message_size = self.max_decoding_message_size;
+                    let max_encoding_message_size = self.max_encoding_message_size;
+                    let inner = self.inner.clone();
+                    let fut = async move {
+                        let inner = inner.0;
+                        let method = GetLatestSubmitSvc(inner);
                         let codec = tonic::codec::ProstCodec::default();
                         let mut grpc = tonic::server::Grpc::new(codec)
                             .apply_compression_config(

@@ -9,6 +9,7 @@ service BackendService {
   rpc PostSubmit(PostSubmitRequest) returns (PostSubmitResponse);
   rpc GetSubmit(GetSubmitRequest) returns (stream GetSubmitResponse);
   rpc ListSubmits(ListSubmitsRequest) returns (ListSubmitsResponse);
+  rpc GetLatestSubmit(GetLatestSubmitRequest) returns (GetLatestSubmitResponse);
 
   // contest
   rpc CreateContest(CreateContestRequest) returns (CreateContestResponse);

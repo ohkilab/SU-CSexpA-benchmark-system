@@ -23,6 +23,8 @@ import type { ListContestsResponse } from "./messages";
 import type { ListContestsRequest } from "./messages";
 import type { CreateContestResponse } from "./messages";
 import type { CreateContestRequest } from "./messages";
+import type { GetLatestSubmitResponse } from "./messages";
+import type { GetLatestSubmitRequest } from "./messages";
 import type { ListSubmitsResponse } from "./messages";
 import type { ListSubmitsRequest } from "./messages";
 import type { GetSubmitResponse } from "./messages";
@@ -51,6 +53,10 @@ export interface IBackendServiceClient {
      * @generated from protobuf rpc: ListSubmits(backend.ListSubmitsRequest) returns (backend.ListSubmitsResponse);
      */
     listSubmits(input: ListSubmitsRequest, options?: RpcOptions): UnaryCall<ListSubmitsRequest, ListSubmitsResponse>;
+    /**
+     * @generated from protobuf rpc: GetLatestSubmit(backend.GetLatestSubmitRequest) returns (backend.GetLatestSubmitResponse);
+     */
+    getLatestSubmit(input: GetLatestSubmitRequest, options?: RpcOptions): UnaryCall<GetLatestSubmitRequest, GetLatestSubmitResponse>;
     /**
      * contest
      *
@@ -119,33 +125,40 @@ export class BackendServiceClient implements IBackendServiceClient, ServiceInfo 
         return stackIntercept<ListSubmitsRequest, ListSubmitsResponse>("unary", this._transport, method, opt, input);
     }
     /**
+     * @generated from protobuf rpc: GetLatestSubmit(backend.GetLatestSubmitRequest) returns (backend.GetLatestSubmitResponse);
+     */
+    getLatestSubmit(input: GetLatestSubmitRequest, options?: RpcOptions): UnaryCall<GetLatestSubmitRequest, GetLatestSubmitResponse> {
+        const method = this.methods[3], opt = this._transport.mergeOptions(options);
+        return stackIntercept<GetLatestSubmitRequest, GetLatestSubmitResponse>("unary", this._transport, method, opt, input);
+    }
+    /**
      * contest
      *
      * @generated from protobuf rpc: CreateContest(backend.CreateContestRequest) returns (backend.CreateContestResponse);
      */
     createContest(input: CreateContestRequest, options?: RpcOptions): UnaryCall<CreateContestRequest, CreateContestResponse> {
-        const method = this.methods[3], opt = this._transport.mergeOptions(options);
+        const method = this.methods[4], opt = this._transport.mergeOptions(options);
         return stackIntercept<CreateContestRequest, CreateContestResponse>("unary", this._transport, method, opt, input);
     }
     /**
      * @generated from protobuf rpc: ListContests(backend.ListContestsRequest) returns (backend.ListContestsResponse);
      */
     listContests(input: ListContestsRequest, options?: RpcOptions): UnaryCall<ListContestsRequest, ListContestsResponse> {
-        const method = this.methods[4], opt = this._transport.mergeOptions(options);
+        const method = this.methods[5], opt = this._transport.mergeOptions(options);
         return stackIntercept<ListContestsRequest, ListContestsResponse>("unary", this._transport, method, opt, input);
     }
     /**
      * @generated from protobuf rpc: GetContest(backend.GetContestRequest) returns (backend.GetContestResponse);
      */
     getContest(input: GetContestRequest, options?: RpcOptions): UnaryCall<GetContestRequest, GetContestResponse> {
-        const method = this.methods[5], opt = this._transport.mergeOptions(options);
+        const method = this.methods[6], opt = this._transport.mergeOptions(options);
         return stackIntercept<GetContestRequest, GetContestResponse>("unary", this._transport, method, opt, input);
     }
     /**
      * @generated from protobuf rpc: UpdateContest(backend.UpdateContestRequest) returns (backend.UpdateContestResponse);
      */
     updateContest(input: UpdateContestRequest, options?: RpcOptions): UnaryCall<UpdateContestRequest, UpdateContestResponse> {
-        const method = this.methods[6], opt = this._transport.mergeOptions(options);
+        const method = this.methods[7], opt = this._transport.mergeOptions(options);
         return stackIntercept<UpdateContestRequest, UpdateContestResponse>("unary", this._transport, method, opt, input);
     }
     /**
@@ -154,7 +167,7 @@ export class BackendServiceClient implements IBackendServiceClient, ServiceInfo 
      * @generated from protobuf rpc: GetRanking(backend.GetRankingRequest) returns (backend.GetRankingResponse);
      */
     getRanking(input: GetRankingRequest, options?: RpcOptions): UnaryCall<GetRankingRequest, GetRankingResponse> {
-        const method = this.methods[7], opt = this._transport.mergeOptions(options);
+        const method = this.methods[8], opt = this._transport.mergeOptions(options);
         return stackIntercept<GetRankingRequest, GetRankingResponse>("unary", this._transport, method, opt, input);
     }
     /**
@@ -163,14 +176,14 @@ export class BackendServiceClient implements IBackendServiceClient, ServiceInfo 
      * @generated from protobuf rpc: VerifyToken(backend.VerifyTokenRequest) returns (backend.VerifyTokenResponse);
      */
     verifyToken(input: VerifyTokenRequest, options?: RpcOptions): UnaryCall<VerifyTokenRequest, VerifyTokenResponse> {
-        const method = this.methods[8], opt = this._transport.mergeOptions(options);
+        const method = this.methods[9], opt = this._transport.mergeOptions(options);
         return stackIntercept<VerifyTokenRequest, VerifyTokenResponse>("unary", this._transport, method, opt, input);
     }
     /**
      * @generated from protobuf rpc: PostLogin(backend.PostLoginRequest) returns (backend.PostLoginResponse);
      */
     postLogin(input: PostLoginRequest, options?: RpcOptions): UnaryCall<PostLoginRequest, PostLoginResponse> {
-        const method = this.methods[9], opt = this._transport.mergeOptions(options);
+        const method = this.methods[10], opt = this._transport.mergeOptions(options);
         return stackIntercept<PostLoginRequest, PostLoginResponse>("unary", this._transport, method, opt, input);
     }
 }
