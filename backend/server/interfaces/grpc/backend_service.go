@@ -4,6 +4,7 @@ import (
 	"context"
 	"net/url"
 
+	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/api/grpc/interceptor"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/repository/ent"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/repository/tag"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/usecases/auth"
@@ -96,4 +97,9 @@ func (s *backendServiceServer) GetContest(ctx context.Context, req *pb.GetContes
 
 func (s *backendServiceServer) UpdateContest(ctx context.Context, req *pb.UpdateContestRequest) (*pb.UpdateContestResponse, error) {
 	return s.contestInteractor.UpdateContest(ctx, req)
+}
+
+func (s *backendServiceServer) GetLatestSubmit(ctx context.Context, req *pb.GetLatestSubmitRequest) (*pb.GetLatestSubmitResponse, error) {
+	claims := interceptor.GetClaimsFromContext(ctx)
+	return s.submitInteractor.GetLatestSubmit(ctx, claims.GroupID)
 }
