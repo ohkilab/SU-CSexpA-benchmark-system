@@ -236,6 +236,7 @@ func (i *Interactor) GetLatestSubmit(ctx context.Context, groupID int) (*backend
 	submit, err := i.entClient.Submit.Query().
 		Where(submit.HasGroupsWith(group.ID(groupID))).
 		Order(submit.BySubmitedAt(sql.OrderDesc())).
+		WithGroups().
 		First(ctx)
 	if err != nil {
 		i.logger.Error("failed to get latest submit", "error", err)

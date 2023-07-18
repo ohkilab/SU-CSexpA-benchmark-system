@@ -85,6 +85,15 @@ func (s *backendServiceServer) VerifyToken(ctx context.Context, req *pb.VerifyTo
 }
 
 func (s *backendServiceServer) CreateContest(ctx context.Context, req *pb.CreateContestRequest) (*pb.CreateContestResponse, error) {
+	if req.TimeLimitPerTask == 0 {
+		return nil, status.Error(codes.InvalidArgument, "time_limit_per_task is required")
+	}
+	if req.Slug == "" {
+		return nil, status.Error(codes.InvalidArgument, "slug is required")
+	}
+	if req.Title == "" {
+		return nil, status.Error(codes.InvalidArgument, "title is required")
+	}
 	return s.contestInteractor.CreateContest(ctx, req)
 }
 

@@ -94,3 +94,35 @@ func Test_GetSubmit(t *testing.T) {
 	_, err = stream.Recv()
 	assert.Equal(t, codes.NotFound, status.Code(err))
 }
+
+func Test_GetLatestSubmit(t *testing.T) {
+	ctx := context.Background()
+	entClient, cleanupFunc := utils.EnttestOpen(ctx, t)
+	defer cleanupFunc(t)
+	connBenchmark, closeBenchmark := utils.LaunchBenchmarkGrpcServer(t)
+	defer closeBenchmark()
+	benchmarkClient := benchmarkpb.NewBenchmarkServiceClient(connBenchmark)
+	worker := worker.New(entClient, benchmarkClient, slog.Default())
+	go worker.Run()
+
+	conn, closeFunc := utils.LaunchGrpcServer(t, grpc.WithEntClient(entClient), grpc.WithJwtSecret("secret"), grpc.WithWorker(worker))
+	defer closeFunc()
+	client := pb.NewBackendServiceClient(conn)
+
+	// prepare
+	group := utils.CreateGroup(ctx, t, entClient, "test", "hoge", group.RoleContestant)
+	contest := utils.CreateContest(ctx, t, entClient, "test contest", "test-contest", pb.Validator_V2023.String(), time.Date(2023, time.January, 1, 0, 0, 0, 0, time.UTC), time.Date(2023, time.December, 31, 23, 59, 59, 0, time.UTC), 9999, contest.TagSelectionLogicAuto)
+	utils.CreateSubmit(ctx, t, entClient, 100, pb.Status_SUCCESS.String(), contest, group)
+	time.Sleep(time.Second)
+	submit2 := utils.CreateSubmit(ctx, t, entClient, 100, pb.Status_SUCCESS.String(), contest, group)
+
+	jwtToken, err := auth.GenerateJWTToken([]byte("secret"), group.ID, group.CreatedAt.Year())
+	require.NoError(t, err)
+	meta := metadata.New(map[string]string{"authorization": "Bearer " + jwtToken})
+	ctx = metadata.NewOutgoingContext(ctx, meta)
+
+	// success
+	resp, err := client.GetLatestSubmit(ctx, &pb.GetLatestSubmitRequest{})
+	require.NoError(t, err)
+	assert.Equal(t, int32(submit2.ID), resp.Submit.Id)
+}

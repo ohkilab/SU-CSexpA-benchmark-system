@@ -165,6 +165,7 @@ func CreateContest(ctx context.Context, t *testing.T, entClient *ent.Client, tit
 		SetSubmitLimit(submitLimit).
 		SetTagSelectionLogic(logic).
 		SetCreatedAt(timejst.Now()).
+		SetTimeLimitPerTask(int64(time.Second)).
 		Save(ctx)
 	require.NoError(t, err)
 	return contest

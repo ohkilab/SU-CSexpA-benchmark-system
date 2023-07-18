@@ -2,6 +2,7 @@ package contest
 
 import (
 	"context"
+	"time"
 
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/core/timejst"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/repository/ent"
@@ -80,6 +81,7 @@ func (i *Interactor) CreateContest(ctx context.Context, req *pb.CreateContestReq
 		SetTagSelectionLogic(tagSelectionLogic).
 		SetValidator(req.Validator.String()).
 		SetCreatedAt(timejst.Now()).
+		SetTimeLimitPerTask(int64(time.Duration(req.TimeLimitPerTask) * time.Second)).
 		Save(ctx)
 	if err != nil {
 		i.logger.Error("failed to create contest", "error", err)

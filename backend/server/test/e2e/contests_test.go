@@ -72,6 +72,7 @@ func Test_CreateContest(t *testing.T) {
 				},
 			},
 		},
+		TimeLimitPerTask: 30,
 	})
 	require.NoError(t, err)
 	assert.Equal(t, "test contest", resp.Contest.Title)
