@@ -36,14 +36,7 @@ func (s *service) Execute(req *pb.ExecuteRequest, stream pb.BenchmarkService_Exe
 		return status.Error(codes.InvalidArgument, fmt.Sprintf("the validator is not supported(slug: %s)", req.Validator.String()))
 	}
 
-	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
-	defer cancel()
-	uri, err := url.ParseRequestURI(req.Tasks[0].Request.Url)
-	if err != nil {
-		log.Println(err)
-		return status.Error(codes.InvalidArgument, "invalid url")
-	}
-	if err := s.client.CheckConnection(ctx, fmt.Sprintf("%s://%s", uri.Scheme, uri.Host)); err != nil {
+	if err := s.client.CheckConnection(req.Tasks[0].Request.Url); err != nil {
 		log.Println(err)
 		return status.Error(codes.FailedPrecondition, "failed to connect with the server")
 	}

@@ -5,12 +5,16 @@ import (
 	"errors"
 	"io"
 	"log"
+	"net"
 	"net/http"
+	pkgurl "net/url"
 	"sync"
 	"syscall"
 	"time"
 
 	"golang.org/x/sync/errgroup"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 )
 
 type Client struct {
@@ -25,17 +29,21 @@ func NewClient() *Client {
 	}
 }
 
-func (c *Client) CheckConnection(ctx context.Context, url string) error {
-	req, _ := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
-	resp, err := c.httpClient.Do(req)
+// check if the server is running. if the connection time is exceed 10 seconds, return error.
+func (c *Client) CheckConnection(url string) error {
+	uri, err := pkgurl.ParseRequestURI(url)
 	if err != nil {
-		return err
+		log.Println(err)
+		return status.Error(codes.InvalidArgument, "invalid url")
 	}
-	defer func() {
-		_, _ = io.Copy(io.Discard, resp.Body)
-		resp.Body.Close()
-	}()
-	return err
+	dialer := &net.Dialer{Timeout: 10 * time.Second}
+	conn, err := dialer.Dial("tcp", uri.Host)
+	if err != nil {
+		log.Println(err)
+		return status.Error(codes.FailedPrecondition, "failed to connect with the server")
+	}
+	defer conn.Close()
+	return nil
 }
 
 func (c *Client) Run(ctx context.Context, url string, options ...optionFunc) ([]*HttpResult, error) {
