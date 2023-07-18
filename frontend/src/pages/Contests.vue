@@ -23,10 +23,10 @@ const formatDate = (timestamp: number): string => {
 }
 
 const handleSelectContest = (contest: Contest) => {
-  router.push('/benchmark')
-
-  state.selectedContest = contest.slug
+  state.contestSlug = contest.slug
   state.selectedContestName = contest.title
+
+  router.push('/benchmark')
 }
 
 onMounted(() => {
@@ -54,7 +54,7 @@ onMounted(() => {
       </thead>
       <tbody>
         <tr v-for="(c, idx) in contests"
-            @click.prevent="() => handleSelectContest(c)"
+            @click.prevent="handleSelectContest(c)"
           class="bg-gray-900 border-b-2 border-gray-800 hover:bg-gray-700 cursor-pointer transition"
            key="idx">
           <td class="text-center py-3">{{c.id}}</td>

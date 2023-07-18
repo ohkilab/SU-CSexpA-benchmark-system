@@ -109,6 +109,7 @@ onMounted(() => {
       <pre class="break-all whitespace-pre-wrap">result: {{state.result}}</pre>
       <pre class="break-all whitespace-pre-wrap">debug: {{state.debug}}</pre>
       <pre class="break-all whitespace-pre-wrap">devBaseUrl: {{state.devBaseUrl}}</pre>
+      <pre class="break-all whitespace-pre-wrap">contestSlug: {{state.contestSlug}}</pre>
 
 
       <button class="bg-green-500 p-2" @click="state.benchmarking = !state.benchmarking">Toggle benchmarking</button>

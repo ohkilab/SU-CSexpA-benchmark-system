@@ -19,7 +19,6 @@ export interface IState {
   devBaseUrl: string;
   submits: Submit[];
   contestSlug: string;
-  selectedContest: string;
   selectedContestName: string;
 }
 
@@ -39,7 +38,6 @@ export const useStateStore = defineStore<"state", IState>("state", {
     devBaseUrl: "http://localhost:8080",
     submits: [],
     contestSlug: '2023-qual',
-    selectedContest: '',
     selectedContestName: ''
   }),
   persist: true,
