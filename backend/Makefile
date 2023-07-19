@@ -42,4 +42,4 @@ seed: batch/seed
 
 .PHONY: viz
 viz:
-	@open ./ent/schema-viz.html
+	@open ./server/repository/ent/schema-viz.html
