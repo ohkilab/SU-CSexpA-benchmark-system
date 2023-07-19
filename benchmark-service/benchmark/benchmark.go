@@ -24,7 +24,10 @@ type Client struct {
 func NewClient() *Client {
 	return &Client{
 		httpClient: &http.Client{
-			Transport: &http.Transport{},
+			Transport: &http.Transport{
+				MaxIdleConns:        5000,
+				MaxIdleConnsPerHost: 1000,
+			},
 		},
 	}
 }
