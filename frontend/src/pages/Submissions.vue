@@ -86,9 +86,9 @@ onMounted(() => {
       </tr>
     </thead>
     <tbody>
-      <tr v-for="(s, idx) in state.submits"
+      <tr v-for="s in state.submits"
         class="bg-gray-900 border-b-2 border-gray-800 hover:bg-gray-700 cursor-pointer transition"
-        @click.prevent="handleModal(s)" key="idx">
+        @click.prevent="handleModal(s)" key="s.id">
         <td class="w-20 text-center">{{ s.id }}</td>
         <td class="w-60 text-center">{{ formatDate(Number(s.submitedAt?.seconds)) }}</td>
         <td class="w-30 text-center">{{ s.groupName }}</td>

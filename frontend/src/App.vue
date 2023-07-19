@@ -115,9 +115,9 @@ onMounted(() => {
       <button class="bg-green-500 p-2" @click="state.benchmarking = !state.benchmarking">Toggle benchmarking</button>
       <input type="text" v-model="state.devBaseUrl" placeholder="baseUrl" class="bg-gray-700 p-2 rounded transition hover:bg-gray-600 focus:outline-none" />
     </fieldset>
-    <div v-if="$route.name !== 'contests'">{{state.selectedContestName}}</div>
+    <div v-if="$route.name !== 'contests'" class="text-xl">{{state.selectedContestName}}</div>
     <div v-if="loggedIn && !state.benchmarking && $route.name !== 'contests'" class="flex w-full px-12 text-lg">
-        <router-link to="/contests" class="w-48 rounded transition hover:scale-105 shadow-md shadow-black p-2 text-center border border-gray-500 bg-red-500 mr-auto"> &#x2190 コンテスト一覧</router-link>
+        <router-link to="/contests" class="w-48 rounded transition hover:scale-105 shadow-md shadow-black p-2 text-center border border-gray-500 bg-red-500 mr-auto"> &#x2190 <div class="inline">コンテスト一覧</div> </router-link>
         <div class="mx-auto flex gap-5">
           <router-link
             class="p-2 rounded shadow-md shadow-black hover:scale-105 transition border border-gray-500"

@@ -2,7 +2,6 @@
 import { onMounted, Ref, ref } from 'vue'
 import { useBackendStore } from '../stores/backend';
 import { useStateStore } from '../stores/state';
-import { GetContestResponse, ListContestsResponse } from 'proto-gen-web/services/backend/messages';
 import { Contest } from 'proto-gen-web/services/backend/resources';
 import { useRouter } from 'vue-router';
 
@@ -53,10 +52,11 @@ onMounted(() => {
         </tr>
       </thead>
       <tbody>
-        <tr v-for="(c, idx) in contests"
+        <tr v-for="c in contests"
             @click.prevent="handleSelectContest(c)"
           class="bg-gray-900 border-b-2 border-gray-800 hover:bg-gray-700 cursor-pointer transition"
-           key="idx">
+           key="c.id"
+           >
           <td class="text-center py-3">{{c.id}}</td>
           <td class="text-center">{{c.title}}</td>
           <td class="text-center">{{formatDate(Math.floor(Number(c.startAt?.seconds)))}}</td>

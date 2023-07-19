@@ -6,7 +6,6 @@ import { useStateStore, IState } from '../stores/state'
 import type { Ref } from 'vue'
 
 import { Status, Submit, TaskResult } from 'proto-gen-web/services/backend/resources'
-import { GetLatestSubmitRequest, GetSubmitRequest, ListSubmitsRequest } from 'proto-gen-web/services/backend/messages'
 
 import Result from '../components/Result.vue'
 import { useBackendStore } from '../stores/backend'
@@ -29,11 +28,6 @@ const urlList: Ref<string[]> = ref([])
 const noSubmissions: Ref<boolean> = ref(false)
 
 const fetchLatestSubmit = () => {
-  const listSubmitsRequest:ListSubmitsRequest = {
-    contestSlug: state.contestSlug,
-    groupName: state.group,
-    // status: Status.VALIDATION_ERROR
-  }
 
   let opt = {meta: {'authorization' : 'Bearer ' + state.token}}
 
@@ -43,30 +37,6 @@ const fetchLatestSubmit = () => {
   }).catch(err => {
     console.log('getLatestSubmit err:' + err)
   })
-
-  // get all submissions
-  // backend.listSubmits(listSubmitsRequest, opt)
-  //   .then(async res => {
-  //     if(import.meta.env.DEV) console.log('Submits', res.response.submits[0]?.id)
-  //
-  //     if(res.response.submits.length === 0) {
-  //       noSubmissions.value = true
-  //     }
-  //
-  //     const getSubmitRequest:GetSubmitRequest = {
-  //       submitId: res.response.submits[0].id
-  //     }
-  //
-  //     // get latest submission
-  //     const opt = {meta: {'authorization' : 'Bearer ' + state.token}}
-  //     const call = backend.getSubmit(getSubmitRequest, opt)
-  //     for await (let message of call.responses) {
-  //       if(import.meta.env.DEV) console.log('Submit', message)
-  //       latestSubmit.value = message.submit ?? {}
-  //       taskResults.value = message.submit?.taskResults ?? []
-  //       state.lastResult = message.submit?.score ?? 0
-  //     }
-  //   })
 }
 
 const benchmark = () => {
