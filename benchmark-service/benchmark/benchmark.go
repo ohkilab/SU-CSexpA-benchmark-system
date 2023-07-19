@@ -8,6 +8,7 @@ import (
 	"net"
 	"net/http"
 	pkgurl "net/url"
+	"strings"
 	"sync"
 	"syscall"
 	"time"
@@ -40,6 +41,13 @@ func (c *Client) CheckConnection(url string) error {
 		return status.Error(codes.InvalidArgument, "invalid url")
 	}
 	dialer := &net.Dialer{Timeout: 10 * time.Second}
+	if !strings.Contains(uri.Host, ":") {
+		if uri.Scheme == "https" {
+			uri.Host += ":443"
+		} else {
+			uri.Host += ":80"
+		}
+	}
 	conn, err := dialer.Dial("tcp", uri.Host)
 	if err != nil {
 		log.Println(err)
