@@ -1062,7 +1062,7 @@ type GroupMutation struct {
 	typ                string
 	id                 *int
 	name               *string
-	role               *group.Role
+	role               *string
 	encrypted_password *string
 	created_at         *time.Time
 	updated_at         *time.Time
@@ -1216,12 +1216,12 @@ func (m *GroupMutation) ResetName() {
 }
 
 // SetRole sets the "role" field.
-func (m *GroupMutation) SetRole(gr group.Role) {
-	m.role = &gr
+func (m *GroupMutation) SetRole(s string) {
+	m.role = &s
 }
 
 // Role returns the value of the "role" field in the mutation.
-func (m *GroupMutation) Role() (r group.Role, exists bool) {
+func (m *GroupMutation) Role() (r string, exists bool) {
 	v := m.role
 	if v == nil {
 		return
@@ -1232,7 +1232,7 @@ func (m *GroupMutation) Role() (r group.Role, exists bool) {
 // OldRole returns the old "role" field's value of the Group entity.
 // If the Group object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *GroupMutation) OldRole(ctx context.Context) (v group.Role, err error) {
+func (m *GroupMutation) OldRole(ctx context.Context) (v string, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldRole is only allowed on UpdateOne operations")
 	}
@@ -1530,7 +1530,7 @@ func (m *GroupMutation) SetField(name string, value ent.Value) error {
 		m.SetName(v)
 		return nil
 	case group.FieldRole:
-		v, ok := value.(group.Role)
+		v, ok := value.(string)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}

@@ -3,8 +3,6 @@
 package group
 
 import (
-	"fmt"
-
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 )
@@ -55,30 +53,6 @@ func ValidColumn(column string) bool {
 		}
 	}
 	return false
-}
-
-// Role defines the type for the "role" enum field.
-type Role string
-
-// Role values.
-const (
-	RoleContestant Role = "contestant"
-	RoleGuest      Role = "guest"
-	RoleAdmin      Role = "admin"
-)
-
-func (r Role) String() string {
-	return string(r)
-}
-
-// RoleValidator is a validator for the "role" field enum values. It is called by the builders before save.
-func RoleValidator(r Role) error {
-	switch r {
-	case RoleContestant, RoleGuest, RoleAdmin:
-		return nil
-	default:
-		return fmt.Errorf("group: invalid enum value for role field: %q", r)
-	}
 }
 
 // OrderOption defines the ordering options for the Group queries.

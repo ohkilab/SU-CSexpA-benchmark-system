@@ -61,6 +61,7 @@ func main() {
 		grpc.WithLogger(logger),
 		grpc.WithTagRepository(tag.NewRespository(config.StoragePath)),
 		grpc.UseLogMiddleware(),
+		grpc.WithInitAdmin(config.InitAdminName, config.InitAdminPassword),
 	)
 	if err != nil {
 		panic(err)

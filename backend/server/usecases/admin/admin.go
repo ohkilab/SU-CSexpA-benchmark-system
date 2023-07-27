@@ -2,13 +2,11 @@ package admin
 
 import (
 	"context"
-	"strings"
 	"time"
 
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/core/timejst"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/repository/ent"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/repository/ent/contest"
-	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/repository/ent/group"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/repository/tag"
 	u_contest "github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/usecases/contest"
 	pb "github.com/ohkilab/SU-CSexpA-benchmark-system/proto-gen/go/services/backend"
@@ -111,21 +109,18 @@ func (i *Interactor) CreateGroups(ctx context.Context, req *pb.CreateGroupsReque
 		if err != nil {
 			return nil, status.Error(codes.Internal, "failed to generate password")
 		}
-		if err := group.RoleValidator(group.Role(g.Role)); err != nil {
-			return nil, status.Error(codes.InvalidArgument, "invalid role")
-		}
 		group, err := i.entClient.Group.Create().
 			SetName(g.Name).
 			SetEncryptedPassword(string(b)).
-			SetRole(group.Role(g.Role)).
+			SetRole(g.Role.String()).
 			SetCreatedAt(timejst.Now()).
 			Save(ctx)
 		if err != nil {
-			return nil, status.Error(codes.Internal, "failed to create group")
+			return nil, status.Error(codes.Internal, "failed to create group: "+err.Error())
 		}
 		createdGroups = append(createdGroups, &pb.Group{
 			Name: group.Name,
-			Role: pb.Role(pb.Role_value[strings.ToUpper(group.Role.String())]),
+			Role: pb.Role(pb.Role_value[group.Role]),
 		})
 	}
 	return &pb.CreateGroupsResponse{
