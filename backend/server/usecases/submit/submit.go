@@ -3,6 +3,7 @@ package submit
 import (
 	"context"
 	"fmt"
+	"log"
 	"strconv"
 	"time"
 
@@ -35,10 +36,11 @@ type Interactor struct {
 	worker        worker.Worker
 	logger        *slog.Logger
 	tagRepository tag.Repository
+	limit         int
 }
 
-func NewInteractor(entClient *ent.Client, worker worker.Worker, logger *slog.Logger, tagRepository tag.Repository) *Interactor {
-	return &Interactor{entClient, worker, logger, tagRepository}
+func NewInteractor(entClient *ent.Client, worker worker.Worker, logger *slog.Logger, tagRepository tag.Repository, limit int) *Interactor {
+	return &Interactor{entClient, worker, logger, tagRepository, limit}
 }
 
 func (i *Interactor) PostSubmit(ctx context.Context, req *backendpb.PostSubmitRequest) (*backendpb.PostSubmitResponse, error) {
@@ -218,12 +220,45 @@ func (i *Interactor) ListSubmits(ctx context.Context, req *backendpb.ListSubmits
 	if req.Status != nil {
 		q.Where(submit.StatusEQ(req.Status.String()))
 	}
-	submits, err := q.Order(submit.BySubmitedAt(sql.OrderDesc())).All(ctx)
+	if req.SortBy != nil {
+		order := sql.OrderDesc()
+		if req.IsDesc != nil {
+			if !*req.IsDesc {
+				order = sql.OrderAsc()
+			}
+		}
+		switch *req.SortBy {
+		case backendpb.ListSubmitsRequest_SUBMITED_AT:
+			q.Order(submit.BySubmitedAt(order))
+		case backendpb.ListSubmitsRequest_SCORE:
+			q.Order(submit.ByScore(order))
+		}
+	} else {
+		log.Println("set default order option to submited_at desc")
+		q.Order(submit.BySubmitedAt(sql.OrderDesc()))
+	}
+
+	count, err := q.Count(ctx)
+	if err != nil {
+		i.logger.Error("failed to count submits", err)
+		return nil, status.Error(codes.Internal, err.Error())
+	}
+	totalPages := count / i.limit
+	if count%i.limit > 0 {
+		totalPages++
+	}
+
+	q.Limit(i.limit)
+	q.Offset(int(req.Page-1) * i.limit)
+	submits, err := q.All(ctx)
 	if err != nil {
 		i.logger.Error("failed to fetch submits", err)
 		return nil, status.Error(codes.Internal, err.Error())
 	}
+
 	return &backendpb.ListSubmitsResponse{
+		Page:       req.Page,
+		TotalPages: int32(totalPages),
 		Submits: lo.Map(submits, func(submit *ent.Submit, _ int) *backendpb.Submit {
 			pbSubmit := toPbSubmit(submit)
 			pbSubmit.TaskResults = make([]*backendpb.TaskResult, 0)

@@ -26,10 +26,10 @@ type backendServiceServer struct {
 	pb.UnimplementedBackendServiceServer
 }
 
-func NewBackendService(secret []byte, entClient *ent.Client, worker worker.Worker, logger *slog.Logger, tagRepository tag.Repository) pb.BackendServiceServer {
+func NewBackendService(secret []byte, entClient *ent.Client, worker worker.Worker, logger *slog.Logger, tagRepository tag.Repository, limit int) pb.BackendServiceServer {
 	authInteractor := auth.NewInteractor(secret, entClient, logger)
 	rankingInteractor := ranking.NewInteractor(entClient, logger)
-	submitInteractor := submit.NewInteractor(entClient, worker, logger, tagRepository)
+	submitInteractor := submit.NewInteractor(entClient, worker, logger, tagRepository, limit)
 	contestInteractor := contest.NewInteractor(entClient, logger)
 	return &backendServiceServer{
 		authInteractor,
@@ -72,6 +72,9 @@ func (s *backendServiceServer) PostLogin(ctx context.Context, req *pb.PostLoginR
 func (s *backendServiceServer) ListSubmits(ctx context.Context, req *pb.ListSubmitsRequest) (*pb.ListSubmitsResponse, error) {
 	if req.ContestSlug == "" {
 		return nil, status.Error(codes.InvalidArgument, "contest_slug is required")
+	}
+	if req.Page <= 0 {
+		return nil, status.Error(codes.InvalidArgument, "page is required")
 	}
 	return s.submitInteractor.ListSubmits(ctx, req)
 }

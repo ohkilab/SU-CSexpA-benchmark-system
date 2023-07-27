@@ -14,6 +14,7 @@ type option struct {
 	logger           *slog.Logger
 	tagRepository    tag.Repository
 	useLogMiddleware bool
+	limit            int
 }
 
 type OptionFunc func(*option)
@@ -51,5 +52,11 @@ func WithTagRepository(r tag.Repository) OptionFunc {
 func UseLogMiddleware() OptionFunc {
 	return func(o *option) {
 		o.useLogMiddleware = true
+	}
+}
+
+func WithLimit(limit int) OptionFunc {
+	return func(o *option) {
+		o.limit = limit
 	}
 }

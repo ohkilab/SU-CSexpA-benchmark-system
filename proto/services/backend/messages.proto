@@ -37,13 +37,22 @@ message GetSubmitResponse {
 
 message ListSubmitsRequest {
   string contest_slug = 1;
-  optional string group_name = 2; // middle match
-  optional Status status = 3;
-  optional bool contains_guest = 4; // default: false
+  int32 page = 2; // 100 entries per 1 page
+  enum SortBy {
+    SUBMITED_AT = 0;
+    SCORE = 1;
+  }
+  optional SortBy sort_by = 3; // default: submited_at
+  optional bool is_desc = 4; // default: true
+  optional string group_name = 5; // middle match
+  optional Status status = 6;
+  optional bool contains_guest = 7; // default: false
 }
 
 message ListSubmitsResponse {
-  repeated Submit submits = 1; // NOTE: task_results will be empty
+  int32 page = 1;
+  int32 total_pages = 2;
+  repeated Submit submits = 3; // NOTE: task_results will be empty
 }
 
 message CreateContestRequest {

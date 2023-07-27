@@ -107,24 +107,57 @@ export interface ListSubmitsRequest {
      */
     contestSlug: string;
     /**
-     * @generated from protobuf field: optional string group_name = 2;
+     * @generated from protobuf field: int32 page = 2;
+     */
+    page: number; // 100 entries per 1 page
+    /**
+     * @generated from protobuf field: optional backend.ListSubmitsRequest.SortBy sort_by = 3;
+     */
+    sortBy?: ListSubmitsRequest_SortBy; // default: submited_at
+    /**
+     * @generated from protobuf field: optional bool is_desc = 4;
+     */
+    isDesc?: boolean; // default: true
+    /**
+     * @generated from protobuf field: optional string group_name = 5;
      */
     groupName?: string; // middle match
     /**
-     * @generated from protobuf field: optional backend.Status status = 3;
+     * @generated from protobuf field: optional backend.Status status = 6;
      */
     status?: Status;
     /**
-     * @generated from protobuf field: optional bool contains_guest = 4;
+     * @generated from protobuf field: optional bool contains_guest = 7;
      */
     containsGuest?: boolean; // default: false
+}
+/**
+ * @generated from protobuf enum backend.ListSubmitsRequest.SortBy
+ */
+export enum ListSubmitsRequest_SortBy {
+    /**
+     * @generated from protobuf enum value: SUBMITED_AT = 0;
+     */
+    SUBMITED_AT = 0,
+    /**
+     * @generated from protobuf enum value: SCORE = 1;
+     */
+    SCORE = 1
 }
 /**
  * @generated from protobuf message backend.ListSubmitsResponse
  */
 export interface ListSubmitsResponse {
     /**
-     * @generated from protobuf field: repeated backend.Submit submits = 1;
+     * @generated from protobuf field: int32 page = 1;
+     */
+    page: number;
+    /**
+     * @generated from protobuf field: int32 total_pages = 2;
+     */
+    totalPages: number;
+    /**
+     * @generated from protobuf field: repeated backend.Submit submits = 3;
      */
     submits: Submit[]; // NOTE: task_results will be empty
 }
@@ -735,13 +768,16 @@ class ListSubmitsRequest$Type extends MessageType<ListSubmitsRequest> {
     constructor() {
         super("backend.ListSubmitsRequest", [
             { no: 1, name: "contest_slug", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
-            { no: 2, name: "group_name", kind: "scalar", opt: true, T: 9 /*ScalarType.STRING*/ },
-            { no: 3, name: "status", kind: "enum", opt: true, T: () => ["backend.Status", Status] },
-            { no: 4, name: "contains_guest", kind: "scalar", opt: true, T: 8 /*ScalarType.BOOL*/ }
+            { no: 2, name: "page", kind: "scalar", T: 5 /*ScalarType.INT32*/ },
+            { no: 3, name: "sort_by", kind: "enum", opt: true, T: () => ["backend.ListSubmitsRequest.SortBy", ListSubmitsRequest_SortBy] },
+            { no: 4, name: "is_desc", kind: "scalar", opt: true, T: 8 /*ScalarType.BOOL*/ },
+            { no: 5, name: "group_name", kind: "scalar", opt: true, T: 9 /*ScalarType.STRING*/ },
+            { no: 6, name: "status", kind: "enum", opt: true, T: () => ["backend.Status", Status] },
+            { no: 7, name: "contains_guest", kind: "scalar", opt: true, T: 8 /*ScalarType.BOOL*/ }
         ]);
     }
     create(value?: PartialMessage<ListSubmitsRequest>): ListSubmitsRequest {
-        const message = { contestSlug: "" };
+        const message = { contestSlug: "", page: 0 };
         globalThis.Object.defineProperty(message, MESSAGE_TYPE, { enumerable: false, value: this });
         if (value !== undefined)
             reflectionMergePartial<ListSubmitsRequest>(this, message, value);
@@ -755,13 +791,22 @@ class ListSubmitsRequest$Type extends MessageType<ListSubmitsRequest> {
                 case /* string contest_slug */ 1:
                     message.contestSlug = reader.string();
                     break;
-                case /* optional string group_name */ 2:
+                case /* int32 page */ 2:
+                    message.page = reader.int32();
+                    break;
+                case /* optional backend.ListSubmitsRequest.SortBy sort_by */ 3:
+                    message.sortBy = reader.int32();
+                    break;
+                case /* optional bool is_desc */ 4:
+                    message.isDesc = reader.bool();
+                    break;
+                case /* optional string group_name */ 5:
                     message.groupName = reader.string();
                     break;
-                case /* optional backend.Status status */ 3:
+                case /* optional backend.Status status */ 6:
                     message.status = reader.int32();
                     break;
-                case /* optional bool contains_guest */ 4:
+                case /* optional bool contains_guest */ 7:
                     message.containsGuest = reader.bool();
                     break;
                 default:
@@ -779,15 +824,24 @@ class ListSubmitsRequest$Type extends MessageType<ListSubmitsRequest> {
         /* string contest_slug = 1; */
         if (message.contestSlug !== "")
             writer.tag(1, WireType.LengthDelimited).string(message.contestSlug);
-        /* optional string group_name = 2; */
+        /* int32 page = 2; */
+        if (message.page !== 0)
+            writer.tag(2, WireType.Varint).int32(message.page);
+        /* optional backend.ListSubmitsRequest.SortBy sort_by = 3; */
+        if (message.sortBy !== undefined)
+            writer.tag(3, WireType.Varint).int32(message.sortBy);
+        /* optional bool is_desc = 4; */
+        if (message.isDesc !== undefined)
+            writer.tag(4, WireType.Varint).bool(message.isDesc);
+        /* optional string group_name = 5; */
         if (message.groupName !== undefined)
-            writer.tag(2, WireType.LengthDelimited).string(message.groupName);
-        /* optional backend.Status status = 3; */
+            writer.tag(5, WireType.LengthDelimited).string(message.groupName);
+        /* optional backend.Status status = 6; */
         if (message.status !== undefined)
-            writer.tag(3, WireType.Varint).int32(message.status);
-        /* optional bool contains_guest = 4; */
+            writer.tag(6, WireType.Varint).int32(message.status);
+        /* optional bool contains_guest = 7; */
         if (message.containsGuest !== undefined)
-            writer.tag(4, WireType.Varint).bool(message.containsGuest);
+            writer.tag(7, WireType.Varint).bool(message.containsGuest);
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
@@ -802,11 +856,13 @@ export const ListSubmitsRequest = new ListSubmitsRequest$Type();
 class ListSubmitsResponse$Type extends MessageType<ListSubmitsResponse> {
     constructor() {
         super("backend.ListSubmitsResponse", [
-            { no: 1, name: "submits", kind: "message", repeat: 1 /*RepeatType.PACKED*/, T: () => Submit }
+            { no: 1, name: "page", kind: "scalar", T: 5 /*ScalarType.INT32*/ },
+            { no: 2, name: "total_pages", kind: "scalar", T: 5 /*ScalarType.INT32*/ },
+            { no: 3, name: "submits", kind: "message", repeat: 1 /*RepeatType.PACKED*/, T: () => Submit }
         ]);
     }
     create(value?: PartialMessage<ListSubmitsResponse>): ListSubmitsResponse {
-        const message = { submits: [] };
+        const message = { page: 0, totalPages: 0, submits: [] };
         globalThis.Object.defineProperty(message, MESSAGE_TYPE, { enumerable: false, value: this });
         if (value !== undefined)
             reflectionMergePartial<ListSubmitsResponse>(this, message, value);
@@ -817,7 +873,13 @@ class ListSubmitsResponse$Type extends MessageType<ListSubmitsResponse> {
         while (reader.pos < end) {
             let [fieldNo, wireType] = reader.tag();
             switch (fieldNo) {
-                case /* repeated backend.Submit submits */ 1:
+                case /* int32 page */ 1:
+                    message.page = reader.int32();
+                    break;
+                case /* int32 total_pages */ 2:
+                    message.totalPages = reader.int32();
+                    break;
+                case /* repeated backend.Submit submits */ 3:
                     message.submits.push(Submit.internalBinaryRead(reader, reader.uint32(), options));
                     break;
                 default:
@@ -832,9 +894,15 @@ class ListSubmitsResponse$Type extends MessageType<ListSubmitsResponse> {
         return message;
     }
     internalBinaryWrite(message: ListSubmitsResponse, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
-        /* repeated backend.Submit submits = 1; */
+        /* int32 page = 1; */
+        if (message.page !== 0)
+            writer.tag(1, WireType.Varint).int32(message.page);
+        /* int32 total_pages = 2; */
+        if (message.totalPages !== 0)
+            writer.tag(2, WireType.Varint).int32(message.totalPages);
+        /* repeated backend.Submit submits = 3; */
         for (let i = 0; i < message.submits.length; i++)
-            Submit.internalBinaryWrite(message.submits[i], writer.tag(1, WireType.LengthDelimited).fork(), options).join();
+            Submit.internalBinaryWrite(message.submits[i], writer.tag(3, WireType.LengthDelimited).fork(), options).join();
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);

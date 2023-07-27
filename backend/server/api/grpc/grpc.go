@@ -29,7 +29,7 @@ func NewServer(optionFuncs ...OptionFunc) *grpc.Server {
 	}
 	grpcServer := grpc.NewServer(serverOptions...)
 
-	backendService := interfaces.NewBackendService(opt.jwtSecret, opt.entClient, opt.worker, opt.logger, opt.tagRepository)
+	backendService := interfaces.NewBackendService(opt.jwtSecret, opt.entClient, opt.worker, opt.logger, opt.tagRepository, opt.limit)
 	backend.RegisterBackendServiceServer(grpcServer, backendService)
 	healthcheckService := interfaces.NewHealthcheckService()
 	backend.RegisterHealthcheckServiceServer(grpcServer, healthcheckService)
