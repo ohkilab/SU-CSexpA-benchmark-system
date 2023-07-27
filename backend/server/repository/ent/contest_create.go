@@ -69,6 +69,14 @@ func (cc *ContestCreate) SetTimeLimitPerTask(i int64) *ContestCreate {
 	return cc
 }
 
+// SetNillableTimeLimitPerTask sets the "time_limit_per_task" field if the given value is not nil.
+func (cc *ContestCreate) SetNillableTimeLimitPerTask(i *int64) *ContestCreate {
+	if i != nil {
+		cc.SetTimeLimitPerTask(*i)
+	}
+	return cc
+}
+
 // SetCreatedAt sets the "created_at" field.
 func (cc *ContestCreate) SetCreatedAt(t time.Time) *ContestCreate {
 	cc.mutation.SetCreatedAt(t)
@@ -117,6 +125,7 @@ func (cc *ContestCreate) Mutation() *ContestMutation {
 
 // Save creates the Contest in the database.
 func (cc *ContestCreate) Save(ctx context.Context) (*Contest, error) {
+	cc.defaults()
 	return withHooks(ctx, cc.sqlSave, cc.mutation, cc.hooks)
 }
 
@@ -139,6 +148,14 @@ func (cc *ContestCreate) Exec(ctx context.Context) error {
 func (cc *ContestCreate) ExecX(ctx context.Context) {
 	if err := cc.Exec(ctx); err != nil {
 		panic(err)
+	}
+}
+
+// defaults sets the default values of the builder before save.
+func (cc *ContestCreate) defaults() {
+	if _, ok := cc.mutation.TimeLimitPerTask(); !ok {
+		v := contest.DefaultTimeLimitPerTask
+		cc.mutation.SetTimeLimitPerTask(v)
 	}
 }
 
@@ -169,9 +186,6 @@ func (cc *ContestCreate) check() error {
 	}
 	if _, ok := cc.mutation.Validator(); !ok {
 		return &ValidationError{Name: "validator", err: errors.New(`ent: missing required field "Contest.validator"`)}
-	}
-	if _, ok := cc.mutation.TimeLimitPerTask(); !ok {
-		return &ValidationError{Name: "time_limit_per_task", err: errors.New(`ent: missing required field "Contest.time_limit_per_task"`)}
 	}
 	if _, ok := cc.mutation.CreatedAt(); !ok {
 		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "Contest.created_at"`)}
@@ -281,6 +295,7 @@ func (ccb *ContestCreateBulk) Save(ctx context.Context) ([]*Contest, error) {
 	for i := range ccb.builders {
 		func(i int, root context.Context) {
 			builder := ccb.builders[i]
+			builder.defaults()
 			var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 				mutation, ok := m.(*ContestMutation)
 				if !ok {

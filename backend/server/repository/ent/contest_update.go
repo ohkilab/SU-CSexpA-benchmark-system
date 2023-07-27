@@ -85,9 +85,23 @@ func (cu *ContestUpdate) SetTimeLimitPerTask(i int64) *ContestUpdate {
 	return cu
 }
 
+// SetNillableTimeLimitPerTask sets the "time_limit_per_task" field if the given value is not nil.
+func (cu *ContestUpdate) SetNillableTimeLimitPerTask(i *int64) *ContestUpdate {
+	if i != nil {
+		cu.SetTimeLimitPerTask(*i)
+	}
+	return cu
+}
+
 // AddTimeLimitPerTask adds i to the "time_limit_per_task" field.
 func (cu *ContestUpdate) AddTimeLimitPerTask(i int64) *ContestUpdate {
 	cu.mutation.AddTimeLimitPerTask(i)
+	return cu
+}
+
+// ClearTimeLimitPerTask clears the value of the "time_limit_per_task" field.
+func (cu *ContestUpdate) ClearTimeLimitPerTask() *ContestUpdate {
+	cu.mutation.ClearTimeLimitPerTask()
 	return cu
 }
 
@@ -237,6 +251,9 @@ func (cu *ContestUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if value, ok := cu.mutation.AddedTimeLimitPerTask(); ok {
 		_spec.AddField(contest.FieldTimeLimitPerTask, field.TypeInt64, value)
 	}
+	if cu.mutation.TimeLimitPerTaskCleared() {
+		_spec.ClearField(contest.FieldTimeLimitPerTask, field.TypeInt64)
+	}
 	if value, ok := cu.mutation.CreatedAt(); ok {
 		_spec.SetField(contest.FieldCreatedAt, field.TypeTime, value)
 	}
@@ -367,9 +384,23 @@ func (cuo *ContestUpdateOne) SetTimeLimitPerTask(i int64) *ContestUpdateOne {
 	return cuo
 }
 
+// SetNillableTimeLimitPerTask sets the "time_limit_per_task" field if the given value is not nil.
+func (cuo *ContestUpdateOne) SetNillableTimeLimitPerTask(i *int64) *ContestUpdateOne {
+	if i != nil {
+		cuo.SetTimeLimitPerTask(*i)
+	}
+	return cuo
+}
+
 // AddTimeLimitPerTask adds i to the "time_limit_per_task" field.
 func (cuo *ContestUpdateOne) AddTimeLimitPerTask(i int64) *ContestUpdateOne {
 	cuo.mutation.AddTimeLimitPerTask(i)
+	return cuo
+}
+
+// ClearTimeLimitPerTask clears the value of the "time_limit_per_task" field.
+func (cuo *ContestUpdateOne) ClearTimeLimitPerTask() *ContestUpdateOne {
+	cuo.mutation.ClearTimeLimitPerTask()
 	return cuo
 }
 
@@ -548,6 +579,9 @@ func (cuo *ContestUpdateOne) sqlSave(ctx context.Context) (_node *Contest, err e
 	}
 	if value, ok := cuo.mutation.AddedTimeLimitPerTask(); ok {
 		_spec.AddField(contest.FieldTimeLimitPerTask, field.TypeInt64, value)
+	}
+	if cuo.mutation.TimeLimitPerTaskCleared() {
+		_spec.ClearField(contest.FieldTimeLimitPerTask, field.TypeInt64)
 	}
 	if value, ok := cuo.mutation.CreatedAt(); ok {
 		_spec.SetField(contest.FieldCreatedAt, field.TypeTime, value)

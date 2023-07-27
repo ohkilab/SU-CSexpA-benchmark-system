@@ -54,7 +54,7 @@ func (i *RankingInteractor) GetRanking(ctx context.Context, containGuest bool, c
 		return &pb.GetRankingResponse_Record{
 			Rank: rank,
 			Group: &pb.Group{
-				Id:   group.Name,
+				Name: group.Name,
 				Role: pb.Role(pb.Role_value[group.Role.String()]),
 			},
 			Score: score,
