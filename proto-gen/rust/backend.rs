@@ -235,6 +235,7 @@ impl Language {
 pub enum Role {
     Contestant = 0,
     Guest = 1,
+    Admin = 2,
 }
 impl Role {
     /// String value of the enum field names used in the ProtoBuf definition.
@@ -245,6 +246,7 @@ impl Role {
         match self {
             Role::Contestant => "CONTESTANT",
             Role::Guest => "GUEST",
+            Role::Admin => "ADMIN",
         }
     }
     /// Creates an enum from field names used in the ProtoBuf definition.
@@ -252,6 +254,7 @@ impl Role {
         match value {
             "CONTESTANT" => Some(Self::Contestant),
             "GUEST" => Some(Self::Guest),
+            "ADMIN" => Some(Self::Admin),
             _ => None,
         }
     }

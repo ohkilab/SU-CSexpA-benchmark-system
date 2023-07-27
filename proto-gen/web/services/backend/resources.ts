@@ -319,7 +319,11 @@ export enum Role {
     /**
      * @generated from protobuf enum value: GUEST = 1;
      */
-    GUEST = 1
+    GUEST = 1,
+    /**
+     * @generated from protobuf enum value: ADMIN = 2;
+     */
+    ADMIN = 2
 }
 /**
  * 運用的に難があるけど仕方ない・・

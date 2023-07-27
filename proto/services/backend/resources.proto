@@ -95,6 +95,7 @@ enum Language {
 enum Role {
   CONTESTANT = 0;
   GUEST = 1;
+  ADMIN = 2;
 }
 
 // 運用的に難があるけど仕方ない・・
