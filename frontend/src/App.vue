@@ -35,7 +35,7 @@ const handleLogin = (id:string, password:string) => {
 
   backendStore.backend.postLogin({ id, password }).then(value => {
     if(import.meta.env.DEV) console.log('Login', value)
-    if(value.response.group?.role === Role.GUEST) {
+    if(value.response.group?.role === Role.CONTESTANT) {
       console.log('login response', value.response.token)
       state.token = value.response.token
       console.log(state.token)
