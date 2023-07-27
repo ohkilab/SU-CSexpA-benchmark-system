@@ -122,7 +122,7 @@ watch(urlList, urlList => {
 
 </script>
 <template>
-  <div class="flex flex-col mt-auto w-full items-center">
+  <div class="flex flex-col grow w-full items-center">
     <fieldset v-if="state.debug" class="border border-red-500 p-2">
       <legend>Debug</legend>
       <pre>{{ taskResults.length }}</pre>

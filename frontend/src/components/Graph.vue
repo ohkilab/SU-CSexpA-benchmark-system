@@ -116,10 +116,10 @@ const chartData = {
   labels: graphData.map(g => g.date),
   datasets: state.records.filter(record => (record.score ?? 0) > 0).map(record => {
     return {
-      label: record.group?.id,
-      backgroundColor: colors[record.group?.id ?? 0] ?? '#f0f', // unity material error color if color not found
+      label: record.group?.name,
+      backgroundColor: colors[record.group?.name ?? 0] ?? '#f0f', // unity material error color if color not found
       // data: [random(0, 400), random(500, 600), random(600, 800), random(900, 4000)]
-      data: graphData.map((g: any) => g.maxScores[record.group?.id ?? 0]?.score ?? null)
+      data: graphData.map((g: any) => g.maxScores[record.group?.name ?? 0]?.score ?? null)
     }
   })
 }

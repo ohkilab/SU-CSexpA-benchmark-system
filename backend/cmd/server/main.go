@@ -59,7 +59,7 @@ func main() {
 		grpc.WithJwtSecret(config.JwtSecret),
 		grpc.WithWorker(benchmarkWorker),
 		grpc.WithLogger(logger),
-		grpc.WithTagRepository(tag.NewRespository(".")),
+		grpc.WithTagRepository(tag.NewRespository(config.StoragePath)),
 		grpc.UseLogMiddleware(),
 	)
 	if err != nil {
