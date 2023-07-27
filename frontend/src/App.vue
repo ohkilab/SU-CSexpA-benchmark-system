@@ -41,12 +41,7 @@ const handleLogin = (id: string, password: string) => {
     state.role = value.response.group?.role ?? Role.GUEST
     loggedIn.value = true
     errMsg.value = ''
-
-    if (state.role === Role.CONTESTANT) {
-      router.push('/contests')
-    } else if(state.role === Role.ADMIN) {
-      router.push('/admin/contests')
-    }
+    router.push('/contests')
   }).catch(err => {
     console.log(err)
     errMsg.value = err.message
