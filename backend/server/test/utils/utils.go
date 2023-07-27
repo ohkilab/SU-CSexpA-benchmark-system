@@ -57,7 +57,7 @@ func LaunchBenchmarkGrpcServer(t *testing.T) (*pkggrpc.ClientConn, func()) {
 
 func LaunchGrpcServer(t *testing.T, optionFuncs ...grpc.OptionFunc) (*pkggrpc.ClientConn, func()) {
 	t.Helper()
-	server := grpc.NewServer(optionFuncs...)
+	server, _ := grpc.NewServer(context.Background(), optionFuncs...)
 	lsnr, err := net.Listen("tcp", ":3776")
 	if err != nil {
 		t.Fatal(err)

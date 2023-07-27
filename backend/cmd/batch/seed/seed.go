@@ -39,10 +39,6 @@ var Command = &cobra.Command{
 		}
 
 		encryptedPassword, _ := bcrypt.GenerateFromPassword([]byte("ohkilab"), bcrypt.DefaultCost)
-		_, err = entClient.Group.Create().SetName("ohkilab").SetEncryptedPassword(string(encryptedPassword)).SetRole(group.RoleContestant).SetCreatedAt(timejst.Now()).Save(ctx)
-		if err != nil {
-			return err
-		}
 		_, err = entClient.Group.Create().SetName("a01").SetEncryptedPassword(string(encryptedPassword)).SetRole(group.RoleContestant).SetCreatedAt(timejst.Now()).Save(ctx)
 		if err != nil {
 			return err

@@ -12,6 +12,9 @@ type Config struct {
 	BenchmarkPort string `envconfig:"BENCHMARK_GRPC_PORT" required:"true"`
 	GrpcPort      string `envconfig:"BACKEND_GRPC_PORT" default:"50051"`
 	JwtSecret     string `envconfig:"BACKEND_JWT_SECRET" required:"true"`
+
+	INIT_ADMIN_NAME     string `envconfig:"BACKEND_INIT_ADMIN_USER_NAME" required:"true"`
+	INIT_ADMIN_PASSWORD string `envconfig:"BACKEND_INIT_ADMIN_PASSWORD" required:"true"`
 }
 
 func New() (*Config, error) {
