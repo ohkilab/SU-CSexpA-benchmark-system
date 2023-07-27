@@ -275,6 +275,9 @@ func (i *Interactor) GetLatestSubmit(ctx context.Context, groupID int) (*backend
 		First(ctx)
 	if err != nil {
 		i.logger.Error("failed to get latest submit", "error", err)
+		if ent.IsNotFound(err) {
+			return &backendpb.GetLatestSubmitResponse{}, nil
+		}
 		return nil, status.Error(codes.Internal, "failed to get latest submit")
 	}
 	return &backendpb.GetLatestSubmitResponse{
