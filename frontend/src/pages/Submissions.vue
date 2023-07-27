@@ -63,6 +63,7 @@ onMounted(() => {
   // TODO: get own submissions, filter functionality
   const listSubmitsRequest:ListSubmitsRequest = {
     contestSlug: state.contestSlug,
+    page: 1
     // groupName: 'a01',
     // status: Status.VALIDATION_ERROR
   }
