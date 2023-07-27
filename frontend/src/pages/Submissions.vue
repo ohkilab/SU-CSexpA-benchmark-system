@@ -7,37 +7,37 @@ import Result from '../components/Result.vue'
 import { useBackendStore } from '../stores/backend'
 import { useRouter, useRoute } from 'vue-router';
 
-const state:IState = useStateStore()
+const state: IState = useStateStore()
 const { backend } = useBackendStore()
 
-const noSubmissions:Ref<boolean> = ref(false)
+const noSubmissions: Ref<boolean> = ref(false)
 
-const modalItem:Ref<Partial<Submit>> = ref({})
+const modalItem: Ref<Partial<Submit>> = ref({})
 
 const router = useRouter()
 const route = useRoute()
 
-const formatDate = (timestamp: number):string => {
+const formatDate = (timestamp: number): string => {
   const dateObject: Date = new Date(timestamp * 1000)
   const date: string = dateObject.toLocaleDateString()
   const time: string = dateObject.toLocaleTimeString()
-  
+
   return `${date} ${time}`
 }
 
-const handleModal = (id:number) => {
-    router.push(`/submissions/${id}`)
+const handleModal = (id: number) => {
+  router.push(`/submissions/${id}`)
 }
 
-const getSubmitById = async (id:number): Promise<Submit | undefined> => {
-  const getSubmitRequest:GetSubmitRequest = {
+const getSubmitById = async (id: number): Promise<Submit | undefined> => {
+  const getSubmitRequest: GetSubmitRequest = {
     submitId: id
   }
 
-  const opt = {meta: {'authorization' : 'Bearer ' + state.token}}
+  const opt = { meta: { 'authorization': 'Bearer ' + state.token } }
   const call = backend.getSubmit(getSubmitRequest, opt)
   for await (let message of call.responses) {
-    if(import.meta.env.DEV) console.log('Submit', message)
+    if (import.meta.env.DEV) console.log('Submit', message)
     // modalItem.value = message.submit ?? {}
     return message.submit
   }
@@ -51,17 +51,17 @@ const handleCloseModal = () => {
 watch(
   () => route.params.id,
   async (to) => { //toParams, prevParams
-  if(import.meta.env.DEV) console.log(to)
-  if(to) {
-    const submit = await getSubmitById(Number(to))
-    modalItem.value = submit ?? {}
-  }
-})
+    if (import.meta.env.DEV) console.log(to)
+    if (to) {
+      const submit = await getSubmitById(Number(to))
+      modalItem.value = submit ?? {}
+    }
+  })
 
 onMounted(() => {
-  const opt = {meta: {'authorization' : 'Bearer ' + state.token}}
+  const opt = { meta: { 'authorization': 'Bearer ' + state.token } }
   // TODO: get own submissions, filter functionality
-  const listSubmitsRequest:ListSubmitsRequest = {
+  const listSubmitsRequest: ListSubmitsRequest = {
     contestSlug: state.contestSlug,
     page: 1
     // groupName: 'a01',
@@ -70,21 +70,21 @@ onMounted(() => {
 
   backend.listSubmits(listSubmitsRequest, opt)
     .then(res => {
-      if(import.meta.env.DEV) console.log('Submits', res.response.submits)
+      if (import.meta.env.DEV) console.log('Submits', res.response.submits)
       state.submits = res.response.submits
 
-      if(res.response.submits.length == 0) {
+      if (res.response.submits.length == 0) {
         noSubmissions.value = true
       }
     })
 
-    // in case of direct access
-    if(route.params.id) {
-      ;(async () => {
-        const submit = await getSubmitById(Number(route.params.id))
-        modalItem.value = submit ?? {}
-      })()
-    }
+  // in case of direct access
+  if (route.params.id) {
+    ; (async () => {
+      const submit = await getSubmitById(Number(route.params.id))
+      modalItem.value = submit ?? {}
+    })()
+  }
 })
 </script>
 <template>

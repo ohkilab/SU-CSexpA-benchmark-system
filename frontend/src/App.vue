@@ -5,6 +5,7 @@ import { onMounted, ref, watch } from 'vue';
 import { useRouter, useRoute } from 'vue-router'
 import { useStateStore } from './stores/state'
 import { useBackendStore } from './stores/backend'
+import { Role } from 'proto-gen-web/services/backend/resources';
 
 const loggedIn = ref(false)
 const state = useStateStore()
@@ -34,13 +35,17 @@ const handleLogin = (id:string, password:string) => {
 
   backendStore.backend.postLogin({ id, password }).then(value => {
     if(import.meta.env.DEV) console.log('Login', value)
-    console.log('login response', value.response.token)
-    state.token = value.response.token
-    console.log(state.token)
-    state.group = id
-    loggedIn.value = true
-    errMsg.value = ''
-    router.push('/contests')
+    if(value.response.group?.role === Role.GUEST) {
+      console.log('login response', value.response.token)
+      state.token = value.response.token
+      console.log(state.token)
+      state.group = id
+      loggedIn.value = true
+      errMsg.value = ''
+      router.push('/contests')
+    } else if (value.response.group?.role === Role.ADMIN) {
+      router.push('/admin/contests')
+    }
   }).catch(err => {
     console.log(err)
     errMsg.value = err.message
@@ -83,7 +88,7 @@ onMounted(() => {
 </script>
 <template>
   <div
-    class="text-white items-center bg-gray-800 flex flex-col gap-6 min-h-screen"
+    class="text-white items-center bg-gray-800 flex flex-col min-h-screen"
   >
     <!-- app bar -->
     <div
@@ -140,7 +145,7 @@ onMounted(() => {
         </div>
         <div to="/contests" class="w-48 p-2 ml-auto"></div>
       </div>
-      <div v-if="!loggedIn" class="mt-auto text-red-500">{{errMsg}}</div>
+      <div v-if="errMsg" class="mt-auto text-red-500">{{errMsg}}</div>
       <router-view @login="(id:string, password:string) => {handleLogin(id, password)}" ></router-view>
     <!-- footer -->
     <div class="flex mt-auto items-center justify-center bg-gray-700 w-full h-8">© 2023 <a href="https://sec.inf.shizuoka.ac.jp/" class="text-blue-500 mx-1" target="_blank">Ohkilab.</a> All rights reserved.</div>
