@@ -89,9 +89,9 @@ export interface Tags {
  */
 export interface Group {
     /**
-     * @generated from protobuf field: string id = 1;
+     * @generated from protobuf field: string name = 1;
      */
-    id: string;
+    name: string;
     /**
      * @generated from protobuf field: backend.Role role = 4;
      */
@@ -602,12 +602,12 @@ export const Tags = new Tags$Type();
 class Group$Type extends MessageType<Group> {
     constructor() {
         super("backend.Group", [
-            { no: 1, name: "id", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 1, name: "name", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
             { no: 4, name: "role", kind: "enum", T: () => ["backend.Role", Role] }
         ]);
     }
     create(value?: PartialMessage<Group>): Group {
-        const message = { id: "", role: 0 };
+        const message = { name: "", role: 0 };
         globalThis.Object.defineProperty(message, MESSAGE_TYPE, { enumerable: false, value: this });
         if (value !== undefined)
             reflectionMergePartial<Group>(this, message, value);
@@ -618,8 +618,8 @@ class Group$Type extends MessageType<Group> {
         while (reader.pos < end) {
             let [fieldNo, wireType] = reader.tag();
             switch (fieldNo) {
-                case /* string id */ 1:
-                    message.id = reader.string();
+                case /* string name */ 1:
+                    message.name = reader.string();
                     break;
                 case /* backend.Role role */ 4:
                     message.role = reader.int32();
@@ -636,9 +636,9 @@ class Group$Type extends MessageType<Group> {
         return message;
     }
     internalBinaryWrite(message: Group, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
-        /* string id = 1; */
-        if (message.id !== "")
-            writer.tag(1, WireType.LengthDelimited).string(message.id);
+        /* string name = 1; */
+        if (message.name !== "")
+            writer.tag(1, WireType.LengthDelimited).string(message.name);
         /* backend.Role role = 4; */
         if (message.role !== 0)
             writer.tag(4, WireType.Varint).int32(message.role);

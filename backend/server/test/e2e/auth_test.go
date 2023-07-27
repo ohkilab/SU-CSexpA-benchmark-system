@@ -6,12 +6,14 @@ import (
 	"testing"
 
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/api/grpc"
+	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/core/auth"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/repository/ent/group"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/test/utils"
 	pb "github.com/ohkilab/SU-CSexpA-benchmark-system/proto-gen/go/services/backend"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/metadata"
 	"google.golang.org/grpc/status"
 )
 
@@ -29,7 +31,7 @@ func Test_PostLogin(t *testing.T) {
 	// success
 	resp, err := client.PostLogin(ctx, &pb.PostLoginRequest{Id: "test", Password: "test"})
 	require.NoError(t, err)
-	assert.Equal(t, g.Name, resp.Group.Id)
+	assert.Equal(t, g.Name, resp.Group.Name)
 	assert.Equal(t, g.Role, group.Role(strings.ToLower(pb.Role_name[int32(resp.Group.Role)])))
 	assert.NotEmpty(t, resp.Token)
 
@@ -41,4 +43,31 @@ func Test_PostLogin(t *testing.T) {
 	assert.Equal(t, codes.Unauthenticated, s.Code())
 
 	// TODO: test using jwt token
+}
+
+func Test_VerifyToken(t *testing.T) {
+	ctx := context.Background()
+	entClient, cleanupFunc := utils.EnttestOpen(ctx, t)
+	defer cleanupFunc(t)
+	conn, closeFunc := utils.LaunchGrpcServer(t, grpc.WithEntClient(entClient), grpc.WithJwtSecret("secret"))
+	defer closeFunc()
+	client := pb.NewBackendServiceClient(conn)
+
+	jwtToken, err := auth.GenerateJWTToken([]byte("secret"), 1, 2023)
+	require.NoError(t, err)
+	meta := metadata.New(map[string]string{"authorization": "Bearer " + jwtToken})
+	ctx = metadata.NewOutgoingContext(ctx, meta)
+
+	resp, err := client.VerifyToken(ctx, &pb.VerifyTokenRequest{})
+	require.NoError(t, err)
+	assert.True(t, resp.Ok)
+
+	jwtToken, err = auth.GenerateJWTToken([]byte("sec"), 1, 2023)
+	require.NoError(t, err)
+	meta = metadata.New(map[string]string{"authorization": "Bearer " + jwtToken})
+	ctx = metadata.NewOutgoingContext(ctx, meta)
+
+	resp, err = client.VerifyToken(ctx, &pb.VerifyTokenRequest{})
+	require.NoError(t, err)
+	assert.False(t, resp.Ok)
 }

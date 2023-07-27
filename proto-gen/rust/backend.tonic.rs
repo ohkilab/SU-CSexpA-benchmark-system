@@ -1473,11 +1473,11 @@ pub mod admin_service_client {
             self.inner.unary(req, path, codec).await
         }
         ///
-        pub async fn create_group(
+        pub async fn create_groups(
             &mut self,
-            request: impl tonic::IntoRequest<super::CreateGroupRequest>,
+            request: impl tonic::IntoRequest<super::CreateGroupsRequest>,
         ) -> std::result::Result<
-            tonic::Response<super::CreateGroupResponse>,
+            tonic::Response<super::CreateGroupsResponse>,
             tonic::Status,
         > {
             self.inner
@@ -1491,11 +1491,11 @@ pub mod admin_service_client {
                 })?;
             let codec = tonic::codec::ProstCodec::default();
             let path = http::uri::PathAndQuery::from_static(
-                "/backend.AdminService/CreateGroup",
+                "/backend.AdminService/CreateGroups",
             );
             let mut req = request.into_request();
             req.extensions_mut()
-                .insert(GrpcMethod::new("backend.AdminService", "CreateGroup"));
+                .insert(GrpcMethod::new("backend.AdminService", "CreateGroups"));
             self.inner.unary(req, path, codec).await
         }
     }
@@ -1524,11 +1524,11 @@ pub mod admin_service_server {
             tonic::Status,
         >;
         ///
-        async fn create_group(
+        async fn create_groups(
             &self,
-            request: tonic::Request<super::CreateGroupRequest>,
+            request: tonic::Request<super::CreateGroupsRequest>,
         ) -> std::result::Result<
-            tonic::Response<super::CreateGroupResponse>,
+            tonic::Response<super::CreateGroupsResponse>,
             tonic::Status,
         >;
     }
@@ -1704,25 +1704,25 @@ pub mod admin_service_server {
                     };
                     Box::pin(fut)
                 }
-                "/backend.AdminService/CreateGroup" => {
+                "/backend.AdminService/CreateGroups" => {
                     #[allow(non_camel_case_types)]
-                    struct CreateGroupSvc<T: AdminService>(pub Arc<T>);
+                    struct CreateGroupsSvc<T: AdminService>(pub Arc<T>);
                     impl<
                         T: AdminService,
-                    > tonic::server::UnaryService<super::CreateGroupRequest>
-                    for CreateGroupSvc<T> {
-                        type Response = super::CreateGroupResponse;
+                    > tonic::server::UnaryService<super::CreateGroupsRequest>
+                    for CreateGroupsSvc<T> {
+                        type Response = super::CreateGroupsResponse;
                         type Future = BoxFuture<
                             tonic::Response<Self::Response>,
                             tonic::Status,
                         >;
                         fn call(
                             &mut self,
-                            request: tonic::Request<super::CreateGroupRequest>,
+                            request: tonic::Request<super::CreateGroupsRequest>,
                         ) -> Self::Future {
                             let inner = Arc::clone(&self.0);
                             let fut = async move {
-                                (*inner).create_group(request).await
+                                (*inner).create_groups(request).await
                             };
                             Box::pin(fut)
                         }
@@ -1734,7 +1734,7 @@ pub mod admin_service_server {
                     let inner = self.inner.clone();
                     let fut = async move {
                         let inner = inner.0;
-                        let method = CreateGroupSvc(inner);
+                        let method = CreateGroupsSvc(inner);
                         let codec = tonic::codec::ProstCodec::default();
                         let mut grpc = tonic::server::Grpc::new(codec)
                             .apply_compression_config(

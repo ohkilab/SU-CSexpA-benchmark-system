@@ -368,13 +368,22 @@ export interface GetLatestSubmitResponse {
     submit?: Submit;
 }
 /**
- * @generated from protobuf message backend.CreateGroupRequest
+ * @generated from protobuf message backend.CreateGroupsRequest
  */
-export interface CreateGroupRequest {
+export interface CreateGroupsRequest {
     /**
-     * @generated from protobuf field: string group_name = 1;
+     * @generated from protobuf field: repeated backend.CreateGroupsRequest.CreateGroupsGroup groups = 1;
      */
-    groupName: string;
+    groups: CreateGroupsRequest_CreateGroupsGroup[];
+}
+/**
+ * @generated from protobuf message backend.CreateGroupsRequest.CreateGroupsGroup
+ */
+export interface CreateGroupsRequest_CreateGroupsGroup {
+    /**
+     * @generated from protobuf field: string name = 1;
+     */
+    name: string;
     /**
      * @generated from protobuf field: string password = 2;
      */
@@ -389,13 +398,13 @@ export interface CreateGroupRequest {
     role: Role;
 }
 /**
- * @generated from protobuf message backend.CreateGroupResponse
+ * @generated from protobuf message backend.CreateGroupsResponse
  */
-export interface CreateGroupResponse {
+export interface CreateGroupsResponse {
     /**
-     * @generated from protobuf field: backend.Group group = 1;
+     * @generated from protobuf field: repeated backend.Group groups = 1;
      */
-    group?: Group;
+    groups: Group[];
 }
 // @generated message type with reflection information, may provide speed optimized methods
 class PostLoginRequest$Type extends MessageType<PostLoginRequest> {
@@ -1792,29 +1801,76 @@ class GetLatestSubmitResponse$Type extends MessageType<GetLatestSubmitResponse> 
  */
 export const GetLatestSubmitResponse = new GetLatestSubmitResponse$Type();
 // @generated message type with reflection information, may provide speed optimized methods
-class CreateGroupRequest$Type extends MessageType<CreateGroupRequest> {
+class CreateGroupsRequest$Type extends MessageType<CreateGroupsRequest> {
     constructor() {
-        super("backend.CreateGroupRequest", [
-            { no: 1, name: "group_name", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+        super("backend.CreateGroupsRequest", [
+            { no: 1, name: "groups", kind: "message", repeat: 1 /*RepeatType.PACKED*/, T: () => CreateGroupsRequest_CreateGroupsGroup }
+        ]);
+    }
+    create(value?: PartialMessage<CreateGroupsRequest>): CreateGroupsRequest {
+        const message = { groups: [] };
+        globalThis.Object.defineProperty(message, MESSAGE_TYPE, { enumerable: false, value: this });
+        if (value !== undefined)
+            reflectionMergePartial<CreateGroupsRequest>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: CreateGroupsRequest): CreateGroupsRequest {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* repeated backend.CreateGroupsRequest.CreateGroupsGroup groups */ 1:
+                    message.groups.push(CreateGroupsRequest_CreateGroupsGroup.internalBinaryRead(reader, reader.uint32(), options));
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: CreateGroupsRequest, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* repeated backend.CreateGroupsRequest.CreateGroupsGroup groups = 1; */
+        for (let i = 0; i < message.groups.length; i++)
+            CreateGroupsRequest_CreateGroupsGroup.internalBinaryWrite(message.groups[i], writer.tag(1, WireType.LengthDelimited).fork(), options).join();
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message backend.CreateGroupsRequest
+ */
+export const CreateGroupsRequest = new CreateGroupsRequest$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class CreateGroupsRequest_CreateGroupsGroup$Type extends MessageType<CreateGroupsRequest_CreateGroupsGroup> {
+    constructor() {
+        super("backend.CreateGroupsRequest.CreateGroupsGroup", [
+            { no: 1, name: "name", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
             { no: 2, name: "password", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
             { no: 3, name: "year", kind: "scalar", T: 5 /*ScalarType.INT32*/ },
             { no: 4, name: "role", kind: "enum", T: () => ["backend.Role", Role] }
         ]);
     }
-    create(value?: PartialMessage<CreateGroupRequest>): CreateGroupRequest {
-        const message = { groupName: "", password: "", year: 0, role: 0 };
+    create(value?: PartialMessage<CreateGroupsRequest_CreateGroupsGroup>): CreateGroupsRequest_CreateGroupsGroup {
+        const message = { name: "", password: "", year: 0, role: 0 };
         globalThis.Object.defineProperty(message, MESSAGE_TYPE, { enumerable: false, value: this });
         if (value !== undefined)
-            reflectionMergePartial<CreateGroupRequest>(this, message, value);
+            reflectionMergePartial<CreateGroupsRequest_CreateGroupsGroup>(this, message, value);
         return message;
     }
-    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: CreateGroupRequest): CreateGroupRequest {
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: CreateGroupsRequest_CreateGroupsGroup): CreateGroupsRequest_CreateGroupsGroup {
         let message = target ?? this.create(), end = reader.pos + length;
         while (reader.pos < end) {
             let [fieldNo, wireType] = reader.tag();
             switch (fieldNo) {
-                case /* string group_name */ 1:
-                    message.groupName = reader.string();
+                case /* string name */ 1:
+                    message.name = reader.string();
                     break;
                 case /* string password */ 2:
                     message.password = reader.string();
@@ -1836,10 +1892,10 @@ class CreateGroupRequest$Type extends MessageType<CreateGroupRequest> {
         }
         return message;
     }
-    internalBinaryWrite(message: CreateGroupRequest, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
-        /* string group_name = 1; */
-        if (message.groupName !== "")
-            writer.tag(1, WireType.LengthDelimited).string(message.groupName);
+    internalBinaryWrite(message: CreateGroupsRequest_CreateGroupsGroup, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* string name = 1; */
+        if (message.name !== "")
+            writer.tag(1, WireType.LengthDelimited).string(message.name);
         /* string password = 2; */
         if (message.password !== "")
             writer.tag(2, WireType.LengthDelimited).string(message.password);
@@ -1856,30 +1912,30 @@ class CreateGroupRequest$Type extends MessageType<CreateGroupRequest> {
     }
 }
 /**
- * @generated MessageType for protobuf message backend.CreateGroupRequest
+ * @generated MessageType for protobuf message backend.CreateGroupsRequest.CreateGroupsGroup
  */
-export const CreateGroupRequest = new CreateGroupRequest$Type();
+export const CreateGroupsRequest_CreateGroupsGroup = new CreateGroupsRequest_CreateGroupsGroup$Type();
 // @generated message type with reflection information, may provide speed optimized methods
-class CreateGroupResponse$Type extends MessageType<CreateGroupResponse> {
+class CreateGroupsResponse$Type extends MessageType<CreateGroupsResponse> {
     constructor() {
-        super("backend.CreateGroupResponse", [
-            { no: 1, name: "group", kind: "message", T: () => Group }
+        super("backend.CreateGroupsResponse", [
+            { no: 1, name: "groups", kind: "message", repeat: 1 /*RepeatType.PACKED*/, T: () => Group }
         ]);
     }
-    create(value?: PartialMessage<CreateGroupResponse>): CreateGroupResponse {
-        const message = {};
+    create(value?: PartialMessage<CreateGroupsResponse>): CreateGroupsResponse {
+        const message = { groups: [] };
         globalThis.Object.defineProperty(message, MESSAGE_TYPE, { enumerable: false, value: this });
         if (value !== undefined)
-            reflectionMergePartial<CreateGroupResponse>(this, message, value);
+            reflectionMergePartial<CreateGroupsResponse>(this, message, value);
         return message;
     }
-    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: CreateGroupResponse): CreateGroupResponse {
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: CreateGroupsResponse): CreateGroupsResponse {
         let message = target ?? this.create(), end = reader.pos + length;
         while (reader.pos < end) {
             let [fieldNo, wireType] = reader.tag();
             switch (fieldNo) {
-                case /* backend.Group group */ 1:
-                    message.group = Group.internalBinaryRead(reader, reader.uint32(), options, message.group);
+                case /* repeated backend.Group groups */ 1:
+                    message.groups.push(Group.internalBinaryRead(reader, reader.uint32(), options));
                     break;
                 default:
                     let u = options.readUnknownField;
@@ -1892,10 +1948,10 @@ class CreateGroupResponse$Type extends MessageType<CreateGroupResponse> {
         }
         return message;
     }
-    internalBinaryWrite(message: CreateGroupResponse, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
-        /* backend.Group group = 1; */
-        if (message.group)
-            Group.internalBinaryWrite(message.group, writer.tag(1, WireType.LengthDelimited).fork(), options).join();
+    internalBinaryWrite(message: CreateGroupsResponse, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* repeated backend.Group groups = 1; */
+        for (let i = 0; i < message.groups.length; i++)
+            Group.internalBinaryWrite(message.groups[i], writer.tag(1, WireType.LengthDelimited).fork(), options).join();
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
@@ -1903,6 +1959,6 @@ class CreateGroupResponse$Type extends MessageType<CreateGroupResponse> {
     }
 }
 /**
- * @generated MessageType for protobuf message backend.CreateGroupResponse
+ * @generated MessageType for protobuf message backend.CreateGroupsResponse
  */
-export const CreateGroupResponse = new CreateGroupResponse$Type();
+export const CreateGroupsResponse = new CreateGroupsResponse$Type();

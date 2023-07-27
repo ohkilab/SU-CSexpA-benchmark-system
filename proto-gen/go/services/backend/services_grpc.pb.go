@@ -598,7 +598,7 @@ var HealthcheckService_ServiceDesc = grpc.ServiceDesc{
 const (
 	AdminService_CreateContest_FullMethodName = "/backend.AdminService/CreateContest"
 	AdminService_UpdateContest_FullMethodName = "/backend.AdminService/UpdateContest"
-	AdminService_CreateGroup_FullMethodName   = "/backend.AdminService/CreateGroup"
+	AdminService_CreateGroups_FullMethodName  = "/backend.AdminService/CreateGroups"
 )
 
 // AdminServiceClient is the client API for AdminService service.
@@ -607,7 +607,7 @@ const (
 type AdminServiceClient interface {
 	CreateContest(ctx context.Context, in *CreateContestRequest, opts ...grpc.CallOption) (*CreateContestResponse, error)
 	UpdateContest(ctx context.Context, in *UpdateContestRequest, opts ...grpc.CallOption) (*UpdateContestResponse, error)
-	CreateGroup(ctx context.Context, in *CreateGroupRequest, opts ...grpc.CallOption) (*CreateGroupResponse, error)
+	CreateGroups(ctx context.Context, in *CreateGroupsRequest, opts ...grpc.CallOption) (*CreateGroupsResponse, error)
 }
 
 type adminServiceClient struct {
@@ -636,9 +636,9 @@ func (c *adminServiceClient) UpdateContest(ctx context.Context, in *UpdateContes
 	return out, nil
 }
 
-func (c *adminServiceClient) CreateGroup(ctx context.Context, in *CreateGroupRequest, opts ...grpc.CallOption) (*CreateGroupResponse, error) {
-	out := new(CreateGroupResponse)
-	err := c.cc.Invoke(ctx, AdminService_CreateGroup_FullMethodName, in, out, opts...)
+func (c *adminServiceClient) CreateGroups(ctx context.Context, in *CreateGroupsRequest, opts ...grpc.CallOption) (*CreateGroupsResponse, error) {
+	out := new(CreateGroupsResponse)
+	err := c.cc.Invoke(ctx, AdminService_CreateGroups_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -651,7 +651,7 @@ func (c *adminServiceClient) CreateGroup(ctx context.Context, in *CreateGroupReq
 type AdminServiceServer interface {
 	CreateContest(context.Context, *CreateContestRequest) (*CreateContestResponse, error)
 	UpdateContest(context.Context, *UpdateContestRequest) (*UpdateContestResponse, error)
-	CreateGroup(context.Context, *CreateGroupRequest) (*CreateGroupResponse, error)
+	CreateGroups(context.Context, *CreateGroupsRequest) (*CreateGroupsResponse, error)
 	mustEmbedUnimplementedAdminServiceServer()
 }
 
@@ -665,8 +665,8 @@ func (UnimplementedAdminServiceServer) CreateContest(context.Context, *CreateCon
 func (UnimplementedAdminServiceServer) UpdateContest(context.Context, *UpdateContestRequest) (*UpdateContestResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateContest not implemented")
 }
-func (UnimplementedAdminServiceServer) CreateGroup(context.Context, *CreateGroupRequest) (*CreateGroupResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method CreateGroup not implemented")
+func (UnimplementedAdminServiceServer) CreateGroups(context.Context, *CreateGroupsRequest) (*CreateGroupsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateGroups not implemented")
 }
 func (UnimplementedAdminServiceServer) mustEmbedUnimplementedAdminServiceServer() {}
 
@@ -717,20 +717,20 @@ func _AdminService_UpdateContest_Handler(srv interface{}, ctx context.Context, d
 	return interceptor(ctx, in, info, handler)
 }
 
-func _AdminService_CreateGroup_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(CreateGroupRequest)
+func _AdminService_CreateGroups_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateGroupsRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(AdminServiceServer).CreateGroup(ctx, in)
+		return srv.(AdminServiceServer).CreateGroups(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: AdminService_CreateGroup_FullMethodName,
+		FullMethod: AdminService_CreateGroups_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AdminServiceServer).CreateGroup(ctx, req.(*CreateGroupRequest))
+		return srv.(AdminServiceServer).CreateGroups(ctx, req.(*CreateGroupsRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -751,8 +751,8 @@ var AdminService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _AdminService_UpdateContest_Handler,
 		},
 		{
-			MethodName: "CreateGroup",
-			Handler:    _AdminService_CreateGroup_Handler,
+			MethodName: "CreateGroups",
+			Handler:    _AdminService_CreateGroups_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

@@ -33,6 +33,8 @@ func NewServer(optionFuncs ...OptionFunc) *grpc.Server {
 	backend.RegisterBackendServiceServer(grpcServer, backendService)
 	healthcheckService := interfaces.NewHealthcheckService()
 	backend.RegisterHealthcheckServiceServer(grpcServer, healthcheckService)
+	adminService := interfaces.NewAdminService(opt.entClient, opt.logger, opt.tagRepository)
+	backend.RegisterAdminServiceServer(grpcServer, adminService)
 	reflection.Register(grpcServer)
 
 	return grpcServer

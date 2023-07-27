@@ -13,7 +13,7 @@ service BackendService {
 
   // contest
   rpc ListContests(ListContestsRequest) returns (ListContestsResponse);
-  rpc GetContest(GetContestRequest) returns (GetContestResponse);  
+  rpc GetContest(GetContestRequest) returns (GetContestResponse);
 
   // ranking
   rpc GetRanking(GetRankingRequest) returns (GetRankingResponse);
@@ -31,5 +31,5 @@ service HealthcheckService {
 service AdminService {
   rpc CreateContest(CreateContestRequest) returns (CreateContestResponse);
   rpc UpdateContest(UpdateContestRequest) returns (UpdateContestResponse);
-  rpc CreateGroup(CreateGroupRequest) returns (CreateGroupResponse);
+  rpc CreateGroups(CreateGroupsRequest) returns (CreateGroupsResponse);
 }

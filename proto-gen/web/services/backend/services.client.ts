@@ -2,8 +2,8 @@
 // @generated from protobuf file "services/backend/services.proto" (package "backend", syntax proto3)
 // tslint:disable
 import { AdminService } from "./services";
-import type { CreateGroupResponse } from "./messages";
-import type { CreateGroupRequest } from "./messages";
+import type { CreateGroupsResponse } from "./messages";
+import type { CreateGroupsRequest } from "./messages";
 import type { UpdateContestResponse } from "./messages";
 import type { UpdateContestRequest } from "./messages";
 import type { CreateContestResponse } from "./messages";
@@ -218,9 +218,9 @@ export interface IAdminServiceClient {
      */
     updateContest(input: UpdateContestRequest, options?: RpcOptions): UnaryCall<UpdateContestRequest, UpdateContestResponse>;
     /**
-     * @generated from protobuf rpc: CreateGroup(backend.CreateGroupRequest) returns (backend.CreateGroupResponse);
+     * @generated from protobuf rpc: CreateGroups(backend.CreateGroupsRequest) returns (backend.CreateGroupsResponse);
      */
-    createGroup(input: CreateGroupRequest, options?: RpcOptions): UnaryCall<CreateGroupRequest, CreateGroupResponse>;
+    createGroups(input: CreateGroupsRequest, options?: RpcOptions): UnaryCall<CreateGroupsRequest, CreateGroupsResponse>;
 }
 /**
  * @generated from protobuf service backend.AdminService
@@ -246,10 +246,10 @@ export class AdminServiceClient implements IAdminServiceClient, ServiceInfo {
         return stackIntercept<UpdateContestRequest, UpdateContestResponse>("unary", this._transport, method, opt, input);
     }
     /**
-     * @generated from protobuf rpc: CreateGroup(backend.CreateGroupRequest) returns (backend.CreateGroupResponse);
+     * @generated from protobuf rpc: CreateGroups(backend.CreateGroupsRequest) returns (backend.CreateGroupsResponse);
      */
-    createGroup(input: CreateGroupRequest, options?: RpcOptions): UnaryCall<CreateGroupRequest, CreateGroupResponse> {
+    createGroups(input: CreateGroupsRequest, options?: RpcOptions): UnaryCall<CreateGroupsRequest, CreateGroupsResponse> {
         const method = this.methods[2], opt = this._transport.mergeOptions(options);
-        return stackIntercept<CreateGroupRequest, CreateGroupResponse>("unary", this._transport, method, opt, input);
+        return stackIntercept<CreateGroupsRequest, CreateGroupsResponse>("unary", this._transport, method, opt, input);
     }
 }

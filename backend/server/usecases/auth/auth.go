@@ -49,7 +49,7 @@ func (i *AuthInteractor) PostLogin(ctx context.Context, id, password string) (*p
 	}
 	return &pb.PostLoginResponse{
 		Group: &pb.Group{
-			Id:   group.Name,
+			Name: group.Name,
 			Role: pb.Role(pb.Role_value[group.Role.String()]),
 		},
 		Token: jwtToken,
