@@ -15,8 +15,8 @@ e2e_test: mysql/start
 	@TEST_MYSQL_PORT=$(shell docker port $(CONTAINER_ID) | rg 3306/tcp | awk -F ' -> ' '{print $$2}' | awk -F ':' '{print $$2}') \
 	MYSQL_ROOT_PASSWORD=ohkilab \
 	MYSQL_DATABASE=su-exp-a \
-		go test ./server/test/e2e -v
-	@docker rm -f $(CONTAINER_ID)
+	go test ./server/test/e2e -v \
+	; docker rm -f $(CONTAINER_ID)
 
 .PHONY: batch/seed
 batch/seed:
