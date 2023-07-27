@@ -22,7 +22,7 @@ func Test_ListSubmits(t *testing.T) {
 	ctx := context.Background()
 	entClient, cleanupFunc := utils.EnttestOpen(ctx, t)
 	defer cleanupFunc(t)
-	conn, closeFunc := utils.LaunchGrpcServer(t, grpc.WithJwtSecret("secret"), grpc.WithEntClient(entClient))
+	conn, closeFunc := utils.LaunchGrpcServer(t, grpc.WithJwtSecret("secret"), grpc.WithEntClient(entClient), grpc.WithLimit(3))
 	defer closeFunc()
 	client := pb.NewBackendServiceClient(conn)
 
@@ -36,8 +36,9 @@ func Test_ListSubmits(t *testing.T) {
 		SetContests(c).
 		SetGroups(group1).
 		SetStatus(pb.Status_SUCCESS.String()).
-		SetSubmitedAt(now.AddDate(0, 0, -2)).
+		SetSubmitedAt(now.AddDate(0, 0, -6)).
 		SetTaskNum(50).
+		SetScore(100).
 		Save(ctx)
 	require.NoError(t, err)
 	submit2, err := entClient.Submit.Create().
@@ -45,8 +46,9 @@ func Test_ListSubmits(t *testing.T) {
 		SetContests(c).
 		SetGroups(group1).
 		SetStatus(pb.Status_SUCCESS.String()).
-		SetSubmitedAt(now.AddDate(0, 0, -1)).
+		SetSubmitedAt(now.AddDate(0, 0, -5)).
 		SetTaskNum(50).
+		SetScore(200).
 		Save(ctx)
 	require.NoError(t, err)
 	submit3, err := entClient.Submit.Create().
@@ -54,7 +56,36 @@ func Test_ListSubmits(t *testing.T) {
 		SetContests(c).
 		SetGroups(group2).
 		SetStatus(pb.Status_CONNECTION_FAILED.String()).
-		SetSubmitedAt(now).
+		SetSubmitedAt(now.AddDate(0, 0, -4)).
+		SetTaskNum(50).
+		Save(ctx)
+	require.NoError(t, err)
+	submit4, err := entClient.Submit.Create().
+		SetURL("http://localhost:8080/program").
+		SetContests(c).
+		SetGroups(group1).
+		SetStatus(pb.Status_SUCCESS.String()).
+		SetSubmitedAt(now.AddDate(0, 0, -3)).
+		SetTaskNum(50).
+		SetScore(300).
+		Save(ctx)
+	require.NoError(t, err)
+	submit5, err := entClient.Submit.Create().
+		SetURL("http://localhost:8080/program").
+		SetContests(c).
+		SetGroups(group1).
+		SetStatus(pb.Status_SUCCESS.String()).
+		SetSubmitedAt(now.AddDate(0, 0, -2)).
+		SetTaskNum(50).
+		SetScore(400).
+		Save(ctx)
+	require.NoError(t, err)
+	submit6, err := entClient.Submit.Create().
+		SetURL("http://localhost:8080/program").
+		SetContests(c).
+		SetGroups(group2).
+		SetStatus(pb.Status_CONNECTION_FAILED.String()).
+		SetSubmitedAt(now.AddDate(0, 0, -1)).
 		SetTaskNum(50).
 		Save(ctx)
 	require.NoError(t, err)
@@ -66,6 +97,16 @@ func Test_ListSubmits(t *testing.T) {
 
 	resp, err := client.ListSubmits(ctx, &pb.ListSubmitsRequest{
 		ContestSlug: c.Slug,
+		Page:        1,
+	})
+	require.NoError(t, err)
+	require.Len(t, resp.Submits, 3)
+	assert.Equal(t, submit6.ID, int(resp.Submits[0].Id))
+	assert.Equal(t, submit5.ID, int(resp.Submits[1].Id))
+	assert.Equal(t, submit4.ID, int(resp.Submits[2].Id))
+	resp, err = client.ListSubmits(ctx, &pb.ListSubmitsRequest{
+		ContestSlug: c.Slug,
+		Page:        2,
 	})
 	require.NoError(t, err)
 	require.Len(t, resp.Submits, 3)
@@ -75,19 +116,26 @@ func Test_ListSubmits(t *testing.T) {
 
 	resp, err = client.ListSubmits(ctx, &pb.ListSubmitsRequest{
 		ContestSlug: c.Slug,
+		Page:        1,
 		GroupName:   lo.ToPtr("test2"),
 	})
 	require.NoError(t, err)
-	require.Len(t, resp.Submits, 1)
-	assert.Equal(t, submit3.ID, int(resp.Submits[0].Id))
+	require.Len(t, resp.Submits, 2)
+	assert.Equal(t, submit6.ID, int(resp.Submits[0].Id))
 	assert.Equal(t, group2.Name, resp.Submits[0].GroupName)
+	assert.Equal(t, submit3.ID, int(resp.Submits[1].Id))
+	assert.Equal(t, group2.Name, resp.Submits[1].GroupName)
 
 	resp, err = client.ListSubmits(ctx, &pb.ListSubmitsRequest{
 		ContestSlug: c.Slug,
-		Status:      lo.ToPtr(pb.Status_CONNECTION_FAILED),
+		Page:        1,
+		SortBy:      pb.ListSubmitsRequest_SCORE.Enum(),
+		Status:      pb.Status_SUCCESS.Enum(),
+		IsDesc:      lo.ToPtr(false),
 	})
 	require.NoError(t, err)
-	require.Len(t, resp.Submits, 1)
-	assert.Equal(t, submit3.ID, int(resp.Submits[0].Id))
-	assert.Equal(t, group2.Name, resp.Submits[0].GroupName)
+	require.Len(t, resp.Submits, 3)
+	assert.Equal(t, submit1.ID, int(resp.Submits[0].Id))
+	assert.Equal(t, submit2.ID, int(resp.Submits[1].Id))
+	assert.Equal(t, submit4.ID, int(resp.Submits[2].Id))
 }

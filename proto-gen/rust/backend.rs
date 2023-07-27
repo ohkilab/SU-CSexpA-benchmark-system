@@ -342,14 +342,50 @@ pub struct GetSubmitResponse {
 pub struct ListSubmitsRequest {
     #[prost(string, tag="1")]
     pub contest_slug: ::prost::alloc::string::String,
+    /// 100 entries per 1 page
+    #[prost(int32, tag="2")]
+    pub page: i32,
+    #[prost(enumeration="list_submits_request::SortBy", optional, tag="3")]
+    pub sort_by: ::core::option::Option<i32>,
+    #[prost(bool, optional, tag="4")]
+    pub is_desc: ::core::option::Option<bool>,
     /// middle match
-    #[prost(string, optional, tag="2")]
+    #[prost(string, optional, tag="5")]
     pub group_name: ::core::option::Option<::prost::alloc::string::String>,
-    #[prost(enumeration="Status", optional, tag="3")]
+    #[prost(enumeration="Status", optional, tag="6")]
     pub status: ::core::option::Option<i32>,
     /// default: false
-    #[prost(bool, optional, tag="4")]
+    #[prost(bool, optional, tag="7")]
     pub contains_guest: ::core::option::Option<bool>,
+}
+/// Nested message and enum types in `ListSubmitsRequest`.
+pub mod list_submits_request {
+    #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::prost::Enumeration)]
+    #[repr(i32)]
+    pub enum SortBy {
+        SubmitedAt = 0,
+        Score = 1,
+    }
+    impl SortBy {
+        /// String value of the enum field names used in the ProtoBuf definition.
+        ///
+        /// The values are not transformed in any way and thus are considered stable
+        /// (if the ProtoBuf definition does not change) and safe for programmatic use.
+        pub fn as_str_name(&self) -> &'static str {
+            match self {
+                SortBy::SubmitedAt => "SUBMITED_AT",
+                SortBy::Score => "SCORE",
+            }
+        }
+        /// Creates an enum from field names used in the ProtoBuf definition.
+        pub fn from_str_name(value: &str) -> ::core::option::Option<Self> {
+            match value {
+                "SUBMITED_AT" => Some(Self::SubmitedAt),
+                "SCORE" => Some(Self::Score),
+                _ => None,
+            }
+        }
+    }
 }
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
