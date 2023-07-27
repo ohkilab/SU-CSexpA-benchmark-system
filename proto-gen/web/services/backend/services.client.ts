@@ -23,8 +23,8 @@ import type { ListContestsResponse } from "./messages";
 import type { ListContestsRequest } from "./messages";
 import type { CreateContestResponse } from "./messages";
 import type { CreateContestRequest } from "./messages";
-import type { GetLatestSubmitResponse } from "./messages";
-import type { GetLatestSubmitRequest } from "./messages";
+import type { GetContestantInfoResponse } from "./messages";
+import type { GetContestantInfoRequest } from "./messages";
 import type { ListSubmitsResponse } from "./messages";
 import type { ListSubmitsRequest } from "./messages";
 import type { GetSubmitResponse } from "./messages";
@@ -54,9 +54,9 @@ export interface IBackendServiceClient {
      */
     listSubmits(input: ListSubmitsRequest, options?: RpcOptions): UnaryCall<ListSubmitsRequest, ListSubmitsResponse>;
     /**
-     * @generated from protobuf rpc: GetLatestSubmit(backend.GetLatestSubmitRequest) returns (backend.GetLatestSubmitResponse);
+     * @generated from protobuf rpc: GetContestantInfo(backend.GetContestantInfoRequest) returns (backend.GetContestantInfoResponse);
      */
-    getLatestSubmit(input: GetLatestSubmitRequest, options?: RpcOptions): UnaryCall<GetLatestSubmitRequest, GetLatestSubmitResponse>;
+    getContestantInfo(input: GetContestantInfoRequest, options?: RpcOptions): UnaryCall<GetContestantInfoRequest, GetContestantInfoResponse>;
     /**
      * contest
      *
@@ -125,11 +125,11 @@ export class BackendServiceClient implements IBackendServiceClient, ServiceInfo 
         return stackIntercept<ListSubmitsRequest, ListSubmitsResponse>("unary", this._transport, method, opt, input);
     }
     /**
-     * @generated from protobuf rpc: GetLatestSubmit(backend.GetLatestSubmitRequest) returns (backend.GetLatestSubmitResponse);
+     * @generated from protobuf rpc: GetContestantInfo(backend.GetContestantInfoRequest) returns (backend.GetContestantInfoResponse);
      */
-    getLatestSubmit(input: GetLatestSubmitRequest, options?: RpcOptions): UnaryCall<GetLatestSubmitRequest, GetLatestSubmitResponse> {
+    getContestantInfo(input: GetContestantInfoRequest, options?: RpcOptions): UnaryCall<GetContestantInfoRequest, GetContestantInfoResponse> {
         const method = this.methods[3], opt = this._transport.mergeOptions(options);
-        return stackIntercept<GetLatestSubmitRequest, GetLatestSubmitResponse>("unary", this._transport, method, opt, input);
+        return stackIntercept<GetContestantInfoRequest, GetContestantInfoResponse>("unary", this._transport, method, opt, input);
     }
     /**
      * contest

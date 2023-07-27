@@ -129,8 +129,11 @@ message VerifyTokenResponse {
   string message = 2;
 }
 
-message GetLatestSubmitRequest {}
+message GetContestantInfoRequest {
+  string contest_slug = 1;
+}
 
-message GetLatestSubmitResponse {
-  Submit submit = 1;
+message GetContestantInfoResponse {
+  optional Submit latest_submit = 1;
+  int32 remaining_submit_count = 2;
 }

@@ -95,7 +95,7 @@ func Test_GetSubmit(t *testing.T) {
 	assert.Equal(t, codes.NotFound, status.Code(err))
 }
 
-func Test_GetLatestSubmit(t *testing.T) {
+func Test_GetContestantInfo(t *testing.T) {
 	ctx := context.Background()
 	entClient, cleanupFunc := utils.EnttestOpen(ctx, t)
 	defer cleanupFunc(t)
@@ -115,6 +115,7 @@ func Test_GetLatestSubmit(t *testing.T) {
 	utils.CreateSubmit(ctx, t, entClient, 100, pb.Status_SUCCESS.String(), contest, group)
 	time.Sleep(time.Second)
 	submit2 := utils.CreateSubmit(ctx, t, entClient, 100, pb.Status_SUCCESS.String(), contest, group)
+	utils.CreateSubmit(ctx, t, entClient, 100, pb.Status_CONNECTION_FAILED.String(), contest, group)
 
 	jwtToken, err := auth.GenerateJWTToken([]byte("secret"), group.ID, group.CreatedAt.Year())
 	require.NoError(t, err)
@@ -122,7 +123,10 @@ func Test_GetLatestSubmit(t *testing.T) {
 	ctx = metadata.NewOutgoingContext(ctx, meta)
 
 	// success
-	resp, err := client.GetLatestSubmit(ctx, &pb.GetLatestSubmitRequest{})
+	resp, err := client.GetContestantInfo(ctx, &pb.GetContestantInfoRequest{
+		ContestSlug: contest.Slug,
+	})
 	require.NoError(t, err)
-	assert.Equal(t, int32(submit2.ID), resp.Submit.Id)
+	assert.Equal(t, int32(submit2.ID), resp.LatestSubmit.Id)
+	assert.Equal(t, int32(9997), resp.RemainingSubmitCount)
 }

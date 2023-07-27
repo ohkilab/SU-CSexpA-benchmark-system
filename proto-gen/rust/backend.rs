@@ -507,13 +507,17 @@ pub struct VerifyTokenResponse {
 }
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
-pub struct GetLatestSubmitRequest {
+pub struct GetContestantInfoRequest {
+    #[prost(string, tag="1")]
+    pub contest_slug: ::prost::alloc::string::String,
 }
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
-pub struct GetLatestSubmitResponse {
+pub struct GetContestantInfoResponse {
     #[prost(message, optional, tag="1")]
-    pub submit: ::core::option::Option<Submit>,
+    pub latest_submit: ::core::option::Option<Submit>,
+    #[prost(int32, tag="2")]
+    pub remaining_submit_count: i32,
 }
 include!("backend.tonic.rs");
 // @@protoc_insertion_point(module)

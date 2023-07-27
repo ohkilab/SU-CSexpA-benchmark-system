@@ -23,7 +23,6 @@ type backendServiceServer struct {
 	rankingInteractor *ranking.RankingInteractor
 	submitInteractor  *submit.Interactor
 	contestInteractor *contest.Interactor
-	pb.UnimplementedBackendServiceServer
 }
 
 func NewBackendService(secret []byte, entClient *ent.Client, worker worker.Worker, logger *slog.Logger, tagRepository tag.Repository) pb.BackendServiceServer {
@@ -36,7 +35,6 @@ func NewBackendService(secret []byte, entClient *ent.Client, worker worker.Worke
 		rankingInteractor,
 		submitInteractor,
 		contestInteractor,
-		pb.UnimplementedBackendServiceServer{},
 	}
 }
 
@@ -108,7 +106,7 @@ func (s *backendServiceServer) UpdateContest(ctx context.Context, req *pb.Update
 	return s.contestInteractor.UpdateContest(ctx, req)
 }
 
-func (s *backendServiceServer) GetLatestSubmit(ctx context.Context, req *pb.GetLatestSubmitRequest) (*pb.GetLatestSubmitResponse, error) {
+func (s *backendServiceServer) GetContestantInfo(ctx context.Context, req *pb.GetContestantInfoRequest) (*pb.GetContestantInfoResponse, error) {
 	claims := interceptor.GetClaimsFromContext(ctx)
-	return s.submitInteractor.GetLatestSubmit(ctx, claims.GroupID)
+	return s.submitInteractor.GetContestantInfo(ctx, claims.GroupID, req.ContestSlug)
 }

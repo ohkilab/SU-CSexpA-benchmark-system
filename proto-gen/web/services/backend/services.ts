@@ -19,8 +19,8 @@ import { ListContestsResponse } from "./messages";
 import { ListContestsRequest } from "./messages";
 import { CreateContestResponse } from "./messages";
 import { CreateContestRequest } from "./messages";
-import { GetLatestSubmitResponse } from "./messages";
-import { GetLatestSubmitRequest } from "./messages";
+import { GetContestantInfoResponse } from "./messages";
+import { GetContestantInfoRequest } from "./messages";
 import { ListSubmitsResponse } from "./messages";
 import { ListSubmitsRequest } from "./messages";
 import { GetSubmitResponse } from "./messages";
@@ -35,7 +35,7 @@ export const BackendService = new ServiceType("backend.BackendService", [
     { name: "PostSubmit", options: {}, I: PostSubmitRequest, O: PostSubmitResponse },
     { name: "GetSubmit", serverStreaming: true, options: {}, I: GetSubmitRequest, O: GetSubmitResponse },
     { name: "ListSubmits", options: {}, I: ListSubmitsRequest, O: ListSubmitsResponse },
-    { name: "GetLatestSubmit", options: {}, I: GetLatestSubmitRequest, O: GetLatestSubmitResponse },
+    { name: "GetContestantInfo", options: {}, I: GetContestantInfoRequest, O: GetContestantInfoResponse },
     { name: "CreateContest", options: {}, I: CreateContestRequest, O: CreateContestResponse },
     { name: "ListContests", options: {}, I: ListContestsRequest, O: ListContestsResponse },
     { name: "GetContest", options: {}, I: GetContestRequest, O: GetContestResponse },
