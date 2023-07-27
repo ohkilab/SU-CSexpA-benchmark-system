@@ -5,10 +5,12 @@ import { onMounted, ref, watch } from 'vue';
 import { useRouter, useRoute } from 'vue-router'
 import { useStateStore } from './stores/state'
 import { useBackendStore } from './stores/backend'
+import { useAdminStateStore } from './stores/adminState';
 import { Role } from 'proto-gen-web/services/backend/resources';
 
 const loggedIn = ref(false)
 const state = useStateStore()
+const adminState = useAdminStateStore()
 const backendStore = useBackendStore()
 const router = useRouter()
 const route = useRoute()
@@ -18,6 +20,7 @@ const handleLogout = () => {
   loggedIn.value = false
   state.lastResult = 0
   router.push('/login')
+  adminState.$reset()
   state.$reset()
 }
 
@@ -86,7 +89,7 @@ onMounted(() => {
   <div class="text-white items-center bg-gray-800 flex flex-col min-h-screen">
     <!-- app bar -->
     <div class="w-full h-16 items-center bg-gray-700 flex shadow-md shadow-gray-950 px-5">
-      <div v-if="loggedIn" class="w-32 p-2 border border-gray-500">グループ：{{ state.group }}</div>
+      <div v-if="loggedIn" class="w-40 text-center p-2 border border-gray-500">グループ：{{ state.group }}</div>
       <button @click="state.debug = !state.debug" v-if="!PROD"
         class="p-2 ml-2 w-32 rounded border border-red-500 transition hover:bg-red-700">Debug: {{ state.debug ? 'on' :
           'off' }}</button>
@@ -94,7 +97,7 @@ onMounted(() => {
         情報科学実験A：ベンチマークサーバ
       </div>
       <button @click="handleLogout" v-if="loggedIn"
-        class="p-2 w-32 rounded bg-red-500 transition hover:bg-red-700">ログアウト</button>
+        class="p-2 w-40 rounded bg-red-500 transition hover:bg-red-700">ログアウト</button>
     </div>
     <!-- debug mode -->
     <fieldset v-if="state.debug" class="mx-8 border border-red-500 p-2 flex flex-col gap-2">
@@ -118,7 +121,7 @@ onMounted(() => {
     </fieldset>
     <!-- main view -->
     <div v-if="loggedIn" class="w-full h-full flex flex-col gap-6 flex-grow align-middle items-center">
-      <div v-if="$route.name !== 'contests'" class="text-xl">{{ state.selectedContestName }}</div>
+      <div v-if="$route.name !== 'contests'" class="text-xl mt-5">{{ state.selectedContestName }}</div>
       <div v-if="loggedIn && !state.benchmarking && $route.name !== 'contests'" class="flex w-full px-12 text-lg">
         <router-link to="/contests"
           class="w-48 rounded transition hover:scale-105 shadow-md shadow-black p-2 text-center border border-gray-500 bg-red-500 mr-auto">
