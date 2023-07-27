@@ -112,11 +112,11 @@ export interface ListSubmitsRequest {
     /**
      * @generated from protobuf field: optional backend.ListSubmitsRequest.SortBy sort_by = 3;
      */
-    sortBy?: ListSubmitsRequest_SortBy;
+    sortBy?: ListSubmitsRequest_SortBy; // default: submited_at
     /**
      * @generated from protobuf field: optional bool is_desc = 4;
      */
-    isDesc?: boolean;
+    isDesc?: boolean; // default: true
     /**
      * @generated from protobuf field: optional string group_name = 5;
      */
@@ -148,7 +148,15 @@ export enum ListSubmitsRequest_SortBy {
  */
 export interface ListSubmitsResponse {
     /**
-     * @generated from protobuf field: repeated backend.Submit submits = 1;
+     * @generated from protobuf field: int32 page = 1;
+     */
+    page: number;
+    /**
+     * @generated from protobuf field: int32 total_pages = 2;
+     */
+    totalPages: number;
+    /**
+     * @generated from protobuf field: repeated backend.Submit submits = 3;
      */
     submits: Submit[]; // NOTE: task_results will be empty
 }
@@ -808,11 +816,13 @@ export const ListSubmitsRequest = new ListSubmitsRequest$Type();
 class ListSubmitsResponse$Type extends MessageType<ListSubmitsResponse> {
     constructor() {
         super("backend.ListSubmitsResponse", [
-            { no: 1, name: "submits", kind: "message", repeat: 1 /*RepeatType.PACKED*/, T: () => Submit }
+            { no: 1, name: "page", kind: "scalar", T: 5 /*ScalarType.INT32*/ },
+            { no: 2, name: "total_pages", kind: "scalar", T: 5 /*ScalarType.INT32*/ },
+            { no: 3, name: "submits", kind: "message", repeat: 1 /*RepeatType.PACKED*/, T: () => Submit }
         ]);
     }
     create(value?: PartialMessage<ListSubmitsResponse>): ListSubmitsResponse {
-        const message = { submits: [] };
+        const message = { page: 0, totalPages: 0, submits: [] };
         globalThis.Object.defineProperty(message, MESSAGE_TYPE, { enumerable: false, value: this });
         if (value !== undefined)
             reflectionMergePartial<ListSubmitsResponse>(this, message, value);
@@ -823,7 +833,13 @@ class ListSubmitsResponse$Type extends MessageType<ListSubmitsResponse> {
         while (reader.pos < end) {
             let [fieldNo, wireType] = reader.tag();
             switch (fieldNo) {
-                case /* repeated backend.Submit submits */ 1:
+                case /* int32 page */ 1:
+                    message.page = reader.int32();
+                    break;
+                case /* int32 total_pages */ 2:
+                    message.totalPages = reader.int32();
+                    break;
+                case /* repeated backend.Submit submits */ 3:
                     message.submits.push(Submit.internalBinaryRead(reader, reader.uint32(), options));
                     break;
                 default:
@@ -838,9 +854,15 @@ class ListSubmitsResponse$Type extends MessageType<ListSubmitsResponse> {
         return message;
     }
     internalBinaryWrite(message: ListSubmitsResponse, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
-        /* repeated backend.Submit submits = 1; */
+        /* int32 page = 1; */
+        if (message.page !== 0)
+            writer.tag(1, WireType.Varint).int32(message.page);
+        /* int32 total_pages = 2; */
+        if (message.totalPages !== 0)
+            writer.tag(2, WireType.Varint).int32(message.totalPages);
+        /* repeated backend.Submit submits = 3; */
         for (let i = 0; i < message.submits.length; i++)
-            Submit.internalBinaryWrite(message.submits[i], writer.tag(1, WireType.LengthDelimited).fork(), options).join();
+            Submit.internalBinaryWrite(message.submits[i], writer.tag(3, WireType.LengthDelimited).fork(), options).join();
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);

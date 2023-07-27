@@ -345,8 +345,10 @@ pub struct ListSubmitsRequest {
     /// 100 entries per 1 page
     #[prost(int32, tag="2")]
     pub page: i32,
+    /// default: submited_at
     #[prost(enumeration="list_submits_request::SortBy", optional, tag="3")]
     pub sort_by: ::core::option::Option<i32>,
+    /// default: true
     #[prost(bool, optional, tag="4")]
     pub is_desc: ::core::option::Option<bool>,
     /// middle match
@@ -390,8 +392,12 @@ pub mod list_submits_request {
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct ListSubmitsResponse {
+    #[prost(int32, tag="1")]
+    pub page: i32,
+    #[prost(int32, tag="2")]
+    pub total_pages: i32,
     /// NOTE: task_results will be empty
-    #[prost(message, repeated, tag="1")]
+    #[prost(message, repeated, tag="3")]
     pub submits: ::prost::alloc::vec::Vec<Submit>,
 }
 #[allow(clippy::derive_partial_eq_without_eq)]

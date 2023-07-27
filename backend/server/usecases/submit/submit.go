@@ -237,6 +237,17 @@ func (i *Interactor) ListSubmits(ctx context.Context, req *backendpb.ListSubmits
 		log.Println("set default order option to submited_at desc")
 		q.Order(submit.BySubmitedAt(sql.OrderDesc()))
 	}
+
+	count, err := q.Count(ctx)
+	if err != nil {
+		i.logger.Error("failed to count submits", err)
+		return nil, status.Error(codes.Internal, err.Error())
+	}
+	totalPages := count / i.limit
+	if count%i.limit > 0 {
+		totalPages++
+	}
+
 	q.Limit(i.limit)
 	q.Offset(int(req.Page-1) * i.limit)
 	submits, err := q.All(ctx)
@@ -244,7 +255,10 @@ func (i *Interactor) ListSubmits(ctx context.Context, req *backendpb.ListSubmits
 		i.logger.Error("failed to fetch submits", err)
 		return nil, status.Error(codes.Internal, err.Error())
 	}
+
 	return &backendpb.ListSubmitsResponse{
+		Page:       req.Page,
+		TotalPages: int32(totalPages),
 		Submits: lo.Map(submits, func(submit *ent.Submit, _ int) *backendpb.Submit {
 			pbSubmit := toPbSubmit(submit)
 			pbSubmit.TaskResults = make([]*backendpb.TaskResult, 0)
