@@ -1,12 +1,13 @@
 import { defineStore } from "pinia";
 import { GetRankingResponse_Record } from "proto-gen-web/services/backend/messages";
-import { Submit } from 'proto-gen-web/services/backend/resources';
+import { Role, Submit } from 'proto-gen-web/services/backend/resources';
 
 // TODO: add logout action
 
 export interface IState {
   token: string;
   group: string;
+  role: Role;
   benchmarking: boolean;
   benchmarkInterval: number;
   lastResult: number;
@@ -25,6 +26,7 @@ export interface IState {
 export const useStateStore = defineStore<"state", IState>("state", {
   state: (): IState => ({
     token: "",
+    role: Role.GUEST,
     group: "",
     benchmarking: false,
     benchmarkInterval: 0,

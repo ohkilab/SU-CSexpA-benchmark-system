@@ -142,7 +142,7 @@ onMounted(() => {
     </tbody>
   </table>
 
-  <div class="mt-auto" v-else>
+  <div class="" v-else>
     <font-awesome-icon v-if="!noSubmissions" class="animate-spin text-3xl" :icon="['fas', 'spinner']"></font-awesome-icon>
     <div v-else>まだベンチマーク結果がありません。</div>
   </div>
