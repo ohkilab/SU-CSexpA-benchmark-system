@@ -2,13 +2,12 @@ package e2e
 
 import (
 	"context"
-	"strings"
 	"testing"
 
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/api/grpc"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/core/auth"
-	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/repository/ent/group"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/test/utils"
+	"github.com/ohkilab/SU-CSexpA-benchmark-system/proto-gen/go/services/backend"
 	pb "github.com/ohkilab/SU-CSexpA-benchmark-system/proto-gen/go/services/backend"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -26,13 +25,13 @@ func Test_PostLogin(t *testing.T) {
 	client := pb.NewBackendServiceClient(conn)
 
 	// prepare
-	g := utils.CreateGroup(ctx, t, entClient, "test", "test", group.RoleContestant)
+	g := utils.CreateGroup(ctx, t, entClient, "test", "test", backend.Role_CONTESTANT)
 
 	// success
 	resp, err := client.PostLogin(ctx, &pb.PostLoginRequest{Id: "test", Password: "test"})
 	require.NoError(t, err)
 	assert.Equal(t, g.Name, resp.Group.Name)
-	assert.Equal(t, g.Role, group.Role(strings.ToLower(pb.Role_name[int32(resp.Group.Role)])))
+	assert.Equal(t, g.Role, pb.Role_name[int32(resp.Group.Role)])
 	assert.NotEmpty(t, resp.Token)
 
 	// failed

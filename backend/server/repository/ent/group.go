@@ -20,7 +20,7 @@ type Group struct {
 	// Name holds the value of the "name" field.
 	Name string `json:"name,omitempty"`
 	// Role holds the value of the "role" field.
-	Role group.Role `json:"role,omitempty"`
+	Role string `json:"role,omitempty"`
 	// EncryptedPassword holds the value of the "encrypted_password" field.
 	EncryptedPassword string `json:"encrypted_password,omitempty"`
 	// CreatedAt holds the value of the "created_at" field.
@@ -93,7 +93,7 @@ func (gr *Group) assignValues(columns []string, values []any) error {
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field role", values[i])
 			} else if value.Valid {
-				gr.Role = group.Role(value.String)
+				gr.Role = value.String
 			}
 		case group.FieldEncryptedPassword:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -158,7 +158,7 @@ func (gr *Group) String() string {
 	builder.WriteString(gr.Name)
 	builder.WriteString(", ")
 	builder.WriteString("role=")
-	builder.WriteString(fmt.Sprintf("%v", gr.Role))
+	builder.WriteString(gr.Role)
 	builder.WriteString(", ")
 	builder.WriteString("encrypted_password=")
 	builder.WriteString(gr.EncryptedPassword)

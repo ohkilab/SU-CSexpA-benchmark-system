@@ -8,13 +8,15 @@ import (
 )
 
 type option struct {
-	entClient        *ent.Client
-	jwtSecret        []byte
-	worker           worker.Worker
-	logger           *slog.Logger
-	tagRepository    tag.Repository
-	useLogMiddleware bool
-	limit            int
+	entClient         *ent.Client
+	jwtSecret         []byte
+	worker            worker.Worker
+	logger            *slog.Logger
+	tagRepository     tag.Repository
+	useLogMiddleware  bool
+	limit             int
+	initAdminName     string
+	initAdminPassword string
 }
 
 type OptionFunc func(*option)
@@ -58,5 +60,12 @@ func UseLogMiddleware() OptionFunc {
 func WithLimit(limit int) OptionFunc {
 	return func(o *option) {
 		o.limit = limit
+	}
+}
+
+func WithInitAdmin(name, password string) OptionFunc {
+	return func(o *option) {
+		o.initAdminName = name
+		o.initAdminPassword = password
 	}
 }

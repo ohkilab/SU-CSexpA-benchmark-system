@@ -8,9 +8,9 @@ import (
 	"testing"
 
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/api/grpc"
-	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/repository/ent/group"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/repository/tag"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/test/utils"
+	"github.com/ohkilab/SU-CSexpA-benchmark-system/proto-gen/go/services/backend"
 	pb "github.com/ohkilab/SU-CSexpA-benchmark-system/proto-gen/go/services/backend"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -31,7 +31,7 @@ func Test_CreateContest(t *testing.T) {
 	defer closeFunc()
 	client := pb.NewAdminServiceClient(conn)
 
-	group := utils.CreateGroup(ctx, t, entClient, "test-group", "test-group", group.RoleGuest)
+	group := utils.CreateGroup(ctx, t, entClient, "test-group", "test-group", backend.Role_GUEST)
 	ctx = utils.WithJWT(ctx, t, group.ID, group.CreatedAt.Year())
 
 	startAt := timestamppb.Now()

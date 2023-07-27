@@ -210,10 +210,10 @@ func (i *Interactor) ListSubmits(ctx context.Context, req *backendpb.ListSubmits
 	if req.GroupName != nil {
 		groupPredicates = append(groupPredicates, group.NameContains(*req.GroupName))
 	}
-	groupPredicates = append(groupPredicates, group.RoleEQ(group.RoleContestant))
+	groupPredicates = append(groupPredicates, group.RoleEQ(backendpb.Role_CONTESTANT.String()))
 	if req.ContainsGuest != nil {
 		if *req.ContainsGuest {
-			groupPredicates = append(groupPredicates, group.RoleEQ(group.RoleGuest))
+			groupPredicates = append(groupPredicates, group.RoleEQ(backendpb.Role_GUEST.String()))
 		}
 	}
 	q.Where(submit.HasGroupsWith(groupPredicates...))

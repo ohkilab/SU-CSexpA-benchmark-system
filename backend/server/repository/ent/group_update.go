@@ -36,8 +36,8 @@ func (gu *GroupUpdate) SetName(s string) *GroupUpdate {
 }
 
 // SetRole sets the "role" field.
-func (gu *GroupUpdate) SetRole(gr group.Role) *GroupUpdate {
-	gu.mutation.SetRole(gr)
+func (gu *GroupUpdate) SetRole(s string) *GroupUpdate {
+	gu.mutation.SetRole(s)
 	return gu
 }
 
@@ -141,20 +141,7 @@ func (gu *GroupUpdate) ExecX(ctx context.Context) {
 	}
 }
 
-// check runs all checks and user-defined validators on the builder.
-func (gu *GroupUpdate) check() error {
-	if v, ok := gu.mutation.Role(); ok {
-		if err := group.RoleValidator(v); err != nil {
-			return &ValidationError{Name: "role", err: fmt.Errorf(`ent: validator failed for field "Group.role": %w`, err)}
-		}
-	}
-	return nil
-}
-
 func (gu *GroupUpdate) sqlSave(ctx context.Context) (n int, err error) {
-	if err := gu.check(); err != nil {
-		return n, err
-	}
 	_spec := sqlgraph.NewUpdateSpec(group.Table, group.Columns, sqlgraph.NewFieldSpec(group.FieldID, field.TypeInt))
 	if ps := gu.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
@@ -167,7 +154,7 @@ func (gu *GroupUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		_spec.SetField(group.FieldName, field.TypeString, value)
 	}
 	if value, ok := gu.mutation.Role(); ok {
-		_spec.SetField(group.FieldRole, field.TypeEnum, value)
+		_spec.SetField(group.FieldRole, field.TypeString, value)
 	}
 	if value, ok := gu.mutation.EncryptedPassword(); ok {
 		_spec.SetField(group.FieldEncryptedPassword, field.TypeString, value)
@@ -253,8 +240,8 @@ func (guo *GroupUpdateOne) SetName(s string) *GroupUpdateOne {
 }
 
 // SetRole sets the "role" field.
-func (guo *GroupUpdateOne) SetRole(gr group.Role) *GroupUpdateOne {
-	guo.mutation.SetRole(gr)
+func (guo *GroupUpdateOne) SetRole(s string) *GroupUpdateOne {
+	guo.mutation.SetRole(s)
 	return guo
 }
 
@@ -371,20 +358,7 @@ func (guo *GroupUpdateOne) ExecX(ctx context.Context) {
 	}
 }
 
-// check runs all checks and user-defined validators on the builder.
-func (guo *GroupUpdateOne) check() error {
-	if v, ok := guo.mutation.Role(); ok {
-		if err := group.RoleValidator(v); err != nil {
-			return &ValidationError{Name: "role", err: fmt.Errorf(`ent: validator failed for field "Group.role": %w`, err)}
-		}
-	}
-	return nil
-}
-
 func (guo *GroupUpdateOne) sqlSave(ctx context.Context) (_node *Group, err error) {
-	if err := guo.check(); err != nil {
-		return _node, err
-	}
 	_spec := sqlgraph.NewUpdateSpec(group.Table, group.Columns, sqlgraph.NewFieldSpec(group.FieldID, field.TypeInt))
 	id, ok := guo.mutation.ID()
 	if !ok {
@@ -414,7 +388,7 @@ func (guo *GroupUpdateOne) sqlSave(ctx context.Context) (_node *Group, err error
 		_spec.SetField(group.FieldName, field.TypeString, value)
 	}
 	if value, ok := guo.mutation.Role(); ok {
-		_spec.SetField(group.FieldRole, field.TypeEnum, value)
+		_spec.SetField(group.FieldRole, field.TypeString, value)
 	}
 	if value, ok := guo.mutation.EncryptedPassword(); ok {
 		_spec.SetField(group.FieldEncryptedPassword, field.TypeString, value)

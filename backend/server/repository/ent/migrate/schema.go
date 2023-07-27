@@ -39,7 +39,7 @@ var (
 	GroupsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
 		{Name: "name", Type: field.TypeString},
-		{Name: "role", Type: field.TypeEnum, Enums: []string{"contestant", "guest", "admin"}},
+		{Name: "role", Type: field.TypeString},
 		{Name: "encrypted_password", Type: field.TypeString},
 		{Name: "created_at", Type: field.TypeTime},
 		{Name: "updated_at", Type: field.TypeTime, Nullable: true},

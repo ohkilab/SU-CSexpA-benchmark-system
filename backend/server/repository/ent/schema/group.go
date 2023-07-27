@@ -16,7 +16,7 @@ func (Group) Fields() []ent.Field {
 	return []ent.Field{
 		field.Int("id"),
 		field.String("name"),
-		field.Enum("role").Values("contestant", "guest", "admin"),
+		field.String("role"),
 		field.String("encrypted_password"),
 		field.Time("created_at"),
 		field.Time("updated_at").Optional(),
