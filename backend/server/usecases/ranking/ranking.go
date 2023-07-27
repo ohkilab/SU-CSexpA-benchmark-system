@@ -2,6 +2,7 @@ package ranking
 
 import (
 	"context"
+	"strings"
 	"time"
 
 	"entgo.io/ent/dialect/sql"
@@ -55,7 +56,7 @@ func (i *RankingInteractor) GetRanking(ctx context.Context, containGuest bool, c
 			Rank: rank,
 			Group: &pb.Group{
 				Name: group.Name,
-				Role: pb.Role(pb.Role_value[group.Role.String()]),
+				Role: pb.Role(pb.Role_value[strings.ToUpper(group.Role.String())]),
 			},
 			Score: score,
 		}

@@ -2,6 +2,7 @@ package admin
 
 import (
 	"context"
+	"strings"
 	"time"
 
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/core/timejst"
@@ -124,7 +125,7 @@ func (i *Interactor) CreateGroups(ctx context.Context, req *pb.CreateGroupsReque
 		}
 		createdGroups = append(createdGroups, &pb.Group{
 			Name: group.Name,
-			Role: pb.Role(pb.Role_value[group.Role.String()]),
+			Role: pb.Role(pb.Role_value[strings.ToUpper(group.Role.String())]),
 		})
 	}
 	return &pb.CreateGroupsResponse{

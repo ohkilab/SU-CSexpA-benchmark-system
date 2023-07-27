@@ -2,6 +2,7 @@ package auth
 
 import (
 	"context"
+	"strings"
 
 	grpc_auth "github.com/grpc-ecosystem/go-grpc-middleware/v2/interceptors/auth"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/core/auth"
@@ -50,7 +51,7 @@ func (i *AuthInteractor) PostLogin(ctx context.Context, id, password string) (*p
 	return &pb.PostLoginResponse{
 		Group: &pb.Group{
 			Name: group.Name,
-			Role: pb.Role(pb.Role_value[group.Role.String()]),
+			Role: pb.Role(pb.Role_value[strings.ToUpper(group.Role.String())]),
 		},
 		Token: jwtToken,
 	}, nil

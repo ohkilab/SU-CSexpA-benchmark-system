@@ -2,6 +2,7 @@ package e2e
 
 import (
 	"context"
+	"strings"
 	"testing"
 	"time"
 
@@ -74,6 +75,7 @@ func Test_GetRanking(t *testing.T) {
 }
 
 func newPbGroup(name, role string) *pb.Group {
+	role = strings.ToUpper(role)
 	return &pb.Group{
 		Name: name,
 		Role: pb.Role(pb.Role_value[role]),
