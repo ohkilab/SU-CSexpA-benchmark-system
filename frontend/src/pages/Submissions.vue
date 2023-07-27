@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import { onMounted, Ref, ref } from 'vue';
+import { onMounted, Ref, ref, watch } from 'vue';
 import { IState, useStateStore } from '../stores/state';
 import { Status, Submit } from 'proto-gen-web/services/backend/resources';
 import { GetSubmitRequest, ListSubmitsRequest } from 'proto-gen-web/services/backend/messages';
 import Result from '../components/Result.vue'
 import { useBackendStore } from '../stores/backend'
+import { useRouter, useRoute } from 'vue-router';
 
 const state:IState = useStateStore()
 const { backend } = useBackendStore()
@@ -12,6 +13,9 @@ const { backend } = useBackendStore()
 const noSubmissions:Ref<boolean> = ref(false)
 
 const modalItem:Ref<Partial<Submit>> = ref({})
+
+const router = useRouter()
+const route = useRoute()
 
 const formatDate = (timestamp: number):string => {
   const dateObject: Date = new Date(timestamp * 1000)
@@ -21,22 +25,38 @@ const formatDate = (timestamp: number):string => {
   return `${date} ${time}`
 }
 
-const handleModal = async (submit: Submit) => {
-    // get taskResults
-    const getSubmitRequest:GetSubmitRequest = {
-      submitId: submit.id
-    }
-
-    const opt = {meta: {'authorization' : 'Bearer ' + state.token}}
-    const call = backend.getSubmit(getSubmitRequest, opt)
-    for await (let message of call.responses) {
-      if(import.meta.env.DEV) console.log('Submit', message)
-      submit.taskResults = message.submit?.taskResults ?? []
-    }
-
-    // set modal item
-    modalItem.value = submit
+const handleModal = (id:number) => {
+    router.push(`/submissions/${id}`)
 }
+
+const getSubmitById = async (id:number): Promise<Submit | undefined> => {
+  const getSubmitRequest:GetSubmitRequest = {
+    submitId: id
+  }
+
+  const opt = {meta: {'authorization' : 'Bearer ' + state.token}}
+  const call = backend.getSubmit(getSubmitRequest, opt)
+  for await (let message of call.responses) {
+    if(import.meta.env.DEV) console.log('Submit', message)
+    // modalItem.value = message.submit ?? {}
+    return message.submit
+  }
+}
+
+const handleCloseModal = () => {
+  // modalItem.value = {}
+  router.push('/submissions')
+}
+
+watch(
+  () => route.params.id,
+  async (to) => { //toParams, prevParams
+  if(import.meta.env.DEV) console.log(to)
+  if(to) {
+    const submit = await getSubmitById(Number(to))
+    modalItem.value = submit ?? {}
+  }
+})
 
 onMounted(() => {
   const opt = {meta: {'authorization' : 'Bearer ' + state.token}}
@@ -56,6 +76,14 @@ onMounted(() => {
         noSubmissions.value = true
       }
     })
+
+    // in case of direct access
+    if(route.params.id) {
+      ;(async () => {
+        const submit = await getSubmitById(Number(route.params.id))
+        modalItem.value = submit ?? {}
+      })()
+    }
 })
 </script>
 <template>
@@ -66,11 +94,10 @@ onMounted(() => {
     enter-to-class="opacity-100" leave-active-class="duration-100 ease-in" leave-from-class="opacity-100"
     leave-to-class="transform opacity-0">
 
-
-    <div v-if="Object.keys(modalItem).length > 0" @click.self="modalItem = {}"
+    <div v-if="$route.params.id" @click.self="modalItem = {}"
       class="fixed flex justify-center items-center inset-0 bg-black bg-opacity-50 overflow-y-auto h-full w-full">
       <div class="w-5/6 h-5/6">
-        <result :submit="modalItem" :title="'結果詳細'" :show-close-button="true" @close-modal="modalItem = {}" />
+        <result :submit="modalItem" :title="'結果詳細'" :show-close-button="true" @close-modal="handleCloseModal" />
       </div>
     </div>
 
@@ -88,7 +115,7 @@ onMounted(() => {
     <tbody>
       <tr v-for="s in state.submits"
         class="bg-gray-900 border-b-2 border-gray-800 hover:bg-gray-700 cursor-pointer transition"
-        @click.prevent="handleModal(s)" key="s.id">
+        @click.prevent="handleModal(s.id)" key="s.id">
         <td class="w-20 text-center">{{ s.id }}</td>
         <td class="w-60 text-center">{{ formatDate(Number(s.submitedAt?.seconds)) }}</td>
         <td class="w-30 text-center">{{ s.groupName }}</td>

@@ -21,7 +21,11 @@ const routes = [
     component: Ranking
   },
   {
-    path: '/submissions',
+    path: '/submissions/',
+    component: Submissions
+  },
+  {
+    path: '/submissions/:id',
     component: Submissions
   },
   {
