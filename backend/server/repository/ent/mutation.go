@@ -486,10 +486,24 @@ func (m *ContestMutation) AddedTimeLimitPerTask() (r int64, exists bool) {
 	return *v, true
 }
 
+// ClearTimeLimitPerTask clears the value of the "time_limit_per_task" field.
+func (m *ContestMutation) ClearTimeLimitPerTask() {
+	m.time_limit_per_task = nil
+	m.addtime_limit_per_task = nil
+	m.clearedFields[contest.FieldTimeLimitPerTask] = struct{}{}
+}
+
+// TimeLimitPerTaskCleared returns if the "time_limit_per_task" field was cleared in this mutation.
+func (m *ContestMutation) TimeLimitPerTaskCleared() bool {
+	_, ok := m.clearedFields[contest.FieldTimeLimitPerTask]
+	return ok
+}
+
 // ResetTimeLimitPerTask resets all changes to the "time_limit_per_task" field.
 func (m *ContestMutation) ResetTimeLimitPerTask() {
 	m.time_limit_per_task = nil
 	m.addtime_limit_per_task = nil
+	delete(m.clearedFields, contest.FieldTimeLimitPerTask)
 }
 
 // SetCreatedAt sets the "created_at" field.
@@ -889,6 +903,9 @@ func (m *ContestMutation) AddField(name string, value ent.Value) error {
 // mutation.
 func (m *ContestMutation) ClearedFields() []string {
 	var fields []string
+	if m.FieldCleared(contest.FieldTimeLimitPerTask) {
+		fields = append(fields, contest.FieldTimeLimitPerTask)
+	}
 	if m.FieldCleared(contest.FieldUpdatedAt) {
 		fields = append(fields, contest.FieldUpdatedAt)
 	}
@@ -906,6 +923,9 @@ func (m *ContestMutation) FieldCleared(name string) bool {
 // error if the field is not defined in the schema.
 func (m *ContestMutation) ClearField(name string) error {
 	switch name {
+	case contest.FieldTimeLimitPerTask:
+		m.ClearTimeLimitPerTask()
+		return nil
 	case contest.FieldUpdatedAt:
 		m.ClearUpdatedAt()
 		return nil

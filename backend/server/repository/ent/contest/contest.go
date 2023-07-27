@@ -72,6 +72,11 @@ func ValidColumn(column string) bool {
 	return false
 }
 
+var (
+	// DefaultTimeLimitPerTask holds the default value on creation for the "time_limit_per_task" field.
+	DefaultTimeLimitPerTask int64
+)
+
 // TagSelectionLogic defines the type for the "tag_selection_logic" enum field.
 type TagSelectionLogic string
 

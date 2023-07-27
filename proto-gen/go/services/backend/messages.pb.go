@@ -1521,6 +1521,100 @@ func (x *GetLatestSubmitResponse) GetSubmit() *Submit {
 	return nil
 }
 
+type CreateGroupsRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Groups []*CreateGroupsRequest_CreateGroupsGroup `protobuf:"bytes,1,rep,name=groups,proto3" json:"groups,omitempty"`
+}
+
+func (x *CreateGroupsRequest) Reset() {
+	*x = CreateGroupsRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_services_backend_messages_proto_msgTypes[26]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *CreateGroupsRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CreateGroupsRequest) ProtoMessage() {}
+
+func (x *CreateGroupsRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_services_backend_messages_proto_msgTypes[26]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CreateGroupsRequest.ProtoReflect.Descriptor instead.
+func (*CreateGroupsRequest) Descriptor() ([]byte, []int) {
+	return file_services_backend_messages_proto_rawDescGZIP(), []int{26}
+}
+
+func (x *CreateGroupsRequest) GetGroups() []*CreateGroupsRequest_CreateGroupsGroup {
+	if x != nil {
+		return x.Groups
+	}
+	return nil
+}
+
+type CreateGroupsResponse struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Groups []*Group `protobuf:"bytes,1,rep,name=groups,proto3" json:"groups,omitempty"`
+}
+
+func (x *CreateGroupsResponse) Reset() {
+	*x = CreateGroupsResponse{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_services_backend_messages_proto_msgTypes[27]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *CreateGroupsResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CreateGroupsResponse) ProtoMessage() {}
+
+func (x *CreateGroupsResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_services_backend_messages_proto_msgTypes[27]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CreateGroupsResponse.ProtoReflect.Descriptor instead.
+func (*CreateGroupsResponse) Descriptor() ([]byte, []int) {
+	return file_services_backend_messages_proto_rawDescGZIP(), []int{27}
+}
+
+func (x *CreateGroupsResponse) GetGroups() []*Group {
+	if x != nil {
+		return x.Groups
+	}
+	return nil
+}
+
 type GetRankingResponse_Record struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -1534,7 +1628,7 @@ type GetRankingResponse_Record struct {
 func (x *GetRankingResponse_Record) Reset() {
 	*x = GetRankingResponse_Record{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_services_backend_messages_proto_msgTypes[26]
+		mi := &file_services_backend_messages_proto_msgTypes[28]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1547,7 +1641,7 @@ func (x *GetRankingResponse_Record) String() string {
 func (*GetRankingResponse_Record) ProtoMessage() {}
 
 func (x *GetRankingResponse_Record) ProtoReflect() protoreflect.Message {
-	mi := &file_services_backend_messages_proto_msgTypes[26]
+	mi := &file_services_backend_messages_proto_msgTypes[28]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1582,6 +1676,77 @@ func (x *GetRankingResponse_Record) GetScore() int32 {
 		return *x.Score
 	}
 	return 0
+}
+
+type CreateGroupsRequest_CreateGroupsGroup struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Name     string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	Password string `protobuf:"bytes,2,opt,name=password,proto3" json:"password,omitempty"`
+	Year     int32  `protobuf:"varint,3,opt,name=year,proto3" json:"year,omitempty"`
+	Role     Role   `protobuf:"varint,4,opt,name=role,proto3,enum=backend.Role" json:"role,omitempty"`
+}
+
+func (x *CreateGroupsRequest_CreateGroupsGroup) Reset() {
+	*x = CreateGroupsRequest_CreateGroupsGroup{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_services_backend_messages_proto_msgTypes[29]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *CreateGroupsRequest_CreateGroupsGroup) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CreateGroupsRequest_CreateGroupsGroup) ProtoMessage() {}
+
+func (x *CreateGroupsRequest_CreateGroupsGroup) ProtoReflect() protoreflect.Message {
+	mi := &file_services_backend_messages_proto_msgTypes[29]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CreateGroupsRequest_CreateGroupsGroup.ProtoReflect.Descriptor instead.
+func (*CreateGroupsRequest_CreateGroupsGroup) Descriptor() ([]byte, []int) {
+	return file_services_backend_messages_proto_rawDescGZIP(), []int{26, 0}
+}
+
+func (x *CreateGroupsRequest_CreateGroupsGroup) GetName() string {
+	if x != nil {
+		return x.Name
+	}
+	return ""
+}
+
+func (x *CreateGroupsRequest_CreateGroupsGroup) GetPassword() string {
+	if x != nil {
+		return x.Password
+	}
+	return ""
+}
+
+func (x *CreateGroupsRequest_CreateGroupsGroup) GetYear() int32 {
+	if x != nil {
+		return x.Year
+	}
+	return 0
+}
+
+func (x *CreateGroupsRequest_CreateGroupsGroup) GetRole() Role {
+	if x != nil {
+		return x.Role
+	}
+	return Role_CONTESTANT
 }
 
 var File_services_backend_messages_proto protoreflect.FileDescriptor
@@ -1769,18 +1934,36 @@ var file_services_backend_messages_proto_rawDesc = []byte{
 	0x61, 0x74, 0x65, 0x73, 0x74, 0x53, 0x75, 0x62, 0x6d, 0x69, 0x74, 0x52, 0x65, 0x73, 0x70, 0x6f,
 	0x6e, 0x73, 0x65, 0x12, 0x27, 0x0a, 0x06, 0x73, 0x75, 0x62, 0x6d, 0x69, 0x74, 0x18, 0x01, 0x20,
 	0x01, 0x28, 0x0b, 0x32, 0x0f, 0x2e, 0x62, 0x61, 0x63, 0x6b, 0x65, 0x6e, 0x64, 0x2e, 0x53, 0x75,
-	0x62, 0x6d, 0x69, 0x74, 0x52, 0x06, 0x73, 0x75, 0x62, 0x6d, 0x69, 0x74, 0x42, 0xa5, 0x01, 0x0a,
-	0x0b, 0x63, 0x6f, 0x6d, 0x2e, 0x62, 0x61, 0x63, 0x6b, 0x65, 0x6e, 0x64, 0x42, 0x0d, 0x4d, 0x65,
-	0x73, 0x73, 0x61, 0x67, 0x65, 0x73, 0x50, 0x72, 0x6f, 0x74, 0x6f, 0x50, 0x01, 0x5a, 0x4b, 0x67,
-	0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x6f, 0x68, 0x6b, 0x69, 0x6c, 0x61,
-	0x62, 0x2f, 0x53, 0x55, 0x2d, 0x43, 0x53, 0x65, 0x78, 0x70, 0x41, 0x2d, 0x62, 0x65, 0x6e, 0x63,
-	0x68, 0x6d, 0x61, 0x72, 0x6b, 0x2d, 0x73, 0x79, 0x73, 0x74, 0x65, 0x6d, 0x2f, 0x70, 0x72, 0x6f,
-	0x74, 0x6f, 0x2d, 0x67, 0x65, 0x6e, 0x2f, 0x67, 0x6f, 0x2f, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63,
-	0x65, 0x73, 0x2f, 0x62, 0x61, 0x63, 0x6b, 0x65, 0x6e, 0x64, 0xa2, 0x02, 0x03, 0x42, 0x58, 0x58,
-	0xaa, 0x02, 0x07, 0x42, 0x61, 0x63, 0x6b, 0x65, 0x6e, 0x64, 0xca, 0x02, 0x07, 0x42, 0x61, 0x63,
-	0x6b, 0x65, 0x6e, 0x64, 0xe2, 0x02, 0x13, 0x42, 0x61, 0x63, 0x6b, 0x65, 0x6e, 0x64, 0x5c, 0x47,
-	0x50, 0x42, 0x4d, 0x65, 0x74, 0x61, 0x64, 0x61, 0x74, 0x61, 0xea, 0x02, 0x07, 0x42, 0x61, 0x63,
-	0x6b, 0x65, 0x6e, 0x64, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x62, 0x6d, 0x69, 0x74, 0x52, 0x06, 0x73, 0x75, 0x62, 0x6d, 0x69, 0x74, 0x22, 0xd9, 0x01, 0x0a,
+	0x13, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x47, 0x72, 0x6f, 0x75, 0x70, 0x73, 0x52, 0x65, 0x71,
+	0x75, 0x65, 0x73, 0x74, 0x12, 0x46, 0x0a, 0x06, 0x67, 0x72, 0x6f, 0x75, 0x70, 0x73, 0x18, 0x01,
+	0x20, 0x03, 0x28, 0x0b, 0x32, 0x2e, 0x2e, 0x62, 0x61, 0x63, 0x6b, 0x65, 0x6e, 0x64, 0x2e, 0x43,
+	0x72, 0x65, 0x61, 0x74, 0x65, 0x47, 0x72, 0x6f, 0x75, 0x70, 0x73, 0x52, 0x65, 0x71, 0x75, 0x65,
+	0x73, 0x74, 0x2e, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x47, 0x72, 0x6f, 0x75, 0x70, 0x73, 0x47,
+	0x72, 0x6f, 0x75, 0x70, 0x52, 0x06, 0x67, 0x72, 0x6f, 0x75, 0x70, 0x73, 0x1a, 0x7a, 0x0a, 0x11,
+	0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x47, 0x72, 0x6f, 0x75, 0x70, 0x73, 0x47, 0x72, 0x6f, 0x75,
+	0x70, 0x12, 0x12, 0x0a, 0x04, 0x6e, 0x61, 0x6d, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52,
+	0x04, 0x6e, 0x61, 0x6d, 0x65, 0x12, 0x1a, 0x0a, 0x08, 0x70, 0x61, 0x73, 0x73, 0x77, 0x6f, 0x72,
+	0x64, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x08, 0x70, 0x61, 0x73, 0x73, 0x77, 0x6f, 0x72,
+	0x64, 0x12, 0x12, 0x0a, 0x04, 0x79, 0x65, 0x61, 0x72, 0x18, 0x03, 0x20, 0x01, 0x28, 0x05, 0x52,
+	0x04, 0x79, 0x65, 0x61, 0x72, 0x12, 0x21, 0x0a, 0x04, 0x72, 0x6f, 0x6c, 0x65, 0x18, 0x04, 0x20,
+	0x01, 0x28, 0x0e, 0x32, 0x0d, 0x2e, 0x62, 0x61, 0x63, 0x6b, 0x65, 0x6e, 0x64, 0x2e, 0x52, 0x6f,
+	0x6c, 0x65, 0x52, 0x04, 0x72, 0x6f, 0x6c, 0x65, 0x22, 0x3e, 0x0a, 0x14, 0x43, 0x72, 0x65, 0x61,
+	0x74, 0x65, 0x47, 0x72, 0x6f, 0x75, 0x70, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65,
+	0x12, 0x26, 0x0a, 0x06, 0x67, 0x72, 0x6f, 0x75, 0x70, 0x73, 0x18, 0x01, 0x20, 0x03, 0x28, 0x0b,
+	0x32, 0x0e, 0x2e, 0x62, 0x61, 0x63, 0x6b, 0x65, 0x6e, 0x64, 0x2e, 0x47, 0x72, 0x6f, 0x75, 0x70,
+	0x52, 0x06, 0x67, 0x72, 0x6f, 0x75, 0x70, 0x73, 0x42, 0xa5, 0x01, 0x0a, 0x0b, 0x63, 0x6f, 0x6d,
+	0x2e, 0x62, 0x61, 0x63, 0x6b, 0x65, 0x6e, 0x64, 0x42, 0x0d, 0x4d, 0x65, 0x73, 0x73, 0x61, 0x67,
+	0x65, 0x73, 0x50, 0x72, 0x6f, 0x74, 0x6f, 0x50, 0x01, 0x5a, 0x4b, 0x67, 0x69, 0x74, 0x68, 0x75,
+	0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x6f, 0x68, 0x6b, 0x69, 0x6c, 0x61, 0x62, 0x2f, 0x53, 0x55,
+	0x2d, 0x43, 0x53, 0x65, 0x78, 0x70, 0x41, 0x2d, 0x62, 0x65, 0x6e, 0x63, 0x68, 0x6d, 0x61, 0x72,
+	0x6b, 0x2d, 0x73, 0x79, 0x73, 0x74, 0x65, 0x6d, 0x2f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2d, 0x67,
+	0x65, 0x6e, 0x2f, 0x67, 0x6f, 0x2f, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x73, 0x2f, 0x62,
+	0x61, 0x63, 0x6b, 0x65, 0x6e, 0x64, 0xa2, 0x02, 0x03, 0x42, 0x58, 0x58, 0xaa, 0x02, 0x07, 0x42,
+	0x61, 0x63, 0x6b, 0x65, 0x6e, 0x64, 0xca, 0x02, 0x07, 0x42, 0x61, 0x63, 0x6b, 0x65, 0x6e, 0x64,
+	0xe2, 0x02, 0x13, 0x42, 0x61, 0x63, 0x6b, 0x65, 0x6e, 0x64, 0x5c, 0x47, 0x50, 0x42, 0x4d, 0x65,
+	0x74, 0x61, 0x64, 0x61, 0x74, 0x61, 0xea, 0x02, 0x07, 0x42, 0x61, 0x63, 0x6b, 0x65, 0x6e, 0x64,
+	0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -1796,72 +1979,79 @@ func file_services_backend_messages_proto_rawDescGZIP() []byte {
 }
 
 var file_services_backend_messages_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
-var file_services_backend_messages_proto_msgTypes = make([]protoimpl.MessageInfo, 27)
+var file_services_backend_messages_proto_msgTypes = make([]protoimpl.MessageInfo, 30)
 var file_services_backend_messages_proto_goTypes = []interface{}{
-	(ListSubmitsRequest_SortBy)(0),          // 0: backend.ListSubmitsRequest.SortBy
-	(*PostLoginRequest)(nil),                // 1: backend.PostLoginRequest
-	(*PostLoginResponse)(nil),               // 2: backend.PostLoginResponse
-	(*PostSubmitRequest)(nil),               // 3: backend.PostSubmitRequest
-	(*PostSubmitResponse)(nil),              // 4: backend.PostSubmitResponse
-	(*GetSubmitRequest)(nil),                // 5: backend.GetSubmitRequest
-	(*GetSubmitResponse)(nil),               // 6: backend.GetSubmitResponse
-	(*ListSubmitsRequest)(nil),              // 7: backend.ListSubmitsRequest
-	(*ListSubmitsResponse)(nil),             // 8: backend.ListSubmitsResponse
-	(*CreateContestRequest)(nil),            // 9: backend.CreateContestRequest
-	(*CreateContestResponse)(nil),           // 10: backend.CreateContestResponse
-	(*GetContestRequest)(nil),               // 11: backend.GetContestRequest
-	(*GetContestResponse)(nil),              // 12: backend.GetContestResponse
-	(*UpdateContestRequest)(nil),            // 13: backend.UpdateContestRequest
-	(*UpdateContestResponse)(nil),           // 14: backend.UpdateContestResponse
-	(*GetRankingRequest)(nil),               // 15: backend.GetRankingRequest
-	(*GetRankingResponse)(nil),              // 16: backend.GetRankingResponse
-	(*PingUnaryRequest)(nil),                // 17: backend.PingUnaryRequest
-	(*PingUnaryResponse)(nil),               // 18: backend.PingUnaryResponse
-	(*PingServerSideStreamingRequest)(nil),  // 19: backend.PingServerSideStreamingRequest
-	(*PingServerSideStreamingResponse)(nil), // 20: backend.PingServerSideStreamingResponse
-	(*ListContestsRequest)(nil),             // 21: backend.ListContestsRequest
-	(*ListContestsResponse)(nil),            // 22: backend.ListContestsResponse
-	(*VerifyTokenRequest)(nil),              // 23: backend.VerifyTokenRequest
-	(*VerifyTokenResponse)(nil),             // 24: backend.VerifyTokenResponse
-	(*GetLatestSubmitRequest)(nil),          // 25: backend.GetLatestSubmitRequest
-	(*GetLatestSubmitResponse)(nil),         // 26: backend.GetLatestSubmitResponse
-	(*GetRankingResponse_Record)(nil),       // 27: backend.GetRankingResponse.Record
-	(*Group)(nil),                           // 28: backend.Group
-	(*timestamppb.Timestamp)(nil),           // 29: google.protobuf.Timestamp
-	(*Submit)(nil),                          // 30: backend.Submit
-	(Status)(0),                             // 31: backend.Status
-	(*TagSelectionLogicAuto)(nil),           // 32: backend.TagSelectionLogicAuto
-	(*TagSelectionLogicManual)(nil),         // 33: backend.TagSelectionLogicManual
-	(Validator)(0),                          // 34: backend.Validator
-	(*Contest)(nil),                         // 35: backend.Contest
+	(ListSubmitsRequest_SortBy)(0),                // 0: backend.ListSubmitsRequest.SortBy
+	(*PostLoginRequest)(nil),                      // 1: backend.PostLoginRequest
+	(*PostLoginResponse)(nil),                     // 2: backend.PostLoginResponse
+	(*PostSubmitRequest)(nil),                     // 3: backend.PostSubmitRequest
+	(*PostSubmitResponse)(nil),                    // 4: backend.PostSubmitResponse
+	(*GetSubmitRequest)(nil),                      // 5: backend.GetSubmitRequest
+	(*GetSubmitResponse)(nil),                     // 6: backend.GetSubmitResponse
+	(*ListSubmitsRequest)(nil),                    // 7: backend.ListSubmitsRequest
+	(*ListSubmitsResponse)(nil),                   // 8: backend.ListSubmitsResponse
+	(*CreateContestRequest)(nil),                  // 9: backend.CreateContestRequest
+	(*CreateContestResponse)(nil),                 // 10: backend.CreateContestResponse
+	(*GetContestRequest)(nil),                     // 11: backend.GetContestRequest
+	(*GetContestResponse)(nil),                    // 12: backend.GetContestResponse
+	(*UpdateContestRequest)(nil),                  // 13: backend.UpdateContestRequest
+	(*UpdateContestResponse)(nil),                 // 14: backend.UpdateContestResponse
+	(*GetRankingRequest)(nil),                     // 15: backend.GetRankingRequest
+	(*GetRankingResponse)(nil),                    // 16: backend.GetRankingResponse
+	(*PingUnaryRequest)(nil),                      // 17: backend.PingUnaryRequest
+	(*PingUnaryResponse)(nil),                     // 18: backend.PingUnaryResponse
+	(*PingServerSideStreamingRequest)(nil),        // 19: backend.PingServerSideStreamingRequest
+	(*PingServerSideStreamingResponse)(nil),       // 20: backend.PingServerSideStreamingResponse
+	(*ListContestsRequest)(nil),                   // 21: backend.ListContestsRequest
+	(*ListContestsResponse)(nil),                  // 22: backend.ListContestsResponse
+	(*VerifyTokenRequest)(nil),                    // 23: backend.VerifyTokenRequest
+	(*VerifyTokenResponse)(nil),                   // 24: backend.VerifyTokenResponse
+	(*GetLatestSubmitRequest)(nil),                // 25: backend.GetLatestSubmitRequest
+	(*GetLatestSubmitResponse)(nil),               // 26: backend.GetLatestSubmitResponse
+	(*CreateGroupsRequest)(nil),                   // 27: backend.CreateGroupsRequest
+	(*CreateGroupsResponse)(nil),                  // 28: backend.CreateGroupsResponse
+	(*GetRankingResponse_Record)(nil),             // 29: backend.GetRankingResponse.Record
+	(*CreateGroupsRequest_CreateGroupsGroup)(nil), // 30: backend.CreateGroupsRequest.CreateGroupsGroup
+	(*Group)(nil),                                 // 31: backend.Group
+	(*timestamppb.Timestamp)(nil),                 // 32: google.protobuf.Timestamp
+	(*Submit)(nil),                                // 33: backend.Submit
+	(Status)(0),                                   // 34: backend.Status
+	(*TagSelectionLogicAuto)(nil),                 // 35: backend.TagSelectionLogicAuto
+	(*TagSelectionLogicManual)(nil),               // 36: backend.TagSelectionLogicManual
+	(Validator)(0),                                // 37: backend.Validator
+	(*Contest)(nil),                               // 38: backend.Contest
+	(Role)(0),                                     // 39: backend.Role
 }
 var file_services_backend_messages_proto_depIdxs = []int32{
-	28, // 0: backend.PostLoginResponse.group:type_name -> backend.Group
-	29, // 1: backend.PostSubmitResponse.submited_at:type_name -> google.protobuf.Timestamp
-	30, // 2: backend.GetSubmitResponse.submit:type_name -> backend.Submit
+	31, // 0: backend.PostLoginResponse.group:type_name -> backend.Group
+	32, // 1: backend.PostSubmitResponse.submited_at:type_name -> google.protobuf.Timestamp
+	33, // 2: backend.GetSubmitResponse.submit:type_name -> backend.Submit
 	0,  // 3: backend.ListSubmitsRequest.sort_by:type_name -> backend.ListSubmitsRequest.SortBy
-	31, // 4: backend.ListSubmitsRequest.status:type_name -> backend.Status
-	30, // 5: backend.ListSubmitsResponse.submits:type_name -> backend.Submit
-	29, // 6: backend.CreateContestRequest.start_at:type_name -> google.protobuf.Timestamp
-	29, // 7: backend.CreateContestRequest.end_at:type_name -> google.protobuf.Timestamp
-	32, // 8: backend.CreateContestRequest.auto:type_name -> backend.TagSelectionLogicAuto
-	33, // 9: backend.CreateContestRequest.manual:type_name -> backend.TagSelectionLogicManual
-	34, // 10: backend.CreateContestRequest.validator:type_name -> backend.Validator
-	35, // 11: backend.CreateContestResponse.contest:type_name -> backend.Contest
-	35, // 12: backend.GetContestResponse.contest:type_name -> backend.Contest
-	29, // 13: backend.UpdateContestRequest.start_at:type_name -> google.protobuf.Timestamp
-	29, // 14: backend.UpdateContestRequest.end_at:type_name -> google.protobuf.Timestamp
-	34, // 15: backend.UpdateContestRequest.validator:type_name -> backend.Validator
-	35, // 16: backend.UpdateContestResponse.contest:type_name -> backend.Contest
-	27, // 17: backend.GetRankingResponse.records:type_name -> backend.GetRankingResponse.Record
-	35, // 18: backend.ListContestsResponse.contests:type_name -> backend.Contest
-	30, // 19: backend.GetLatestSubmitResponse.submit:type_name -> backend.Submit
-	28, // 20: backend.GetRankingResponse.Record.group:type_name -> backend.Group
-	21, // [21:21] is the sub-list for method output_type
-	21, // [21:21] is the sub-list for method input_type
-	21, // [21:21] is the sub-list for extension type_name
-	21, // [21:21] is the sub-list for extension extendee
-	0,  // [0:21] is the sub-list for field type_name
+	34, // 4: backend.ListSubmitsRequest.status:type_name -> backend.Status
+	33, // 5: backend.ListSubmitsResponse.submits:type_name -> backend.Submit
+	32, // 6: backend.CreateContestRequest.start_at:type_name -> google.protobuf.Timestamp
+	32, // 7: backend.CreateContestRequest.end_at:type_name -> google.protobuf.Timestamp
+	35, // 8: backend.CreateContestRequest.auto:type_name -> backend.TagSelectionLogicAuto
+	36, // 9: backend.CreateContestRequest.manual:type_name -> backend.TagSelectionLogicManual
+	37, // 10: backend.CreateContestRequest.validator:type_name -> backend.Validator
+	38, // 11: backend.CreateContestResponse.contest:type_name -> backend.Contest
+	38, // 12: backend.GetContestResponse.contest:type_name -> backend.Contest
+	32, // 13: backend.UpdateContestRequest.start_at:type_name -> google.protobuf.Timestamp
+	32, // 14: backend.UpdateContestRequest.end_at:type_name -> google.protobuf.Timestamp
+	37, // 15: backend.UpdateContestRequest.validator:type_name -> backend.Validator
+	38, // 16: backend.UpdateContestResponse.contest:type_name -> backend.Contest
+	29, // 17: backend.GetRankingResponse.records:type_name -> backend.GetRankingResponse.Record
+	38, // 18: backend.ListContestsResponse.contests:type_name -> backend.Contest
+	33, // 19: backend.GetLatestSubmitResponse.submit:type_name -> backend.Submit
+	30, // 20: backend.CreateGroupsRequest.groups:type_name -> backend.CreateGroupsRequest.CreateGroupsGroup
+	31, // 21: backend.CreateGroupsResponse.groups:type_name -> backend.Group
+	31, // 22: backend.GetRankingResponse.Record.group:type_name -> backend.Group
+	39, // 23: backend.CreateGroupsRequest.CreateGroupsGroup.role:type_name -> backend.Role
+	24, // [24:24] is the sub-list for method output_type
+	24, // [24:24] is the sub-list for method input_type
+	24, // [24:24] is the sub-list for extension type_name
+	24, // [24:24] is the sub-list for extension extendee
+	0,  // [0:24] is the sub-list for field type_name
 }
 
 func init() { file_services_backend_messages_proto_init() }
@@ -2184,7 +2374,43 @@ func file_services_backend_messages_proto_init() {
 			}
 		}
 		file_services_backend_messages_proto_msgTypes[26].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*CreateGroupsRequest); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_services_backend_messages_proto_msgTypes[27].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*CreateGroupsResponse); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_services_backend_messages_proto_msgTypes[28].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*GetRankingResponse_Record); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_services_backend_messages_proto_msgTypes[29].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*CreateGroupsRequest_CreateGroupsGroup); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -2202,14 +2428,14 @@ func file_services_backend_messages_proto_init() {
 		(*CreateContestRequest_Manual)(nil),
 	}
 	file_services_backend_messages_proto_msgTypes[12].OneofWrappers = []interface{}{}
-	file_services_backend_messages_proto_msgTypes[26].OneofWrappers = []interface{}{}
+	file_services_backend_messages_proto_msgTypes[28].OneofWrappers = []interface{}{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_services_backend_messages_proto_rawDesc,
 			NumEnums:      1,
-			NumMessages:   27,
+			NumMessages:   30,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

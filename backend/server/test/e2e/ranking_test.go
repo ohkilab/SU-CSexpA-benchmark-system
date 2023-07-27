@@ -73,9 +73,9 @@ func Test_GetRanking(t *testing.T) {
 	assert.Equal(t, int32(a03Submit.Score), *resp.Records[3].Score)
 }
 
-func newPbGroup(id string, role string) *pb.Group {
+func newPbGroup(name, role string) *pb.Group {
 	return &pb.Group{
-		Id:   id,
+		Name: name,
 		Role: pb.Role(pb.Role_value[role]),
 	}
 }

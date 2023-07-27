@@ -46,7 +46,7 @@ pub struct Tags {
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct Group {
     #[prost(string, tag="1")]
-    pub id: ::prost::alloc::string::String,
+    pub name: ::prost::alloc::string::String,
     #[prost(enumeration="Role", tag="4")]
     pub role: i32,
 }
@@ -235,6 +235,7 @@ impl Language {
 pub enum Role {
     Contestant = 0,
     Guest = 1,
+    Admin = 2,
 }
 impl Role {
     /// String value of the enum field names used in the ProtoBuf definition.
@@ -245,6 +246,7 @@ impl Role {
         match self {
             Role::Contestant => "CONTESTANT",
             Role::Guest => "GUEST",
+            Role::Admin => "ADMIN",
         }
     }
     /// Creates an enum from field names used in the ProtoBuf definition.
@@ -252,6 +254,7 @@ impl Role {
         match value {
             "CONTESTANT" => Some(Self::Contestant),
             "GUEST" => Some(Self::Guest),
+            "ADMIN" => Some(Self::Admin),
             _ => None,
         }
     }
@@ -556,6 +559,33 @@ pub struct GetLatestSubmitRequest {
 pub struct GetLatestSubmitResponse {
     #[prost(message, optional, tag="1")]
     pub submit: ::core::option::Option<Submit>,
+}
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct CreateGroupsRequest {
+    #[prost(message, repeated, tag="1")]
+    pub groups: ::prost::alloc::vec::Vec<create_groups_request::CreateGroupsGroup>,
+}
+/// Nested message and enum types in `CreateGroupsRequest`.
+pub mod create_groups_request {
+    #[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+    pub struct CreateGroupsGroup {
+        #[prost(string, tag="1")]
+        pub name: ::prost::alloc::string::String,
+        #[prost(string, tag="2")]
+        pub password: ::prost::alloc::string::String,
+        #[prost(int32, tag="3")]
+        pub year: i32,
+        #[prost(enumeration="super::Role", tag="4")]
+        pub role: i32,
+    }
+}
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct CreateGroupsResponse {
+    #[prost(message, repeated, tag="1")]
+    pub groups: ::prost::alloc::vec::Vec<Group>,
 }
 include!("backend.tonic.rs");
 // @@protoc_insertion_point(module)
