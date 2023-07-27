@@ -12,10 +12,8 @@ service BackendService {
   rpc GetLatestSubmit(GetLatestSubmitRequest) returns (GetLatestSubmitResponse);
 
   // contest
-  rpc CreateContest(CreateContestRequest) returns (CreateContestResponse);
   rpc ListContests(ListContestsRequest) returns (ListContestsResponse);
-  rpc GetContest(GetContestRequest) returns (GetContestResponse);
-  rpc UpdateContest(UpdateContestRequest) returns (UpdateContestResponse);
+  rpc GetContest(GetContestRequest) returns (GetContestResponse);  
 
   // ranking
   rpc GetRanking(GetRankingRequest) returns (GetRankingResponse);
@@ -28,4 +26,10 @@ service BackendService {
 service HealthcheckService {
   rpc PingUnary(PingUnaryRequest) returns (PingUnaryResponse);
   rpc PingServerSideStreaming(PingServerSideStreamingRequest) returns (stream PingServerSideStreamingResponse);
+}
+
+service AdminService {
+  rpc CreateContest(CreateContestRequest) returns (CreateContestResponse);
+  rpc UpdateContest(UpdateContestRequest) returns (UpdateContestResponse);
+  rpc CreateGroup(CreateGroupRequest) returns (CreateGroupResponse);
 }

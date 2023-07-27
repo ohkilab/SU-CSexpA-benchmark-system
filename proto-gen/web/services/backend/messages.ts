@@ -11,6 +11,7 @@ import type { PartialMessage } from "@protobuf-ts/runtime";
 import { reflectionMergePartial } from "@protobuf-ts/runtime";
 import { MESSAGE_TYPE } from "@protobuf-ts/runtime";
 import { MessageType } from "@protobuf-ts/runtime";
+import { Role } from "./resources";
 import { Contest } from "./resources";
 import { Validator } from "./resources";
 import { TagSelectionLogicManual } from "./resources";
@@ -365,6 +366,36 @@ export interface GetLatestSubmitResponse {
      * @generated from protobuf field: backend.Submit submit = 1;
      */
     submit?: Submit;
+}
+/**
+ * @generated from protobuf message backend.CreateGroupRequest
+ */
+export interface CreateGroupRequest {
+    /**
+     * @generated from protobuf field: string group_name = 1;
+     */
+    groupName: string;
+    /**
+     * @generated from protobuf field: string password = 2;
+     */
+    password: string;
+    /**
+     * @generated from protobuf field: int32 year = 3;
+     */
+    year: number;
+    /**
+     * @generated from protobuf field: backend.Role role = 4;
+     */
+    role: Role;
+}
+/**
+ * @generated from protobuf message backend.CreateGroupResponse
+ */
+export interface CreateGroupResponse {
+    /**
+     * @generated from protobuf field: backend.Group group = 1;
+     */
+    group?: Group;
 }
 // @generated message type with reflection information, may provide speed optimized methods
 class PostLoginRequest$Type extends MessageType<PostLoginRequest> {
@@ -1760,3 +1791,118 @@ class GetLatestSubmitResponse$Type extends MessageType<GetLatestSubmitResponse> 
  * @generated MessageType for protobuf message backend.GetLatestSubmitResponse
  */
 export const GetLatestSubmitResponse = new GetLatestSubmitResponse$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class CreateGroupRequest$Type extends MessageType<CreateGroupRequest> {
+    constructor() {
+        super("backend.CreateGroupRequest", [
+            { no: 1, name: "group_name", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 2, name: "password", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 3, name: "year", kind: "scalar", T: 5 /*ScalarType.INT32*/ },
+            { no: 4, name: "role", kind: "enum", T: () => ["backend.Role", Role] }
+        ]);
+    }
+    create(value?: PartialMessage<CreateGroupRequest>): CreateGroupRequest {
+        const message = { groupName: "", password: "", year: 0, role: 0 };
+        globalThis.Object.defineProperty(message, MESSAGE_TYPE, { enumerable: false, value: this });
+        if (value !== undefined)
+            reflectionMergePartial<CreateGroupRequest>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: CreateGroupRequest): CreateGroupRequest {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* string group_name */ 1:
+                    message.groupName = reader.string();
+                    break;
+                case /* string password */ 2:
+                    message.password = reader.string();
+                    break;
+                case /* int32 year */ 3:
+                    message.year = reader.int32();
+                    break;
+                case /* backend.Role role */ 4:
+                    message.role = reader.int32();
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: CreateGroupRequest, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* string group_name = 1; */
+        if (message.groupName !== "")
+            writer.tag(1, WireType.LengthDelimited).string(message.groupName);
+        /* string password = 2; */
+        if (message.password !== "")
+            writer.tag(2, WireType.LengthDelimited).string(message.password);
+        /* int32 year = 3; */
+        if (message.year !== 0)
+            writer.tag(3, WireType.Varint).int32(message.year);
+        /* backend.Role role = 4; */
+        if (message.role !== 0)
+            writer.tag(4, WireType.Varint).int32(message.role);
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message backend.CreateGroupRequest
+ */
+export const CreateGroupRequest = new CreateGroupRequest$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class CreateGroupResponse$Type extends MessageType<CreateGroupResponse> {
+    constructor() {
+        super("backend.CreateGroupResponse", [
+            { no: 1, name: "group", kind: "message", T: () => Group }
+        ]);
+    }
+    create(value?: PartialMessage<CreateGroupResponse>): CreateGroupResponse {
+        const message = {};
+        globalThis.Object.defineProperty(message, MESSAGE_TYPE, { enumerable: false, value: this });
+        if (value !== undefined)
+            reflectionMergePartial<CreateGroupResponse>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: CreateGroupResponse): CreateGroupResponse {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* backend.Group group */ 1:
+                    message.group = Group.internalBinaryRead(reader, reader.uint32(), options, message.group);
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: CreateGroupResponse, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* backend.Group group = 1; */
+        if (message.group)
+            Group.internalBinaryWrite(message.group, writer.tag(1, WireType.LengthDelimited).fork(), options).join();
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message backend.CreateGroupResponse
+ */
+export const CreateGroupResponse = new CreateGroupResponse$Type();

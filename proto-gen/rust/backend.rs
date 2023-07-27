@@ -518,5 +518,23 @@ pub struct GetLatestSubmitResponse {
     #[prost(message, optional, tag="1")]
     pub submit: ::core::option::Option<Submit>,
 }
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct CreateGroupRequest {
+    #[prost(string, tag="1")]
+    pub group_name: ::prost::alloc::string::String,
+    #[prost(string, tag="2")]
+    pub password: ::prost::alloc::string::String,
+    #[prost(int32, tag="3")]
+    pub year: i32,
+    #[prost(enumeration="Role", tag="4")]
+    pub role: i32,
+}
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct CreateGroupResponse {
+    #[prost(message, optional, tag="1")]
+    pub group: ::core::option::Option<Group>,
+}
 include!("backend.tonic.rs");
 // @@protoc_insertion_point(module)
