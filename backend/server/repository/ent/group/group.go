@@ -64,6 +64,7 @@ type Role string
 const (
 	RoleContestant Role = "contestant"
 	RoleGuest      Role = "guest"
+	RoleAdmin      Role = "admin"
 )
 
 func (r Role) String() string {
@@ -73,7 +74,7 @@ func (r Role) String() string {
 // RoleValidator is a validator for the "role" field enum values. It is called by the builders before save.
 func RoleValidator(r Role) error {
 	switch r {
-	case RoleContestant, RoleGuest:
+	case RoleContestant, RoleGuest, RoleAdmin:
 		return nil
 	default:
 		return fmt.Errorf("group: invalid enum value for role field: %q", r)

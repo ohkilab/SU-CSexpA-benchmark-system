@@ -475,6 +475,16 @@ func TimeLimitPerTaskLTE(v int64) predicate.Contest {
 	return predicate.Contest(sql.FieldLTE(FieldTimeLimitPerTask, v))
 }
 
+// TimeLimitPerTaskIsNil applies the IsNil predicate on the "time_limit_per_task" field.
+func TimeLimitPerTaskIsNil() predicate.Contest {
+	return predicate.Contest(sql.FieldIsNull(FieldTimeLimitPerTask))
+}
+
+// TimeLimitPerTaskNotNil applies the NotNil predicate on the "time_limit_per_task" field.
+func TimeLimitPerTaskNotNil() predicate.Contest {
+	return predicate.Contest(sql.FieldNotNull(FieldTimeLimitPerTask))
+}
+
 // CreatedAtEQ applies the EQ predicate on the "created_at" field.
 func CreatedAtEQ(v time.Time) predicate.Contest {
 	return predicate.Contest(sql.FieldEQ(FieldCreatedAt, v))
