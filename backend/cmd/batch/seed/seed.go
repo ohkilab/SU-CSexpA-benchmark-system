@@ -38,15 +38,33 @@ var Command = &cobra.Command{
 		}
 
 		encryptedPassword, _ := bcrypt.GenerateFromPassword([]byte("ohkilab"), bcrypt.DefaultCost)
-		_, err = entClient.Group.Create().SetName("a01").SetEncryptedPassword(string(encryptedPassword)).SetRole(backend.Role_CONTESTANT.String()).SetCreatedAt(timejst.Now()).Save(ctx)
+		_, err = entClient.Group.Create().
+			SetName("a01").
+			SetEncryptedPassword(string(encryptedPassword)).
+			SetRole(backend.Role_CONTESTANT.String()).
+			SetYear(2023).
+			SetCreatedAt(timejst.Now()).
+			Save(ctx)
 		if err != nil {
 			return err
 		}
-		_, err = entClient.Group.Create().SetName("a02").SetEncryptedPassword(string(encryptedPassword)).SetRole(backend.Role_CONTESTANT.String()).SetCreatedAt(timejst.Now()).Save(ctx)
+		_, err = entClient.Group.Create().
+			SetName("a02").
+			SetEncryptedPassword(string(encryptedPassword)).
+			SetRole(backend.Role_CONTESTANT.String()).
+			SetYear(2023).
+			SetCreatedAt(timejst.Now()).
+			Save(ctx)
 		if err != nil {
 			return err
 		}
-		_, err = entClient.Group.Create().SetName("a03").SetEncryptedPassword(string(encryptedPassword)).SetRole(backend.Role_CONTESTANT.String()).SetCreatedAt(timejst.Now()).Save(ctx)
+		_, err = entClient.Group.Create().
+			SetName("a03").
+			SetEncryptedPassword(string(encryptedPassword)).
+			SetRole(backend.Role_CONTESTANT.String()).
+			SetYear(2023).
+			SetCreatedAt(timejst.Now()).
+			Save(ctx)
 		if err != nil {
 			return err
 		}

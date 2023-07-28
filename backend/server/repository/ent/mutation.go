@@ -1063,6 +1063,8 @@ type GroupMutation struct {
 	id                 *int
 	name               *string
 	role               *string
+	year               *int
+	addyear            *int
 	encrypted_password *string
 	created_at         *time.Time
 	updated_at         *time.Time
@@ -1249,6 +1251,62 @@ func (m *GroupMutation) OldRole(ctx context.Context) (v string, err error) {
 // ResetRole resets all changes to the "role" field.
 func (m *GroupMutation) ResetRole() {
 	m.role = nil
+}
+
+// SetYear sets the "year" field.
+func (m *GroupMutation) SetYear(i int) {
+	m.year = &i
+	m.addyear = nil
+}
+
+// Year returns the value of the "year" field in the mutation.
+func (m *GroupMutation) Year() (r int, exists bool) {
+	v := m.year
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldYear returns the old "year" field's value of the Group entity.
+// If the Group object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *GroupMutation) OldYear(ctx context.Context) (v int, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldYear is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldYear requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldYear: %w", err)
+	}
+	return oldValue.Year, nil
+}
+
+// AddYear adds i to the "year" field.
+func (m *GroupMutation) AddYear(i int) {
+	if m.addyear != nil {
+		*m.addyear += i
+	} else {
+		m.addyear = &i
+	}
+}
+
+// AddedYear returns the value that was added to the "year" field in this mutation.
+func (m *GroupMutation) AddedYear() (r int, exists bool) {
+	v := m.addyear
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetYear resets all changes to the "year" field.
+func (m *GroupMutation) ResetYear() {
+	m.year = nil
+	m.addyear = nil
 }
 
 // SetEncryptedPassword sets the "encrypted_password" field.
@@ -1460,12 +1518,15 @@ func (m *GroupMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *GroupMutation) Fields() []string {
-	fields := make([]string, 0, 5)
+	fields := make([]string, 0, 6)
 	if m.name != nil {
 		fields = append(fields, group.FieldName)
 	}
 	if m.role != nil {
 		fields = append(fields, group.FieldRole)
+	}
+	if m.year != nil {
+		fields = append(fields, group.FieldYear)
 	}
 	if m.encrypted_password != nil {
 		fields = append(fields, group.FieldEncryptedPassword)
@@ -1488,6 +1549,8 @@ func (m *GroupMutation) Field(name string) (ent.Value, bool) {
 		return m.Name()
 	case group.FieldRole:
 		return m.Role()
+	case group.FieldYear:
+		return m.Year()
 	case group.FieldEncryptedPassword:
 		return m.EncryptedPassword()
 	case group.FieldCreatedAt:
@@ -1507,6 +1570,8 @@ func (m *GroupMutation) OldField(ctx context.Context, name string) (ent.Value, e
 		return m.OldName(ctx)
 	case group.FieldRole:
 		return m.OldRole(ctx)
+	case group.FieldYear:
+		return m.OldYear(ctx)
 	case group.FieldEncryptedPassword:
 		return m.OldEncryptedPassword(ctx)
 	case group.FieldCreatedAt:
@@ -1536,6 +1601,13 @@ func (m *GroupMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetRole(v)
 		return nil
+	case group.FieldYear:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetYear(v)
+		return nil
 	case group.FieldEncryptedPassword:
 		v, ok := value.(string)
 		if !ok {
@@ -1564,13 +1636,21 @@ func (m *GroupMutation) SetField(name string, value ent.Value) error {
 // AddedFields returns all numeric fields that were incremented/decremented during
 // this mutation.
 func (m *GroupMutation) AddedFields() []string {
-	return nil
+	var fields []string
+	if m.addyear != nil {
+		fields = append(fields, group.FieldYear)
+	}
+	return fields
 }
 
 // AddedField returns the numeric value that was incremented/decremented on a field
 // with the given name. The second boolean return value indicates that this field
 // was not set, or was not defined in the schema.
 func (m *GroupMutation) AddedField(name string) (ent.Value, bool) {
+	switch name {
+	case group.FieldYear:
+		return m.AddedYear()
+	}
 	return nil, false
 }
 
@@ -1579,6 +1659,13 @@ func (m *GroupMutation) AddedField(name string) (ent.Value, bool) {
 // type.
 func (m *GroupMutation) AddField(name string, value ent.Value) error {
 	switch name {
+	case group.FieldYear:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddYear(v)
+		return nil
 	}
 	return fmt.Errorf("unknown Group numeric field %s", name)
 }
@@ -1620,6 +1707,9 @@ func (m *GroupMutation) ResetField(name string) error {
 		return nil
 	case group.FieldRole:
 		m.ResetRole()
+		return nil
+	case group.FieldYear:
+		m.ResetYear()
 		return nil
 	case group.FieldEncryptedPassword:
 		m.ResetEncryptedPassword()

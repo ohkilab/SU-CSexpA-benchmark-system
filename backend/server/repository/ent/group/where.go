@@ -65,6 +65,11 @@ func Role(v string) predicate.Group {
 	return predicate.Group(sql.FieldEQ(FieldRole, v))
 }
 
+// Year applies equality check predicate on the "year" field. It's identical to YearEQ.
+func Year(v int) predicate.Group {
+	return predicate.Group(sql.FieldEQ(FieldYear, v))
+}
+
 // EncryptedPassword applies equality check predicate on the "encrypted_password" field. It's identical to EncryptedPasswordEQ.
 func EncryptedPassword(v string) predicate.Group {
 	return predicate.Group(sql.FieldEQ(FieldEncryptedPassword, v))
@@ -208,6 +213,46 @@ func RoleEqualFold(v string) predicate.Group {
 // RoleContainsFold applies the ContainsFold predicate on the "role" field.
 func RoleContainsFold(v string) predicate.Group {
 	return predicate.Group(sql.FieldContainsFold(FieldRole, v))
+}
+
+// YearEQ applies the EQ predicate on the "year" field.
+func YearEQ(v int) predicate.Group {
+	return predicate.Group(sql.FieldEQ(FieldYear, v))
+}
+
+// YearNEQ applies the NEQ predicate on the "year" field.
+func YearNEQ(v int) predicate.Group {
+	return predicate.Group(sql.FieldNEQ(FieldYear, v))
+}
+
+// YearIn applies the In predicate on the "year" field.
+func YearIn(vs ...int) predicate.Group {
+	return predicate.Group(sql.FieldIn(FieldYear, vs...))
+}
+
+// YearNotIn applies the NotIn predicate on the "year" field.
+func YearNotIn(vs ...int) predicate.Group {
+	return predicate.Group(sql.FieldNotIn(FieldYear, vs...))
+}
+
+// YearGT applies the GT predicate on the "year" field.
+func YearGT(v int) predicate.Group {
+	return predicate.Group(sql.FieldGT(FieldYear, v))
+}
+
+// YearGTE applies the GTE predicate on the "year" field.
+func YearGTE(v int) predicate.Group {
+	return predicate.Group(sql.FieldGTE(FieldYear, v))
+}
+
+// YearLT applies the LT predicate on the "year" field.
+func YearLT(v int) predicate.Group {
+	return predicate.Group(sql.FieldLT(FieldYear, v))
+}
+
+// YearLTE applies the LTE predicate on the "year" field.
+func YearLTE(v int) predicate.Group {
+	return predicate.Group(sql.FieldLTE(FieldYear, v))
 }
 
 // EncryptedPasswordEQ applies the EQ predicate on the "encrypted_password" field.

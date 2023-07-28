@@ -16,6 +16,8 @@ const (
 	FieldName = "name"
 	// FieldRole holds the string denoting the role field in the database.
 	FieldRole = "role"
+	// FieldYear holds the string denoting the year field in the database.
+	FieldYear = "year"
 	// FieldEncryptedPassword holds the string denoting the encrypted_password field in the database.
 	FieldEncryptedPassword = "encrypted_password"
 	// FieldCreatedAt holds the string denoting the created_at field in the database.
@@ -40,6 +42,7 @@ var Columns = []string{
 	FieldID,
 	FieldName,
 	FieldRole,
+	FieldYear,
 	FieldEncryptedPassword,
 	FieldCreatedAt,
 	FieldUpdatedAt,
@@ -71,6 +74,11 @@ func ByName(opts ...sql.OrderTermOption) OrderOption {
 // ByRole orders the results by the role field.
 func ByRole(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldRole, opts...).ToFunc()
+}
+
+// ByYear orders the results by the year field.
+func ByYear(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldYear, opts...).ToFunc()
 }
 
 // ByEncryptedPassword orders the results by the encrypted_password field.

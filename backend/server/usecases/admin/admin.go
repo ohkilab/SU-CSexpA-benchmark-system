@@ -113,6 +113,7 @@ func (i *Interactor) CreateGroups(ctx context.Context, req *pb.CreateGroupsReque
 			SetName(g.Name).
 			SetEncryptedPassword(string(b)).
 			SetRole(g.Role.String()).
+			SetYear(int(g.Year)).
 			SetCreatedAt(timejst.Now()).
 			Save(ctx)
 		if err != nil {

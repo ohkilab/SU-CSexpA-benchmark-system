@@ -10,7 +10,6 @@ import (
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/core/auth"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/repository/ent/contest"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/test/utils"
-	"github.com/ohkilab/SU-CSexpA-benchmark-system/proto-gen/go/services/backend"
 	pb "github.com/ohkilab/SU-CSexpA-benchmark-system/proto-gen/go/services/backend"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -27,10 +26,10 @@ func Test_GetRanking(t *testing.T) {
 	client := pb.NewBackendServiceClient(conn)
 
 	// prepare
-	a01 := utils.CreateGroup(ctx, t, entClient, "a01", "aaaa", backend.Role_CONTESTANT)
-	a02 := utils.CreateGroup(ctx, t, entClient, "a02", "aaaa", backend.Role_CONTESTANT)
-	a03 := utils.CreateGroup(ctx, t, entClient, "a03", "aaaa", backend.Role_CONTESTANT)
-	szpp := utils.CreateGroup(ctx, t, entClient, "szpp", "aaaa", backend.Role_GUEST)
+	a01 := utils.CreateGroup(ctx, t, entClient, "a01", "aaaa", 2023, pb.Role_CONTESTANT)
+	a02 := utils.CreateGroup(ctx, t, entClient, "a02", "aaaa", 2023, pb.Role_CONTESTANT)
+	a03 := utils.CreateGroup(ctx, t, entClient, "a03", "aaaa", 2023, pb.Role_CONTESTANT)
+	szpp := utils.CreateGroup(ctx, t, entClient, "szpp", "aaaa", 2023, pb.Role_GUEST)
 	contest := utils.CreateContest(ctx, t, entClient, "test contest", "test-contest", pb.Validator_V2023.String(), time.Date(2023, time.January, 1, 0, 0, 0, 0, time.UTC), time.Date(2023, time.December, 31, 23, 59, 59, 0, time.UTC), 9999, contest.TagSelectionLogicAuto)
 	_ = utils.CreateSubmit(ctx, t, entClient, 100, pb.Status_SUCCESS.String(), contest, a01)
 	a01Submit2 := utils.CreateSubmit(ctx, t, entClient, 1000, pb.Status_SUCCESS.String(), contest, a01)

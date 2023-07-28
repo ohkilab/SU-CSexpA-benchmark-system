@@ -4,6 +4,7 @@ import (
 	"entgo.io/ent"
 	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
+	"entgo.io/ent/schema/index"
 )
 
 // Group holds the schema definition for the Group entity.
@@ -17,6 +18,7 @@ func (Group) Fields() []ent.Field {
 		field.Int("id"),
 		field.String("name"),
 		field.String("role"),
+		field.Int("year"),
 		field.String("encrypted_password"),
 		field.Time("created_at"),
 		field.Time("updated_at").Optional(),
@@ -31,5 +33,7 @@ func (Group) Edges() []ent.Edge {
 }
 
 func (Group) Indexes() []ent.Index {
-	return []ent.Index{}
+	return []ent.Index{
+		index.Fields("name", "year").Unique(),
+	}
 }
