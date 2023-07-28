@@ -15,7 +15,6 @@ import (
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/test/utils"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/worker"
 	mock_worker "github.com/ohkilab/SU-CSexpA-benchmark-system/backend/worker/mock"
-	"github.com/ohkilab/SU-CSexpA-benchmark-system/proto-gen/go/services/backend"
 	pb "github.com/ohkilab/SU-CSexpA-benchmark-system/proto-gen/go/services/backend"
 	benchmarkpb "github.com/ohkilab/SU-CSexpA-benchmark-system/proto-gen/go/services/benchmark-service"
 	"github.com/samber/lo"
@@ -46,7 +45,8 @@ func Test_GetSubmit(t *testing.T) {
 	group, err := entClient.Group.Create().
 		SetName("test").
 		SetEncryptedPassword(string("hoge")).
-		SetRole(backend.Role_CONTESTANT.String()).
+		SetRole(pb.Role_CONTESTANT.String()).
+		SetYear(2023).
 		SetCreatedAt(timejst.Now()).
 		Save(ctx)
 	require.NoError(t, err)
@@ -115,7 +115,7 @@ func Test_GetLatestSubmit(t *testing.T) {
 	client := pb.NewBackendServiceClient(conn)
 
 	// prepare
-	group := utils.CreateGroup(ctx, t, entClient, "test", "hoge", backend.Role_CONTESTANT)
+	group := utils.CreateGroup(ctx, t, entClient, "test", "hoge", 2023, pb.Role_CONTESTANT)
 	contest := utils.CreateContest(ctx, t, entClient, "test contest", "test-contest", pb.Validator_V2023.String(), time.Date(2023, time.January, 1, 0, 0, 0, 0, time.UTC), time.Date(2023, time.December, 31, 23, 59, 59, 0, time.UTC), 9999, contest.TagSelectionLogicAuto)
 	utils.CreateSubmit(ctx, t, entClient, 100, pb.Status_SUCCESS.String(), contest, group)
 	time.Sleep(time.Second)
@@ -142,8 +142,8 @@ func Test_ListSubmits(t *testing.T) {
 
 	// prepare
 	now := timejst.Now()
-	group1 := utils.CreateGroup(ctx, t, entClient, "test1", "hoge", backend.Role_CONTESTANT)
-	group2 := utils.CreateGroup(ctx, t, entClient, "test2", "hoge", backend.Role_CONTESTANT)
+	group1 := utils.CreateGroup(ctx, t, entClient, "test1", "hoge", 2023, pb.Role_CONTESTANT)
+	group2 := utils.CreateGroup(ctx, t, entClient, "test2", "hoge", 2023, pb.Role_CONTESTANT)
 	c := utils.CreateContest(ctx, t, entClient, "test contest", "test-contest", pb.Validator_V2023.String(), time.Date(2023, time.January, 1, 0, 0, 0, 0, time.UTC), time.Date(2023, time.December, 31, 23, 59, 59, 0, time.UTC), 9999, contest.TagSelectionLogicAuto)
 	submit1, err := entClient.Submit.Create().
 		SetURL("http://localhost:8080/program").
@@ -279,7 +279,8 @@ func Test_PostSubmit(t *testing.T) {
 	group, err := entClient.Group.Create().
 		SetName("test").
 		SetEncryptedPassword(string(encryptedPassword)).
-		SetRole(backend.Role_CONTESTANT.String()).
+		SetRole(pb.Role_CONTESTANT.String()).
+		SetYear(2023).
 		SetCreatedAt(timejst.Now()).
 		Save(ctx)
 	require.NoError(t, err)

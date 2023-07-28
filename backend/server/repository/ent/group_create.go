@@ -33,6 +33,12 @@ func (gc *GroupCreate) SetRole(s string) *GroupCreate {
 	return gc
 }
 
+// SetYear sets the "year" field.
+func (gc *GroupCreate) SetYear(i int) *GroupCreate {
+	gc.mutation.SetYear(i)
+	return gc
+}
+
 // SetEncryptedPassword sets the "encrypted_password" field.
 func (gc *GroupCreate) SetEncryptedPassword(s string) *GroupCreate {
 	gc.mutation.SetEncryptedPassword(s)
@@ -120,6 +126,9 @@ func (gc *GroupCreate) check() error {
 	if _, ok := gc.mutation.Role(); !ok {
 		return &ValidationError{Name: "role", err: errors.New(`ent: missing required field "Group.role"`)}
 	}
+	if _, ok := gc.mutation.Year(); !ok {
+		return &ValidationError{Name: "year", err: errors.New(`ent: missing required field "Group.year"`)}
+	}
 	if _, ok := gc.mutation.EncryptedPassword(); !ok {
 		return &ValidationError{Name: "encrypted_password", err: errors.New(`ent: missing required field "Group.encrypted_password"`)}
 	}
@@ -165,6 +174,10 @@ func (gc *GroupCreate) createSpec() (*Group, *sqlgraph.CreateSpec) {
 	if value, ok := gc.mutation.Role(); ok {
 		_spec.SetField(group.FieldRole, field.TypeString, value)
 		_node.Role = value
+	}
+	if value, ok := gc.mutation.Year(); ok {
+		_spec.SetField(group.FieldYear, field.TypeInt, value)
+		_node.Year = value
 	}
 	if value, ok := gc.mutation.EncryptedPassword(); ok {
 		_spec.SetField(group.FieldEncryptedPassword, field.TypeString, value)

@@ -127,13 +127,14 @@ func EnttestOpen(ctx context.Context, t *testing.T) (*ent.Client, cleanupFunc) {
 	return entClient, cleanup
 }
 
-func CreateGroup(ctx context.Context, t *testing.T, entClient *ent.Client, name, password string, role backend.Role) *ent.Group {
+func CreateGroup(ctx context.Context, t *testing.T, entClient *ent.Client, name, password string, year int, role backend.Role) *ent.Group {
 	t.Helper()
 	encryptedPassword, _ := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 	group, err := entClient.Group.Create().
 		SetName(name).
 		SetEncryptedPassword(string(encryptedPassword)).
 		SetRole(role.String()).
+		SetYear(year).
 		SetCreatedAt(timejst.Now()).
 		Save(ctx)
 	require.NoError(t, err)

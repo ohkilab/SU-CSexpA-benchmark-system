@@ -7,7 +7,6 @@ import (
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/api/grpc"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/core/auth"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/test/utils"
-	"github.com/ohkilab/SU-CSexpA-benchmark-system/proto-gen/go/services/backend"
 	pb "github.com/ohkilab/SU-CSexpA-benchmark-system/proto-gen/go/services/backend"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -25,7 +24,7 @@ func Test_PostLogin(t *testing.T) {
 	client := pb.NewBackendServiceClient(conn)
 
 	// prepare
-	g := utils.CreateGroup(ctx, t, entClient, "test", "test", backend.Role_CONTESTANT)
+	g := utils.CreateGroup(ctx, t, entClient, "test", "test", 2023, pb.Role_CONTESTANT)
 
 	// success
 	resp, err := client.PostLogin(ctx, &pb.PostLoginRequest{Id: "test", Password: "test"})
@@ -52,7 +51,7 @@ func Test_VerifyToken(t *testing.T) {
 	defer closeFunc()
 	client := pb.NewBackendServiceClient(conn)
 
-	jwtToken, err := auth.GenerateJWTToken([]byte("secret"), 1, 2023, backend.Role_ADMIN.String())
+	jwtToken, err := auth.GenerateJWTToken([]byte("secret"), 1, 2023, pb.Role_ADMIN.String())
 	require.NoError(t, err)
 	meta := metadata.New(map[string]string{"authorization": "Bearer " + jwtToken})
 	ctx = metadata.NewOutgoingContext(ctx, meta)
@@ -61,7 +60,7 @@ func Test_VerifyToken(t *testing.T) {
 	require.NoError(t, err)
 	assert.True(t, resp.Ok)
 
-	jwtToken, err = auth.GenerateJWTToken([]byte("sec"), 1, 2023, backend.Role_ADMIN.String())
+	jwtToken, err = auth.GenerateJWTToken([]byte("sec"), 1, 2023, pb.Role_ADMIN.String())
 	require.NoError(t, err)
 	meta = metadata.New(map[string]string{"authorization": "Bearer " + jwtToken})
 	ctx = metadata.NewOutgoingContext(ctx, meta)

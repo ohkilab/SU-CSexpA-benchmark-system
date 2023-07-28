@@ -41,6 +41,19 @@ func (gu *GroupUpdate) SetRole(s string) *GroupUpdate {
 	return gu
 }
 
+// SetYear sets the "year" field.
+func (gu *GroupUpdate) SetYear(i int) *GroupUpdate {
+	gu.mutation.ResetYear()
+	gu.mutation.SetYear(i)
+	return gu
+}
+
+// AddYear adds i to the "year" field.
+func (gu *GroupUpdate) AddYear(i int) *GroupUpdate {
+	gu.mutation.AddYear(i)
+	return gu
+}
+
 // SetEncryptedPassword sets the "encrypted_password" field.
 func (gu *GroupUpdate) SetEncryptedPassword(s string) *GroupUpdate {
 	gu.mutation.SetEncryptedPassword(s)
@@ -156,6 +169,12 @@ func (gu *GroupUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if value, ok := gu.mutation.Role(); ok {
 		_spec.SetField(group.FieldRole, field.TypeString, value)
 	}
+	if value, ok := gu.mutation.Year(); ok {
+		_spec.SetField(group.FieldYear, field.TypeInt, value)
+	}
+	if value, ok := gu.mutation.AddedYear(); ok {
+		_spec.AddField(group.FieldYear, field.TypeInt, value)
+	}
 	if value, ok := gu.mutation.EncryptedPassword(); ok {
 		_spec.SetField(group.FieldEncryptedPassword, field.TypeString, value)
 	}
@@ -242,6 +261,19 @@ func (guo *GroupUpdateOne) SetName(s string) *GroupUpdateOne {
 // SetRole sets the "role" field.
 func (guo *GroupUpdateOne) SetRole(s string) *GroupUpdateOne {
 	guo.mutation.SetRole(s)
+	return guo
+}
+
+// SetYear sets the "year" field.
+func (guo *GroupUpdateOne) SetYear(i int) *GroupUpdateOne {
+	guo.mutation.ResetYear()
+	guo.mutation.SetYear(i)
+	return guo
+}
+
+// AddYear adds i to the "year" field.
+func (guo *GroupUpdateOne) AddYear(i int) *GroupUpdateOne {
+	guo.mutation.AddYear(i)
 	return guo
 }
 
@@ -389,6 +421,12 @@ func (guo *GroupUpdateOne) sqlSave(ctx context.Context) (_node *Group, err error
 	}
 	if value, ok := guo.mutation.Role(); ok {
 		_spec.SetField(group.FieldRole, field.TypeString, value)
+	}
+	if value, ok := guo.mutation.Year(); ok {
+		_spec.SetField(group.FieldYear, field.TypeInt, value)
+	}
+	if value, ok := guo.mutation.AddedYear(); ok {
+		_spec.AddField(group.FieldYear, field.TypeInt, value)
 	}
 	if value, ok := guo.mutation.EncryptedPassword(); ok {
 		_spec.SetField(group.FieldEncryptedPassword, field.TypeString, value)

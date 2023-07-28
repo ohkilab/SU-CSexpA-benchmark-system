@@ -40,6 +40,7 @@ var (
 		{Name: "id", Type: field.TypeInt, Increment: true},
 		{Name: "name", Type: field.TypeString},
 		{Name: "role", Type: field.TypeString},
+		{Name: "year", Type: field.TypeInt},
 		{Name: "encrypted_password", Type: field.TypeString},
 		{Name: "created_at", Type: field.TypeTime},
 		{Name: "updated_at", Type: field.TypeTime, Nullable: true},
@@ -49,6 +50,13 @@ var (
 		Name:       "groups",
 		Columns:    GroupsColumns,
 		PrimaryKey: []*schema.Column{GroupsColumns[0]},
+		Indexes: []*schema.Index{
+			{
+				Name:    "group_name_year",
+				Unique:  true,
+				Columns: []*schema.Column{GroupsColumns[1], GroupsColumns[3]},
+			},
+		},
 	}
 	// SubmitsColumns holds the columns for the "submits" table.
 	SubmitsColumns = []*schema.Column{

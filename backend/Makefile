@@ -1,6 +1,6 @@
 .PHONY: generate
 generate:
-	go generate ./server/repository/ent
+	GOFLAGS="-mod=mod" go generate ./server/repository/ent
 
 .PHONY: mysql/start
 mysql/start:
