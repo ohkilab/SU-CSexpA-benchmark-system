@@ -63,7 +63,7 @@ func Test_GetSubmit(t *testing.T) {
 		Save(ctx)
 	require.NoError(t, err)
 
-	jwtToken, err := auth.GenerateJWTToken([]byte("secret"), group.ID, group.CreatedAt.Year())
+	jwtToken, err := auth.GenerateJWTToken([]byte("secret"), group.ID, group.CreatedAt.Year(), group.Role)
 	require.NoError(t, err)
 	meta := metadata.New(map[string]string{"authorization": "Bearer " + jwtToken})
 	ctx = metadata.NewOutgoingContext(ctx, meta)
@@ -121,7 +121,7 @@ func Test_GetLatestSubmit(t *testing.T) {
 	time.Sleep(time.Second)
 	submit2 := utils.CreateSubmit(ctx, t, entClient, 100, pb.Status_SUCCESS.String(), contest, group)
 
-	jwtToken, err := auth.GenerateJWTToken([]byte("secret"), group.ID, group.CreatedAt.Year())
+	jwtToken, err := auth.GenerateJWTToken([]byte("secret"), group.ID, group.CreatedAt.Year(), group.Role)
 	require.NoError(t, err)
 	meta := metadata.New(map[string]string{"authorization": "Bearer " + jwtToken})
 	ctx = metadata.NewOutgoingContext(ctx, meta)
@@ -204,7 +204,7 @@ func Test_ListSubmits(t *testing.T) {
 		Save(ctx)
 	require.NoError(t, err)
 
-	jwtToken, err := auth.GenerateJWTToken([]byte("secret"), group1.ID, group1.CreatedAt.Year())
+	jwtToken, err := auth.GenerateJWTToken([]byte("secret"), group1.ID, group1.CreatedAt.Year(), group1.Role)
 	require.NoError(t, err)
 	meta := metadata.New(map[string]string{"authorization": "Bearer " + jwtToken})
 	ctx = metadata.NewOutgoingContext(ctx, meta)
@@ -285,7 +285,7 @@ func Test_PostSubmit(t *testing.T) {
 	require.NoError(t, err)
 	contest := utils.CreateContest(ctx, t, entClient, "test contest", "test-contest", pb.Validator_V2023.String(), time.Date(2023, time.January, 1, 0, 0, 0, 0, time.UTC), time.Date(2023, time.December, 31, 23, 59, 59, 0, time.UTC), 9999, contest.TagSelectionLogicAuto)
 
-	jwtToken, err := auth.GenerateJWTToken(secret, group.ID, group.CreatedAt.Year())
+	jwtToken, err := auth.GenerateJWTToken(secret, group.ID, group.CreatedAt.Year(), group.Role)
 	require.NoError(t, err)
 	meta := metadata.New(map[string]string{"authorization": "Bearer " + jwtToken})
 	ctx = metadata.NewOutgoingContext(ctx, meta)

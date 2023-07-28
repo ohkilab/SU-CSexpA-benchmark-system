@@ -205,17 +205,26 @@ func toPbSubmit(submit *ent.Submit) *backendpb.Submit {
 }
 
 func (i *Interactor) ListSubmits(ctx context.Context, req *backendpb.ListSubmitsRequest) (*backendpb.ListSubmitsResponse, error) {
+	claims := interceptor.GetClaimsFromContext(ctx)
 	q := i.entClient.Submit.Query().WithGroups().Where(submit.HasContestsWith(contest.Slug(req.ContestSlug)))
+
 	groupPredicates := []predicate.Group{}
 	if req.GroupName != nil {
 		groupPredicates = append(groupPredicates, group.NameContains(*req.GroupName))
 	}
-	groupPredicates = append(groupPredicates, group.RoleEQ(backendpb.Role_CONTESTANT.String()))
+
+	roles := []string{backendpb.Role_CONTESTANT.String()}
 	if req.ContainsGuest != nil {
 		if *req.ContainsGuest {
-			groupPredicates = append(groupPredicates, group.RoleEQ(backendpb.Role_GUEST.String()))
+			roles = append(roles, backendpb.Role_GUEST.String())
 		}
 	}
+	if claims.Role == backendpb.Role_ADMIN.String() {
+		roles = append(roles, backendpb.Role_ADMIN.String())
+	}
+	log.Println(roles)
+	groupPredicates = append(groupPredicates, group.RoleIn(roles...))
+
 	q.Where(submit.HasGroupsWith(groupPredicates...))
 	if req.Status != nil {
 		q.Where(submit.StatusEQ(req.Status.String()))
@@ -243,6 +252,7 @@ func (i *Interactor) ListSubmits(ctx context.Context, req *backendpb.ListSubmits
 		i.logger.Error("failed to count submits", err)
 		return nil, status.Error(codes.Internal, err.Error())
 	}
+	log.Println(count)
 	totalPages := count / i.limit
 	if count%i.limit > 0 {
 		totalPages++

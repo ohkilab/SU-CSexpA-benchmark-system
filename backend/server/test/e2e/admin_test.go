@@ -32,7 +32,7 @@ func Test_CreateContest(t *testing.T) {
 	client := pb.NewAdminServiceClient(conn)
 
 	group := utils.CreateGroup(ctx, t, entClient, "test-group", "test-group", backend.Role_GUEST)
-	ctx = utils.WithJWT(ctx, t, group.ID, group.CreatedAt.Year())
+	ctx = utils.WithJWT(ctx, t, group.ID, group.CreatedAt.Year(), group.Role)
 
 	startAt := timestamppb.Now()
 	endAt := timestamppb.New(startAt.AsTime().AddDate(1, 0, 0))

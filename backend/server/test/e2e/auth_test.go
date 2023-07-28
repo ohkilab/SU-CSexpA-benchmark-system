@@ -52,7 +52,7 @@ func Test_VerifyToken(t *testing.T) {
 	defer closeFunc()
 	client := pb.NewBackendServiceClient(conn)
 
-	jwtToken, err := auth.GenerateJWTToken([]byte("secret"), 1, 2023)
+	jwtToken, err := auth.GenerateJWTToken([]byte("secret"), 1, 2023, backend.Role_ADMIN.String())
 	require.NoError(t, err)
 	meta := metadata.New(map[string]string{"authorization": "Bearer " + jwtToken})
 	ctx = metadata.NewOutgoingContext(ctx, meta)
@@ -61,7 +61,7 @@ func Test_VerifyToken(t *testing.T) {
 	require.NoError(t, err)
 	assert.True(t, resp.Ok)
 
-	jwtToken, err = auth.GenerateJWTToken([]byte("sec"), 1, 2023)
+	jwtToken, err = auth.GenerateJWTToken([]byte("sec"), 1, 2023, backend.Role_ADMIN.String())
 	require.NoError(t, err)
 	meta = metadata.New(map[string]string{"authorization": "Bearer " + jwtToken})
 	ctx = metadata.NewOutgoingContext(ctx, meta)

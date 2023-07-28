@@ -42,7 +42,7 @@ func (i *AuthInteractor) PostLogin(ctx context.Context, id, password string) (*p
 	if group == nil {
 		return nil, status.Error(codes.Unauthenticated, "id or password is incorrect")
 	}
-	jwtToken, err := auth.GenerateJWTToken(i.secret, group.ID, group.CreatedAt.Year())
+	jwtToken, err := auth.GenerateJWTToken(i.secret, group.ID, group.CreatedAt.Year(), group.Role)
 	if err != nil {
 		i.logger.Error("failed to generate jwt token", err)
 		return nil, err

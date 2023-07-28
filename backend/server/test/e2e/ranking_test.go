@@ -37,7 +37,7 @@ func Test_GetRanking(t *testing.T) {
 	a02Submit := utils.CreateSubmit(ctx, t, entClient, 900, pb.Status_SUCCESS.String(), contest, a02)
 	a03Submit := utils.CreateSubmit(ctx, t, entClient, 300, pb.Status_SUCCESS.String(), contest, a03)
 	szppSubmit := utils.CreateSubmit(ctx, t, entClient, 99999, pb.Status_SUCCESS.String(), contest, szpp)
-	jwtToken, err := auth.GenerateJWTToken(secret, a01.ID, a01.CreatedAt.Year())
+	jwtToken, err := auth.GenerateJWTToken(secret, a01.ID, a01.CreatedAt.Year(), a01.Role)
 	require.NoError(t, err)
 	meta := metadata.New(map[string]string{"authorization": "Bearer " + jwtToken})
 	ctx = metadata.NewOutgoingContext(ctx, meta)

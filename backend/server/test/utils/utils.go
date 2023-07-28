@@ -171,8 +171,8 @@ func CreateContest(ctx context.Context, t *testing.T, entClient *ent.Client, tit
 	return contest
 }
 
-func WithJWT(ctx context.Context, t *testing.T, id, year int) context.Context {
-	token, err := auth.GenerateJWTToken([]byte("secret"), id, year)
+func WithJWT(ctx context.Context, t *testing.T, id, year int, role string) context.Context {
+	token, err := auth.GenerateJWTToken([]byte("secret"), id, year, role)
 	require.NoError(t, err)
 	meta := metadata.New(map[string]string{"authorization": "Bearer " + token})
 	return metadata.NewOutgoingContext(ctx, meta)
