@@ -27,13 +27,27 @@ const urlList: Ref<string[]> = ref([])
 
 const noSubmissions: Ref<boolean> = ref(false)
 
-const fetchLatestSubmit = () => {
+const getSubmitById = async (id: number): Promise<Submit | undefined> => {
+  const getSubmitRequest: GetSubmitRequest = {
+    submitId: id
+  }
+
+  const opt = { meta: { 'authorization': 'Bearer ' + state.token } }
+  const call = backend.getSubmit(getSubmitRequest, opt)
+  for await (let message of call.responses) {
+    if (import.meta.env.DEV) console.log('Submit', message)
+    return message.submit
+  }
+}
+
+const fetchLatestSubmit = async () => {
 
   let opt = {meta: {'authorization' : 'Bearer ' + state.token}}
 
-  backend.getLatestSubmit({}, opt).then(res => {
-    console.log(res)
-    latestSubmit.value = res.response.submit ?? {}
+  backend.getLatestSubmit({}, opt).then(async res => {
+    if(import.meta.env.DEV) console.log(res)
+    // latestSubmit.value = res.response.submit ?? {}
+    latestSubmit.value = await getSubmitById(res.response.submit?.id ?? 0) ?? {}
   }).catch(err => {
     console.log('getLatestSubmit err:' + err)
   })

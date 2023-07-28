@@ -13,6 +13,8 @@ const { backend } = useBackendStore()
 const noSubmissions: Ref<boolean> = ref(false)
 
 const modalItem: Ref<Partial<Submit>> = ref({})
+const totalPages: Ref<number> = ref(0)
+const currentPage: Ref<number> = ref(1)
 
 const router = useRouter()
 const route = useRoute()
@@ -38,14 +40,48 @@ const getSubmitById = async (id: number): Promise<Submit | undefined> => {
   const call = backend.getSubmit(getSubmitRequest, opt)
   for await (let message of call.responses) {
     if (import.meta.env.DEV) console.log('Submit', message)
-    // modalItem.value = message.submit ?? {}
     return message.submit
   }
 }
 
 const handleCloseModal = () => {
-  // modalItem.value = {}
   router.push('/submissions')
+}
+
+const listSubmitsByPage = (page: number) => {
+  const opt = { meta: { 'authorization': 'Bearer ' + state.token } }
+  // TODO: get own submissions, filter functionality
+  const listSubmitsRequest: ListSubmitsRequest = {
+    contestSlug: state.contestSlug,
+    page
+    // groupName: 'a01',
+    // status: Status.VALIDATION_ERROR
+  }
+
+  backend.listSubmits(listSubmitsRequest, opt)
+    .then(res => {
+      if (import.meta.env.DEV) console.log('Submits', res.response.submits)
+      state.submits = res.response.submits
+      totalPages.value = res.response.totalPages
+
+      if (res.response.submits.length == 0) {
+        noSubmissions.value = true
+      }
+    })
+}
+
+const nextPage = () => {
+  if(currentPage.value < totalPages.value) {
+    currentPage.value++
+    listSubmitsByPage(currentPage.value)
+  }
+}
+
+const prevPage = () => {
+  if(currentPage.value > 1) {
+    currentPage.value--
+    listSubmitsByPage(currentPage.value)
+  }
 }
 
 watch(
@@ -58,25 +94,15 @@ watch(
     }
   })
 
-onMounted(() => {
-  const opt = { meta: { 'authorization': 'Bearer ' + state.token } }
-  // TODO: get own submissions, filter functionality
-  const listSubmitsRequest: ListSubmitsRequest = {
-    contestSlug: state.contestSlug,
-    page: 1
-    // groupName: 'a01',
-    // status: Status.VALIDATION_ERROR
+watch(
+  () => currentPage,
+  (to) => {
+    listSubmitsByPage(to.value)
   }
+)
 
-  backend.listSubmits(listSubmitsRequest, opt)
-    .then(res => {
-      if (import.meta.env.DEV) console.log('Submits', res.response.submits)
-      state.submits = res.response.submits
-
-      if (res.response.submits.length == 0) {
-        noSubmissions.value = true
-      }
-    })
+onMounted(() => {
+  listSubmitsByPage(currentPage.value)
 
   // in case of direct access
   if (route.params.id) {
@@ -103,6 +129,27 @@ onMounted(() => {
     </div>
 
   </transition>
+  <div class="flex gap-5 justify-center w-full">
+    <button
+      class="bg-gray-700 px-3 py-2 rounded shadow-black shadow transition hover:scale-105"
+      @click="prevPage"
+      >
+      <font-awesome-icon :icon="['fas', 'arrow-left']"></font-awesome-icon>
+    </button>
+    <button
+      v-for="page in totalPages"
+      :key="page"
+      @click="currentPage = page"
+      class="px-3 py-2 rounded shadow-black shadow transition hover:scale-105"
+      :class="page == currentPage ? 'bg-blue-500' : 'bg-gray-700'"
+      >{{page}}</button>
+    <button
+      class="bg-gray-700 px-3 py-2 rounded shadow-black shadow transition hover:scale-105"
+      @click="nextPage"
+      >
+      <font-awesome-icon :icon="['fas', 'arrow-right']"></font-awesome-icon>
+    </button>
+  </div>
   <table v-if="state.submits.length > 0" class="table-auto">
     <thead class="bg-gray-700">
       <tr>
