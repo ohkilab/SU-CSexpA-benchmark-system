@@ -35,7 +35,7 @@ enum TagSelectionLogicType {
 }
 
 message Group {
-  string id = 1;
+  string name = 1;
   Role role = 4;
 }
 
@@ -95,6 +95,7 @@ enum Language {
 enum Role {
   CONTESTANT = 0;
   GUEST = 1;
+  ADMIN = 2;
 }
 
 // 運用的に難があるけど仕方ない・・

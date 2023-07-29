@@ -23,10 +23,8 @@ const (
 	BackendService_GetSubmit_FullMethodName         = "/backend.BackendService/GetSubmit"
 	BackendService_ListSubmits_FullMethodName       = "/backend.BackendService/ListSubmits"
 	BackendService_GetContestantInfo_FullMethodName = "/backend.BackendService/GetContestantInfo"
-	BackendService_CreateContest_FullMethodName     = "/backend.BackendService/CreateContest"
 	BackendService_ListContests_FullMethodName      = "/backend.BackendService/ListContests"
 	BackendService_GetContest_FullMethodName        = "/backend.BackendService/GetContest"
-	BackendService_UpdateContest_FullMethodName     = "/backend.BackendService/UpdateContest"
 	BackendService_GetRanking_FullMethodName        = "/backend.BackendService/GetRanking"
 	BackendService_VerifyToken_FullMethodName       = "/backend.BackendService/VerifyToken"
 	BackendService_PostLogin_FullMethodName         = "/backend.BackendService/PostLogin"
@@ -42,10 +40,8 @@ type BackendServiceClient interface {
 	ListSubmits(ctx context.Context, in *ListSubmitsRequest, opts ...grpc.CallOption) (*ListSubmitsResponse, error)
 	GetContestantInfo(ctx context.Context, in *GetContestantInfoRequest, opts ...grpc.CallOption) (*GetContestantInfoResponse, error)
 	// contest
-	CreateContest(ctx context.Context, in *CreateContestRequest, opts ...grpc.CallOption) (*CreateContestResponse, error)
 	ListContests(ctx context.Context, in *ListContestsRequest, opts ...grpc.CallOption) (*ListContestsResponse, error)
 	GetContest(ctx context.Context, in *GetContestRequest, opts ...grpc.CallOption) (*GetContestResponse, error)
-	UpdateContest(ctx context.Context, in *UpdateContestRequest, opts ...grpc.CallOption) (*UpdateContestResponse, error)
 	// ranking
 	GetRanking(ctx context.Context, in *GetRankingRequest, opts ...grpc.CallOption) (*GetRankingResponse, error)
 	// auth
@@ -120,15 +116,6 @@ func (c *backendServiceClient) GetContestantInfo(ctx context.Context, in *GetCon
 	return out, nil
 }
 
-func (c *backendServiceClient) CreateContest(ctx context.Context, in *CreateContestRequest, opts ...grpc.CallOption) (*CreateContestResponse, error) {
-	out := new(CreateContestResponse)
-	err := c.cc.Invoke(ctx, BackendService_CreateContest_FullMethodName, in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
 func (c *backendServiceClient) ListContests(ctx context.Context, in *ListContestsRequest, opts ...grpc.CallOption) (*ListContestsResponse, error) {
 	out := new(ListContestsResponse)
 	err := c.cc.Invoke(ctx, BackendService_ListContests_FullMethodName, in, out, opts...)
@@ -141,15 +128,6 @@ func (c *backendServiceClient) ListContests(ctx context.Context, in *ListContest
 func (c *backendServiceClient) GetContest(ctx context.Context, in *GetContestRequest, opts ...grpc.CallOption) (*GetContestResponse, error) {
 	out := new(GetContestResponse)
 	err := c.cc.Invoke(ctx, BackendService_GetContest_FullMethodName, in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *backendServiceClient) UpdateContest(ctx context.Context, in *UpdateContestRequest, opts ...grpc.CallOption) (*UpdateContestResponse, error) {
-	out := new(UpdateContestResponse)
-	err := c.cc.Invoke(ctx, BackendService_UpdateContest_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -193,10 +171,8 @@ type BackendServiceServer interface {
 	ListSubmits(context.Context, *ListSubmitsRequest) (*ListSubmitsResponse, error)
 	GetContestantInfo(context.Context, *GetContestantInfoRequest) (*GetContestantInfoResponse, error)
 	// contest
-	CreateContest(context.Context, *CreateContestRequest) (*CreateContestResponse, error)
 	ListContests(context.Context, *ListContestsRequest) (*ListContestsResponse, error)
 	GetContest(context.Context, *GetContestRequest) (*GetContestResponse, error)
-	UpdateContest(context.Context, *UpdateContestRequest) (*UpdateContestResponse, error)
 	// ranking
 	GetRanking(context.Context, *GetRankingRequest) (*GetRankingResponse, error)
 	// auth
@@ -220,17 +196,11 @@ func (UnimplementedBackendServiceServer) ListSubmits(context.Context, *ListSubmi
 func (UnimplementedBackendServiceServer) GetContestantInfo(context.Context, *GetContestantInfoRequest) (*GetContestantInfoResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetContestantInfo not implemented")
 }
-func (UnimplementedBackendServiceServer) CreateContest(context.Context, *CreateContestRequest) (*CreateContestResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method CreateContest not implemented")
-}
 func (UnimplementedBackendServiceServer) ListContests(context.Context, *ListContestsRequest) (*ListContestsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListContests not implemented")
 }
 func (UnimplementedBackendServiceServer) GetContest(context.Context, *GetContestRequest) (*GetContestResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetContest not implemented")
-}
-func (UnimplementedBackendServiceServer) UpdateContest(context.Context, *UpdateContestRequest) (*UpdateContestResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method UpdateContest not implemented")
 }
 func (UnimplementedBackendServiceServer) GetRanking(context.Context, *GetRankingRequest) (*GetRankingResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetRanking not implemented")
@@ -328,24 +298,6 @@ func _BackendService_GetContestantInfo_Handler(srv interface{}, ctx context.Cont
 	return interceptor(ctx, in, info, handler)
 }
 
-func _BackendService_CreateContest_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(CreateContestRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(BackendServiceServer).CreateContest(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: BackendService_CreateContest_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(BackendServiceServer).CreateContest(ctx, req.(*CreateContestRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
 func _BackendService_ListContests_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(ListContestsRequest)
 	if err := dec(in); err != nil {
@@ -378,24 +330,6 @@ func _BackendService_GetContest_Handler(srv interface{}, ctx context.Context, de
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(BackendServiceServer).GetContest(ctx, req.(*GetContestRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _BackendService_UpdateContest_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(UpdateContestRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(BackendServiceServer).UpdateContest(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: BackendService_UpdateContest_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(BackendServiceServer).UpdateContest(ctx, req.(*UpdateContestRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -474,20 +408,12 @@ var BackendService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _BackendService_GetContestantInfo_Handler,
 		},
 		{
-			MethodName: "CreateContest",
-			Handler:    _BackendService_CreateContest_Handler,
-		},
-		{
 			MethodName: "ListContests",
 			Handler:    _BackendService_ListContests_Handler,
 		},
 		{
 			MethodName: "GetContest",
 			Handler:    _BackendService_GetContest_Handler,
-		},
-		{
-			MethodName: "UpdateContest",
-			Handler:    _BackendService_UpdateContest_Handler,
 		},
 		{
 			MethodName: "GetRanking",
@@ -662,5 +588,167 @@ var HealthcheckService_ServiceDesc = grpc.ServiceDesc{
 			ServerStreams: true,
 		},
 	},
+	Metadata: "services/backend/services.proto",
+}
+
+const (
+	AdminService_CreateContest_FullMethodName = "/backend.AdminService/CreateContest"
+	AdminService_UpdateContest_FullMethodName = "/backend.AdminService/UpdateContest"
+	AdminService_CreateGroups_FullMethodName  = "/backend.AdminService/CreateGroups"
+)
+
+// AdminServiceClient is the client API for AdminService service.
+//
+// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
+type AdminServiceClient interface {
+	CreateContest(ctx context.Context, in *CreateContestRequest, opts ...grpc.CallOption) (*CreateContestResponse, error)
+	UpdateContest(ctx context.Context, in *UpdateContestRequest, opts ...grpc.CallOption) (*UpdateContestResponse, error)
+	CreateGroups(ctx context.Context, in *CreateGroupsRequest, opts ...grpc.CallOption) (*CreateGroupsResponse, error)
+}
+
+type adminServiceClient struct {
+	cc grpc.ClientConnInterface
+}
+
+func NewAdminServiceClient(cc grpc.ClientConnInterface) AdminServiceClient {
+	return &adminServiceClient{cc}
+}
+
+func (c *adminServiceClient) CreateContest(ctx context.Context, in *CreateContestRequest, opts ...grpc.CallOption) (*CreateContestResponse, error) {
+	out := new(CreateContestResponse)
+	err := c.cc.Invoke(ctx, AdminService_CreateContest_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *adminServiceClient) UpdateContest(ctx context.Context, in *UpdateContestRequest, opts ...grpc.CallOption) (*UpdateContestResponse, error) {
+	out := new(UpdateContestResponse)
+	err := c.cc.Invoke(ctx, AdminService_UpdateContest_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *adminServiceClient) CreateGroups(ctx context.Context, in *CreateGroupsRequest, opts ...grpc.CallOption) (*CreateGroupsResponse, error) {
+	out := new(CreateGroupsResponse)
+	err := c.cc.Invoke(ctx, AdminService_CreateGroups_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+// AdminServiceServer is the server API for AdminService service.
+// All implementations should embed UnimplementedAdminServiceServer
+// for forward compatibility
+type AdminServiceServer interface {
+	CreateContest(context.Context, *CreateContestRequest) (*CreateContestResponse, error)
+	UpdateContest(context.Context, *UpdateContestRequest) (*UpdateContestResponse, error)
+	CreateGroups(context.Context, *CreateGroupsRequest) (*CreateGroupsResponse, error)
+}
+
+// UnimplementedAdminServiceServer should be embedded to have forward compatible implementations.
+type UnimplementedAdminServiceServer struct {
+}
+
+func (UnimplementedAdminServiceServer) CreateContest(context.Context, *CreateContestRequest) (*CreateContestResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateContest not implemented")
+}
+func (UnimplementedAdminServiceServer) UpdateContest(context.Context, *UpdateContestRequest) (*UpdateContestResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateContest not implemented")
+}
+func (UnimplementedAdminServiceServer) CreateGroups(context.Context, *CreateGroupsRequest) (*CreateGroupsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateGroups not implemented")
+}
+
+// UnsafeAdminServiceServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to AdminServiceServer will
+// result in compilation errors.
+type UnsafeAdminServiceServer interface {
+	mustEmbedUnimplementedAdminServiceServer()
+}
+
+func RegisterAdminServiceServer(s grpc.ServiceRegistrar, srv AdminServiceServer) {
+	s.RegisterService(&AdminService_ServiceDesc, srv)
+}
+
+func _AdminService_CreateContest_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateContestRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AdminServiceServer).CreateContest(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AdminService_CreateContest_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AdminServiceServer).CreateContest(ctx, req.(*CreateContestRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AdminService_UpdateContest_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateContestRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AdminServiceServer).UpdateContest(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AdminService_UpdateContest_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AdminServiceServer).UpdateContest(ctx, req.(*UpdateContestRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AdminService_CreateGroups_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateGroupsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AdminServiceServer).CreateGroups(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AdminService_CreateGroups_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AdminServiceServer).CreateGroups(ctx, req.(*CreateGroupsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+// AdminService_ServiceDesc is the grpc.ServiceDesc for AdminService service.
+// It's only intended for direct use with grpc.RegisterService,
+// and not to be introspected or modified (even as a copy)
+var AdminService_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "backend.AdminService",
+	HandlerType: (*AdminServiceServer)(nil),
+	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "CreateContest",
+			Handler:    _AdminService_CreateContest_Handler,
+		},
+		{
+			MethodName: "UpdateContest",
+			Handler:    _AdminService_UpdateContest_Handler,
+		},
+		{
+			MethodName: "CreateGroups",
+			Handler:    _AdminService_CreateGroups_Handler,
+		},
+	},
+	Streams:  []grpc.StreamDesc{},
 	Metadata: "services/backend/services.proto",
 }

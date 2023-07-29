@@ -3,6 +3,7 @@ package submit
 import (
 	"context"
 	"fmt"
+	"log"
 	"strconv"
 	"time"
 
@@ -35,10 +36,11 @@ type Interactor struct {
 	worker        worker.Worker
 	logger        *slog.Logger
 	tagRepository tag.Repository
+	limit         int
 }
 
-func NewInteractor(entClient *ent.Client, worker worker.Worker, logger *slog.Logger, tagRepository tag.Repository) *Interactor {
-	return &Interactor{entClient, worker, logger, tagRepository}
+func NewInteractor(entClient *ent.Client, worker worker.Worker, logger *slog.Logger, tagRepository tag.Repository, limit int) *Interactor {
+	return &Interactor{entClient, worker, logger, tagRepository, limit}
 }
 
 func (i *Interactor) PostSubmit(ctx context.Context, req *backendpb.PostSubmitRequest) (*backendpb.PostSubmitResponse, error) {
@@ -203,27 +205,70 @@ func toPbSubmit(submit *ent.Submit) *backendpb.Submit {
 }
 
 func (i *Interactor) ListSubmits(ctx context.Context, req *backendpb.ListSubmitsRequest) (*backendpb.ListSubmitsResponse, error) {
+	claims := interceptor.GetClaimsFromContext(ctx)
 	q := i.entClient.Submit.Query().WithGroups().Where(submit.HasContestsWith(contest.Slug(req.ContestSlug)))
+
 	groupPredicates := []predicate.Group{}
 	if req.GroupName != nil {
 		groupPredicates = append(groupPredicates, group.NameContains(*req.GroupName))
 	}
-	groupPredicates = append(groupPredicates, group.RoleEQ(group.RoleContestant))
+
+	roles := []string{backendpb.Role_CONTESTANT.String()}
 	if req.ContainsGuest != nil {
 		if *req.ContainsGuest {
-			groupPredicates = append(groupPredicates, group.RoleEQ(group.RoleGuest))
+			roles = append(roles, backendpb.Role_GUEST.String())
 		}
 	}
+	if claims.Role == backendpb.Role_ADMIN.String() {
+		roles = append(roles, backendpb.Role_ADMIN.String())
+	}
+	log.Println(roles)
+	groupPredicates = append(groupPredicates, group.RoleIn(roles...))
+
 	q.Where(submit.HasGroupsWith(groupPredicates...))
 	if req.Status != nil {
 		q.Where(submit.StatusEQ(req.Status.String()))
 	}
-	submits, err := q.Order(submit.BySubmitedAt(sql.OrderDesc())).All(ctx)
+	if req.SortBy != nil {
+		order := sql.OrderDesc()
+		if req.IsDesc != nil {
+			if !*req.IsDesc {
+				order = sql.OrderAsc()
+			}
+		}
+		switch *req.SortBy {
+		case backendpb.ListSubmitsRequest_SUBMITED_AT:
+			q.Order(submit.BySubmitedAt(order))
+		case backendpb.ListSubmitsRequest_SCORE:
+			q.Order(submit.ByScore(order))
+		}
+	} else {
+		log.Println("set default order option to submited_at desc")
+		q.Order(submit.BySubmitedAt(sql.OrderDesc()))
+	}
+
+	count, err := q.Count(ctx)
+	if err != nil {
+		i.logger.Error("failed to count submits", err)
+		return nil, status.Error(codes.Internal, err.Error())
+	}
+	log.Println(count)
+	totalPages := count / i.limit
+	if count%i.limit > 0 {
+		totalPages++
+	}
+
+	q.Limit(i.limit)
+	q.Offset(int(req.Page-1) * i.limit)
+	submits, err := q.All(ctx)
 	if err != nil {
 		i.logger.Error("failed to fetch submits", err)
 		return nil, status.Error(codes.Internal, err.Error())
 	}
+
 	return &backendpb.ListSubmitsResponse{
+		Page:       req.Page,
+		TotalPages: int32(totalPages),
 		Submits: lo.Map(submits, func(submit *ent.Submit, _ int) *backendpb.Submit {
 			pbSubmit := toPbSubmit(submit)
 			pbSubmit.TaskResults = make([]*backendpb.TaskResult, 0)
@@ -249,6 +294,9 @@ func (i *Interactor) GetContestantInfo(ctx context.Context, groupID int, contest
 		All(ctx)
 	if err != nil {
 		i.logger.Error("failed to get latest submit", "error", err)
+		if ent.IsNotFound(err) {
+			return &backendpb.GetLatestSubmitResponse{}, nil
+		}
 		return nil, status.Error(codes.Internal, "failed to get latest submit")
 	}
 	var latestSubmit *backendpb.Submit

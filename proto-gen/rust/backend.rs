@@ -46,7 +46,7 @@ pub struct Tags {
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct Group {
     #[prost(string, tag="1")]
-    pub id: ::prost::alloc::string::String,
+    pub name: ::prost::alloc::string::String,
     #[prost(enumeration="Role", tag="4")]
     pub role: i32,
 }
@@ -235,6 +235,7 @@ impl Language {
 pub enum Role {
     Contestant = 0,
     Guest = 1,
+    Admin = 2,
 }
 impl Role {
     /// String value of the enum field names used in the ProtoBuf definition.
@@ -245,6 +246,7 @@ impl Role {
         match self {
             Role::Contestant => "CONTESTANT",
             Role::Guest => "GUEST",
+            Role::Admin => "ADMIN",
         }
     }
     /// Creates an enum from field names used in the ProtoBuf definition.
@@ -252,6 +254,7 @@ impl Role {
         match value {
             "CONTESTANT" => Some(Self::Contestant),
             "GUEST" => Some(Self::Guest),
+            "ADMIN" => Some(Self::Admin),
             _ => None,
         }
     }
@@ -342,20 +345,62 @@ pub struct GetSubmitResponse {
 pub struct ListSubmitsRequest {
     #[prost(string, tag="1")]
     pub contest_slug: ::prost::alloc::string::String,
+    /// 100 entries per 1 page
+    #[prost(int32, tag="2")]
+    pub page: i32,
+    /// default: submited_at
+    #[prost(enumeration="list_submits_request::SortBy", optional, tag="3")]
+    pub sort_by: ::core::option::Option<i32>,
+    /// default: true
+    #[prost(bool, optional, tag="4")]
+    pub is_desc: ::core::option::Option<bool>,
     /// middle match
-    #[prost(string, optional, tag="2")]
+    #[prost(string, optional, tag="5")]
     pub group_name: ::core::option::Option<::prost::alloc::string::String>,
-    #[prost(enumeration="Status", optional, tag="3")]
+    #[prost(enumeration="Status", optional, tag="6")]
     pub status: ::core::option::Option<i32>,
     /// default: false
-    #[prost(bool, optional, tag="4")]
+    #[prost(bool, optional, tag="7")]
     pub contains_guest: ::core::option::Option<bool>,
+}
+/// Nested message and enum types in `ListSubmitsRequest`.
+pub mod list_submits_request {
+    #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::prost::Enumeration)]
+    #[repr(i32)]
+    pub enum SortBy {
+        SubmitedAt = 0,
+        Score = 1,
+    }
+    impl SortBy {
+        /// String value of the enum field names used in the ProtoBuf definition.
+        ///
+        /// The values are not transformed in any way and thus are considered stable
+        /// (if the ProtoBuf definition does not change) and safe for programmatic use.
+        pub fn as_str_name(&self) -> &'static str {
+            match self {
+                SortBy::SubmitedAt => "SUBMITED_AT",
+                SortBy::Score => "SCORE",
+            }
+        }
+        /// Creates an enum from field names used in the ProtoBuf definition.
+        pub fn from_str_name(value: &str) -> ::core::option::Option<Self> {
+            match value {
+                "SUBMITED_AT" => Some(Self::SubmitedAt),
+                "SCORE" => Some(Self::Score),
+                _ => None,
+            }
+        }
+    }
 }
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct ListSubmitsResponse {
+    #[prost(int32, tag="1")]
+    pub page: i32,
+    #[prost(int32, tag="2")]
+    pub total_pages: i32,
     /// NOTE: task_results will be empty
-    #[prost(message, repeated, tag="1")]
+    #[prost(message, repeated, tag="3")]
     pub submits: ::prost::alloc::vec::Vec<Submit>,
 }
 #[allow(clippy::derive_partial_eq_without_eq)]
@@ -518,6 +563,33 @@ pub struct GetContestantInfoResponse {
     pub latest_submit: ::core::option::Option<Submit>,
     #[prost(int32, tag="2")]
     pub remaining_submit_count: i32,
+}
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct CreateGroupsRequest {
+    #[prost(message, repeated, tag="1")]
+    pub groups: ::prost::alloc::vec::Vec<create_groups_request::CreateGroupsGroup>,
+}
+/// Nested message and enum types in `CreateGroupsRequest`.
+pub mod create_groups_request {
+    #[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+    pub struct CreateGroupsGroup {
+        #[prost(string, tag="1")]
+        pub name: ::prost::alloc::string::String,
+        #[prost(string, tag="2")]
+        pub password: ::prost::alloc::string::String,
+        #[prost(int32, tag="3")]
+        pub year: i32,
+        #[prost(enumeration="super::Role", tag="4")]
+        pub role: i32,
+    }
+}
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct CreateGroupsResponse {
+    #[prost(message, repeated, tag="1")]
+    pub groups: ::prost::alloc::vec::Vec<Group>,
 }
 include!("backend.tonic.rs");
 // @@protoc_insertion_point(module)

@@ -4,7 +4,6 @@ import (
 	"bufio"
 	"fmt"
 	"io"
-	"io/fs"
 	"os"
 	"path/filepath"
 	"strings"
@@ -31,7 +30,7 @@ func NewRespository(storagePath string) Repository {
 }
 
 func (r *repository) GetRandomTags(contestSlug string, num int) ([]string, error) {
-	b, err := os.ReadFile(filepath.Join(r.storagePath, fmt.Sprintf("storage/tags/%s/random.txt", contestSlug)))
+	b, err := os.ReadFile(filepath.Join(r.storagePath, fmt.Sprintf("tags/%s/random.txt", contestSlug)))
 	if err != nil {
 		return nil, err
 	}
@@ -45,7 +44,7 @@ func (r *repository) GetRandomTags(contestSlug string, num int) ([]string, error
 }
 
 func (r *repository) GetTags(contestSlug string, count int) ([]string, error) {
-	b, err := os.ReadFile(filepath.Join(r.storagePath, fmt.Sprintf("storage/tags/%s/%d.txt", contestSlug, count)))
+	b, err := os.ReadFile(filepath.Join(r.storagePath, fmt.Sprintf("tags/%s/%d.txt", contestSlug, count)))
 	if err != nil {
 		return nil, err
 	}
@@ -54,8 +53,8 @@ func (r *repository) GetTags(contestSlug string, count int) ([]string, error) {
 
 // random.txt will be created
 func (r *repository) CreateRandomTag(contestSlug string, tags []string) error {
-	contestDir := filepath.Join(r.storagePath, fmt.Sprintf("storage/tags/%s", contestSlug))
-	_ = os.MkdirAll(contestDir, fs.ModeDir)
+	contestDir := filepath.Join(r.storagePath, fmt.Sprintf("tags/%s", contestSlug))
+	_ = os.MkdirAll(contestDir, 0755)
 	f, err := os.Create(filepath.Join(contestDir, "random.txt"))
 	if err != nil {
 		return err
@@ -66,8 +65,8 @@ func (r *repository) CreateRandomTag(contestSlug string, tags []string) error {
 
 // 1.txt, 2.txt will be created
 func (r *repository) CreateTags(contestSlug string, tagsList [][]string) error {
-	contestDir := filepath.Join(r.storagePath, fmt.Sprintf("storage/tags/%s", contestSlug))
-	_ = os.MkdirAll(contestDir, fs.ModeDir)
+	contestDir := filepath.Join(r.storagePath, fmt.Sprintf("tags/%s", contestSlug))
+	_ = os.MkdirAll(contestDir, 0755)
 	for i, tags := range tagsList {
 		f, err := os.Create(filepath.Join(contestDir, fmt.Sprintf("%d.txt", i+1)))
 		if err != nil {

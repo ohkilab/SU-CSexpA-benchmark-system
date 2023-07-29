@@ -17,11 +17,11 @@ import (
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/core/timejst"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/repository/ent"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/repository/ent/contest"
-	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/repository/ent/group"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/repository/ent/migrate"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/benchmark-service/benchmark"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/benchmark-service/service"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/benchmark-service/validation"
+	"github.com/ohkilab/SU-CSexpA-benchmark-system/proto-gen/go/services/backend"
 	pb "github.com/ohkilab/SU-CSexpA-benchmark-system/proto-gen/go/services/benchmark-service"
 	"github.com/stretchr/testify/require"
 	"golang.org/x/crypto/bcrypt"
@@ -57,7 +57,7 @@ func LaunchBenchmarkGrpcServer(t *testing.T) (*pkggrpc.ClientConn, func()) {
 
 func LaunchGrpcServer(t *testing.T, optionFuncs ...grpc.OptionFunc) (*pkggrpc.ClientConn, func()) {
 	t.Helper()
-	server := grpc.NewServer(optionFuncs...)
+	server, _ := grpc.NewServer(context.Background(), optionFuncs...)
 	lsnr, err := net.Listen("tcp", ":3776")
 	if err != nil {
 		t.Fatal(err)
@@ -127,13 +127,14 @@ func EnttestOpen(ctx context.Context, t *testing.T) (*ent.Client, cleanupFunc) {
 	return entClient, cleanup
 }
 
-func CreateGroup(ctx context.Context, t *testing.T, entClient *ent.Client, name, password string, role group.Role) *ent.Group {
+func CreateGroup(ctx context.Context, t *testing.T, entClient *ent.Client, name, password string, year int, role backend.Role) *ent.Group {
 	t.Helper()
 	encryptedPassword, _ := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 	group, err := entClient.Group.Create().
 		SetName(name).
 		SetEncryptedPassword(string(encryptedPassword)).
-		SetRole(role).
+		SetRole(role.String()).
+		SetYear(year).
 		SetCreatedAt(timejst.Now()).
 		Save(ctx)
 	require.NoError(t, err)
@@ -171,8 +172,8 @@ func CreateContest(ctx context.Context, t *testing.T, entClient *ent.Client, tit
 	return contest
 }
 
-func WithJWT(ctx context.Context, t *testing.T, id, year int) context.Context {
-	token, err := auth.GenerateJWTToken([]byte("secret"), id, year)
+func WithJWT(ctx context.Context, t *testing.T, id, year int, role string) context.Context {
+	token, err := auth.GenerateJWTToken([]byte("secret"), id, year, role)
 	require.NoError(t, err)
 	meta := metadata.New(map[string]string{"authorization": "Bearer " + token})
 	return metadata.NewOutgoingContext(ctx, meta)

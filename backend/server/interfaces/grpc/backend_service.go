@@ -25,11 +25,11 @@ type backendServiceServer struct {
 	contestInteractor *contest.Interactor
 }
 
-func NewBackendService(secret []byte, entClient *ent.Client, worker worker.Worker, logger *slog.Logger, tagRepository tag.Repository) pb.BackendServiceServer {
+func NewBackendService(secret []byte, entClient *ent.Client, worker worker.Worker, logger *slog.Logger, tagRepository tag.Repository, limit int) pb.BackendServiceServer {
 	authInteractor := auth.NewInteractor(secret, entClient, logger)
 	rankingInteractor := ranking.NewInteractor(entClient, logger)
-	submitInteractor := submit.NewInteractor(entClient, worker, logger, tagRepository)
-	contestInteractor := contest.NewInteractor(entClient, logger, tagRepository)
+	submitInteractor := submit.NewInteractor(entClient, worker, logger, tagRepository, limit)
+	contestInteractor := contest.NewInteractor(entClient, logger)
 	return &backendServiceServer{
 		authInteractor,
 		rankingInteractor,
@@ -71,6 +71,9 @@ func (s *backendServiceServer) ListSubmits(ctx context.Context, req *pb.ListSubm
 	if req.ContestSlug == "" {
 		return nil, status.Error(codes.InvalidArgument, "contest_slug is required")
 	}
+	if req.Page <= 0 {
+		return nil, status.Error(codes.InvalidArgument, "page is required")
+	}
 	return s.submitInteractor.ListSubmits(ctx, req)
 }
 
@@ -80,19 +83,6 @@ func (s *backendServiceServer) ListContests(ctx context.Context, req *pb.ListCon
 
 func (s *backendServiceServer) VerifyToken(ctx context.Context, req *pb.VerifyTokenRequest) (*pb.VerifyTokenResponse, error) {
 	return s.authInteractor.VerifyToken(ctx), nil
-}
-
-func (s *backendServiceServer) CreateContest(ctx context.Context, req *pb.CreateContestRequest) (*pb.CreateContestResponse, error) {
-	if req.TimeLimitPerTask == 0 {
-		return nil, status.Error(codes.InvalidArgument, "time_limit_per_task is required")
-	}
-	if req.Slug == "" {
-		return nil, status.Error(codes.InvalidArgument, "slug is required")
-	}
-	if req.Title == "" {
-		return nil, status.Error(codes.InvalidArgument, "title is required")
-	}
-	return s.contestInteractor.CreateContest(ctx, req)
 }
 
 func (s *backendServiceServer) GetContest(ctx context.Context, req *pb.GetContestRequest) (*pb.GetContestResponse, error) {

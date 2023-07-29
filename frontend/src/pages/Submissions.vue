@@ -7,83 +7,110 @@ import Result from '../components/Result.vue'
 import { useBackendStore } from '../stores/backend'
 import { useRouter, useRoute } from 'vue-router';
 
-const state:IState = useStateStore()
+const state: IState = useStateStore()
 const { backend } = useBackendStore()
 
-const noSubmissions:Ref<boolean> = ref(false)
+const noSubmissions: Ref<boolean> = ref(false)
 
-const modalItem:Ref<Partial<Submit>> = ref({})
+const modalItem: Ref<Partial<Submit>> = ref({})
+const totalPages: Ref<number> = ref(0)
+const currentPage: Ref<number> = ref(1)
 
 const router = useRouter()
 const route = useRoute()
 
-const formatDate = (timestamp: number):string => {
+const formatDate = (timestamp: number): string => {
   const dateObject: Date = new Date(timestamp * 1000)
   const date: string = dateObject.toLocaleDateString()
   const time: string = dateObject.toLocaleTimeString()
-  
+
   return `${date} ${time}`
 }
 
-const handleModal = (id:number) => {
-    router.push(`/submissions/${id}`)
+const handleModal = (id: number) => {
+  router.push(`/submissions/${id}`)
 }
 
-const getSubmitById = async (id:number): Promise<Submit | undefined> => {
-  const getSubmitRequest:GetSubmitRequest = {
+const getSubmitById = async (id: number): Promise<Submit | undefined> => {
+  const getSubmitRequest: GetSubmitRequest = {
     submitId: id
   }
 
-  const opt = {meta: {'authorization' : 'Bearer ' + state.token}}
+  const opt = { meta: { 'authorization': 'Bearer ' + state.token } }
   const call = backend.getSubmit(getSubmitRequest, opt)
   for await (let message of call.responses) {
-    if(import.meta.env.DEV) console.log('Submit', message)
-    // modalItem.value = message.submit ?? {}
+    if (import.meta.env.DEV) console.log('Submit', message)
     return message.submit
   }
 }
 
 const handleCloseModal = () => {
-  // modalItem.value = {}
   router.push('/submissions')
 }
 
-watch(
-  () => route.params.id,
-  async (to) => { //toParams, prevParams
-  if(import.meta.env.DEV) console.log(to)
-  if(to) {
-    const submit = await getSubmitById(Number(to))
-    modalItem.value = submit ?? {}
-  }
-})
-
-onMounted(() => {
-  const opt = {meta: {'authorization' : 'Bearer ' + state.token}}
+const listSubmitsByPage = (page: number) => {
+  const opt = { meta: { 'authorization': 'Bearer ' + state.token } }
   // TODO: get own submissions, filter functionality
-  const listSubmitsRequest:ListSubmitsRequest = {
+  const listSubmitsRequest: ListSubmitsRequest = {
     contestSlug: state.contestSlug,
+    page
     // groupName: 'a01',
     // status: Status.VALIDATION_ERROR
   }
 
   backend.listSubmits(listSubmitsRequest, opt)
     .then(res => {
-      if(import.meta.env.DEV) console.log('Submits', res.response.submits)
+      if (import.meta.env.DEV) console.log('Submits', res.response.submits)
       state.submits = res.response.submits
+      totalPages.value = res.response.totalPages
 
-      if(res.response.submits.length == 0) {
+      if (res.response.submits.length == 0) {
         noSubmissions.value = true
       }
     })
+}
 
-    // in case of direct access
-    if(route.params.id) {
-      ;(async () => {
-        const submit = await getSubmitById(Number(route.params.id))
-        modalItem.value = submit ?? {}
-      })()
+const nextPage = () => {
+  if(currentPage.value < totalPages.value) {
+    currentPage.value++
+    listSubmitsByPage(currentPage.value)
+  }
+}
+
+const prevPage = () => {
+  if(currentPage.value > 1) {
+    currentPage.value--
+    listSubmitsByPage(currentPage.value)
+  }
+}
+
+watch(
+  () => route.params.id,
+  async (to) => { //toParams, prevParams
+    if (import.meta.env.DEV) console.log(to)
+    if (to) {
+      const submit = await getSubmitById(Number(to))
+      modalItem.value = submit ?? {}
     }
+  })
+
+watch(
+  () => currentPage,
+  (to) => {
+    listSubmitsByPage(to.value)
+  }
+)
+
+onMounted(() => {
+  listSubmitsByPage(currentPage.value)
+
+  // in case of direct access
+  if (route.params.id) {
+    ; (async () => {
+      const submit = await getSubmitById(Number(route.params.id))
+      modalItem.value = submit ?? {}
+    })()
+  }
 })
 </script>
 <template>
@@ -102,6 +129,27 @@ onMounted(() => {
     </div>
 
   </transition>
+  <div class="flex gap-5 justify-center w-full">
+    <button
+      class="bg-gray-700 px-3 py-2 rounded shadow-black shadow transition hover:scale-105"
+      @click="prevPage"
+      >
+      <font-awesome-icon :icon="['fas', 'arrow-left']"></font-awesome-icon>
+    </button>
+    <button
+      v-for="page in totalPages"
+      :key="page"
+      @click="currentPage = page"
+      class="px-3 py-2 rounded shadow-black shadow transition hover:scale-105"
+      :class="page == currentPage ? 'bg-blue-500' : 'bg-gray-700'"
+      >{{page}}</button>
+    <button
+      class="bg-gray-700 px-3 py-2 rounded shadow-black shadow transition hover:scale-105"
+      @click="nextPage"
+      >
+      <font-awesome-icon :icon="['fas', 'arrow-right']"></font-awesome-icon>
+    </button>
+  </div>
   <table v-if="state.submits.length > 0" class="table-auto">
     <thead class="bg-gray-700">
       <tr>
@@ -141,7 +189,7 @@ onMounted(() => {
     </tbody>
   </table>
 
-  <div class="mt-auto" v-else>
+  <div class="" v-else>
     <font-awesome-icon v-if="!noSubmissions" class="animate-spin text-3xl" :icon="['fas', 'spinner']"></font-awesome-icon>
     <div v-else>まだベンチマーク結果がありません。</div>
   </div>

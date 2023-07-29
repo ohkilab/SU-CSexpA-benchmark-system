@@ -2,13 +2,13 @@ package e2e
 
 import (
 	"context"
+	"strings"
 	"testing"
 	"time"
 
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/api/grpc"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/core/auth"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/repository/ent/contest"
-	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/repository/ent/group"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/test/utils"
 	pb "github.com/ohkilab/SU-CSexpA-benchmark-system/proto-gen/go/services/backend"
 	"github.com/stretchr/testify/assert"
@@ -26,17 +26,17 @@ func Test_GetRanking(t *testing.T) {
 	client := pb.NewBackendServiceClient(conn)
 
 	// prepare
-	a01 := utils.CreateGroup(ctx, t, entClient, "a01", "aaaa", group.RoleContestant)
-	a02 := utils.CreateGroup(ctx, t, entClient, "a02", "aaaa", group.RoleContestant)
-	a03 := utils.CreateGroup(ctx, t, entClient, "a03", "aaaa", group.RoleContestant)
-	szpp := utils.CreateGroup(ctx, t, entClient, "szpp", "aaaa", group.RoleGuest)
+	a01 := utils.CreateGroup(ctx, t, entClient, "a01", "aaaa", 2023, pb.Role_CONTESTANT)
+	a02 := utils.CreateGroup(ctx, t, entClient, "a02", "aaaa", 2023, pb.Role_CONTESTANT)
+	a03 := utils.CreateGroup(ctx, t, entClient, "a03", "aaaa", 2023, pb.Role_CONTESTANT)
+	szpp := utils.CreateGroup(ctx, t, entClient, "szpp", "aaaa", 2023, pb.Role_GUEST)
 	contest := utils.CreateContest(ctx, t, entClient, "test contest", "test-contest", pb.Validator_V2023.String(), time.Date(2023, time.January, 1, 0, 0, 0, 0, time.UTC), time.Date(2023, time.December, 31, 23, 59, 59, 0, time.UTC), 9999, contest.TagSelectionLogicAuto)
 	_ = utils.CreateSubmit(ctx, t, entClient, 100, pb.Status_SUCCESS.String(), contest, a01)
 	a01Submit2 := utils.CreateSubmit(ctx, t, entClient, 1000, pb.Status_SUCCESS.String(), contest, a01)
 	a02Submit := utils.CreateSubmit(ctx, t, entClient, 900, pb.Status_SUCCESS.String(), contest, a02)
 	a03Submit := utils.CreateSubmit(ctx, t, entClient, 300, pb.Status_SUCCESS.String(), contest, a03)
 	szppSubmit := utils.CreateSubmit(ctx, t, entClient, 99999, pb.Status_SUCCESS.String(), contest, szpp)
-	jwtToken, err := auth.GenerateJWTToken(secret, a01.ID, a01.CreatedAt.Year())
+	jwtToken, err := auth.GenerateJWTToken(secret, a01.ID, a01.CreatedAt.Year(), a01.Role)
 	require.NoError(t, err)
 	meta := metadata.New(map[string]string{"authorization": "Bearer " + jwtToken})
 	ctx = metadata.NewOutgoingContext(ctx, meta)
@@ -73,9 +73,10 @@ func Test_GetRanking(t *testing.T) {
 	assert.Equal(t, int32(a03Submit.Score), *resp.Records[3].Score)
 }
 
-func newPbGroup(id string, role string) *pb.Group {
+func newPbGroup(name, role string) *pb.Group {
+	role = strings.ToUpper(role)
 	return &pb.Group{
-		Id:   id,
+		Name: name,
 		Role: pb.Role(pb.Role_value[role]),
 	}
 }

@@ -53,14 +53,20 @@ func main() {
 	go benchmarkWorker.Run()
 
 	// build grpc server
-	grpcServer := grpc.NewServer(
+	grpcServer, err := grpc.NewServer(
+		context.Background(),
 		grpc.WithEntClient(entClient),
 		grpc.WithJwtSecret(config.JwtSecret),
 		grpc.WithWorker(benchmarkWorker),
 		grpc.WithLogger(logger),
-		grpc.WithTagRepository(tag.NewRespository(".")),
+		grpc.WithTagRepository(tag.NewRespository(config.StoragePath)),
 		grpc.UseLogMiddleware(),
+		grpc.WithInitAdmin(config.InitAdminName, config.InitAdminPassword),
+		grpc.WithLimit(100),
 	)
+	if err != nil {
+		panic(err)
+	}
 
 	// launch grpc server
 	listener, err := net.Listen("tcp", ":"+config.GrpcPort)

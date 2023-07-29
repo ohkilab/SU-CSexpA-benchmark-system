@@ -29,7 +29,7 @@ func (i *RankingInteractor) GetRanking(ctx context.Context, containGuest bool, c
 		sq.Where(submit.HasContestsWith(contest.Slug(contestSlug))).Order(submit.ByScore(sql.OrderDesc()))
 	})
 	if !containGuest {
-		query.Where(group.RoleEQ(group.RoleContestant))
+		query.Where(group.RoleEQ(pb.Role_CONTESTANT.String()))
 	}
 	groups, err := query.All(ctx)
 	if err != nil {
@@ -54,8 +54,8 @@ func (i *RankingInteractor) GetRanking(ctx context.Context, containGuest bool, c
 		return &pb.GetRankingResponse_Record{
 			Rank: rank,
 			Group: &pb.Group{
-				Id:   group.Name,
-				Role: pb.Role(pb.Role_value[group.Role.String()]),
+				Name: group.Name,
+				Role: pb.Role(pb.Role_value[group.Role]),
 			},
 			Score: score,
 		}

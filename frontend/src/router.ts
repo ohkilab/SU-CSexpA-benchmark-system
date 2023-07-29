@@ -1,10 +1,13 @@
+import { createRouter, createWebHistory } from 'vue-router'
 import Benchmark from './pages/Benchmark.vue'
 import Ranking from './pages/Ranking.vue'
 import Submissions from './pages/Submissions.vue'
 import Login from './pages/Login.vue'
 import Loading from './pages/Loading.vue'
 import Contests from './pages/Contests.vue'
-import { createRouter, createWebHistory } from 'vue-router'
+import Admin from './pages/Admin.vue'
+import EditContests from './pages/admin/EditContests.vue'
+import EditUsers from './pages/admin/EditUsers.vue'
 
 const routes = [
   {
@@ -36,6 +39,20 @@ const routes = [
     path: '/contests',
     name: 'contests',
     component: Contests
+  },
+  {
+    path: '/admin',
+    component: Admin,
+    children: [
+      {
+        path: 'contests',
+        component: EditContests
+      },
+      {
+        path: 'users',
+        component: EditUsers
+      }
+    ]
   }
 ]
 

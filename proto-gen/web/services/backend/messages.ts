@@ -11,6 +11,7 @@ import type { PartialMessage } from "@protobuf-ts/runtime";
 import { reflectionMergePartial } from "@protobuf-ts/runtime";
 import { MESSAGE_TYPE } from "@protobuf-ts/runtime";
 import { MessageType } from "@protobuf-ts/runtime";
+import { Role } from "./resources";
 import { Contest } from "./resources";
 import { Validator } from "./resources";
 import { TagSelectionLogicManual } from "./resources";
@@ -106,24 +107,57 @@ export interface ListSubmitsRequest {
      */
     contestSlug: string;
     /**
-     * @generated from protobuf field: optional string group_name = 2;
+     * @generated from protobuf field: int32 page = 2;
+     */
+    page: number; // 100 entries per 1 page
+    /**
+     * @generated from protobuf field: optional backend.ListSubmitsRequest.SortBy sort_by = 3;
+     */
+    sortBy?: ListSubmitsRequest_SortBy; // default: submited_at
+    /**
+     * @generated from protobuf field: optional bool is_desc = 4;
+     */
+    isDesc?: boolean; // default: true
+    /**
+     * @generated from protobuf field: optional string group_name = 5;
      */
     groupName?: string; // middle match
     /**
-     * @generated from protobuf field: optional backend.Status status = 3;
+     * @generated from protobuf field: optional backend.Status status = 6;
      */
     status?: Status;
     /**
-     * @generated from protobuf field: optional bool contains_guest = 4;
+     * @generated from protobuf field: optional bool contains_guest = 7;
      */
     containsGuest?: boolean; // default: false
+}
+/**
+ * @generated from protobuf enum backend.ListSubmitsRequest.SortBy
+ */
+export enum ListSubmitsRequest_SortBy {
+    /**
+     * @generated from protobuf enum value: SUBMITED_AT = 0;
+     */
+    SUBMITED_AT = 0,
+    /**
+     * @generated from protobuf enum value: SCORE = 1;
+     */
+    SCORE = 1
 }
 /**
  * @generated from protobuf message backend.ListSubmitsResponse
  */
 export interface ListSubmitsResponse {
     /**
-     * @generated from protobuf field: repeated backend.Submit submits = 1;
+     * @generated from protobuf field: int32 page = 1;
+     */
+    page: number;
+    /**
+     * @generated from protobuf field: int32 total_pages = 2;
+     */
+    totalPages: number;
+    /**
+     * @generated from protobuf field: repeated backend.Submit submits = 3;
      */
     submits: Submit[]; // NOTE: task_results will be empty
 }
@@ -373,6 +407,45 @@ export interface GetContestantInfoResponse {
      * @generated from protobuf field: int32 remaining_submit_count = 2;
      */
     remainingSubmitCount: number;
+}
+/**
+ * @generated from protobuf message backend.CreateGroupsRequest
+ */
+export interface CreateGroupsRequest {
+    /**
+     * @generated from protobuf field: repeated backend.CreateGroupsRequest.CreateGroupsGroup groups = 1;
+     */
+    groups: CreateGroupsRequest_CreateGroupsGroup[];
+}
+/**
+ * @generated from protobuf message backend.CreateGroupsRequest.CreateGroupsGroup
+ */
+export interface CreateGroupsRequest_CreateGroupsGroup {
+    /**
+     * @generated from protobuf field: string name = 1;
+     */
+    name: string;
+    /**
+     * @generated from protobuf field: string password = 2;
+     */
+    password: string;
+    /**
+     * @generated from protobuf field: int32 year = 3;
+     */
+    year: number;
+    /**
+     * @generated from protobuf field: backend.Role role = 4;
+     */
+    role: Role;
+}
+/**
+ * @generated from protobuf message backend.CreateGroupsResponse
+ */
+export interface CreateGroupsResponse {
+    /**
+     * @generated from protobuf field: repeated backend.Group groups = 1;
+     */
+    groups: Group[];
 }
 // @generated message type with reflection information, may provide speed optimized methods
 class PostLoginRequest$Type extends MessageType<PostLoginRequest> {
@@ -703,13 +776,16 @@ class ListSubmitsRequest$Type extends MessageType<ListSubmitsRequest> {
     constructor() {
         super("backend.ListSubmitsRequest", [
             { no: 1, name: "contest_slug", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
-            { no: 2, name: "group_name", kind: "scalar", opt: true, T: 9 /*ScalarType.STRING*/ },
-            { no: 3, name: "status", kind: "enum", opt: true, T: () => ["backend.Status", Status] },
-            { no: 4, name: "contains_guest", kind: "scalar", opt: true, T: 8 /*ScalarType.BOOL*/ }
+            { no: 2, name: "page", kind: "scalar", T: 5 /*ScalarType.INT32*/ },
+            { no: 3, name: "sort_by", kind: "enum", opt: true, T: () => ["backend.ListSubmitsRequest.SortBy", ListSubmitsRequest_SortBy] },
+            { no: 4, name: "is_desc", kind: "scalar", opt: true, T: 8 /*ScalarType.BOOL*/ },
+            { no: 5, name: "group_name", kind: "scalar", opt: true, T: 9 /*ScalarType.STRING*/ },
+            { no: 6, name: "status", kind: "enum", opt: true, T: () => ["backend.Status", Status] },
+            { no: 7, name: "contains_guest", kind: "scalar", opt: true, T: 8 /*ScalarType.BOOL*/ }
         ]);
     }
     create(value?: PartialMessage<ListSubmitsRequest>): ListSubmitsRequest {
-        const message = { contestSlug: "" };
+        const message = { contestSlug: "", page: 0 };
         globalThis.Object.defineProperty(message, MESSAGE_TYPE, { enumerable: false, value: this });
         if (value !== undefined)
             reflectionMergePartial<ListSubmitsRequest>(this, message, value);
@@ -723,13 +799,22 @@ class ListSubmitsRequest$Type extends MessageType<ListSubmitsRequest> {
                 case /* string contest_slug */ 1:
                     message.contestSlug = reader.string();
                     break;
-                case /* optional string group_name */ 2:
+                case /* int32 page */ 2:
+                    message.page = reader.int32();
+                    break;
+                case /* optional backend.ListSubmitsRequest.SortBy sort_by */ 3:
+                    message.sortBy = reader.int32();
+                    break;
+                case /* optional bool is_desc */ 4:
+                    message.isDesc = reader.bool();
+                    break;
+                case /* optional string group_name */ 5:
                     message.groupName = reader.string();
                     break;
-                case /* optional backend.Status status */ 3:
+                case /* optional backend.Status status */ 6:
                     message.status = reader.int32();
                     break;
-                case /* optional bool contains_guest */ 4:
+                case /* optional bool contains_guest */ 7:
                     message.containsGuest = reader.bool();
                     break;
                 default:
@@ -747,15 +832,24 @@ class ListSubmitsRequest$Type extends MessageType<ListSubmitsRequest> {
         /* string contest_slug = 1; */
         if (message.contestSlug !== "")
             writer.tag(1, WireType.LengthDelimited).string(message.contestSlug);
-        /* optional string group_name = 2; */
+        /* int32 page = 2; */
+        if (message.page !== 0)
+            writer.tag(2, WireType.Varint).int32(message.page);
+        /* optional backend.ListSubmitsRequest.SortBy sort_by = 3; */
+        if (message.sortBy !== undefined)
+            writer.tag(3, WireType.Varint).int32(message.sortBy);
+        /* optional bool is_desc = 4; */
+        if (message.isDesc !== undefined)
+            writer.tag(4, WireType.Varint).bool(message.isDesc);
+        /* optional string group_name = 5; */
         if (message.groupName !== undefined)
-            writer.tag(2, WireType.LengthDelimited).string(message.groupName);
-        /* optional backend.Status status = 3; */
+            writer.tag(5, WireType.LengthDelimited).string(message.groupName);
+        /* optional backend.Status status = 6; */
         if (message.status !== undefined)
-            writer.tag(3, WireType.Varint).int32(message.status);
-        /* optional bool contains_guest = 4; */
+            writer.tag(6, WireType.Varint).int32(message.status);
+        /* optional bool contains_guest = 7; */
         if (message.containsGuest !== undefined)
-            writer.tag(4, WireType.Varint).bool(message.containsGuest);
+            writer.tag(7, WireType.Varint).bool(message.containsGuest);
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
@@ -770,11 +864,13 @@ export const ListSubmitsRequest = new ListSubmitsRequest$Type();
 class ListSubmitsResponse$Type extends MessageType<ListSubmitsResponse> {
     constructor() {
         super("backend.ListSubmitsResponse", [
-            { no: 1, name: "submits", kind: "message", repeat: 1 /*RepeatType.PACKED*/, T: () => Submit }
+            { no: 1, name: "page", kind: "scalar", T: 5 /*ScalarType.INT32*/ },
+            { no: 2, name: "total_pages", kind: "scalar", T: 5 /*ScalarType.INT32*/ },
+            { no: 3, name: "submits", kind: "message", repeat: 1 /*RepeatType.PACKED*/, T: () => Submit }
         ]);
     }
     create(value?: PartialMessage<ListSubmitsResponse>): ListSubmitsResponse {
-        const message = { submits: [] };
+        const message = { page: 0, totalPages: 0, submits: [] };
         globalThis.Object.defineProperty(message, MESSAGE_TYPE, { enumerable: false, value: this });
         if (value !== undefined)
             reflectionMergePartial<ListSubmitsResponse>(this, message, value);
@@ -785,7 +881,13 @@ class ListSubmitsResponse$Type extends MessageType<ListSubmitsResponse> {
         while (reader.pos < end) {
             let [fieldNo, wireType] = reader.tag();
             switch (fieldNo) {
-                case /* repeated backend.Submit submits */ 1:
+                case /* int32 page */ 1:
+                    message.page = reader.int32();
+                    break;
+                case /* int32 total_pages */ 2:
+                    message.totalPages = reader.int32();
+                    break;
+                case /* repeated backend.Submit submits */ 3:
                     message.submits.push(Submit.internalBinaryRead(reader, reader.uint32(), options));
                     break;
                 default:
@@ -800,9 +902,15 @@ class ListSubmitsResponse$Type extends MessageType<ListSubmitsResponse> {
         return message;
     }
     internalBinaryWrite(message: ListSubmitsResponse, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
-        /* repeated backend.Submit submits = 1; */
+        /* int32 page = 1; */
+        if (message.page !== 0)
+            writer.tag(1, WireType.Varint).int32(message.page);
+        /* int32 total_pages = 2; */
+        if (message.totalPages !== 0)
+            writer.tag(2, WireType.Varint).int32(message.totalPages);
+        /* repeated backend.Submit submits = 3; */
         for (let i = 0; i < message.submits.length; i++)
-            Submit.internalBinaryWrite(message.submits[i], writer.tag(1, WireType.LengthDelimited).fork(), options).join();
+            Submit.internalBinaryWrite(message.submits[i], writer.tag(3, WireType.LengthDelimited).fork(), options).join();
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
@@ -1796,3 +1904,165 @@ class GetContestantInfoResponse$Type extends MessageType<GetContestantInfoRespon
  * @generated MessageType for protobuf message backend.GetContestantInfoResponse
  */
 export const GetContestantInfoResponse = new GetContestantInfoResponse$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class CreateGroupsRequest$Type extends MessageType<CreateGroupsRequest> {
+    constructor() {
+        super("backend.CreateGroupsRequest", [
+            { no: 1, name: "groups", kind: "message", repeat: 1 /*RepeatType.PACKED*/, T: () => CreateGroupsRequest_CreateGroupsGroup }
+        ]);
+    }
+    create(value?: PartialMessage<CreateGroupsRequest>): CreateGroupsRequest {
+        const message = { groups: [] };
+        globalThis.Object.defineProperty(message, MESSAGE_TYPE, { enumerable: false, value: this });
+        if (value !== undefined)
+            reflectionMergePartial<CreateGroupsRequest>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: CreateGroupsRequest): CreateGroupsRequest {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* repeated backend.CreateGroupsRequest.CreateGroupsGroup groups */ 1:
+                    message.groups.push(CreateGroupsRequest_CreateGroupsGroup.internalBinaryRead(reader, reader.uint32(), options));
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: CreateGroupsRequest, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* repeated backend.CreateGroupsRequest.CreateGroupsGroup groups = 1; */
+        for (let i = 0; i < message.groups.length; i++)
+            CreateGroupsRequest_CreateGroupsGroup.internalBinaryWrite(message.groups[i], writer.tag(1, WireType.LengthDelimited).fork(), options).join();
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message backend.CreateGroupsRequest
+ */
+export const CreateGroupsRequest = new CreateGroupsRequest$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class CreateGroupsRequest_CreateGroupsGroup$Type extends MessageType<CreateGroupsRequest_CreateGroupsGroup> {
+    constructor() {
+        super("backend.CreateGroupsRequest.CreateGroupsGroup", [
+            { no: 1, name: "name", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 2, name: "password", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 3, name: "year", kind: "scalar", T: 5 /*ScalarType.INT32*/ },
+            { no: 4, name: "role", kind: "enum", T: () => ["backend.Role", Role] }
+        ]);
+    }
+    create(value?: PartialMessage<CreateGroupsRequest_CreateGroupsGroup>): CreateGroupsRequest_CreateGroupsGroup {
+        const message = { name: "", password: "", year: 0, role: 0 };
+        globalThis.Object.defineProperty(message, MESSAGE_TYPE, { enumerable: false, value: this });
+        if (value !== undefined)
+            reflectionMergePartial<CreateGroupsRequest_CreateGroupsGroup>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: CreateGroupsRequest_CreateGroupsGroup): CreateGroupsRequest_CreateGroupsGroup {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* string name */ 1:
+                    message.name = reader.string();
+                    break;
+                case /* string password */ 2:
+                    message.password = reader.string();
+                    break;
+                case /* int32 year */ 3:
+                    message.year = reader.int32();
+                    break;
+                case /* backend.Role role */ 4:
+                    message.role = reader.int32();
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: CreateGroupsRequest_CreateGroupsGroup, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* string name = 1; */
+        if (message.name !== "")
+            writer.tag(1, WireType.LengthDelimited).string(message.name);
+        /* string password = 2; */
+        if (message.password !== "")
+            writer.tag(2, WireType.LengthDelimited).string(message.password);
+        /* int32 year = 3; */
+        if (message.year !== 0)
+            writer.tag(3, WireType.Varint).int32(message.year);
+        /* backend.Role role = 4; */
+        if (message.role !== 0)
+            writer.tag(4, WireType.Varint).int32(message.role);
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message backend.CreateGroupsRequest.CreateGroupsGroup
+ */
+export const CreateGroupsRequest_CreateGroupsGroup = new CreateGroupsRequest_CreateGroupsGroup$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class CreateGroupsResponse$Type extends MessageType<CreateGroupsResponse> {
+    constructor() {
+        super("backend.CreateGroupsResponse", [
+            { no: 1, name: "groups", kind: "message", repeat: 1 /*RepeatType.PACKED*/, T: () => Group }
+        ]);
+    }
+    create(value?: PartialMessage<CreateGroupsResponse>): CreateGroupsResponse {
+        const message = { groups: [] };
+        globalThis.Object.defineProperty(message, MESSAGE_TYPE, { enumerable: false, value: this });
+        if (value !== undefined)
+            reflectionMergePartial<CreateGroupsResponse>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: CreateGroupsResponse): CreateGroupsResponse {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* repeated backend.Group groups */ 1:
+                    message.groups.push(Group.internalBinaryRead(reader, reader.uint32(), options));
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: CreateGroupsResponse, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* repeated backend.Group groups = 1; */
+        for (let i = 0; i < message.groups.length; i++)
+            Group.internalBinaryWrite(message.groups[i], writer.tag(1, WireType.LengthDelimited).fork(), options).join();
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message backend.CreateGroupsResponse
+ */
+export const CreateGroupsResponse = new CreateGroupsResponse$Type();

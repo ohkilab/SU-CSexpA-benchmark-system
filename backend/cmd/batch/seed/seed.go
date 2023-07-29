@@ -10,7 +10,6 @@ import (
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/core/timejst"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/repository/ent"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/repository/ent/contest"
-	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/repository/ent/group"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/repository/ent/migrate"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/proto-gen/go/services/backend"
 	"github.com/spf13/cobra"
@@ -39,19 +38,33 @@ var Command = &cobra.Command{
 		}
 
 		encryptedPassword, _ := bcrypt.GenerateFromPassword([]byte("ohkilab"), bcrypt.DefaultCost)
-		_, err = entClient.Group.Create().SetName("ohkilab").SetEncryptedPassword(string(encryptedPassword)).SetRole(group.RoleContestant).SetCreatedAt(timejst.Now()).Save(ctx)
+		_, err = entClient.Group.Create().
+			SetName("a01").
+			SetEncryptedPassword(string(encryptedPassword)).
+			SetRole(backend.Role_CONTESTANT.String()).
+			SetYear(2023).
+			SetCreatedAt(timejst.Now()).
+			Save(ctx)
 		if err != nil {
 			return err
 		}
-		_, err = entClient.Group.Create().SetName("a01").SetEncryptedPassword(string(encryptedPassword)).SetRole(group.RoleContestant).SetCreatedAt(timejst.Now()).Save(ctx)
+		_, err = entClient.Group.Create().
+			SetName("a02").
+			SetEncryptedPassword(string(encryptedPassword)).
+			SetRole(backend.Role_CONTESTANT.String()).
+			SetYear(2023).
+			SetCreatedAt(timejst.Now()).
+			Save(ctx)
 		if err != nil {
 			return err
 		}
-		_, err = entClient.Group.Create().SetName("a02").SetEncryptedPassword(string(encryptedPassword)).SetRole(group.RoleContestant).SetCreatedAt(timejst.Now()).Save(ctx)
-		if err != nil {
-			return err
-		}
-		_, err = entClient.Group.Create().SetName("a03").SetEncryptedPassword(string(encryptedPassword)).SetRole(group.RoleContestant).SetCreatedAt(timejst.Now()).Save(ctx)
+		_, err = entClient.Group.Create().
+			SetName("a03").
+			SetEncryptedPassword(string(encryptedPassword)).
+			SetRole(backend.Role_CONTESTANT.String()).
+			SetYear(2023).
+			SetCreatedAt(timejst.Now()).
+			Save(ctx)
 		if err != nil {
 			return err
 		}
