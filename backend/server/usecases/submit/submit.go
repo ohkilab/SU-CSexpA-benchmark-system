@@ -3,7 +3,6 @@ package submit
 import (
 	"context"
 	"fmt"
-	"log"
 	"strconv"
 	"time"
 
@@ -222,7 +221,6 @@ func (i *Interactor) ListSubmits(ctx context.Context, req *backendpb.ListSubmits
 	if claims.Role == backendpb.Role_ADMIN.String() {
 		roles = append(roles, backendpb.Role_ADMIN.String())
 	}
-	log.Println(roles)
 	groupPredicates = append(groupPredicates, group.RoleIn(roles...))
 
 	q.Where(submit.HasGroupsWith(groupPredicates...))
@@ -243,7 +241,6 @@ func (i *Interactor) ListSubmits(ctx context.Context, req *backendpb.ListSubmits
 			q.Order(submit.ByScore(order))
 		}
 	} else {
-		log.Println("set default order option to submited_at desc")
 		q.Order(submit.BySubmitedAt(sql.OrderDesc()))
 	}
 
@@ -252,7 +249,6 @@ func (i *Interactor) ListSubmits(ctx context.Context, req *backendpb.ListSubmits
 		i.logger.Error("failed to count submits", err)
 		return nil, status.Error(codes.Internal, err.Error())
 	}
-	log.Println(count)
 	totalPages := count / i.limit
 	if count%i.limit > 0 {
 		totalPages++
@@ -294,9 +290,6 @@ func (i *Interactor) GetContestantInfo(ctx context.Context, groupID int, contest
 		All(ctx)
 	if err != nil {
 		i.logger.Error("failed to get latest submit", "error", err)
-		if ent.IsNotFound(err) {
-			return &backendpb.GetLatestSubmitResponse{}, nil
-		}
 		return nil, status.Error(codes.Internal, "failed to get latest submit")
 	}
 	var latestSubmit *backendpb.Submit

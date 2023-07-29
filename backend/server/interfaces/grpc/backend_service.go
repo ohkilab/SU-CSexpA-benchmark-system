@@ -92,10 +92,6 @@ func (s *backendServiceServer) GetContest(ctx context.Context, req *pb.GetContes
 	return s.contestInteractor.GetContest(ctx, req)
 }
 
-func (s *backendServiceServer) UpdateContest(ctx context.Context, req *pb.UpdateContestRequest) (*pb.UpdateContestResponse, error) {
-	return s.contestInteractor.UpdateContest(ctx, req)
-}
-
 func (s *backendServiceServer) GetContestantInfo(ctx context.Context, req *pb.GetContestantInfoRequest) (*pb.GetContestantInfoResponse, error) {
 	claims := interceptor.GetClaimsFromContext(ctx)
 	return s.submitInteractor.GetContestantInfo(ctx, claims.GroupID, req.ContestSlug)

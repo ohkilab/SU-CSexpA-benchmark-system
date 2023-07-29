@@ -28,7 +28,7 @@ func NewInteractor(secret []byte, entClient *ent.Client, logger *slog.Logger) *A
 func (i *AuthInteractor) PostLogin(ctx context.Context, id, password string) (*pb.PostLoginResponse, error) {
 	groups, err := i.entClient.Group.Query().WithSubmits().Where(group.NameEQ(id)).All(ctx)
 	if err != nil {
-		i.logger.Error("failed to fetch groups", err)
+		i.logger.Error("failed to fetch groups", "error", err)
 		return nil, status.Error(codes.Internal, "failed to fetch groups")
 	}
 	var group *ent.Group
@@ -44,7 +44,7 @@ func (i *AuthInteractor) PostLogin(ctx context.Context, id, password string) (*p
 	}
 	jwtToken, err := auth.GenerateJWTToken(i.secret, group.ID, group.CreatedAt.Year(), group.Role)
 	if err != nil {
-		i.logger.Error("failed to generate jwt token", err)
+		i.logger.Error("failed to generate jwt token", "error", err)
 		return nil, err
 	}
 	return &pb.PostLoginResponse{
@@ -59,7 +59,7 @@ func (i *AuthInteractor) PostLogin(ctx context.Context, id, password string) (*p
 func (i *AuthInteractor) VerifyToken(ctx context.Context) *pb.VerifyTokenResponse {
 	token, err := grpc_auth.AuthFromMD(ctx, "bearer")
 	if err != nil {
-		i.logger.Error("failed to get token from metadata", err)
+		i.logger.Error("failed to get token from metadata", "error", err)
 		return &pb.VerifyTokenResponse{
 			Ok:      false,
 			Message: "missing token",
@@ -67,7 +67,7 @@ func (i *AuthInteractor) VerifyToken(ctx context.Context) *pb.VerifyTokenRespons
 	}
 	claims, err := auth.GetClaimsFromToken(token, i.secret)
 	if err != nil {
-		i.logger.Error("failed to get claims from token", err)
+		i.logger.Error("failed to get claims from token", "error", err)
 		return &pb.VerifyTokenResponse{
 			Ok:      false,
 			Message: "invalid token",
