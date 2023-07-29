@@ -19,15 +19,15 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	BackendService_PostSubmit_FullMethodName      = "/backend.BackendService/PostSubmit"
-	BackendService_GetSubmit_FullMethodName       = "/backend.BackendService/GetSubmit"
-	BackendService_ListSubmits_FullMethodName     = "/backend.BackendService/ListSubmits"
-	BackendService_GetLatestSubmit_FullMethodName = "/backend.BackendService/GetLatestSubmit"
-	BackendService_ListContests_FullMethodName    = "/backend.BackendService/ListContests"
-	BackendService_GetContest_FullMethodName      = "/backend.BackendService/GetContest"
-	BackendService_GetRanking_FullMethodName      = "/backend.BackendService/GetRanking"
-	BackendService_VerifyToken_FullMethodName     = "/backend.BackendService/VerifyToken"
-	BackendService_PostLogin_FullMethodName       = "/backend.BackendService/PostLogin"
+	BackendService_PostSubmit_FullMethodName        = "/backend.BackendService/PostSubmit"
+	BackendService_GetSubmit_FullMethodName         = "/backend.BackendService/GetSubmit"
+	BackendService_ListSubmits_FullMethodName       = "/backend.BackendService/ListSubmits"
+	BackendService_GetContestantInfo_FullMethodName = "/backend.BackendService/GetContestantInfo"
+	BackendService_ListContests_FullMethodName      = "/backend.BackendService/ListContests"
+	BackendService_GetContest_FullMethodName        = "/backend.BackendService/GetContest"
+	BackendService_GetRanking_FullMethodName        = "/backend.BackendService/GetRanking"
+	BackendService_VerifyToken_FullMethodName       = "/backend.BackendService/VerifyToken"
+	BackendService_PostLogin_FullMethodName         = "/backend.BackendService/PostLogin"
 )
 
 // BackendServiceClient is the client API for BackendService service.
@@ -38,7 +38,7 @@ type BackendServiceClient interface {
 	PostSubmit(ctx context.Context, in *PostSubmitRequest, opts ...grpc.CallOption) (*PostSubmitResponse, error)
 	GetSubmit(ctx context.Context, in *GetSubmitRequest, opts ...grpc.CallOption) (BackendService_GetSubmitClient, error)
 	ListSubmits(ctx context.Context, in *ListSubmitsRequest, opts ...grpc.CallOption) (*ListSubmitsResponse, error)
-	GetLatestSubmit(ctx context.Context, in *GetLatestSubmitRequest, opts ...grpc.CallOption) (*GetLatestSubmitResponse, error)
+	GetContestantInfo(ctx context.Context, in *GetContestantInfoRequest, opts ...grpc.CallOption) (*GetContestantInfoResponse, error)
 	// contest
 	ListContests(ctx context.Context, in *ListContestsRequest, opts ...grpc.CallOption) (*ListContestsResponse, error)
 	GetContest(ctx context.Context, in *GetContestRequest, opts ...grpc.CallOption) (*GetContestResponse, error)
@@ -107,9 +107,9 @@ func (c *backendServiceClient) ListSubmits(ctx context.Context, in *ListSubmitsR
 	return out, nil
 }
 
-func (c *backendServiceClient) GetLatestSubmit(ctx context.Context, in *GetLatestSubmitRequest, opts ...grpc.CallOption) (*GetLatestSubmitResponse, error) {
-	out := new(GetLatestSubmitResponse)
-	err := c.cc.Invoke(ctx, BackendService_GetLatestSubmit_FullMethodName, in, out, opts...)
+func (c *backendServiceClient) GetContestantInfo(ctx context.Context, in *GetContestantInfoRequest, opts ...grpc.CallOption) (*GetContestantInfoResponse, error) {
+	out := new(GetContestantInfoResponse)
+	err := c.cc.Invoke(ctx, BackendService_GetContestantInfo_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -162,14 +162,14 @@ func (c *backendServiceClient) PostLogin(ctx context.Context, in *PostLoginReque
 }
 
 // BackendServiceServer is the server API for BackendService service.
-// All implementations must embed UnimplementedBackendServiceServer
+// All implementations should embed UnimplementedBackendServiceServer
 // for forward compatibility
 type BackendServiceServer interface {
 	// submit
 	PostSubmit(context.Context, *PostSubmitRequest) (*PostSubmitResponse, error)
 	GetSubmit(*GetSubmitRequest, BackendService_GetSubmitServer) error
 	ListSubmits(context.Context, *ListSubmitsRequest) (*ListSubmitsResponse, error)
-	GetLatestSubmit(context.Context, *GetLatestSubmitRequest) (*GetLatestSubmitResponse, error)
+	GetContestantInfo(context.Context, *GetContestantInfoRequest) (*GetContestantInfoResponse, error)
 	// contest
 	ListContests(context.Context, *ListContestsRequest) (*ListContestsResponse, error)
 	GetContest(context.Context, *GetContestRequest) (*GetContestResponse, error)
@@ -178,10 +178,9 @@ type BackendServiceServer interface {
 	// auth
 	VerifyToken(context.Context, *VerifyTokenRequest) (*VerifyTokenResponse, error)
 	PostLogin(context.Context, *PostLoginRequest) (*PostLoginResponse, error)
-	mustEmbedUnimplementedBackendServiceServer()
 }
 
-// UnimplementedBackendServiceServer must be embedded to have forward compatible implementations.
+// UnimplementedBackendServiceServer should be embedded to have forward compatible implementations.
 type UnimplementedBackendServiceServer struct {
 }
 
@@ -194,8 +193,8 @@ func (UnimplementedBackendServiceServer) GetSubmit(*GetSubmitRequest, BackendSer
 func (UnimplementedBackendServiceServer) ListSubmits(context.Context, *ListSubmitsRequest) (*ListSubmitsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListSubmits not implemented")
 }
-func (UnimplementedBackendServiceServer) GetLatestSubmit(context.Context, *GetLatestSubmitRequest) (*GetLatestSubmitResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetLatestSubmit not implemented")
+func (UnimplementedBackendServiceServer) GetContestantInfo(context.Context, *GetContestantInfoRequest) (*GetContestantInfoResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetContestantInfo not implemented")
 }
 func (UnimplementedBackendServiceServer) ListContests(context.Context, *ListContestsRequest) (*ListContestsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListContests not implemented")
@@ -212,7 +211,6 @@ func (UnimplementedBackendServiceServer) VerifyToken(context.Context, *VerifyTok
 func (UnimplementedBackendServiceServer) PostLogin(context.Context, *PostLoginRequest) (*PostLoginResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method PostLogin not implemented")
 }
-func (UnimplementedBackendServiceServer) mustEmbedUnimplementedBackendServiceServer() {}
 
 // UnsafeBackendServiceServer may be embedded to opt out of forward compatibility for this service.
 // Use of this interface is not recommended, as added methods to BackendServiceServer will
@@ -282,20 +280,20 @@ func _BackendService_ListSubmits_Handler(srv interface{}, ctx context.Context, d
 	return interceptor(ctx, in, info, handler)
 }
 
-func _BackendService_GetLatestSubmit_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetLatestSubmitRequest)
+func _BackendService_GetContestantInfo_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetContestantInfoRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(BackendServiceServer).GetLatestSubmit(ctx, in)
+		return srv.(BackendServiceServer).GetContestantInfo(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: BackendService_GetLatestSubmit_FullMethodName,
+		FullMethod: BackendService_GetContestantInfo_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(BackendServiceServer).GetLatestSubmit(ctx, req.(*GetLatestSubmitRequest))
+		return srv.(BackendServiceServer).GetContestantInfo(ctx, req.(*GetContestantInfoRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -406,8 +404,8 @@ var BackendService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _BackendService_ListSubmits_Handler,
 		},
 		{
-			MethodName: "GetLatestSubmit",
-			Handler:    _BackendService_GetLatestSubmit_Handler,
+			MethodName: "GetContestantInfo",
+			Handler:    _BackendService_GetContestantInfo_Handler,
 		},
 		{
 			MethodName: "ListContests",
@@ -503,15 +501,14 @@ func (x *healthcheckServicePingServerSideStreamingClient) Recv() (*PingServerSid
 }
 
 // HealthcheckServiceServer is the server API for HealthcheckService service.
-// All implementations must embed UnimplementedHealthcheckServiceServer
+// All implementations should embed UnimplementedHealthcheckServiceServer
 // for forward compatibility
 type HealthcheckServiceServer interface {
 	PingUnary(context.Context, *PingUnaryRequest) (*PingUnaryResponse, error)
 	PingServerSideStreaming(*PingServerSideStreamingRequest, HealthcheckService_PingServerSideStreamingServer) error
-	mustEmbedUnimplementedHealthcheckServiceServer()
 }
 
-// UnimplementedHealthcheckServiceServer must be embedded to have forward compatible implementations.
+// UnimplementedHealthcheckServiceServer should be embedded to have forward compatible implementations.
 type UnimplementedHealthcheckServiceServer struct {
 }
 
@@ -521,7 +518,6 @@ func (UnimplementedHealthcheckServiceServer) PingUnary(context.Context, *PingUna
 func (UnimplementedHealthcheckServiceServer) PingServerSideStreaming(*PingServerSideStreamingRequest, HealthcheckService_PingServerSideStreamingServer) error {
 	return status.Errorf(codes.Unimplemented, "method PingServerSideStreaming not implemented")
 }
-func (UnimplementedHealthcheckServiceServer) mustEmbedUnimplementedHealthcheckServiceServer() {}
 
 // UnsafeHealthcheckServiceServer may be embedded to opt out of forward compatibility for this service.
 // Use of this interface is not recommended, as added methods to HealthcheckServiceServer will
@@ -646,16 +642,15 @@ func (c *adminServiceClient) CreateGroups(ctx context.Context, in *CreateGroupsR
 }
 
 // AdminServiceServer is the server API for AdminService service.
-// All implementations must embed UnimplementedAdminServiceServer
+// All implementations should embed UnimplementedAdminServiceServer
 // for forward compatibility
 type AdminServiceServer interface {
 	CreateContest(context.Context, *CreateContestRequest) (*CreateContestResponse, error)
 	UpdateContest(context.Context, *UpdateContestRequest) (*UpdateContestResponse, error)
 	CreateGroups(context.Context, *CreateGroupsRequest) (*CreateGroupsResponse, error)
-	mustEmbedUnimplementedAdminServiceServer()
 }
 
-// UnimplementedAdminServiceServer must be embedded to have forward compatible implementations.
+// UnimplementedAdminServiceServer should be embedded to have forward compatible implementations.
 type UnimplementedAdminServiceServer struct {
 }
 
@@ -668,7 +663,6 @@ func (UnimplementedAdminServiceServer) UpdateContest(context.Context, *UpdateCon
 func (UnimplementedAdminServiceServer) CreateGroups(context.Context, *CreateGroupsRequest) (*CreateGroupsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateGroups not implemented")
 }
-func (UnimplementedAdminServiceServer) mustEmbedUnimplementedAdminServiceServer() {}
 
 // UnsafeAdminServiceServer may be embedded to opt out of forward compatibility for this service.
 // Use of this interface is not recommended, as added methods to AdminServiceServer will

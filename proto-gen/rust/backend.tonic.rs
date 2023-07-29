@@ -165,11 +165,11 @@ pub mod backend_service_client {
             self.inner.unary(req, path, codec).await
         }
         ///
-        pub async fn get_latest_submit(
+        pub async fn get_contestant_info(
             &mut self,
-            request: impl tonic::IntoRequest<super::GetLatestSubmitRequest>,
+            request: impl tonic::IntoRequest<super::GetContestantInfoRequest>,
         ) -> std::result::Result<
-            tonic::Response<super::GetLatestSubmitResponse>,
+            tonic::Response<super::GetContestantInfoResponse>,
             tonic::Status,
         > {
             self.inner
@@ -183,11 +183,11 @@ pub mod backend_service_client {
                 })?;
             let codec = tonic::codec::ProstCodec::default();
             let path = http::uri::PathAndQuery::from_static(
-                "/backend.BackendService/GetLatestSubmit",
+                "/backend.BackendService/GetContestantInfo",
             );
             let mut req = request.into_request();
             req.extensions_mut()
-                .insert(GrpcMethod::new("backend.BackendService", "GetLatestSubmit"));
+                .insert(GrpcMethod::new("backend.BackendService", "GetContestantInfo"));
             self.inner.unary(req, path, codec).await
         }
         /** contest
@@ -361,11 +361,11 @@ pub mod backend_service_server {
             tonic::Status,
         >;
         ///
-        async fn get_latest_submit(
+        async fn get_contestant_info(
             &self,
-            request: tonic::Request<super::GetLatestSubmitRequest>,
+            request: tonic::Request<super::GetContestantInfoRequest>,
         ) -> std::result::Result<
-            tonic::Response<super::GetLatestSubmitResponse>,
+            tonic::Response<super::GetContestantInfoResponse>,
             tonic::Status,
         >;
         /** contest
@@ -627,25 +627,25 @@ pub mod backend_service_server {
                     };
                     Box::pin(fut)
                 }
-                "/backend.BackendService/GetLatestSubmit" => {
+                "/backend.BackendService/GetContestantInfo" => {
                     #[allow(non_camel_case_types)]
-                    struct GetLatestSubmitSvc<T: BackendService>(pub Arc<T>);
+                    struct GetContestantInfoSvc<T: BackendService>(pub Arc<T>);
                     impl<
                         T: BackendService,
-                    > tonic::server::UnaryService<super::GetLatestSubmitRequest>
-                    for GetLatestSubmitSvc<T> {
-                        type Response = super::GetLatestSubmitResponse;
+                    > tonic::server::UnaryService<super::GetContestantInfoRequest>
+                    for GetContestantInfoSvc<T> {
+                        type Response = super::GetContestantInfoResponse;
                         type Future = BoxFuture<
                             tonic::Response<Self::Response>,
                             tonic::Status,
                         >;
                         fn call(
                             &mut self,
-                            request: tonic::Request<super::GetLatestSubmitRequest>,
+                            request: tonic::Request<super::GetContestantInfoRequest>,
                         ) -> Self::Future {
                             let inner = Arc::clone(&self.0);
                             let fut = async move {
-                                (*inner).get_latest_submit(request).await
+                                (*inner).get_contestant_info(request).await
                             };
                             Box::pin(fut)
                         }
@@ -657,7 +657,7 @@ pub mod backend_service_server {
                     let inner = self.inner.clone();
                     let fut = async move {
                         let inner = inner.0;
-                        let method = GetLatestSubmitSvc(inner);
+                        let method = GetContestantInfoSvc(inner);
                         let codec = tonic::codec::ProstCodec::default();
                         let mut grpc = tonic::server::Grpc::new(codec)
                             .apply_compression_config(

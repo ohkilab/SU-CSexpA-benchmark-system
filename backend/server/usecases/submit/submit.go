@@ -3,7 +3,6 @@ package submit
 import (
 	"context"
 	"fmt"
-	"log"
 	"strconv"
 	"time"
 
@@ -222,7 +221,6 @@ func (i *Interactor) ListSubmits(ctx context.Context, req *backendpb.ListSubmits
 	if claims.Role == backendpb.Role_ADMIN.String() {
 		roles = append(roles, backendpb.Role_ADMIN.String())
 	}
-	log.Println(roles)
 	groupPredicates = append(groupPredicates, group.RoleIn(roles...))
 
 	q.Where(submit.HasGroupsWith(groupPredicates...))
@@ -243,7 +241,6 @@ func (i *Interactor) ListSubmits(ctx context.Context, req *backendpb.ListSubmits
 			q.Order(submit.ByScore(order))
 		}
 	} else {
-		log.Println("set default order option to submited_at desc")
 		q.Order(submit.BySubmitedAt(sql.OrderDesc()))
 	}
 
@@ -252,7 +249,6 @@ func (i *Interactor) ListSubmits(ctx context.Context, req *backendpb.ListSubmits
 		i.logger.Error("failed to count submits", err)
 		return nil, status.Error(codes.Internal, err.Error())
 	}
-	log.Println(count)
 	totalPages := count / i.limit
 	if count%i.limit > 0 {
 		totalPages++
@@ -277,20 +273,35 @@ func (i *Interactor) ListSubmits(ctx context.Context, req *backendpb.ListSubmits
 	}, nil
 }
 
-func (i *Interactor) GetLatestSubmit(ctx context.Context, groupID int) (*backendpb.GetLatestSubmitResponse, error) {
-	submit, err := i.entClient.Submit.Query().
-		Where(submit.HasGroupsWith(group.ID(groupID))).
+func (i *Interactor) GetContestantInfo(ctx context.Context, groupID int, contestSlug string) (*backendpb.GetContestantInfoResponse, error) {
+	contest, err := i.entClient.Contest.Query().Where(contest.SlugEQ(contestSlug)).Only(ctx)
+	if err != nil {
+		i.logger.Error("failed to get contest", "error", err)
+		if ent.IsNotFound(err) {
+			return nil, status.Error(codes.NotFound, "no such contest")
+		} else {
+			return nil, status.Error(codes.Internal, "failed to get contest")
+		}
+	}
+	submits, err := i.entClient.Submit.Query().
+		Where(submit.HasGroupsWith(group.ID(groupID)), submit.Status(backendpb.Status_SUCCESS.String())).
 		Order(submit.BySubmitedAt(sql.OrderDesc())).
 		WithGroups().
-		First(ctx)
+		All(ctx)
 	if err != nil {
 		i.logger.Error("failed to get latest submit", "error", err)
-		if ent.IsNotFound(err) {
-			return &backendpb.GetLatestSubmitResponse{}, nil
-		}
 		return nil, status.Error(codes.Internal, "failed to get latest submit")
 	}
-	return &backendpb.GetLatestSubmitResponse{
-		Submit: toPbSubmit(submit),
+	var latestSubmit *backendpb.Submit
+	if len(submits) > 0 {
+		latestSubmit = toPbSubmit(submits[0])
+	}
+	remainingSubmitCount := int32(contest.SubmitLimit) - int32(len(submits))
+	if remainingSubmitCount < 0 {
+		remainingSubmitCount = 0
+	}
+	return &backendpb.GetContestantInfoResponse{
+		LatestSubmit:         latestSubmit,
+		RemainingSubmitCount: remainingSubmitCount,
 	}, nil
 }

@@ -70,21 +70,19 @@ func (x *benchmarkServiceExecuteClient) Recv() (*ExecuteResponse, error) {
 }
 
 // BenchmarkServiceServer is the server API for BenchmarkService service.
-// All implementations must embed UnimplementedBenchmarkServiceServer
+// All implementations should embed UnimplementedBenchmarkServiceServer
 // for forward compatibility
 type BenchmarkServiceServer interface {
 	Execute(*ExecuteRequest, BenchmarkService_ExecuteServer) error
-	mustEmbedUnimplementedBenchmarkServiceServer()
 }
 
-// UnimplementedBenchmarkServiceServer must be embedded to have forward compatible implementations.
+// UnimplementedBenchmarkServiceServer should be embedded to have forward compatible implementations.
 type UnimplementedBenchmarkServiceServer struct {
 }
 
 func (UnimplementedBenchmarkServiceServer) Execute(*ExecuteRequest, BenchmarkService_ExecuteServer) error {
 	return status.Errorf(codes.Unimplemented, "method Execute not implemented")
 }
-func (UnimplementedBenchmarkServiceServer) mustEmbedUnimplementedBenchmarkServiceServer() {}
 
 // UnsafeBenchmarkServiceServer may be embedded to opt out of forward compatibility for this service.
 // Use of this interface is not recommended, as added methods to BenchmarkServiceServer will

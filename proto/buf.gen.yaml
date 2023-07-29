@@ -12,6 +12,7 @@ plugins:
     out: ../proto-gen/go
     opt:
       - paths=source_relative
+      - require_unimplemented_servers=false
   - plugin: buf.build/community/timostamm-protobuf-ts
     out: ../proto-gen/web
   - plugin: buf.build/community/neoeinstein-prost

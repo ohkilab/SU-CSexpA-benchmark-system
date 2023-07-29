@@ -9,6 +9,7 @@ import { Status, Submit, TaskResult } from 'proto-gen-web/services/backend/resou
 
 import Result from '../components/Result.vue'
 import { useBackendStore } from '../stores/backend'
+import { GetSubmitRequest } from 'proto-gen-web/services/backend/messages'
 
 const state:IState = useStateStore()
 const { backend } = useBackendStore()
@@ -44,10 +45,12 @@ const fetchLatestSubmit = async () => {
 
   let opt = {meta: {'authorization' : 'Bearer ' + state.token}}
 
-  backend.getLatestSubmit({}, opt).then(async res => {
+  backend.getContestantInfo({
+    contestSlug: state.contestSlug,
+  }, opt).then(async res => {
     if(import.meta.env.DEV) console.log(res)
     // latestSubmit.value = res.response.submit ?? {}
-    latestSubmit.value = await getSubmitById(res.response.submit?.id ?? 0) ?? {}
+    latestSubmit.value = await getSubmitById(res.response.latestSubmit?.id ?? 0) ?? {}
   }).catch(err => {
     console.log('getLatestSubmit err:' + err)
   })

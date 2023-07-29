@@ -100,7 +100,7 @@ func Test_GetSubmit(t *testing.T) {
 	assert.Equal(t, codes.NotFound, status.Code(err))
 }
 
-func Test_GetLatestSubmit(t *testing.T) {
+func Test_GetContestantInfo(t *testing.T) {
 	ctx := context.Background()
 	entClient, cleanupFunc := utils.EnttestOpen(ctx, t)
 	defer cleanupFunc(t)
@@ -127,9 +127,12 @@ func Test_GetLatestSubmit(t *testing.T) {
 	ctx = metadata.NewOutgoingContext(ctx, meta)
 
 	// success
-	resp, err := client.GetLatestSubmit(ctx, &pb.GetLatestSubmitRequest{})
+	resp, err := client.GetContestantInfo(ctx, &pb.GetContestantInfoRequest{
+		ContestSlug: contest.Slug,
+	})
 	require.NoError(t, err)
-	assert.Equal(t, int32(submit2.ID), resp.Submit.Id)
+	assert.Equal(t, int32(submit2.ID), resp.LatestSubmit.Id)
+	assert.Equal(t, int32(9997), resp.RemainingSubmitCount)
 }
 
 func Test_ListSubmits(t *testing.T) {

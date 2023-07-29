@@ -387,18 +387,26 @@ export interface VerifyTokenResponse {
     message: string;
 }
 /**
- * @generated from protobuf message backend.GetLatestSubmitRequest
+ * @generated from protobuf message backend.GetContestantInfoRequest
  */
-export interface GetLatestSubmitRequest {
+export interface GetContestantInfoRequest {
+    /**
+     * @generated from protobuf field: string contest_slug = 1;
+     */
+    contestSlug: string;
 }
 /**
- * @generated from protobuf message backend.GetLatestSubmitResponse
+ * @generated from protobuf message backend.GetContestantInfoResponse
  */
-export interface GetLatestSubmitResponse {
+export interface GetContestantInfoResponse {
     /**
-     * @generated from protobuf field: backend.Submit submit = 1;
+     * @generated from protobuf field: optional backend.Submit latest_submit = 1;
      */
-    submit?: Submit;
+    latestSubmit?: Submit;
+    /**
+     * @generated from protobuf field: int32 remaining_submit_count = 2;
+     */
+    remainingSubmitCount: number;
 }
 /**
  * @generated from protobuf message backend.CreateGroupsRequest
@@ -1796,52 +1804,26 @@ class VerifyTokenResponse$Type extends MessageType<VerifyTokenResponse> {
  */
 export const VerifyTokenResponse = new VerifyTokenResponse$Type();
 // @generated message type with reflection information, may provide speed optimized methods
-class GetLatestSubmitRequest$Type extends MessageType<GetLatestSubmitRequest> {
+class GetContestantInfoRequest$Type extends MessageType<GetContestantInfoRequest> {
     constructor() {
-        super("backend.GetLatestSubmitRequest", []);
-    }
-    create(value?: PartialMessage<GetLatestSubmitRequest>): GetLatestSubmitRequest {
-        const message = {};
-        globalThis.Object.defineProperty(message, MESSAGE_TYPE, { enumerable: false, value: this });
-        if (value !== undefined)
-            reflectionMergePartial<GetLatestSubmitRequest>(this, message, value);
-        return message;
-    }
-    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: GetLatestSubmitRequest): GetLatestSubmitRequest {
-        return target ?? this.create();
-    }
-    internalBinaryWrite(message: GetLatestSubmitRequest, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
-        let u = options.writeUnknownFields;
-        if (u !== false)
-            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
-        return writer;
-    }
-}
-/**
- * @generated MessageType for protobuf message backend.GetLatestSubmitRequest
- */
-export const GetLatestSubmitRequest = new GetLatestSubmitRequest$Type();
-// @generated message type with reflection information, may provide speed optimized methods
-class GetLatestSubmitResponse$Type extends MessageType<GetLatestSubmitResponse> {
-    constructor() {
-        super("backend.GetLatestSubmitResponse", [
-            { no: 1, name: "submit", kind: "message", T: () => Submit }
+        super("backend.GetContestantInfoRequest", [
+            { no: 1, name: "contest_slug", kind: "scalar", T: 9 /*ScalarType.STRING*/ }
         ]);
     }
-    create(value?: PartialMessage<GetLatestSubmitResponse>): GetLatestSubmitResponse {
-        const message = {};
+    create(value?: PartialMessage<GetContestantInfoRequest>): GetContestantInfoRequest {
+        const message = { contestSlug: "" };
         globalThis.Object.defineProperty(message, MESSAGE_TYPE, { enumerable: false, value: this });
         if (value !== undefined)
-            reflectionMergePartial<GetLatestSubmitResponse>(this, message, value);
+            reflectionMergePartial<GetContestantInfoRequest>(this, message, value);
         return message;
     }
-    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: GetLatestSubmitResponse): GetLatestSubmitResponse {
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: GetContestantInfoRequest): GetContestantInfoRequest {
         let message = target ?? this.create(), end = reader.pos + length;
         while (reader.pos < end) {
             let [fieldNo, wireType] = reader.tag();
             switch (fieldNo) {
-                case /* backend.Submit submit */ 1:
-                    message.submit = Submit.internalBinaryRead(reader, reader.uint32(), options, message.submit);
+                case /* string contest_slug */ 1:
+                    message.contestSlug = reader.string();
                     break;
                 default:
                     let u = options.readUnknownField;
@@ -1854,10 +1836,10 @@ class GetLatestSubmitResponse$Type extends MessageType<GetLatestSubmitResponse> 
         }
         return message;
     }
-    internalBinaryWrite(message: GetLatestSubmitResponse, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
-        /* backend.Submit submit = 1; */
-        if (message.submit)
-            Submit.internalBinaryWrite(message.submit, writer.tag(1, WireType.LengthDelimited).fork(), options).join();
+    internalBinaryWrite(message: GetContestantInfoRequest, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* string contest_slug = 1; */
+        if (message.contestSlug !== "")
+            writer.tag(1, WireType.LengthDelimited).string(message.contestSlug);
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
@@ -1865,9 +1847,63 @@ class GetLatestSubmitResponse$Type extends MessageType<GetLatestSubmitResponse> 
     }
 }
 /**
- * @generated MessageType for protobuf message backend.GetLatestSubmitResponse
+ * @generated MessageType for protobuf message backend.GetContestantInfoRequest
  */
-export const GetLatestSubmitResponse = new GetLatestSubmitResponse$Type();
+export const GetContestantInfoRequest = new GetContestantInfoRequest$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class GetContestantInfoResponse$Type extends MessageType<GetContestantInfoResponse> {
+    constructor() {
+        super("backend.GetContestantInfoResponse", [
+            { no: 1, name: "latest_submit", kind: "message", T: () => Submit },
+            { no: 2, name: "remaining_submit_count", kind: "scalar", T: 5 /*ScalarType.INT32*/ }
+        ]);
+    }
+    create(value?: PartialMessage<GetContestantInfoResponse>): GetContestantInfoResponse {
+        const message = { remainingSubmitCount: 0 };
+        globalThis.Object.defineProperty(message, MESSAGE_TYPE, { enumerable: false, value: this });
+        if (value !== undefined)
+            reflectionMergePartial<GetContestantInfoResponse>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: GetContestantInfoResponse): GetContestantInfoResponse {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* optional backend.Submit latest_submit */ 1:
+                    message.latestSubmit = Submit.internalBinaryRead(reader, reader.uint32(), options, message.latestSubmit);
+                    break;
+                case /* int32 remaining_submit_count */ 2:
+                    message.remainingSubmitCount = reader.int32();
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: GetContestantInfoResponse, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* optional backend.Submit latest_submit = 1; */
+        if (message.latestSubmit)
+            Submit.internalBinaryWrite(message.latestSubmit, writer.tag(1, WireType.LengthDelimited).fork(), options).join();
+        /* int32 remaining_submit_count = 2; */
+        if (message.remainingSubmitCount !== 0)
+            writer.tag(2, WireType.Varint).int32(message.remainingSubmitCount);
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message backend.GetContestantInfoResponse
+ */
+export const GetContestantInfoResponse = new GetContestantInfoResponse$Type();
 // @generated message type with reflection information, may provide speed optimized methods
 class CreateGroupsRequest$Type extends MessageType<CreateGroupsRequest> {
     constructor() {
