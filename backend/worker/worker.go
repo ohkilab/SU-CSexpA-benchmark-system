@@ -8,7 +8,6 @@ import (
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/core/entutil"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/core/timejst"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/repository/ent"
-	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/repository/ent/group"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/repository/ent/submit"
 	backendpb "github.com/ohkilab/SU-CSexpA-benchmark-system/proto-gen/go/services/backend"
 	benchmarkpb "github.com/ohkilab/SU-CSexpA-benchmark-system/proto-gen/go/services/benchmark-service"
@@ -81,9 +80,31 @@ func (w *worker) runBenchmarkTask(task *Task) error {
 	ctx, cancel := context.WithTimeout(context.Background(), Timeout)
 	defer cancel()
 
+	resp, err := w.benchmarkClient.CheckConnection(ctx, &benchmarkpb.CheckConnectionRequest{
+		Url: task.Req.Tasks[0].Request.Url,
+	})
+	if err != nil {
+		w.logger.Error("failed to connect to benchmark-service", "error", err)
+		return err
+	}
+	if !resp.Ok {
+		now := timejst.Now()
+		if _, err := w.entClient.Submit.
+			UpdateOneID(task.SubmitID).
+			SetCompletedAt(now).
+			SetUpdatedAt(now).
+			SetScore(0).
+			SetStatus(backendpb.Status_CONNECTION_FAILED.String()).
+			Save(entCtx); err != nil {
+			w.logger.Error("failed to update submit", err)
+			return err
+		}
+		return nil
+	}
+
 	stream, err := w.benchmarkClient.Execute(ctx, task.Req)
 	if err != nil {
-		w.logger.Error("failed to connect to benchmark-service", err)
+		w.logger.Error("failed to connect to benchmark-service", "error", err)
 		return err
 	}
 	// ctx を持ち回すと context deadline exceeded になってしまうため、DB 操作の際は context.Background() を使う
@@ -101,6 +122,7 @@ func (w *worker) runBenchmarkTask(task *Task) error {
 	pbStatus := backendpb.Status_SUCCESS
 	for {
 		resp, err := stream.Recv()
+		// io.EOF は stream の終了を表す
 		if err == io.EOF {
 			if err := stream.CloseSend(); err != nil {
 				w.logger.Error("failed to close stream", err)
@@ -141,20 +163,18 @@ func (w *worker) runBenchmarkTask(task *Task) error {
 		if resp.Ok {
 			scores = append(scores, int(resp.RequestsPerSecond))
 		}
+		// ステータスを更新する
 		if needsUpdateStatus(pbStatus, resp.Status) {
 			w.logger.Info("update status", slog.Any("current status", pbStatus), slog.Any("next status", resp.Status))
 			pbStatus = resp.Status
 		}
-		var errorMessage string
-		if resp.ErrorMessage != nil {
-			errorMessage = *resp.ErrorMessage
-		}
+		// taskResults に task の結果を保存する
 		if err := entutil.RunInTransaction(entCtx, w.entClient, func(tx *ent.Tx) error {
 			if _, err := tx.TaskResult.Create().
 				SetRequestPerSec(int(resp.RequestsPerSecond)).
 				SetURL(resp.Task.Request.Url).
 				SetMethod(resp.Task.Request.Method.String()).
-				SetErrorMessage(errorMessage).
+				SetErrorMessage(lo.FromPtrOr(resp.ErrorMessage, "")).
 				SetRequestContentType(resp.Task.Request.ContentType).
 				SetRequestBody(resp.Task.Request.Body).
 				SetThreadNum(int(resp.Task.ThreadNum)).
@@ -193,24 +213,6 @@ func (w *worker) runBenchmarkTask(task *Task) error {
 		return err
 	}
 
-	maxSubmit, err := w.entClient.Submit.Query().
-		WithGroups().
-		Where(submit.HasGroupsWith(group.ID(task.GroupID))).
-		Order(ent.Desc(submit.FieldScore)).
-		First(entCtx)
-	if err != nil {
-		w.logger.Error("failed to get max submit", "error", err)
-		return err
-	}
-	if maxSubmit.Score < score {
-		if _, err := w.entClient.Group.
-			UpdateOneID(maxSubmit.Edges.Groups.ID).
-			SetUpdatedAt(now).
-			Save(entCtx); err != nil {
-			w.logger.Error("failed to update group", err)
-			return err
-		}
-	}
 	return nil
 }
 
