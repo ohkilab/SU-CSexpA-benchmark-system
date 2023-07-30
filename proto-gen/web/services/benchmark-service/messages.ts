@@ -110,6 +110,28 @@ export interface HttpRequest {
     body: string;
 }
 /**
+ * @generated from protobuf message benchmark.CheckConnectionRequest
+ */
+export interface CheckConnectionRequest {
+    /**
+     * @generated from protobuf field: string url = 1;
+     */
+    url: string;
+}
+/**
+ * @generated from protobuf message benchmark.CheckConnectionResponse
+ */
+export interface CheckConnectionResponse {
+    /**
+     * @generated from protobuf field: bool ok = 1;
+     */
+    ok: boolean;
+    /**
+     * @generated from protobuf field: optional string error_message = 2;
+     */
+    errorMessage?: string; // if ok is false, this field is set
+}
+/**
  * @generated from protobuf enum benchmark.HttpMethod
  */
 export enum HttpMethod {
@@ -423,3 +445,104 @@ class HttpRequest$Type extends MessageType<HttpRequest> {
  * @generated MessageType for protobuf message benchmark.HttpRequest
  */
 export const HttpRequest = new HttpRequest$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class CheckConnectionRequest$Type extends MessageType<CheckConnectionRequest> {
+    constructor() {
+        super("benchmark.CheckConnectionRequest", [
+            { no: 1, name: "url", kind: "scalar", T: 9 /*ScalarType.STRING*/ }
+        ]);
+    }
+    create(value?: PartialMessage<CheckConnectionRequest>): CheckConnectionRequest {
+        const message = { url: "" };
+        globalThis.Object.defineProperty(message, MESSAGE_TYPE, { enumerable: false, value: this });
+        if (value !== undefined)
+            reflectionMergePartial<CheckConnectionRequest>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: CheckConnectionRequest): CheckConnectionRequest {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* string url */ 1:
+                    message.url = reader.string();
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: CheckConnectionRequest, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* string url = 1; */
+        if (message.url !== "")
+            writer.tag(1, WireType.LengthDelimited).string(message.url);
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message benchmark.CheckConnectionRequest
+ */
+export const CheckConnectionRequest = new CheckConnectionRequest$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class CheckConnectionResponse$Type extends MessageType<CheckConnectionResponse> {
+    constructor() {
+        super("benchmark.CheckConnectionResponse", [
+            { no: 1, name: "ok", kind: "scalar", T: 8 /*ScalarType.BOOL*/ },
+            { no: 2, name: "error_message", kind: "scalar", opt: true, T: 9 /*ScalarType.STRING*/ }
+        ]);
+    }
+    create(value?: PartialMessage<CheckConnectionResponse>): CheckConnectionResponse {
+        const message = { ok: false };
+        globalThis.Object.defineProperty(message, MESSAGE_TYPE, { enumerable: false, value: this });
+        if (value !== undefined)
+            reflectionMergePartial<CheckConnectionResponse>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: CheckConnectionResponse): CheckConnectionResponse {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* bool ok */ 1:
+                    message.ok = reader.bool();
+                    break;
+                case /* optional string error_message */ 2:
+                    message.errorMessage = reader.string();
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: CheckConnectionResponse, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* bool ok = 1; */
+        if (message.ok !== false)
+            writer.tag(1, WireType.Varint).bool(message.ok);
+        /* optional string error_message = 2; */
+        if (message.errorMessage !== undefined)
+            writer.tag(2, WireType.LengthDelimited).string(message.errorMessage);
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message benchmark.CheckConnectionResponse
+ */
+export const CheckConnectionResponse = new CheckConnectionResponse$Type();

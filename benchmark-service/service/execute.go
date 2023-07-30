@@ -36,11 +36,6 @@ func (s *service) Execute(req *pb.ExecuteRequest, stream pb.BenchmarkService_Exe
 		return status.Error(codes.InvalidArgument, fmt.Sprintf("the validator is not supported(slug: %s)", req.Validator.String()))
 	}
 
-	if err := s.client.CheckConnection(req.Tasks[0].Request.Url); err != nil {
-		log.Println(err)
-		return status.Error(codes.FailedPrecondition, "failed to connect with the server")
-	}
-
 	mu := &sync.Mutex{}
 	eg := &errgroup.Group{}
 	for _, task := range req.Tasks {

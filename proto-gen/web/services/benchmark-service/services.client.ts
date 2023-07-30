@@ -4,6 +4,9 @@
 import type { RpcTransport } from "@protobuf-ts/runtime-rpc";
 import type { ServiceInfo } from "@protobuf-ts/runtime-rpc";
 import { BenchmarkService } from "./services";
+import type { CheckConnectionResponse } from "./messages";
+import type { CheckConnectionRequest } from "./messages";
+import type { UnaryCall } from "@protobuf-ts/runtime-rpc";
 import { stackIntercept } from "@protobuf-ts/runtime-rpc";
 import type { ExecuteResponse } from "./messages";
 import type { ExecuteRequest } from "./messages";
@@ -17,6 +20,10 @@ export interface IBenchmarkServiceClient {
      * @generated from protobuf rpc: Execute(benchmark.ExecuteRequest) returns (stream benchmark.ExecuteResponse);
      */
     execute(input: ExecuteRequest, options?: RpcOptions): ServerStreamingCall<ExecuteRequest, ExecuteResponse>;
+    /**
+     * @generated from protobuf rpc: CheckConnection(benchmark.CheckConnectionRequest) returns (benchmark.CheckConnectionResponse);
+     */
+    checkConnection(input: CheckConnectionRequest, options?: RpcOptions): UnaryCall<CheckConnectionRequest, CheckConnectionResponse>;
 }
 /**
  * @generated from protobuf service benchmark.BenchmarkService
@@ -33,5 +40,12 @@ export class BenchmarkServiceClient implements IBenchmarkServiceClient, ServiceI
     execute(input: ExecuteRequest, options?: RpcOptions): ServerStreamingCall<ExecuteRequest, ExecuteResponse> {
         const method = this.methods[0], opt = this._transport.mergeOptions(options);
         return stackIntercept<ExecuteRequest, ExecuteResponse>("serverStreaming", this._transport, method, opt, input);
+    }
+    /**
+     * @generated from protobuf rpc: CheckConnection(benchmark.CheckConnectionRequest) returns (benchmark.CheckConnectionResponse);
+     */
+    checkConnection(input: CheckConnectionRequest, options?: RpcOptions): UnaryCall<CheckConnectionRequest, CheckConnectionResponse> {
+        const method = this.methods[1], opt = this._transport.mergeOptions(options);
+        return stackIntercept<CheckConnectionRequest, CheckConnectionResponse>("unary", this._transport, method, opt, input);
     }
 }

@@ -44,3 +44,12 @@ message HttpRequest {
   string content_type = 4;
   string body = 5;
 }
+
+message CheckConnectionRequest {
+  string url = 1;
+}
+
+message CheckConnectionResponse {
+  bool ok = 1;
+  optional string error_message = 2; // if ok is false, this field is set
+}

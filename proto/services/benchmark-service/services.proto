@@ -8,4 +8,5 @@ option go_package = "github.com/ohkilab/SU-CSexpA-benchmark-system/proto-gen/go/
 
 service BenchmarkService {
   rpc Execute(ExecuteRequest) returns (stream ExecuteResponse);
+  rpc CheckConnection(CheckConnectionRequest) returns (CheckConnectionResponse);
 }

@@ -60,6 +60,21 @@ pub struct HttpRequest {
     #[prost(string, tag="5")]
     pub body: ::prost::alloc::string::String,
 }
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct CheckConnectionRequest {
+    #[prost(string, tag="1")]
+    pub url: ::prost::alloc::string::String,
+}
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct CheckConnectionResponse {
+    #[prost(bool, tag="1")]
+    pub ok: bool,
+    /// if ok is false, this field is set
+    #[prost(string, optional, tag="2")]
+    pub error_message: ::core::option::Option<::prost::alloc::string::String>,
+}
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::prost::Enumeration)]
 #[repr(i32)]
 pub enum HttpMethod {

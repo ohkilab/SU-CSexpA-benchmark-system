@@ -9,9 +9,8 @@ import (
 type service struct {
 	client       *benchmark.Client
 	validatorMap map[string]validation.Validator
-	pb.UnimplementedBenchmarkServiceServer
 }
 
 func New(client *benchmark.Client, validatorMap map[string]validation.Validator) pb.BenchmarkServiceServer {
-	return &service{client, validatorMap, pb.UnimplementedBenchmarkServiceServer{}}
+	return &service{client, validatorMap}
 }

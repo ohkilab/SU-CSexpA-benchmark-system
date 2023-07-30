@@ -19,7 +19,8 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	BenchmarkService_Execute_FullMethodName = "/benchmark.BenchmarkService/Execute"
+	BenchmarkService_Execute_FullMethodName         = "/benchmark.BenchmarkService/Execute"
+	BenchmarkService_CheckConnection_FullMethodName = "/benchmark.BenchmarkService/CheckConnection"
 )
 
 // BenchmarkServiceClient is the client API for BenchmarkService service.
@@ -27,6 +28,7 @@ const (
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type BenchmarkServiceClient interface {
 	Execute(ctx context.Context, in *ExecuteRequest, opts ...grpc.CallOption) (BenchmarkService_ExecuteClient, error)
+	CheckConnection(ctx context.Context, in *CheckConnectionRequest, opts ...grpc.CallOption) (*CheckConnectionResponse, error)
 }
 
 type benchmarkServiceClient struct {
@@ -69,11 +71,21 @@ func (x *benchmarkServiceExecuteClient) Recv() (*ExecuteResponse, error) {
 	return m, nil
 }
 
+func (c *benchmarkServiceClient) CheckConnection(ctx context.Context, in *CheckConnectionRequest, opts ...grpc.CallOption) (*CheckConnectionResponse, error) {
+	out := new(CheckConnectionResponse)
+	err := c.cc.Invoke(ctx, BenchmarkService_CheckConnection_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // BenchmarkServiceServer is the server API for BenchmarkService service.
 // All implementations should embed UnimplementedBenchmarkServiceServer
 // for forward compatibility
 type BenchmarkServiceServer interface {
 	Execute(*ExecuteRequest, BenchmarkService_ExecuteServer) error
+	CheckConnection(context.Context, *CheckConnectionRequest) (*CheckConnectionResponse, error)
 }
 
 // UnimplementedBenchmarkServiceServer should be embedded to have forward compatible implementations.
@@ -82,6 +94,9 @@ type UnimplementedBenchmarkServiceServer struct {
 
 func (UnimplementedBenchmarkServiceServer) Execute(*ExecuteRequest, BenchmarkService_ExecuteServer) error {
 	return status.Errorf(codes.Unimplemented, "method Execute not implemented")
+}
+func (UnimplementedBenchmarkServiceServer) CheckConnection(context.Context, *CheckConnectionRequest) (*CheckConnectionResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CheckConnection not implemented")
 }
 
 // UnsafeBenchmarkServiceServer may be embedded to opt out of forward compatibility for this service.
@@ -116,13 +131,36 @@ func (x *benchmarkServiceExecuteServer) Send(m *ExecuteResponse) error {
 	return x.ServerStream.SendMsg(m)
 }
 
+func _BenchmarkService_CheckConnection_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CheckConnectionRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BenchmarkServiceServer).CheckConnection(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: BenchmarkService_CheckConnection_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BenchmarkServiceServer).CheckConnection(ctx, req.(*CheckConnectionRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // BenchmarkService_ServiceDesc is the grpc.ServiceDesc for BenchmarkService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var BenchmarkService_ServiceDesc = grpc.ServiceDesc{
 	ServiceName: "benchmark.BenchmarkService",
 	HandlerType: (*BenchmarkServiceServer)(nil),
-	Methods:     []grpc.MethodDesc{},
+	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "CheckConnection",
+			Handler:    _BenchmarkService_CheckConnection_Handler,
+		},
+	},
 	Streams: []grpc.StreamDesc{
 		{
 			StreamName:    "Execute",
