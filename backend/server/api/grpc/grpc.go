@@ -2,16 +2,20 @@ package grpc
 
 import (
 	"context"
-	"time"
+	"log"
 
 	"github.com/grpc-ecosystem/go-grpc-middleware/v2/interceptors/logging"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/api/grpc/interceptor"
+	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/core/timejst"
 	interfaces "github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/interfaces/grpc"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/repository/ent"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/proto-gen/go/services/backend"
+	"golang.org/x/crypto/bcrypt"
 	"golang.org/x/exp/slog"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/reflection"
+	"google.golang.org/grpc/status"
 )
 
 func NewServer(ctx context.Context, optionFuncs ...OptionFunc) (*grpc.Server, error) {
@@ -40,19 +44,26 @@ func NewServer(ctx context.Context, optionFuncs ...OptionFunc) (*grpc.Server, er
 	reflection.Register(grpcServer)
 
 	if opt.initAdminName != "" && opt.initAdminPassword != "" {
-		if _, err := adminService.CreateGroups(ctx, &backend.CreateGroupsRequest{
-			Groups: []*backend.CreateGroupsRequest_CreateGroupsGroup{
-				{
-					Name:     opt.initAdminName,
-					Password: opt.initAdminPassword,
-					Year:     int32(time.Now().Year()),
-					Role:     backend.Role_ADMIN,
-				},
-			},
-		}); err != nil {
+		b, err := bcrypt.GenerateFromPassword([]byte(opt.initAdminPassword), bcrypt.DefaultCost)
+		if err != nil {
+			return nil, status.Error(codes.Internal, "failed to generate password")
+		}
+		group, err := opt.entClient.Group.Create().
+			SetName(opt.initAdminName).
+			SetEncryptedPassword(string(b)).
+			SetRole(backend.Role_ADMIN.String()).
+			SetYear(2023).
+			SetCreatedAt(timejst.Now()).
+			Save(ctx)
+		if err != nil {
 			if !ent.IsConstraintError(err) {
 				return nil, err
 			}
+		}
+		if group != nil {
+			log.Println("initial admin account created", group)
+		} else {
+			log.Println("skipped creatint initial admin account")
 		}
 	}
 
