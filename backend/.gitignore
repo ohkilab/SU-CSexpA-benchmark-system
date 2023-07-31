@@ -1,4 +1,5 @@
 .*
 !.gitignore
 !.*.sample
+!.tbls.yml
 /vendor

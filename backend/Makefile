@@ -1,6 +1,15 @@
+.PHONY: ent/generate
+ent/generate:
+	@GOFLAGS="-mod=mod" go generate ./server/repository/ent \
+	&& go mod tidy
+
+.PHONY: tbls/generate
+tbls/generate:
+	@rm -rf ./docs \
+	&& tbls doc
+
 .PHONY: generate
-generate:
-	GOFLAGS="-mod=mod" go generate ./server/repository/ent
+generate: ent/generate tbls/generate
 
 .PHONY: mysql/start
 mysql/start:
@@ -39,7 +48,3 @@ batch/create-users:
 .PHONY: seed
 seed: batch/seed
 	@echo "seed is deprecated. please use \"make batch/seed\""
-
-.PHONY: viz
-viz:
-	@open ./server/repository/ent/schema-viz.html

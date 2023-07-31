@@ -1,0 +1,55 @@
+dsn: mysql://ohkilab:ohkilab@localhost:3306/exp-a
+docPath: docs/schema
+
+comments:
+  - table: contests
+    tableComment: コンテスト(予選・本戦を管理するため)
+    columnComments:
+      id: コンテストID(PK)
+      title: コンテスト名 e.g.) 2023 情報科学実験A ベンチマークコンテスト 予選
+      start_at: 開始日時
+      end_at: 終了日時
+      submit_limit: グループが提出できる回数(SUCCESS のみカウントされる)
+      slug: コンテストの識別子(unique) e.g.) exp-a-2023-qual.
+      tag_selection_logic: "auto: {slug}/random.txt から選出される / manual: {slug}/\\d.txt から選出される(\\d は試行回数)"
+      validator: レスポンスの validator。実装されている validator は proto に定義されている。
+      time_limit_per_task: タスクごとの制限時間(ms)
+      created_at: 作成日時
+      updated_at: 更新日時
+  - table: groups
+    tableComment: グループ(ユーザ)
+    columnComments:
+      id: グループID(PK)
+      name: グループ名
+      role: グループの役割(ADMIN, CONTESTANT, GUEST)。proto に定義されている。
+      year: グループの年度
+      encrypted_password: パスワードのハッシュ
+      created_at: 作成日時
+      updated_at: 更新日時
+    indexComments:
+      group_name_year: name と year の unique index
+  - table: submits
+    tableComment: グループの提出を管理するテーブル
+    columnComments:
+      id: 提出ID(PK)
+      url: 提出の URL
+      score: task_results の合計スコア
+      message: connection_failed や validation_error などのメッセージ
+      status: ステータス。proto に定義されている。
+      task_num: タスクの数
+      submited_at: 提出日時
+      completed_at: ベンチマーク完了日時
+  - table: task_results
+    tableComment: タスク(タグ)ごとの結果を管理するテーブル
+    columnComments:
+      id: タスク結果ID(PK)
+      request_per_sec: 秒間リクエスト数(これの総和がスコアになる)
+      status: ステータス。proto に定義されている。
+      error_message: エラーメッセージ
+      url: 提出の URL
+      method: http method(使われていない)
+      request_content_type: request Content-Type(使われていない)
+      request_body: request body(使われていない)
+      thread_num: 使われたスレッドの数(使われていない)
+      attempt_count: そのタスクでリクエストが行われてた数(使われていない)
+      created_at: 作成日時
