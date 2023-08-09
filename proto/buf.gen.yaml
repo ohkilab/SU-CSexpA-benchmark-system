@@ -15,7 +15,3 @@ plugins:
       - require_unimplemented_servers=false
   - plugin: buf.build/community/timostamm-protobuf-ts
     out: ../proto-gen/web
-  - plugin: buf.build/community/neoeinstein-prost
-    out: ../proto-gen/rust
-  - plugin: buf.build/community/neoeinstein-tonic
-    out: ../proto-gen/rust
