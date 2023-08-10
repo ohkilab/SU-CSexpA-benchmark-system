@@ -1,9 +1,9 @@
 import { defineStore } from "pinia";
-import { BackendServiceClient } from 'proto-gen-web/services/backend/services.client';
+import { BackendServiceClient } from "proto-gen-web/services/backend/services.client";
 import { GrpcWebFetchTransport } from "@protobuf-ts/grpcweb-transport";
 
 export interface IBackendStore {
-  backend: BackendServiceClient
+  backend: BackendServiceClient;
 }
 
 export const useBackendStore = defineStore<"state", IBackendStore>("state", {
@@ -11,15 +11,13 @@ export const useBackendStore = defineStore<"state", IBackendStore>("state", {
     // backend is initialized here, so do this later
     // - only reinitialize for dev environment
     backend: new BackendServiceClient(
-        new GrpcWebFetchTransport({
-          baseUrl: `http://${window.location.hostname}:8080`
-        })
-      )
+      new GrpcWebFetchTransport({
+        baseUrl: `http://${window.location.hostname}:8080`,
+      }),
+    ),
   }),
   actions: {
-    getSubmissions() {
-
-    }
+    getSubmissions() {},
   },
   persist: false,
 });

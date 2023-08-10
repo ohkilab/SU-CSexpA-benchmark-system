@@ -1,3 +1,1 @@
-<template>
-  Loading...
-</template>
+<template>Loading...</template>

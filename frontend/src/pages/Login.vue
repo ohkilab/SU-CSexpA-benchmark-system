@@ -1,25 +1,41 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref } from "vue";
 
 defineProps({
-  errMsg: String
-})
+  errMsg: String,
+});
 
-const id = ref('')
-const password = ref('')
+const id = ref("");
+const password = ref("");
 
-const emit = defineEmits(['login'])
+const emit = defineEmits(["login"]);
 </script>
 <template>
-  <form class="flex flex-col items-center justify-center h-full w-full px-5 md:w-96 gap-5 text-xl" @submit.prevent="() => emit('login', id, password)">
+  <form
+    class="flex h-full w-full flex-col items-center justify-center gap-5 px-5 text-xl md:w-96"
+    @submit.prevent="() => emit('login', id, password)"
+  >
     <!-- <router-link class="border border-gray-300 p-2 rounded hover:bg-gray-600 transition" :to="'/ranking'">ログインなしでランキングを見る</router-link> -->
 
     <div class="text-red-500">
-      {{errMsg}}
+      {{ errMsg }}
     </div>
-    <input class="w-full rounded bg-gray-700 p-2 hover:bg-gray-600 transition focus:outline-none focus:bg-gray-600" placeholder="グループ名" type="text" v-model="id">
-    <input class="w-full rounded bg-gray-700 p-2 hover:bg-gray-600 transition focus:outline-none focus:bg-gray-600" placeholder="パスワード" type="password" v-model="password">
-    <button class="w-full md:w-2/3 border rounded py-2 hover:bg-gray-700 transition">ログイン</button>
-
+    <input
+      class="w-full rounded bg-gray-700 p-2 transition hover:bg-gray-600 focus:bg-gray-600 focus:outline-none"
+      placeholder="グループ名"
+      type="text"
+      v-model="id"
+    />
+    <input
+      class="w-full rounded bg-gray-700 p-2 transition hover:bg-gray-600 focus:bg-gray-600 focus:outline-none"
+      placeholder="パスワード"
+      type="password"
+      v-model="password"
+    />
+    <button
+      class="w-full rounded border py-2 transition hover:bg-gray-700 md:w-2/3"
+    >
+      ログイン
+    </button>
   </form>
 </template>

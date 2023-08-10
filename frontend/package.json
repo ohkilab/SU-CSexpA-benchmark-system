@@ -19,6 +19,8 @@
     "chart.js": "^4.3.0",
     "pinia": "^2.0.35",
     "pinia-plugin-persistedstate": "^3.1.0",
+    "prettier": "^3.0.1",
+    "prettier-plugin-tailwindcss": "^0.4.1",
     "proto-gen-web": "link:../proto-gen/web",
     "vue": "^3.2.47",
     "vue-chartjs": "^5.2.0",

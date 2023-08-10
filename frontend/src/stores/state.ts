@@ -1,6 +1,6 @@
 import { defineStore } from "pinia";
 import { GetRankingResponse_Record } from "proto-gen-web/services/backend/messages";
-import { Role, Submit } from 'proto-gen-web/services/backend/resources';
+import { Role, Submit } from "proto-gen-web/services/backend/resources";
 
 // TODO: add logout action
 
@@ -39,8 +39,8 @@ export const useStateStore = defineStore<"state", IState>("state", {
     debug: false,
     devBaseUrl: "http://localhost:8080",
     submits: [],
-    contestSlug: '2023-qual',
-    selectedContestName: ''
+    contestSlug: "2023-qual",
+    selectedContestName: "",
   }),
   persist: true,
 });
