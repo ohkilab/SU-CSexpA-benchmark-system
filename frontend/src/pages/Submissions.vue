@@ -86,6 +86,13 @@ const prevPage = () => {
   }
 };
 
+const gotoPage = (page: number) => {
+  if (page > 0 && page <= totalPages.value) {
+    currentPage.value = page;
+    listSubmitsByPage(currentPage.value);
+  }
+};
+
 watch(
   () => route.params.id,
   async (to) => {
@@ -154,7 +161,7 @@ onMounted(() => {
     <button
       v-for="page in totalPages"
       :key="page"
-      @click="currentPage = page"
+      @click="gotoPage(page)"
       class="rounded px-3 py-2 shadow shadow-black transition hover:scale-105"
       :class="page == currentPage ? 'bg-blue-500' : 'bg-gray-700'"
     >
@@ -167,7 +174,7 @@ onMounted(() => {
       <font-awesome-icon :icon="['fas', 'arrow-right']"></font-awesome-icon>
     </button>
   </div>
-  <table v-if="state.submits.length > 0" class="table-auto">
+  <table v-if="state.submits.length > 0" class="table-auto mb-4">
     <thead class="bg-gray-700">
       <tr>
         <th class="px-2 py-3">提出ID</th>
