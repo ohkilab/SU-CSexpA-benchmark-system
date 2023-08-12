@@ -47,10 +47,12 @@ const routes = [
     children: [
       {
         path: "contests",
+        name: 'admin-contests',
         component: EditContests,
       },
       {
         path: "users",
+        name: 'admin-users',
         component: EditUsers,
       },
     ],

@@ -99,11 +99,11 @@ onMounted(() => {
         情報科学実験A：ベンチマークサーバ
       </div>
       <div class="w-32 flex justify-center border border-red-500">
-        <button v-if="state.role === Role.ADMIN && route.name !== 'admin'" @click="router.push('/admin')"
+        <button v-if="state.role === Role.ADMIN && !route.name?.toString().startsWith('admin')" @click="router.push('/admin')"
           class="p-2 rounded transition hover:bg-red-700">管理者モード</button>
         <button v-else
           @click="router.push('/contests')"
-          class="p-2 rounded border border-blue-500 transition hover:bg-red-700">コンテスト</button>
+          class="p-2 rounded border border-blue-500 transition hover:bg-red-700">コンテストページ</button>
       </div>
       <button @click="handleLogout" v-if="loggedIn"
         class="p-2 w-40 rounded bg-red-500 transition hover:bg-red-700">ログアウト</button>
