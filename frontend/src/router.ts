@@ -7,7 +7,7 @@ import Loading from "./pages/Loading.vue";
 import Contests from "./pages/Contests.vue";
 import Admin from "./pages/Admin.vue";
 import EditContests from "./pages/admin/EditContests.vue";
-import EditUsers from "./pages/admin/EditUsers.vue";
+import EditGroups from "./pages/admin/EditGroups.vue";
 
 const routes = [
   {
@@ -51,9 +51,9 @@ const routes = [
         component: EditContests,
       },
       {
-        path: "users",
-        name: 'admin-users',
-        component: EditUsers,
+        path: "groups",
+        name: 'admin-groups',
+        component: EditGroups,
       },
     ],
   },

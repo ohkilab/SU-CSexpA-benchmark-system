@@ -2,12 +2,10 @@
 import { useAdminStateStore } from "../stores/adminState";
 import { onMounted, watch } from "vue";
 import { useRouter, useRoute } from "vue-router";
-import { useBackendStore } from "../stores/backend";
 
 const router = useRouter();
 const route = useRoute();
 const adminState = useAdminStateStore();
-const { backend } = useBackendStore();
 
 onMounted(() => {
   if (adminState.currentPath === "") {
@@ -40,8 +38,8 @@ watch(
         <router-link
           class="flex h-10 items-center justify-center transition hover:bg-gray-600"
           active-class="bg-gray-600"
-          :to="'/admin/users'"
-          >ユーザ</router-link
+          :to="'/admin/groups'"
+          >グループ</router-link
         >
       </div>
       <div class="flex flex-grow flex-col">
