@@ -90,11 +90,20 @@ onMounted(() => {
     <!-- app bar -->
     <div class="w-full h-16 items-center bg-gray-700 flex shadow-md shadow-gray-950 px-5">
       <div v-if="loggedIn" class="w-40 text-center p-2 border border-gray-500">グループ：{{ state.group }}</div>
-      <button @click="state.debug = !state.debug" v-if="!PROD"
-        class="p-2 ml-2 w-32 rounded border border-red-500 transition hover:bg-red-700">Debug: {{ state.debug ? 'on' :
-          'off' }}</button>
+      <div class="w-32 flex justify-center border border-red-500">
+        <button @click="state.debug = !state.debug" v-if="!PROD"
+          class="p-2 rounded transition hover:bg-red-700">Debug: {{ state.debug ? 'on' :
+            'off' }}</button>
+      </div>
       <div class="mx-auto text-lg sm:text-xl">
         情報科学実験A：ベンチマークサーバ
+      </div>
+      <div class="w-32 flex justify-center border border-red-500">
+        <button v-if="state.role === Role.ADMIN && route.name !== 'admin'" @click="router.push('/admin')"
+          class="p-2 rounded transition hover:bg-red-700">管理者モード</button>
+        <button v-else
+          @click="router.push('/contests')"
+          class="p-2 rounded border border-blue-500 transition hover:bg-red-700">コンテスト</button>
       </div>
       <button @click="handleLogout" v-if="loggedIn"
         class="p-2 w-40 rounded bg-red-500 transition hover:bg-red-700">ログアウト</button>
@@ -133,8 +142,6 @@ onMounted(() => {
             active-class="bg-blue-500" to="/submissions">結果一覧</router-link>
           <router-link class="p-2 rounded shadow-md shadow-black hover:scale-105 transition border border-gray-500"
             active-class="bg-blue-500" to="/ranking">ランキング</router-link>
-          <router-link v-if="state.role === Role.ADMIN" class="p-2 rounded shadow-md shadow-black hover:scale-105 transition border border-gray-500"
-            active-class="bg-blue-500" to="/admin">管理者パネル</router-link>
         </div>
         <div to="/contests" class="w-48 p-2 ml-auto"></div>
       </div>

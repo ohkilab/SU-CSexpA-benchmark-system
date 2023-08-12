@@ -49,6 +49,10 @@ const getSubmitById = async (id: number): Promise<Submit | undefined> => {
 
 const handleCloseModal = () => {
   router.push("/submissions");
+  // setTimeout to avoid flickering
+  setTimeout(() => {
+    modalItem.value = {};
+  }, 100);
 };
 
 const listSubmitsByPage = (page: number) => {
@@ -138,7 +142,7 @@ onMounted(() => {
   >
     <div
       v-if="$route.params.id"
-      @click.self="modalItem = {}"
+      @click.self="handleCloseModal"
       class="fixed inset-0 flex h-full w-full items-center justify-center overflow-y-auto bg-black bg-opacity-50"
     >
       <div class="h-5/6 w-5/6">
