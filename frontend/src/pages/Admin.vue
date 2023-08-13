@@ -1,28 +1,4 @@
 <script setup lang="ts">
-import { useAdminStateStore } from "../stores/adminState";
-import { onMounted, watch } from "vue";
-import { useRouter, useRoute } from "vue-router";
-
-const router = useRouter();
-const route = useRoute();
-const adminState = useAdminStateStore();
-
-onMounted(() => {
-  if (adminState.currentPath === "") {
-    adminState.currentPath = "/admin/contests";
-    router.push(adminState.currentPath);
-  } else {
-    router.push(adminState.currentPath);
-  }
-});
-
-watch(
-  () => route.path,
-  (to) => {
-    //toParams, prevParams
-    adminState.currentPath = to;
-  },
-);
 </script>
 <template>
   <div class="flex h-full w-full grow flex-col items-center gap-6 px-20 pb-16">

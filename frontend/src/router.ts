@@ -43,6 +43,7 @@ const routes = [
   {
     path: "/admin",
     name: 'admin',
+    redirect: { name: 'admin-contests' },
     component: Admin,
     children: [
       {
