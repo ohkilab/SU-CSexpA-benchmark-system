@@ -1,178 +1,191 @@
 <script setup lang="ts">
-import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
-import { onMounted, ref, watch } from "vue";
-import { useStateStore, IState } from "../stores/state";
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+import { onMounted, ref, watch } from 'vue'
+import { useStateStore, IState } from '../stores/state'
 
-import type { Ref } from "vue";
+import type { Ref } from 'vue'
 
 import {
   Status,
   Submit,
-  TaskResult,
-} from "proto-gen-web/services/backend/resources";
+  TaskResult
+} from 'proto-gen-web/services/backend/resources'
 
-import Result from "../components/Result.vue";
-import { useBackendStore } from "../stores/backend";
-import { GetSubmitRequest } from "proto-gen-web/services/backend/messages";
+import Result from '../components/Result.vue'
+import { useBackendStore } from '../stores/backend'
+import { GetSubmitRequest } from 'proto-gen-web/services/backend/messages'
 
-const state: IState = useStateStore();
-const { backend } = useBackendStore();
+const state: IState = useStateStore()
+const { backend } = useBackendStore()
 
-const latestSubmit: Ref<Partial<Submit>> = ref({});
+const latestSubmit: Ref<Partial<Submit>> = ref({})
 
-const currentStatus: Ref<Status> = ref(0);
+const currentStatus: Ref<Status> = ref(0)
 
-const errorMsg = ref("");
+const errorMsg = ref('')
 
-const taskResults: Ref<TaskResult[]> = ref([]);
+const taskResults: Ref<TaskResult[]> = ref([])
 
-const url: Ref<string> = ref("");
+const url: Ref<string> = ref('')
 
-const urlList: Ref<string[]> = ref([]);
+const urlList: Ref<string[]> = ref([])
 
-const noSubmissions: Ref<boolean> = ref(false);
+const noSubmissions: Ref<boolean> = ref(false)
 
 const getSubmitById = async (id: number): Promise<Submit | undefined> => {
   const getSubmitRequest: GetSubmitRequest = {
-    submitId: id,
-  };
-
-  const opt = { meta: { authorization: "Bearer " + state.token } };
-  const call = backend.getSubmit(getSubmitRequest, opt);
-  for await (let message of call.responses) {
-    if (import.meta.env.DEV) console.log("Submit", message);
-    return message.submit;
+    submitId: id
   }
-};
+
+  const opt = { meta: { authorization: 'Bearer ' + state.token } }
+  const call = backend.getSubmit(getSubmitRequest, opt)
+  for await (let message of call.responses) {
+    if (import.meta.env.DEV) console.log('Submit', message)
+    return message.submit
+  }
+}
 
 const fetchLatestSubmit = async () => {
-  let opt = { meta: { authorization: "Bearer " + state.token } };
+  let opt = { meta: { authorization: 'Bearer ' + state.token } }
 
   backend
     .getContestantInfo(
       {
-        contestSlug: state.contestSlug,
+        contestSlug: state.contestSlug
       },
-      opt,
+      opt
     )
-    .then(async (res) => {
-      if (import.meta.env.DEV) console.log(res);
+    .then(async res => {
+      if (import.meta.env.DEV) console.log(res)
       // latestSubmit.value = res.response.submit ?? {}
       latestSubmit.value =
-        (await getSubmitById(res.response.latestSubmit?.id ?? 0)) ?? {};
+        (await getSubmitById(res.response.latestSubmit?.id ?? 0)) ?? {}
     })
-    .catch((err) => {
-      console.log("getLatestSubmit err:" + err);
-    });
-};
+    .catch(err => {
+      console.log('getLatestSubmit err:' + err)
+    })
+}
 
 const benchmark = () => {
-  let opt = { meta: { authorization: "Bearer " + state.token } };
-  taskResults.value = [];
+  let opt = { meta: { authorization: 'Bearer ' + state.token } }
+  taskResults.value = []
 
   backend
     .postSubmit(
       {
         url: url.value, //'http://host.docker.internal:3001',
-        contestSlug: state.contestSlug,
+        contestSlug: state.contestSlug
       },
-      opt,
+      opt
     )
-    .then(async (res) => {
-      if (import.meta.env.DEV) console.log("postSubmit res: ", res);
-      state.benchmarking = true;
+    .then(async res => {
+      if (import.meta.env.DEV) console.log('postSubmit res: ', res)
+      state.benchmarking = true
 
-      let call = backend.getSubmit({ submitId: res.response.id }, opt);
+      let call = backend.getSubmit({ submitId: res.response.id }, opt)
       for await (let message of call.responses) {
-        if (!state.benchmarking) break;
+        if (!state.benchmarking) break
 
-        if (import.meta.env.DEV) console.log("Submit", message);
+        if (import.meta.env.DEV) console.log('Submit', message)
 
-        currentStatus.value = message.submit?.status ?? Status.WAITING;
+        currentStatus.value = message.submit?.status ?? Status.WAITING
 
         taskResults.value = Array.from(Array(message.submit?.tagCount)).map(
-          (_, i) => message.submit?.taskResults[i] ?? ({} as TaskResult),
-        );
-        errorMsg.value = message.submit?.errorMessage ?? "";
-        state.lastResult = message.submit?.score ?? 0;
-        state.current = message.submit?.taskResults.length ?? -1;
-        state.size = message.submit?.tagCount ?? 0;
+          (_, i) => message.submit?.taskResults[i] ?? ({} as TaskResult)
+        )
+        errorMsg.value = message.submit?.errorMessage ?? ''
+        state.lastResult = message.submit?.score ?? 0
+        state.current = message.submit?.taskResults.length ?? -1
+        state.size = message.submit?.tagCount ?? 0
       }
 
-      handleStopBenchmark();
+      handleStopBenchmark()
 
       if (import.meta.env.DEV) {
-        console.log(call.status);
-        console.log(call.trailers);
+        console.log(call.status)
+        console.log(call.trailers)
       }
     })
-    .catch((err) => {
-      if (import.meta.env.DEV) console.log(err);
-      if (err.code === "FAILED_PRECONDITION") {
-        errorMsg.value = "Contest is over";
+    .catch(err => {
+      if (import.meta.env.DEV) console.log(err)
+      if (err.code === 'FAILED_PRECONDITION') {
+        errorMsg.value = 'Contest is over'
       } else {
-        errorMsg.value = JSON.stringify(err) ?? "";
+        errorMsg.value = JSON.stringify(err) ?? ''
       }
-    });
-};
+    })
+}
 
 const handleStopBenchmark = () => {
-  state.current = 0;
-  state.benchmarking = false;
-  state.showResult = true;
-  fetchLatestSubmit();
-};
+  state.current = 0
+  state.benchmarking = false
+  state.showResult = true
+  fetchLatestSubmit()
+}
 
 onMounted(() => {
-  url.value = localStorage.getItem("currentUrl") ?? "";
-  urlList.value = JSON.parse(localStorage.getItem("urlList") ?? "[]");
+  url.value = localStorage.getItem('currentUrl') ?? ''
+  urlList.value = JSON.parse(localStorage.getItem('urlList') ?? '[]')
 
-  fetchLatestSubmit();
+  fetchLatestSubmit()
   // fix BigInt problem
   // if(import.meta.env.DEV) BigInt.prototype.toJSON = function() {return this.toString()}
-});
+})
 
 const statusMessage = (status: Status) => {
   switch (status) {
     case Status.WAITING: //1
-      return "Waiting";
+      return 'Waiting'
     case Status.IN_PROGRESS: //2
-      return "In progress";
+      return 'In progress'
     case Status.SUCCESS: //3
-      return "Success";
+      return 'Success'
     case Status.CONNECTION_FAILED: //4
-      return "Connection Failed";
+      return 'Connection Failed'
     case Status.VALIDATION_ERROR: //5
-      return "Validation Error";
+      return 'Validation Error'
   }
-};
+}
 
-watch(url, (url) => {
-  localStorage.setItem("currentUrl", url);
-});
+watch(url, url => {
+  localStorage.setItem('currentUrl', url)
+})
 
 watch(
   urlList,
-  (urlList) => {
-    localStorage.setItem("urlList", JSON.stringify(urlList));
+  urlList => {
+    localStorage.setItem('urlList', JSON.stringify(urlList))
   },
-  { deep: true },
-);
+  { deep: true }
+)
 </script>
 <template>
   <div class="flex w-full grow flex-col items-center">
-    <fieldset v-if="state.debug" class="border border-red-500 p-2">
+    <fieldset
+      v-if="state.debug"
+      class="border border-red-500 p-2"
+    >
       <legend>Debug</legend>
       <pre>{{ taskResults.length }}</pre>
       <pre>{{ Status }}</pre>
       <pre>{{ statusMessage(currentStatus) }}</pre>
-      <input class="text-red-500" v-model="currentStatus" type="number" />
+      <input
+        class="text-red-500"
+        v-model="currentStatus"
+        type="number"
+      />
       <pre>{{ Status[currentStatus] }}</pre>
-      <button class="border border-red-500 p-2" @click="latestSubmit = {}">
+      <button
+        class="border border-red-500 p-2"
+        @click="latestSubmit = {}"
+      >
         clear submit
       </button>
     </fieldset>
-    <div class="text-center text-red-500" v-if="errorMsg">
+    <div
+      class="text-center text-red-500"
+      v-if="errorMsg"
+    >
       Error: {{ errorMsg }}
     </div>
     <div v-if="state.benchmarking">
@@ -189,7 +202,7 @@ watch(
                 ? `タグ ${state.current + 1}/${state.size} ベンチマーク中`
                 : currentStatus == Status.SUCCESS
                 ? `ベンチマーク成功`
-                : ""
+                : ''
             }}
           </div>
           <font-awesome-icon
@@ -266,9 +279,16 @@ watch(
         </button>
       </div>
     </div>
-    <div class="flex w-full flex-col items-center gap-5" v-else>
+    <div
+      class="flex w-full flex-col items-center gap-5"
+      v-else
+    >
       <!-- deprecated: url list -->
-      <div class="flex w-5/6 gap-4" v-for="(u, idx) in urlList" :key="u">
+      <div
+        class="flex w-5/6 gap-4"
+        v-for="(u, idx) in urlList"
+        :key="u"
+      >
         <button
           @click="url = u"
           class="w-full rounded bg-gray-600 p-2 text-left transition hover:bg-gray-600"
@@ -297,15 +317,21 @@ watch(
       >
         ベンチマーク開始
       </button>
-      <div v-if="Object.keys(latestSubmit).length > 0" class="h-[500px] w-5/6">
-        <result :submit="latestSubmit" :title="`最新結果`" />
+      <div
+        v-if="Object.keys(latestSubmit).length > 0"
+        class="h-[500px] w-5/6"
+      >
+        <result
+          :submit="latestSubmit"
+          :title="`最新結果`"
+        />
       </div>
       <div
         v-else
         class="flex h-[500px] w-5/6 items-center justify-center rounded-md bg-gray-700"
       >
         {{
-          noSubmissions ? "まだベンチマーク結果がありません。" : "読み込み中..."
+          noSubmissions ? 'まだベンチマーク結果がありません。' : '読み込み中...'
         }}
       </div>
     </div>

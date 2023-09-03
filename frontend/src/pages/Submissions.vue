@@ -1,132 +1,132 @@
 <script setup lang="ts">
-import { onMounted, Ref, ref, watch } from "vue";
-import { IState, useStateStore } from "../stores/state";
-import { Status, Submit } from "proto-gen-web/services/backend/resources";
+import { onMounted, Ref, ref, watch } from 'vue'
+import { IState, useStateStore } from '../stores/state'
+import { Status, Submit } from 'proto-gen-web/services/backend/resources'
 import {
   GetSubmitRequest,
-  ListSubmitsRequest,
-} from "proto-gen-web/services/backend/messages";
-import Result from "../components/Result.vue";
-import { useBackendStore } from "../stores/backend";
-import { useRouter, useRoute } from "vue-router";
+  ListSubmitsRequest
+} from 'proto-gen-web/services/backend/messages'
+import Result from '../components/Result.vue'
+import { useBackendStore } from '../stores/backend'
+import { useRouter, useRoute } from 'vue-router'
 
-const state: IState = useStateStore();
-const { backend } = useBackendStore();
+const state: IState = useStateStore()
+const { backend } = useBackendStore()
 
-const noSubmissions: Ref<boolean> = ref(false);
+const noSubmissions: Ref<boolean> = ref(false)
 
-const modalItem: Ref<Partial<Submit>> = ref({});
-const totalPages: Ref<number> = ref(0);
-const currentPage: Ref<number> = ref(1);
+const modalItem: Ref<Partial<Submit>> = ref({})
+const totalPages: Ref<number> = ref(0)
+const currentPage: Ref<number> = ref(1)
 
-const router = useRouter();
-const route = useRoute();
+const router = useRouter()
+const route = useRoute()
 
 const formatDate = (timestamp: number): string => {
-  const dateObject: Date = new Date(timestamp * 1000);
-  const date: string = dateObject.toLocaleDateString();
-  const time: string = dateObject.toLocaleTimeString();
+  const dateObject: Date = new Date(timestamp * 1000)
+  const date: string = dateObject.toLocaleDateString()
+  const time: string = dateObject.toLocaleTimeString()
 
-  return `${date} ${time}`;
-};
+  return `${date} ${time}`
+}
 
 const handleModal = (id: number) => {
-  router.push(`/submissions/${id}`);
-};
+  router.push(`/submissions/${id}`)
+}
 
 const getSubmitById = async (id: number): Promise<Submit | undefined> => {
   const getSubmitRequest: GetSubmitRequest = {
-    submitId: id,
-  };
-
-  const opt = { meta: { authorization: "Bearer " + state.token } };
-  const call = backend.getSubmit(getSubmitRequest, opt);
-  for await (let message of call.responses) {
-    if (import.meta.env.DEV) console.log("Submit", message);
-    return message.submit;
+    submitId: id
   }
-};
+
+  const opt = { meta: { authorization: 'Bearer ' + state.token } }
+  const call = backend.getSubmit(getSubmitRequest, opt)
+  for await (let message of call.responses) {
+    if (import.meta.env.DEV) console.log('Submit', message)
+    return message.submit
+  }
+}
 
 const handleCloseModal = () => {
-  router.push("/submissions");
+  router.push('/submissions')
   // setTimeout to avoid flickering
   setTimeout(() => {
-    modalItem.value = {};
-  }, 100);
-};
+    modalItem.value = {}
+  }, 100)
+}
 
 const listSubmitsByPage = (page: number) => {
-  const opt = { meta: { authorization: "Bearer " + state.token } };
+  const opt = { meta: { authorization: 'Bearer ' + state.token } }
   // TODO: get own submissions, filter functionality
   const listSubmitsRequest: ListSubmitsRequest = {
     contestSlug: state.contestSlug,
-    page,
+    page
     // groupName: 'a01',
     // status: Status.VALIDATION_ERROR
-  };
+  }
 
-  backend.listSubmits(listSubmitsRequest, opt).then((res) => {
-    if (import.meta.env.DEV) console.log("Submits", res.response.submits);
-    state.submits = res.response.submits;
-    totalPages.value = res.response.totalPages;
+  backend.listSubmits(listSubmitsRequest, opt).then(res => {
+    if (import.meta.env.DEV) console.log('Submits', res.response.submits)
+    state.submits = res.response.submits
+    totalPages.value = res.response.totalPages
 
     if (res.response.submits.length == 0) {
-      noSubmissions.value = true;
+      noSubmissions.value = true
     }
-  });
-};
+  })
+}
 
 const nextPage = () => {
   if (currentPage.value < totalPages.value) {
-    currentPage.value++;
-    listSubmitsByPage(currentPage.value);
+    currentPage.value++
+    listSubmitsByPage(currentPage.value)
   }
-};
+}
 
 const prevPage = () => {
   if (currentPage.value > 1) {
-    currentPage.value--;
-    listSubmitsByPage(currentPage.value);
+    currentPage.value--
+    listSubmitsByPage(currentPage.value)
   }
-};
+}
 
 const gotoPage = (page: number) => {
   if (page > 0 && page <= totalPages.value) {
-    currentPage.value = page;
-    listSubmitsByPage(currentPage.value);
+    currentPage.value = page
+    listSubmitsByPage(currentPage.value)
   }
-};
+}
 
 watch(
   () => route.params.id,
-  async (to) => {
+  async to => {
     //toParams, prevParams
-    if (import.meta.env.DEV) console.log(to);
+    if (import.meta.env.DEV) console.log(to)
     if (to) {
-      const submit = await getSubmitById(Number(to));
-      modalItem.value = submit ?? {};
+      const submit = await getSubmitById(Number(to))
+      modalItem.value = submit ?? {}
     }
-  },
-);
+  }
+)
 
 watch(
   () => currentPage,
-  (to) => {
-    listSubmitsByPage(to.value);
-  },
-);
+  to => {
+    listSubmitsByPage(to.value)
+  }
+)
 
 onMounted(() => {
-  listSubmitsByPage(currentPage.value);
+  listSubmitsByPage(currentPage.value)
 
   // in case of direct access
   if (route.params.id) {
-    (async () => {
-      const submit = await getSubmitById(Number(route.params.id));
-      modalItem.value = submit ?? {};
-    })();
+    ;(async () => {
+      const submit = await getSubmitById(Number(route.params.id))
+      modalItem.value = submit ?? {}
+    })()
   }
-});
+})
 </script>
 <template>
   <!-- TODO: show "no submissions" when server returns no submissions -->
@@ -178,7 +178,10 @@ onMounted(() => {
       <font-awesome-icon :icon="['fas', 'arrow-right']"></font-awesome-icon>
     </button>
   </div>
-  <table v-if="state.submits.length > 0" class="table-auto mb-4">
+  <table
+    v-if="state.submits.length > 0"
+    class="mb-4 table-auto"
+  >
     <thead class="bg-gray-700">
       <tr>
         <th class="px-2 py-3">提出ID</th>
@@ -248,13 +251,21 @@ onMounted(() => {
           >
             Internal Error
           </div>
-          <div v-else class="w-40 rounded bg-orange-500 p-1">Unknown Error</div>
+          <div
+            v-else
+            class="w-40 rounded bg-orange-500 p-1"
+          >
+            Unknown Error
+          </div>
         </td>
       </tr>
     </tbody>
   </table>
 
-  <div class="" v-else>
+  <div
+    class=""
+    v-else
+  >
     <font-awesome-icon
       v-if="!noSubmissions"
       class="animate-spin text-3xl"
@@ -262,7 +273,10 @@ onMounted(() => {
     ></font-awesome-icon>
     <div v-else>まだベンチマーク結果がありません。</div>
   </div>
-  <div v-if="state.debug" class="flex w-full flex-col gap-2">
+  <div
+    v-if="state.debug"
+    class="flex w-full flex-col gap-2"
+  >
     <div class="w-40 rounded bg-teal-500 p-1">Waiting</div>
     <div class="w-40 rounded bg-teal-500 p-1">In Progress</div>
     <div class="w-40 rounded bg-blue-600 p-1">Success</div>

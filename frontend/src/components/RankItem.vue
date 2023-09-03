@@ -1,5 +1,5 @@
 <script setup lang="ts">
-defineProps<{ rank: number; score: number; name: string }>();
+defineProps<{ rank: number; score: number; name: string }>()
 </script>
 <template>
   <div

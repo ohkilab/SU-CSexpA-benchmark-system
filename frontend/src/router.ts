@@ -1,68 +1,68 @@
-import { createRouter, createWebHistory } from "vue-router";
-import Benchmark from "./pages/Benchmark.vue";
-import Ranking from "./pages/Ranking.vue";
-import Submissions from "./pages/Submissions.vue";
-import Login from "./pages/Login.vue";
-import Loading from "./pages/Loading.vue";
-import Contests from "./pages/Contests.vue";
-import Admin from "./pages/Admin.vue";
-import EditContests from "./pages/admin/EditContests.vue";
-import EditGroups from "./pages/admin/EditGroups.vue";
+import { createRouter, createWebHistory } from 'vue-router'
+import Benchmark from './pages/Benchmark.vue'
+import Ranking from './pages/Ranking.vue'
+import Submissions from './pages/Submissions.vue'
+import Login from './pages/Login.vue'
+import Loading from './pages/Loading.vue'
+import Contests from './pages/Contests.vue'
+import Admin from './pages/Admin.vue'
+import EditContests from './pages/admin/EditContests.vue'
+import EditGroups from './pages/admin/EditGroups.vue'
 
 const routes = [
   {
-    path: "/",
-    name: "index",
-    component: Loading,
+    path: '/',
+    name: 'index',
+    component: Loading
   },
   {
-    path: "/login",
-    component: Login,
+    path: '/login',
+    component: Login
   },
   {
-    path: "/ranking",
-    component: Ranking,
+    path: '/ranking',
+    component: Ranking
   },
   {
-    path: "/submissions/",
-    component: Submissions,
+    path: '/submissions/',
+    component: Submissions
   },
   {
-    path: "/submissions/:id",
-    component: Submissions,
+    path: '/submissions/:id',
+    component: Submissions
   },
   {
-    path: "/benchmark",
-    component: Benchmark,
+    path: '/benchmark',
+    component: Benchmark
   },
   {
-    path: "/contests",
-    name: "contests",
-    component: Contests,
+    path: '/contests',
+    name: 'contests',
+    component: Contests
   },
   {
-    path: "/admin",
+    path: '/admin',
     name: 'admin',
     redirect: { name: 'admin-contests' },
     component: Admin,
     children: [
       {
-        path: "contests",
+        path: 'contests',
         name: 'admin-contests',
-        component: EditContests,
+        component: EditContests
       },
       {
-        path: "groups",
+        path: 'groups',
         name: 'admin-groups',
-        component: EditGroups,
-      },
-    ],
-  },
-];
+        component: EditGroups
+      }
+    ]
+  }
+]
 
 const router = createRouter({
   history: createWebHistory(),
-  routes,
-});
+  routes
+})
 
-export default router;
+export default router

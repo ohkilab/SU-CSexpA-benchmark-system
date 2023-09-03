@@ -1,10 +1,10 @@
-import { GrpcWebFetchTransport } from "@protobuf-ts/grpcweb-transport";
-import { defineStore } from "pinia";
-import { AdminServiceClient } from "proto-gen-web/services/backend/services.client";
+import { GrpcWebFetchTransport } from '@protobuf-ts/grpcweb-transport'
+import { defineStore } from 'pinia'
+import { AdminServiceClient } from 'proto-gen-web/services/backend/services.client'
 
 export interface IAdminState {
-  currentPath: string;
-  admin: AdminServiceClient;
+  currentPath: string
+  admin: AdminServiceClient
 }
 
 // backend: new BackendServiceClient(
@@ -12,17 +12,17 @@ export interface IAdminState {
 //     baseUrl: `http://${window.location.hostname}:8080`,
 //   }),
 
-export const useAdminStateStore = defineStore<"adminState", IAdminState>(
-  "adminState",
+export const useAdminStateStore = defineStore<'adminState', IAdminState>(
+  'adminState',
   {
     state: (): IAdminState => ({
-      currentPath: "",
+      currentPath: '',
       admin: new AdminServiceClient(
         new GrpcWebFetchTransport({
-          baseUrl: `http://${window.location.hostname}:8080`,
-        }),
+          baseUrl: `http://${window.location.hostname}:8080`
+        })
       )
     }),
-    persist: true,
-  },
-);
+    persist: true
+  }
+)

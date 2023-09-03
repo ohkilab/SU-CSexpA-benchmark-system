@@ -1,5 +1,4 @@
-<script setup lang="ts">
-</script>
+<script setup lang="ts"></script>
 <template>
   <div class="flex h-full w-full grow flex-col items-center gap-6 px-20 pb-16">
     <div class="text-xl">管理者パネル</div>

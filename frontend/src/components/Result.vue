@@ -1,21 +1,21 @@
 <script setup lang="ts">
-import { Submit, Status } from "proto-gen-web/services/backend/resources";
+import { Submit, Status } from 'proto-gen-web/services/backend/resources'
 
 const formatDate = (timestamp: number): string => {
-  const dateObject: Date = new Date(timestamp * 1000);
-  const date: string = dateObject.toLocaleDateString();
-  const time: string = dateObject.toLocaleTimeString();
+  const dateObject: Date = new Date(timestamp * 1000)
+  const date: string = dateObject.toLocaleDateString()
+  const time: string = dateObject.toLocaleTimeString()
 
-  return `${date} ${time}`;
-};
+  return `${date} ${time}`
+}
 
 const props = defineProps<{
-  submit: Partial<Submit>;
-  title: string;
-  showCloseButton?: boolean;
-}>();
+  submit: Partial<Submit>
+  title: string
+  showCloseButton?: boolean
+}>()
 
-const emit = defineEmits(["closeModal"]);
+const emit = defineEmits(['closeModal'])
 </script>
 <template>
   <div
@@ -69,7 +69,12 @@ const emit = defineEmits(["closeModal"]);
           >
             Internal Error
           </div>
-          <div v-else class="w-40 rounded bg-orange-500 p-1">Unknown Error</div>
+          <div
+            v-else
+            class="w-40 rounded bg-orange-500 p-1"
+          >
+            Unknown Error
+          </div>
         </div>
         <button
           v-if="showCloseButton"
@@ -123,7 +128,7 @@ const emit = defineEmits(["closeModal"]);
           req/s
         </div>
         <div class="flex items-center gap-5">
-          {{ t.errorMessage != "" ? `エラー: ${t.errorMessage}` : "" }}
+          {{ t.errorMessage != '' ? `エラー: ${t.errorMessage}` : '' }}
           <font-awesome-icon
             v-if="t.status == Status.IN_PROGRESS"
             :icon="['fas', 'spinner']"

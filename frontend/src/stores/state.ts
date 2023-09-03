@@ -1,33 +1,33 @@
-import { defineStore } from "pinia";
-import { GetRankingResponse_Record } from "proto-gen-web/services/backend/messages";
-import { Role, Submit } from "proto-gen-web/services/backend/resources";
+import { defineStore } from 'pinia'
+import { GetRankingResponse_Record } from 'proto-gen-web/services/backend/messages'
+import { Role, Submit } from 'proto-gen-web/services/backend/resources'
 
 // TODO: add logout action
 
 export interface IState {
-  token: string;
-  group: string;
-  role: Role;
-  benchmarking: boolean;
-  benchmarkInterval: number;
-  lastResult: number;
-  records: Array<GetRankingResponse_Record>;
-  showResult: boolean;
-  current: number;
-  size: number;
-  result: number;
-  debug: boolean;
-  devBaseUrl: string;
-  submits: Submit[];
-  contestSlug: string;
-  selectedContestName: string;
+  token: string
+  group: string
+  role: Role
+  benchmarking: boolean
+  benchmarkInterval: number
+  lastResult: number
+  records: Array<GetRankingResponse_Record>
+  showResult: boolean
+  current: number
+  size: number
+  result: number
+  debug: boolean
+  devBaseUrl: string
+  submits: Submit[]
+  contestSlug: string
+  selectedContestName: string
 }
 
-export const useStateStore = defineStore<"state", IState>("state", {
+export const useStateStore = defineStore<'state', IState>('state', {
   state: (): IState => ({
-    token: "",
+    token: '',
     role: Role.GUEST,
-    group: "",
+    group: '',
     benchmarking: false,
     benchmarkInterval: 0,
     lastResult: 0,
@@ -37,10 +37,10 @@ export const useStateStore = defineStore<"state", IState>("state", {
     current: 0,
     size: 0,
     debug: false,
-    devBaseUrl: "http://localhost:8080",
+    devBaseUrl: 'http://localhost:8080',
     submits: [],
-    contestSlug: "2023-qual",
-    selectedContestName: "",
+    contestSlug: '2023-qual',
+    selectedContestName: ''
   }),
-  persist: true,
-});
+  persist: true
+})

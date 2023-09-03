@@ -1,3 +1,8 @@
-{
-  "plugins": ["prettier-plugin-tailwindcss"]
-}
+semi: false
+trailingComma: none
+singleQuote: true
+tabWidth: 2
+arrowParens: avoid
+singleAttributePerLine: true
+plugins:
+  - prettier-plugin-tailwindcss

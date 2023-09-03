@@ -1,19 +1,19 @@
 <script setup lang="ts">
-import { CreateContestRequest } from "proto-gen-web/services/backend/messages";
-import { useAdminStateStore } from "../../stores/adminState";
-import { reactive, ref } from "vue";
+import { CreateContestRequest } from 'proto-gen-web/services/backend/messages'
+import { useAdminStateStore } from '../../stores/adminState'
+import { reactive, ref } from 'vue'
 import {
   TagSelectionLogicType,
-  Validator,
-} from "proto-gen-web/services/backend/resources";
-import { Timestamp } from "proto-gen-web/google/protobuf/timestamp";
-import { AdminServiceClient } from "proto-gen-web/services/backend/services.client";
-import { GrpcWebFetchTransport } from "@protobuf-ts/grpcweb-transport";
-import { useStateStore } from "../../stores/state";
+  Validator
+} from 'proto-gen-web/services/backend/resources'
+import { Timestamp } from 'proto-gen-web/google/protobuf/timestamp'
+import { AdminServiceClient } from 'proto-gen-web/services/backend/services.client'
+import { GrpcWebFetchTransport } from '@protobuf-ts/grpcweb-transport'
+import { useStateStore } from '../../stores/state'
 
-const state = useStateStore();
+const state = useStateStore()
 
-const startAt = ref(new Date());
+const startAt = ref(new Date())
 
 // export interface CreateContestRequest {
 //     title: string;
@@ -35,58 +35,58 @@ const startAt = ref(new Date());
 // }
 
 const contest: CreateContestRequest = reactive({
-  title: "",
+  title: '',
   startAt: {
     seconds: BigInt(0),
-    nanos: 0,
+    nanos: 0
   },
   endAt: {
     seconds: BigInt(0),
-    nanos: 0,
+    nanos: 0
   },
   submitLimit: 0,
-  slug: "",
+  slug: '',
   tagSelection: {
-    oneofKind: undefined,
+    oneofKind: undefined
   },
   validator: Validator.V2023,
-  timeLimitPerTask: 0,
-});
+  timeLimitPerTask: 0
+})
 
 const updateStartAt = (e: Event) => {
   contest.startAt = Timestamp.fromDate(
-    new Date((e.target as HTMLInputElement).value),
-  );
-};
+    new Date((e.target as HTMLInputElement).value)
+  )
+}
 
 const updateEndAt = (e: Event) => {
   contest.endAt = Timestamp.fromDate(
-    new Date((e.target as HTMLInputElement).value),
-  );
-};
+    new Date((e.target as HTMLInputElement).value)
+  )
+}
 
 // fix BigInt problem
 if (import.meta.env.DEV)
   BigInt.prototype.toJSON = function () {
-    return this.toString();
-  };
+    return this.toString()
+  }
 
 const createContest = () => {
-  console.log(contest);
+  console.log(contest)
   const admin = new AdminServiceClient(
     new GrpcWebFetchTransport({
       baseUrl: import.meta.env.PROD
         ? `http://${window.location.hostname}:8080`
-        : state.devBaseUrl,
-    }),
-  );
+        : state.devBaseUrl
+    })
+  )
 
-  const opt = { meta: { authorization: "Bearer " + state.token } };
+  const opt = { meta: { authorization: 'Bearer ' + state.token } }
 
-  admin.createContest(contest, opt).then((res) => {
-    console.log(res);
-  });
-};
+  admin.createContest(contest, opt).then(res => {
+    console.log(res)
+  })
+}
 </script>
 <template>
   <!-- {{ contest }} -->

@@ -1,14 +1,14 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref } from 'vue'
 
 defineProps({
-  errMsg: String,
-});
+  errMsg: String
+})
 
-const id = ref("");
-const password = ref("");
+const id = ref('')
+const password = ref('')
 
-const emit = defineEmits(["login"]);
+const emit = defineEmits(['login'])
 </script>
 <template>
   <form

@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
-defineProps<{ rank: number; score: number; name: string }>();
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+defineProps<{ rank: number; score: number; name: string }>()
 </script>
 <template>
   <div
@@ -8,8 +8,11 @@ defineProps<{ rank: number; score: number; name: string }>();
   >
     <div class="w-10 justify-center text-center">
       <div class="text-2xl">
-        <font-awesome-icon v-if="rank == 1" :icon="['fas', 'crown']" />
-        {{ rank != 1 ? rank : "" }}
+        <font-awesome-icon
+          v-if="rank == 1"
+          :icon="['fas', 'crown']"
+        />
+        {{ rank != 1 ? rank : '' }}
       </div>
     </div>
     <div>{{ name }}</div>

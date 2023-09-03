@@ -1,46 +1,49 @@
 <script setup lang="ts">
-import { onMounted, Ref, ref } from "vue";
-import { useBackendStore } from "../stores/backend";
-import { useStateStore } from "../stores/state";
-import { Contest } from "proto-gen-web/services/backend/resources";
-import { useRouter } from "vue-router";
+import { onMounted, Ref, ref } from 'vue'
+import { useBackendStore } from '../stores/backend'
+import { useStateStore } from '../stores/state'
+import { Contest } from 'proto-gen-web/services/backend/resources'
+import { useRouter } from 'vue-router'
 
-const { backend } = useBackendStore();
-const state = useStateStore();
+const { backend } = useBackendStore()
+const state = useStateStore()
 
-const router = useRouter();
+const router = useRouter()
 
-const contests: Ref<Contest[]> = ref([]);
+const contests: Ref<Contest[]> = ref([])
 
 const formatDate = (timestamp: number): string => {
-  const dateObject: Date = new Date(timestamp * 1000);
-  const date: string = dateObject.toLocaleDateString();
+  const dateObject: Date = new Date(timestamp * 1000)
+  const date: string = dateObject.toLocaleDateString()
 
-  const time: string = dateObject.toLocaleTimeString();
+  const time: string = dateObject.toLocaleTimeString()
 
-  return `${date} ${time}`;
-};
+  return `${date} ${time}`
+}
 
 const handleSelectContest = (contest: Contest) => {
-  state.contestSlug = contest.slug;
-  state.selectedContestName = contest.title;
+  state.contestSlug = contest.slug
+  state.selectedContestName = contest.title
 
-  router.push("/benchmark");
-};
+  router.push('/benchmark')
+}
 
 onMounted(() => {
-  let opt = { meta: { authorization: "Bearer " + state.token } };
+  let opt = { meta: { authorization: 'Bearer ' + state.token } }
 
-  backend.listContests({}, opt).then((res) => {
-    if (import.meta.env.DEV) console.log(res);
-    contests.value = res.response.contests ?? [];
-  });
-});
+  backend.listContests({}, opt).then(res => {
+    if (import.meta.env.DEV) console.log(res)
+    contests.value = res.response.contests ?? []
+  })
+})
 </script>
 <template>
   <div class="">
     <h1 class="py-3 text-center text-xl">コンテスト一覧</h1>
-    <table v-if="contests.length > 0" class="table-auto">
+    <table
+      v-if="contests.length > 0"
+      class="table-auto"
+    >
       <thead class="bg-gray-700">
         <tr>
           <th class="w-36 px-2 py-3">コンテストID</th>
