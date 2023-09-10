@@ -19,6 +19,8 @@ jobs:
             image: ghcr.io/${{ github.actor }}/${{ github.repository }}-backend
           - dockerfile: ./frontend/Dockerfile
             image: ghcr.io/${{ github.actor }}/${{ github.repository }}-frontend
+          - dockerfile: ./benchmark-service/Dockerfile
+            image: ghcr.io/${{ github.actor }}/${{ github.repository }}-benchmark-service
     permissions:
       contents: read
       packages: write
