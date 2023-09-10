@@ -6,8 +6,7 @@ RUN go build -mod=vendor -o benchmark-server ./cmd/server
 
 FROM ubuntu:22.04
 
-RUN apt-get update && apt-get install -y tzdata \
-    && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y tzdata  && rm -rf /var/lib/apt/lists/*
 ENV TZ Asia/Tokyo
 
 WORKDIR /app
