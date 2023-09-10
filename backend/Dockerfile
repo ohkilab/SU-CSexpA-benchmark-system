@@ -3,6 +3,7 @@ USER root
 
 WORKDIR /src
 COPY . .
+RUN go mod vendor
 RUN go build \
     -mod=vendor \
     -tags timetzdata \
