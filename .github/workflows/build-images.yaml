@@ -18,9 +18,11 @@ jobs:
           - dockerfile: ./backend/Dockerfile
             context: ./backend
             image: ghcr.io/${{ github.repository }}-backend
+              
           - dockerfile: ./frontend/Dockerfile
             context: .
             image: ghcr.io/${{ github.repository }}-frontend
+
           - dockerfile: ./benchmark-service/Dockerfile
             context: ./benchmark-service
             image: ghcr.io/${{ github.repository }}-benchmark-service
@@ -46,9 +48,9 @@ jobs:
           images: ${{ matrix.image }}
 
       - name: Build and push Docker image
-        uses: docker/build-push-action@f2a1d5e99d037542a71f64918e516c093c6f3fc4
+        uses: docker/build-push-action@v4
         with:
-          context: ./backend
+          context: ${{ matrix.context }}
           file: ${{ matrix.dockerfile }}
           push: true
           tags: ${{ steps.meta.outputs.tags }}
