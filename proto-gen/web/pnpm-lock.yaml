@@ -1,0 +1,36 @@
+lockfileVersion: '6.0'
+
+settings:
+  autoInstallPeers: true
+  excludeLinksFromLockfile: false
+
+dependencies:
+  '@protobuf-ts/runtime':
+    specifier: ^2.9.0
+    version: 2.9.0
+  '@protobuf-ts/runtime-rpc':
+    specifier: ^2.9.0
+    version: 2.9.0
+
+devDependencies:
+  typescript:
+    specifier: ^5.0.4
+    version: 5.0.4
+
+packages:
+
+  /@protobuf-ts/runtime-rpc@2.9.0:
+    resolution: {integrity: sha512-h2S86+u2cNJACjzbBubbjKmNrnXkTmJ9yJHW4t7ZVS9xdV1C68blsVIh3Su4ghR8Nlj0459FuIUTsjWR8hA/7g==}
+    dependencies:
+      '@protobuf-ts/runtime': 2.9.0
+    dev: false
+
+  /@protobuf-ts/runtime@2.9.0:
+    resolution: {integrity: sha512-DnJtLZFMglADv9jiawBmg0RaET4a6fNSAaAHuU6Ovw2ZhJ23ehIY0NrlYLS0Lc8HRH0S5rkLI1QF1A1h8uKUnA==}
+    dev: false
+
+  /typescript@5.0.4:
+    resolution: {integrity: sha512-cW9T5W9xY37cc+jfEnaUvX91foxtHkza3Nw3wkoF4sSlKn0MONdkdEndig/qPBWXNkmplh3NzayQzCiHM4/hqw==}
+    engines: {node: '>=12.20'}
+    hasBin: true
+    dev: true
