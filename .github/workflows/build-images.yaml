@@ -16,13 +16,13 @@ jobs:
       matrix:
         include:
           - dockerfile: ./backend/Dockerfile
-            context: ./backend/
+            context: ./backend
             image: ghcr.io/${{ github.repository }}-backend
           - dockerfile: ./frontend/Dockerfile
             context: .
             image: ghcr.io/${{ github.repository }}-frontend
           - dockerfile: ./benchmark-service/Dockerfile
-            context: ./benchmark-service/
+            context: ./benchmark-service
             image: ghcr.io/${{ github.repository }}-benchmark-service
     permissions:
       contents: read
