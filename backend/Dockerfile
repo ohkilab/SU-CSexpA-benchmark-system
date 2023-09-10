@@ -1,4 +1,5 @@
 FROM golang:1.20 AS builder
+USER root
 
 WORKDIR /src
 COPY . .
