@@ -1,0 +1,10 @@
+replicaCount: 1
+
+backend:
+  image: ghcr.io/naborisk/su-csexpa-benchmark-system-backend:main
+
+benchmark:
+  image: ghcr.io/naborisk/su-csexpa-benchmark-system-benchmark:main
+
+frontend:
+  image: ghcr.io/naborisk/su-csexpa-benchmark-system-frontend:main

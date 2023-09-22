@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert -f ../compose.yaml
+    kompose.version: 1.28.0 (HEAD)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: envoy
+  name: envoy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: envoy
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose convert -f ../compose.yaml
+        kompose.version: 1.28.0 (HEAD)
+      creationTimestamp: null
+      labels:
+        io.kompose.network/su-csexpa-benchmark-system-default: "true"
+        io.kompose.service: envoy
+    spec:
+      containers:
+        - image: envoyproxy/envoy:v1.26-latest
+          name: envoy
+          resources: {}
+          volumeMounts:
+            - mountPath: /etc/envoy/envoy.yaml
+              name: envoy-claim0
+      restartPolicy: Always
+      volumes:
+        - name: envoy-claim0
+          persistentVolumeClaim:
+            claimName: envoy-claim0
+status: {}
