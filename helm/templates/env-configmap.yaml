@@ -3,7 +3,7 @@ data:
   BACKEND_BENCHMARK_HOST: {{ .Values.backend.env.BACKEND_BENCHMARK_HOST }}
   BACKEND_GRPC_PORT: {{ .Values.backend.env.BACKEND_GRPC_PORT }}
   BACKEND_INIT_ADMIN_NAME: {{ .Values.backend.env.BACKEND_INIT_ADMIN_NAME }}
-  BACKEND_INIT_ADMIN_PASSWORD: {{ .Values.backend.env. }}
+  BACKEND_INIT_ADMIN_PASSWORD: {{ .Values.backend.env.BACKEND_INIT_ADMIN_PASSWORD }}
   BACKEND_JWT_SECRET: {{ .Values.backend.env.BACKEND_JWT_SECRET }}
   BACKEND_MYSQL_HOST: {{ .Values.backend.env.BACKEND_MYSQL_HOST }}
   BACKEND_MYSQL_PORT: {{ .Values.backend.env.BACKEND_MYSQL_PORT }}
