@@ -3,6 +3,7 @@ FROM golang:1.21 AS builder
 WORKDIR /src
 COPY . .
 RUN go build \
+    -tags timetzdata \
     -mod=vendor \
     -o backend-server \
     ./cmd/server
