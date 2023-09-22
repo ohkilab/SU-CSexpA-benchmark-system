@@ -26,6 +26,10 @@ jobs:
           - dockerfile: ./benchmark-service/benchmark.Dockerfile
             context: .
             image: ghcr.io/${{ github.repository }}-benchmark-service
+
+          - dockerfile: ./envoy/Dockerfile
+            context: ./envoy
+            image: ghcr.io/${{ github.repository }}-envoy
     permissions:
       contents: read
       packages: write
