@@ -46,13 +46,13 @@ spec:
             - name: BENCHMARK_GRPC_PORT
               value: {{ .Values.backend.BENCHMARK_GRPC_PORT }}
             - name: MYSQL_DATABASE
-              value: {{ .Values.backend.MYSQL_DATABASE }}
+              value: {{ .Values.db.MYSQL_DATABASE }}
             - name: MYSQL_PASSWORD
-              value: {{ .Values.backend.MYSQL_PASSWORD }}
+              value: {{ .Values.db.MYSQL_PASSWORD }}
             - name: MYSQL_ROOT_PASSWORD
-              value: {{ .Values.backend.MYSQL_ROOT_PASSWORD }}
+              value: {{ .Values.db.MYSQL_ROOT_PASSWORD }}
             - name: MYSQL_USER
-              value: {{ .Values.backend.MYSQL_USER }}
+              value: {{ .Values.db.MYSQL_USER }}
           image: mysql:8.0
           name: db
           resources: {}
