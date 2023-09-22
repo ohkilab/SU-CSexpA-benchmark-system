@@ -31,5 +31,7 @@ spec:
           image: {{ .Values.frontend.image }}
           name: frontend
           resources: {}
+          ports:
+            - containerPort: 80
       restartPolicy: Always
 status: {}
