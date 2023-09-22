@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   annotations:
-    kompose.cmd: kompose convert -f ../compose.yaml
+    kompose.cmd: kompose convert -f compose.yaml
     kompose.version: 1.28.0 (HEAD)
   creationTimestamp: null
   labels:
@@ -18,47 +18,86 @@ spec:
   template:
     metadata:
       annotations:
-        kompose.cmd: kompose convert -f ../compose.yaml
+        kompose.cmd: kompose convert -f compose.yaml
         kompose.version: 1.28.0 (HEAD)
       creationTimestamp: null
       labels:
-        io.kompose.network/su-csexpa-benchmark-system-default: "true"
+        io.kompose.network/templates-default: "true"
         io.kompose.service: backend
     spec:
       containers:
-      - env:
-          - name: BACKEND_BENCHMARK_HOST
-            value: {{ .Values.backend.env.BACKEND_BENCHMARK_HOST }}
-          - name: BACKEND_GRPC_PORT
-            value: {{ .Values.backend.env.BACKEND_GRPC_PORT }}
-          - name: BACKEND_INIT_ADMIN_NAME
-            value: {{ .Values.backend.env.BACKEND_INIT_ADMIN_NAME }}
-          - name: BACKEND_INIT_ADMIN_PASSWORD
-            value: {{ .Values.backend.env.BACKEND_INIT_ADMIN_PASSWORD }}
-          - name: BACKEND_JWT_SECRET
-            value: {{ .Values.backend.env.BACKEND_JWT_SECRET }}
-          - name: BACKEND_MYSQL_HOST
-            value: {{ .Values.backend.env.BACKEND_MYSQL_HOST }}
-          - name: BACKEND_MYSQL_PORT
-            value: {{ .Values.backend.env.BACKEND_MYSQL_PORT }}
-          - name: BACKEND_STORAGE_PATH
-            value: {{ .Values.backend.env.BACKEND_STORAGE_PATH }}
-          - name: BENCHMARK_GRPC_PORT
-            value: {{ .Values.backend.env.BENCHMARK_GRPC_PORT }}
-          - name: MYSQL_DATABASE
-            value: {{ .Values.db.env.MYSQL_DATABASE }}
-          - name: MYSQL_PASSWORD
-            value: {{ .Values.db.env.MYSQL_PASSWORD }}
-          - name: MYSQL_ROOT_PASSWORD
-            value: {{ .Values.db.env.MYSQL_ROOT_PASSWORD }}
-          - name: MYSQL_USER
-            value: {{ .Values.db.env.MYSQL_USER }}
-        image: {{ .Values.backend.image }}
-        name: backend
-        resources: {}
-        volumeMounts:
-          - mountPath: /app/storage
-            name: backend-claim0
+        - env:
+            - name: BACKEND_BENCHMARK_HOST
+              valueFrom:
+                configMapKeyRef:
+                  key: BACKEND_BENCHMARK_HOST
+                  name: env
+            - name: BACKEND_GRPC_PORT
+              valueFrom:
+                configMapKeyRef:
+                  key: BACKEND_GRPC_PORT
+                  name: env
+            - name: BACKEND_INIT_ADMIN_NAME
+              valueFrom:
+                configMapKeyRef:
+                  key: BACKEND_INIT_ADMIN_NAME
+                  name: env
+            - name: BACKEND_INIT_ADMIN_PASSWORD
+              valueFrom:
+                configMapKeyRef:
+                  key: BACKEND_INIT_ADMIN_PASSWORD
+                  name: env
+            - name: BACKEND_JWT_SECRET
+              valueFrom:
+                configMapKeyRef:
+                  key: BACKEND_JWT_SECRET
+                  name: env
+            - name: BACKEND_MYSQL_HOST
+              valueFrom:
+                configMapKeyRef:
+                  key: BACKEND_MYSQL_HOST
+                  name: env
+            - name: BACKEND_MYSQL_PORT
+              valueFrom:
+                configMapKeyRef:
+                  key: BACKEND_MYSQL_PORT
+                  name: env
+            - name: BACKEND_STORAGE_PATH
+              valueFrom:
+                configMapKeyRef:
+                  key: BACKEND_STORAGE_PATH
+                  name: env
+            - name: BENCHMARK_GRPC_PORT
+              valueFrom:
+                configMapKeyRef:
+                  key: BENCHMARK_GRPC_PORT
+                  name: env
+            - name: MYSQL_DATABASE
+              valueFrom:
+                configMapKeyRef:
+                  key: MYSQL_DATABASE
+                  name: env
+            - name: MYSQL_PASSWORD
+              valueFrom:
+                configMapKeyRef:
+                  key: MYSQL_PASSWORD
+                  name: env
+            - name: MYSQL_ROOT_PASSWORD
+              valueFrom:
+                configMapKeyRef:
+                  key: MYSQL_ROOT_PASSWORD
+                  name: env
+            - name: MYSQL_USER
+              valueFrom:
+                configMapKeyRef:
+                  key: MYSQL_USER
+                  name: env
+          image: backend
+          name: backend
+          resources: {}
+          volumeMounts:
+            - mountPath: /app/storage
+              name: backend-claim0
       restartPolicy: Always
       volumes:
         - name: backend-claim0
