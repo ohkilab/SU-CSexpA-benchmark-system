@@ -28,7 +28,7 @@ spec:
         - env:
             - name: NGINX_PORT
               value: "80"
-          image: frontend
+          image: {{ .Values.frontend.image }}
           name: frontend
           ports:
             - containerPort: 80

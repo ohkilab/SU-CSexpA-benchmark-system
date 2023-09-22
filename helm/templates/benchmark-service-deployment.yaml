@@ -91,7 +91,7 @@ spec:
                 configMapKeyRef:
                   key: MYSQL_USER
                   name: env
-          image: benchmark-service
+          image: {{ .Values.benchmark.image }}
           name: benchmark-service
           resources: {}
       restartPolicy: Always
