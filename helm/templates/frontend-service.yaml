@@ -3,10 +3,10 @@ kind: Service
 metadata:
   name: frontend
   labels:
-    run: frontend
+    io.kompose.service: frontend
 spec:
   ports:
     - port: 80
-      protocol: TCP
+      targetPort: 80
   selector:
-    run: frontend
+    io.kompose.service: frontend
