@@ -95,12 +95,12 @@ spec:
           image: mysql:8.0
           name: db
           resources: {}
-          volumeMounts:
-            - mountPath: /var/lib/mysql
-              name: db-claim0
+          # volumeMounts:
+          #   - mountPath: /var/lib/mysql
+          #     name: db-claim0
       restartPolicy: Always
-      volumes:
-        - name: db-claim0
-          persistentVolumeClaim:
-            claimName: db-claim0
+      # volumes:
+      #   - name: db-claim0
+      #     persistentVolumeClaim:
+      #       claimName: db-claim0
 status: {}
