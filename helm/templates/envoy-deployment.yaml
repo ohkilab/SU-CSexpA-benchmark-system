@@ -29,12 +29,12 @@ spec:
         - image: envoyproxy/envoy:v1.26-latest
           name: envoy
           resources: {}
-          volumeMounts:
-            - mountPath: /etc/envoy/envoy.yaml
-              name: envoy-claim0
+          # volumeMounts:
+          #   - mountPath: /etc/envoy/envoy.yaml
+          #     name: envoy-claim0
       restartPolicy: Always
-      volumes:
-        - name: envoy-claim0
-          persistentVolumeClaim:
-            claimName: envoy-claim0
+      # volumes:
+      #   - name: envoy-claim0
+      #     persistentVolumeClaim:
+      #       claimName: envoy-claim0
 status: {}
