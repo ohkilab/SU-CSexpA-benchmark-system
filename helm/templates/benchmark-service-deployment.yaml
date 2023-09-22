@@ -27,70 +27,41 @@ spec:
       containers:
         - env:
             - name: BACKEND_BENCHMARK_HOST
-              valueFrom:
-                configMapKeyRef:
-                  key: BACKEND_BENCHMARK_HOST
-                  name: env
+              value: {{ .Values.backend.BACKEND_BENCHMARK_HOST }}
             - name: BACKEND_GRPC_PORT
-              valueFrom:
-                configMapKeyRef:
-                  key: BACKEND_GRPC_PORT
-                  name: env
+              value: {{ .Values.backend.BACKEND_GRPC_PORT }}
             - name: BACKEND_INIT_ADMIN_NAME
-              valueFrom:
-                configMapKeyRef:
-                  key: BACKEND_INIT_ADMIN_NAME
-                  name: env
+              value: {{ .Values.backend.BACKEND_INIT_ADMIN_NAME }}
             - name: BACKEND_INIT_ADMIN_PASSWORD
-              valueFrom:
-                configMapKeyRef:
-                  key: BACKEND_INIT_ADMIN_PASSWORD
-                  name: env
+              value: {{ .Values.backend.BACKEND_INIT_ADMIN_PASSWORD }}
             - name: BACKEND_JWT_SECRET
-              valueFrom:
-                configMapKeyRef:
-                  key: BACKEND_JWT_SECRET
-                  name: env
+              value: {{ .Values.backend.BACKEND_JWT_SECRET }}
             - name: BACKEND_MYSQL_HOST
-              valueFrom:
-                configMapKeyRef:
-                  key: BACKEND_MYSQL_HOST
-                  name: env
+              value: {{ .Values.backend.BACKEND_MYSQL_HOST }}
             - name: BACKEND_MYSQL_PORT
-              valueFrom:
-                configMapKeyRef:
-                  key: BACKEND_MYSQL_PORT
-                  name: env
+              value: {{ .Values.backend.BACKEND_MYSQL_PORT }}
             - name: BACKEND_STORAGE_PATH
-              valueFrom:
-                configMapKeyRef:
-                  key: BACKEND_STORAGE_PATH
-                  name: env
+              value: {{ .Values.backend.BACKEND_STORAGE_PATH }}
             - name: BENCHMARK_GRPC_PORT
-              valueFrom:
-                configMapKeyRef:
-                  key: BENCHMARK_GRPC_PORT
-                  name: env
+              value: {{ .Values.backend.BENCHMARK_GRPC_PORT }}
             - name: MYSQL_DATABASE
-              valueFrom:
-                configMapKeyRef:
-                  key: MYSQL_DATABASE
-                  name: env
+              value: {{ .Values.backend.MYSQL_DATABASE }}
             - name: MYSQL_PASSWORD
-              valueFrom:
-                configMapKeyRef:
-                  key: MYSQL_PASSWORD
-                  name: env
+              value: {{ .Values.backend.MYSQL_PASSWORD }}
             - name: MYSQL_ROOT_PASSWORD
-              valueFrom:
-                configMapKeyRef:
-                  key: MYSQL_ROOT_PASSWORD
-                  name: env
+              value: {{ .Values.backend.MYSQL_ROOT_PASSWORD }}
             - name: MYSQL_USER
-              valueFrom:
-                configMapKeyRef:
-                  key: MYSQL_USER
-                  name: env
+              value: {{ .Values.backend.MYSQL_USER }}
+            - name: BENCHMARK_GRPC_PORT
+              value: {{ .Values.benchmark.BENCHMARK_GRPC_PORT }}
+            - name: MYSQL_DATABASE
+              value: {{ .Values.db.MYSQL_DATABASE }}
+            - name: MYSQL_PASSWORD
+              value: {{ .Values.db.MYSQL_PASSWORD }}
+            - name: MYSQL_ROOT_PASSWORD
+              value: {{ .Values.db.MYSQL_ROOT_PASSWORD }}
+            - name: MYSQL_USER
+              value: {{ .Values.db.MYSQL_USER }}
           image: {{ .Values.benchmark.image }}
           name: benchmark-service
           resources: {}
