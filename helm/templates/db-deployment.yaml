@@ -26,33 +26,9 @@ spec:
         io.kompose.service: db
     spec:
       containers:
-        - env:
-            - name: BACKEND_BENCHMARK_HOST
-              value: {{ .Values.backend.env.BACKEND_BENCHMARK_HOST }}
-            - name: BACKEND_GRPC_PORT
-              value: {{ .Values.backend.env.BACKEND_GRPC_PORT }}
-            - name: BACKEND_INIT_ADMIN_NAME
-              value: {{ .Values.backend.env.BACKEND_INIT_ADMIN_NAME }}
-            - name: BACKEND_INIT_ADMIN_PASSWORD
-              value: {{ .Values.backend.env.BACKEND_INIT_ADMIN_PASSWORD }}
-            - name: BACKEND_JWT_SECRET
-              value: {{ .Values.backend.env.BACKEND_JWT_SECRET }}
-            - name: BACKEND_MYSQL_HOST
-              value: {{ .Values.backend.env.BACKEND_MYSQL_HOST }}
-            - name: BACKEND_MYSQL_PORT
-              value: {{ .Values.backend.env.BACKEND_MYSQL_PORT }}
-            - name: BACKEND_STORAGE_PATH
-              value: {{ .Values.backend.env.BACKEND_STORAGE_PATH }}
-            - name: BENCHMARK_GRPC_PORT
-              value: {{ .Values.backend.env.BENCHMARK_GRPC_PORT }}
-            - name: MYSQL_DATABASE
-              value: {{ .Values.db.env.MYSQL_DATABASE }}
-            - name: MYSQL_PASSWORD
-              value: {{ .Values.db.env.MYSQL_PASSWORD }}
+          env:
             - name: MYSQL_ROOT_PASSWORD
-              value: {{ .Values.db.env.MYSQL_ROOT_PASSWORD }}
-            - name: MYSQL_USER
-              value: {{ .Values.db.env.MYSQL_USER }}
+              value: test
           image: mysql:8.0
           name: db
           resources: {}
