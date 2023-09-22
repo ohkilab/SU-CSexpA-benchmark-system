@@ -26,15 +26,8 @@ spec:
         io.kompose.service: envoy
     spec:
       containers:
-        - image: envoyproxy/envoy:v1.26-latest
+        - image: {{ .Values.envoy.image }}
           name: envoy
           resources: {}
-          # volumeMounts:
-          #   - mountPath: /etc/envoy/envoy.yaml
-          #     name: envoy-claim0
       restartPolicy: Always
-      # volumes:
-      #   - name: envoy-claim0
-      #     persistentVolumeClaim:
-      #       claimName: envoy-claim0
 status: {}

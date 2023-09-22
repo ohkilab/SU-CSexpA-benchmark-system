@@ -27,3 +27,6 @@ db:
     MYSQL_DATABASE: exp-a
     MYSQL_USER: ohkilab
     MYSQL_PASSWORD: ohkilab
+
+envoy:
+  image: ghcr.io/naborisk/su-csexpa-benchmark-system-envoy:main
