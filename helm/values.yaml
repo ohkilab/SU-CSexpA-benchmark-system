@@ -4,9 +4,9 @@ backend:
   image: ghcr.io/naborisk/su-csexpa-benchmark-system-backend:main
   env:
     BACKEND_MYSQL_HOST: localhost
-    BACKEND_MYSQL_PORT: 3306
+    BACKEND_MYSQL_PORT: "3306"
     BACKEND_BENCHMARK_HOST: localhost
-    BACKEND_GRPC_PORT: 50051
+    BACKEND_GRPC_PORT: "50051"
     BACKEND_JWT_SECRET: super_ultimate_hyper_secret
     BACKEND_INIT_ADMIN_NAME: ohkilab
     BACKEND_INIT_ADMIN_PASSWORD: ohkilab
@@ -15,7 +15,7 @@ backend:
 benchmark:
   image: ghcr.io/naborisk/su-csexpa-benchmark-system-benchmark-service:main
   env:
-    BENCHMARK_GRPC_PORT: 50052
+    BENCHMARK_GRPC_PORT: "50052"
 
 
 frontend:
