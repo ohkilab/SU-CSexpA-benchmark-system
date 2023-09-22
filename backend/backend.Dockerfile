@@ -2,8 +2,10 @@ FROM golang:1.21 AS builder
 
 WORKDIR /src
 COPY . .
+# RUN echo $(ls -la)
 
 WORKDIR /src/benchmark-service
+# RUN echo $(ls -la)
 RUN go mod vendor
 
 WORKDIR /src/backend
@@ -21,6 +23,6 @@ RUN apt-get update && apt-get install -y tzdata \
 ENV TZ Asia/Tokyo
 
 WORKDIR /app
-COPY --from=builder /src/backend-server .
+COPY --from=builder /src/backend/backend-server .
 
 ENTRYPOINT [ "/app/backend-server" ]
