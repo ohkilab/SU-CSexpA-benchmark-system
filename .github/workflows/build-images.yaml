@@ -15,7 +15,7 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - dockerfile: ./backend/Dockerfile
+          - dockerfile: ./backend/backend.Dockerfile
             context: backend/
             image: ghcr.io/${{ github.repository }}-backend
               
