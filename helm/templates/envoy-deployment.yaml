@@ -31,10 +31,10 @@ spec:
           resources: {}
           imagePullPolicy: Always
         - env:
-          - name: ENVOY_UID
-            value: {{ .Values.envoy.env.ENVOY_UID }}
-          - name: ENVOY_GID
-            value: {{ .Values.envoy.env.ENVOY_GID }}
+            - name: ENVOY_UID
+              value: {{ .Values.envoy.env.ENVOY_UID }}
+            - name: ENVOY_GID
+              value: {{ .Values.envoy.env.ENVOY_GID }}
 
       restartPolicy: Always
       
