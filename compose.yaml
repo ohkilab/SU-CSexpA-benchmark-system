@@ -1,12 +1,13 @@
 services:
   backend:
-    build:
-      context: backend
-      dockerfile: Dockerfile
+    image: ghcr.io/naborisk/su-csexpa-benchmark-system-backend:main
+    # build:
+    #   context: backend
+    #   dockerfile: Dockerfile
     env_file:
       - .env
     restart: always
-    network_mode: host
+    # network_mode: host
     depends_on:
       - db
       - benchmark-service
@@ -14,38 +15,54 @@ services:
       - "./backend/storage:/app/storage"
     extra_hosts:
       - "host.docker.internal:host-gateway"
+    ports:
+      - 50051:50051
   benchmark-service:
-    build:
-      context: benchmark-service
-      dockerfile: Dockerfile
+    image: ghcr.io/naborisk/su-csexpa-benchmark-system-benchmark-service:main
+    # build:
+    #   context: benchmark-service
+    #   dockerfile: Dockerfile
     env_file:
       - .env
-    network_mode: host
+    # network_mode: host
     restart: always
     extra_hosts:
       - "host.docker.internal:host-gateway"
+    ports:
+      - 50052:50052
   db:
     image: mysql:8.0
     restart: always
     env_file:
       - .env
-    network_mode: host
+    # network_mode: host
     volumes:
       - ./data:/var/lib/mysql
+    ports:
+      - 3306:3306
   frontend:
-    build:
-      context: .
-      dockerfile: frontend/Dockerfile
+    image: ghcr.io/naborisk/su-csexpa-benchmark-system-frontend:main
+    # build:
+    #   context: .
+    #   dockerfile: frontend/Dockerfile
     environment:
       - NGINX_PORT=80
-    network_mode: host
+    # network_mode: host
     depends_on:
       - envoy
       - backend
+    ports:
+      - 80:80
   envoy:
-    image: envoyproxy/envoy:v1.26-latest
-    network_mode: host
-    volumes:
-      - ./frontend/envoy_docker.yaml:/etc/envoy/envoy.yaml
+    # image: ghcr.io/naborisk/su-csexpa-benchmark-system-envoy:main
+    build:
+      context: ./envoy
+      dockerfile: ./Dockerfile
+    # image: envoyproxy/envoy:v1.26-latest
+    # network_mode: host
+    # volumes:
+    #   - ./frontend/envoy_docker.yaml:/etc/envoy/envoy.yaml
     extra_hosts:
       - "host.docker.internal:host-gateway"
+    ports:
+      - 8080:8080
