@@ -30,3 +30,6 @@ db:
 
 envoy:
   image: ghcr.io/naborisk/su-csexpa-benchmark-system-envoy:main
+  env:
+    ENVOY_UID: 0
+    ENVOY_GID: 0
