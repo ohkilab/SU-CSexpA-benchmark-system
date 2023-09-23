@@ -15,19 +15,19 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - dockerfile: ./backend/backend.Dockerfile
+          - dockerfile: ./backend/ga.Dockerfile
             context: .
             image: ghcr.io/${{ github.repository }}-backend
-              
+
           - dockerfile: ./frontend/Dockerfile
             context: .
             image: ghcr.io/${{ github.repository }}-frontend
 
-          - dockerfile: ./benchmark-service/benchmark.Dockerfile
+          - dockerfile: ./benchmark-service/ga.Dockerfile
             context: .
             image: ghcr.io/${{ github.repository }}-benchmark-service
 
-          - dockerfile: ./envoy/Dockerfile
+          - dockerfile: ./envoy/ga.Dockerfile
             context: ./envoy
             image: ghcr.io/${{ github.repository }}-envoy
     permissions:

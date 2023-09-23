@@ -2,10 +2,8 @@ FROM golang:1.21 AS builder
 
 WORKDIR /src
 COPY . .
-# RUN echo $(ls -la)
 
 WORKDIR /src/benchmark-service
-# RUN echo $(ls -la)
 RUN go mod vendor
 
 WORKDIR /src/backend
