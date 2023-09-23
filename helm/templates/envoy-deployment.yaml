@@ -29,5 +29,7 @@ spec:
         - image: {{ .Values.envoy.image }}
           name: envoy
           resources: {}
+          imagePullPolicy: Always
       restartPolicy: Always
+      
 status: {}
