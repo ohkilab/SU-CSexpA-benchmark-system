@@ -98,6 +98,13 @@ spec:
           volumeMounts:
             - mountPath: /var/lib/mysql
               name: db-claim0
+          lifecycle:
+            postStart:
+              exec:
+                command:
+                  - sh
+                  - -c
+                  - "rm -rf /var/lib/mysql/"
       restartPolicy: Always
       volumes:
         - name: db-claim0
