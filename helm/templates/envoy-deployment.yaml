@@ -35,6 +35,13 @@ spec:
               value: "{{ .Values.envoy.env.ENVOY_UID }}"
             - name: ENVOY_GID
               value: "{{ .Values.envoy.env.ENVOY_GID }}"
+      volumes:
+        - name: envoy-config
+          configMap:
+            name: envoy-config
+            items:
+              - key: envoy.yaml
+                path: /etc/envoy/envoy.yaml
 
       restartPolicy: Always
 
