@@ -36,11 +36,11 @@ spec:
             - name: ENVOY_GID
               value: "{{ .Values.envoy.env.ENVOY_GID }}"
           volumeMounts:
-            - name: envoy-config
+            - name: config-vol
               mountPath: /etc/envoy/
               readOnly: true
       volumes:
-        - name: envoy-config
+        - name: config-vol
           configMap:
             name: envoy-config
             items:
