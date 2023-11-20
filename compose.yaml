@@ -51,8 +51,6 @@ services:
     depends_on:
       - envoy
       - backend
-    ports:
-      - 80:80
   envoy:
     # image: ghcr.io/naborisk/su-csexpa-benchmark-system-envoy:main
     # build:
@@ -66,3 +64,4 @@ services:
       - "host.docker.internal:host-gateway"
     ports:
       - 8080:8080
+      - 80:80
