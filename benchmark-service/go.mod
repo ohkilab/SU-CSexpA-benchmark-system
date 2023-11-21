@@ -1,13 +1,12 @@
 module github.com/ohkilab/SU-CSexpA-benchmark-system/benchmark-service
 
-go 1.20
+go 1.21
 
 replace github.com/ohkilab/SU-CSexpA-benchmark-system/proto-gen/go => ../proto-gen/go
 
 require (
 	github.com/ohkilab/SU-CSexpA-benchmark-system/proto-gen/go v0.0.0-20231121052944-e7c394a699cc
 	github.com/stretchr/testify v1.8.2
-	golang.org/x/exp v0.0.0-20231110203233-9a3e6036ecaa
 	golang.org/x/sync v0.5.0
 	google.golang.org/grpc v1.59.0
 )

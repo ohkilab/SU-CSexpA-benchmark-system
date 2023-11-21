@@ -9,7 +9,7 @@ import (
 	"regexp"
 	"time"
 
-	"golang.org/x/exp/slog"
+	"log/slog"
 )
 
 type Tag struct {

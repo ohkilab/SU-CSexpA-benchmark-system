@@ -5,7 +5,7 @@ import (
 
 	v2023 "github.com/ohkilab/SU-CSexpA-benchmark-system/benchmark-service/validation/v2023"
 	pb "github.com/ohkilab/SU-CSexpA-benchmark-system/proto-gen/go/services/backend"
-	"golang.org/x/exp/slog"
+	"log/slog"
 )
 
 type Validator interface {
