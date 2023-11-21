@@ -4,6 +4,7 @@ import (
 	"context"
 	"io"
 	"log"
+	"log/slog"
 	"net"
 	"strconv"
 	"testing"
@@ -13,8 +14,8 @@ import (
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/benchmark-service/test/utils"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/benchmark-service/validation"
 	pb "github.com/ohkilab/SU-CSexpA-benchmark-system/proto-gen/go/services/benchmark-service"
-	"log/slog"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
 )
 
 func Test_Execute(t *testing.T) {
@@ -37,7 +38,7 @@ func Test_Execute(t *testing.T) {
 	}()
 	defer grpcServer.GracefulStop()
 
-	conn, err := grpc.Dial("0.0.0.0:3776", grpc.WithInsecure())
+	conn, err := grpc.Dial("0.0.0.0:3776", grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		t.Fatal(err)
 	}

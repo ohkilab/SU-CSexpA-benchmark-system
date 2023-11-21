@@ -4,12 +4,11 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"log/slog"
 	"net/url"
 	"os"
 	"regexp"
 	"time"
-
-	"log/slog"
 )
 
 type Tag struct {
@@ -93,7 +92,6 @@ func (v *Validator) Validate(uri *url.URL, b []byte) error {
 	}
 	for i, res := range resp.Results {
 		if !urlRegexp.MatchString(res.Url) {
-			v.logger.Info("url", res.Url)
 			return fmt.Errorf("Results[%d].Url: invalid format(expect %s)", i, urlRegexp.String())
 		}
 		if _, err := time.Parse("2006-01-02 15:04:05", resp.Results[i].Date); err != nil {
@@ -114,7 +112,7 @@ func (v *Validator) Validate(uri *url.URL, b []byte) error {
 func (v *Validator) isCorrectResult(tagName string, resp *Response) error {
 	geotags, ok := v.geotagsByName[tagName]
 	if !ok {
-		v.logger.Error("tag: tag name %s is not found", tagName)
+		v.logger.Error("tag: tag name is not found", slog.String("tag", tagName))
 		return nil
 	}
 	newKey := func(url string, date time.Time) string {
