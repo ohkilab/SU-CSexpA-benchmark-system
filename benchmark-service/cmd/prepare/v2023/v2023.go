@@ -2,6 +2,7 @@ package v2023
 
 import (
 	"bufio"
+	"encoding/json"
 	"fmt"
 	"log"
 	"os"
@@ -9,8 +10,6 @@ import (
 	"strconv"
 	"strings"
 	"time"
-
-	"encoding/json"
 )
 
 type Tag struct {

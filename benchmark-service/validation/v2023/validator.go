@@ -25,9 +25,7 @@ type Geotag struct {
 	Directory string  `json:"directory"`
 }
 
-var (
-	baseDate = time.Date(2012, 1, 1, 0, 0, 0, 0, time.UTC)
-)
+var baseDate = time.Date(2012, 1, 1, 0, 0, 0, 0, time.UTC)
 
 type Validator struct {
 	logger        *slog.Logger
