@@ -153,6 +153,7 @@ func BySubmitsField(field string, opts ...sql.OrderTermOption) OrderOption {
 		sqlgraph.OrderByNeighborTerms(s, newSubmitsStep(), sql.OrderByField(field, opts...))
 	}
 }
+
 func newSubmitsStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),

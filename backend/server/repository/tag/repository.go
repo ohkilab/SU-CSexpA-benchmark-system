@@ -54,7 +54,7 @@ func (r *repository) GetTags(contestSlug string, count int) ([]string, error) {
 // random.txt will be created
 func (r *repository) CreateRandomTag(contestSlug string, tags []string) error {
 	contestDir := filepath.Join(r.storagePath, fmt.Sprintf("tags/%s", contestSlug))
-	_ = os.MkdirAll(contestDir, 0755)
+	_ = os.MkdirAll(contestDir, 0o755)
 	f, err := os.Create(filepath.Join(contestDir, "random.txt"))
 	if err != nil {
 		return err
@@ -66,7 +66,7 @@ func (r *repository) CreateRandomTag(contestSlug string, tags []string) error {
 // 1.txt, 2.txt will be created
 func (r *repository) CreateTags(contestSlug string, tagsList [][]string) error {
 	contestDir := filepath.Join(r.storagePath, fmt.Sprintf("tags/%s", contestSlug))
-	_ = os.MkdirAll(contestDir, 0755)
+	_ = os.MkdirAll(contestDir, 0o755)
 	for i, tags := range tagsList {
 		f, err := os.Create(filepath.Join(contestDir, fmt.Sprintf("%d.txt", i+1)))
 		if err != nil {

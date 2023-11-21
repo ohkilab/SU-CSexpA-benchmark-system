@@ -11,9 +11,7 @@ type Submit struct {
 	ent.Schema
 }
 
-var (
-	languages = []string{"php", "go", "rust", "javascript", "csharp", "cpp", "ruby", "python"}
-)
+var languages = []string{"php", "go", "rust", "javascript", "csharp", "cpp", "ruby", "python"}
 
 // Fields of the Submit.
 func (Submit) Fields() []ent.Field {

@@ -11,15 +11,17 @@ import (
 	"google.golang.org/grpc/status"
 )
 
-var claimsKey struct{}
-var excludeMethodSet = map[string]struct{}{
-	backend.BackendService_PostLogin_FullMethodName:                   {},
-	backend.BackendService_GetSubmit_FullMethodName:                   {},
-	backend.BackendService_ListContests_FullMethodName:                {},
-	backend.BackendService_VerifyToken_FullMethodName:                 {},
-	backend.HealthcheckService_PingUnary_FullMethodName:               {},
-	backend.HealthcheckService_PingServerSideStreaming_FullMethodName: {},
-}
+var (
+	claimsKey        struct{}
+	excludeMethodSet = map[string]struct{}{
+		backend.BackendService_PostLogin_FullMethodName:                   {},
+		backend.BackendService_GetSubmit_FullMethodName:                   {},
+		backend.BackendService_ListContests_FullMethodName:                {},
+		backend.BackendService_VerifyToken_FullMethodName:                 {},
+		backend.HealthcheckService_PingUnary_FullMethodName:               {},
+		backend.HealthcheckService_PingServerSideStreaming_FullMethodName: {},
+	}
+)
 
 // authentication with JWT
 func Auth(secret []byte) grpc.UnaryServerInterceptor {

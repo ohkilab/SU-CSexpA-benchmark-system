@@ -208,6 +208,7 @@ func ByContestsField(field string, opts ...sql.OrderTermOption) OrderOption {
 		sqlgraph.OrderByNeighborTerms(s, newContestsStep(), sql.OrderByField(field, opts...))
 	}
 }
+
 func newTaskResultsStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
@@ -215,6 +216,7 @@ func newTaskResultsStep() *sqlgraph.Step {
 		sqlgraph.Edge(sqlgraph.O2M, false, TaskResultsTable, TaskResultsColumn),
 	)
 }
+
 func newGroupsStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
@@ -222,6 +224,7 @@ func newGroupsStep() *sqlgraph.Step {
 		sqlgraph.Edge(sqlgraph.M2O, true, GroupsTable, GroupsColumn),
 	)
 }
+
 func newContestsStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),

@@ -72,10 +72,8 @@ func ValidColumn(column string) bool {
 	return false
 }
 
-var (
-	// DefaultTimeLimitPerTask holds the default value on creation for the "time_limit_per_task" field.
-	DefaultTimeLimitPerTask int64
-)
+// DefaultTimeLimitPerTask holds the default value on creation for the "time_limit_per_task" field.
+var DefaultTimeLimitPerTask int64
 
 // TagSelectionLogic defines the type for the "tag_selection_logic" enum field.
 type TagSelectionLogic string
@@ -171,6 +169,7 @@ func BySubmits(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
 		sqlgraph.OrderByNeighborTerms(s, newSubmitsStep(), append([]sql.OrderTerm{term}, terms...)...)
 	}
 }
+
 func newSubmitsStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
