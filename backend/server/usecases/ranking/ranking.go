@@ -12,7 +12,7 @@ import (
 	pb "github.com/ohkilab/SU-CSexpA-benchmark-system/proto-gen/go/services/backend"
 	"github.com/samber/lo"
 	"golang.org/x/exp/slices"
-	"golang.org/x/exp/slog"
+	"log/slog"
 )
 
 type RankingInteractor struct {

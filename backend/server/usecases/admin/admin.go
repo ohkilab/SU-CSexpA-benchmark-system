@@ -11,7 +11,7 @@ import (
 	u_contest "github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/usecases/contest"
 	pb "github.com/ohkilab/SU-CSexpA-benchmark-system/proto-gen/go/services/backend"
 	"golang.org/x/crypto/bcrypt"
-	"golang.org/x/exp/slog"
+	"log/slog"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )

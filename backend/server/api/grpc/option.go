@@ -4,7 +4,7 @@ import (
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/repository/ent"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/repository/tag"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/worker"
-	"golang.org/x/exp/slog"
+	"log/slog"
 )
 
 type option struct {

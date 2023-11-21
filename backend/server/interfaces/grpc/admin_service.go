@@ -7,7 +7,7 @@ import (
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/repository/tag"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/usecases/admin"
 	pb "github.com/ohkilab/SU-CSexpA-benchmark-system/proto-gen/go/services/backend"
-	"golang.org/x/exp/slog"
+	"log/slog"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )

@@ -12,7 +12,7 @@ import (
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/repository/tag"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/worker"
 	benchmarkpb "github.com/ohkilab/SU-CSexpA-benchmark-system/proto-gen/go/services/benchmark-service"
-	"golang.org/x/exp/slog"
+	"log/slog"
 	pkggrpc "google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 )
