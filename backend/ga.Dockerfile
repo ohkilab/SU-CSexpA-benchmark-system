@@ -7,8 +7,8 @@ WORKDIR /src/benchmark-service
 RUN go mod vendor
 
 WORKDIR /src/backend
-RUN go mod vendor
-RUN go build \
+RUN go mod vendor \
+  && go build \
   -tags timetzdata \
   -mod=vendor \
   -o backend-server \
@@ -16,7 +16,7 @@ RUN go build \
 
 FROM ubuntu:22.04
 
-RUN apt-get update && apt-get install -y tzdata \
+RUN apt-get update && apt-get install -y --no-install-recommends tzdata \
   && rm -rf /var/lib/apt/lists/*
 ENV TZ Asia/Tokyo
 
