@@ -1,10 +1,11 @@
-FROM golang:1.20 AS builder
+FROM golang:1.21 AS builder
 
 WORKDIR /src
 COPY . .
+RUN go mod vendor
 RUN go build \
-    -mod=vendor \
     -tags timetzdata \
+    -mod=vendor \
     -o backend-server \
     ./cmd/server
 

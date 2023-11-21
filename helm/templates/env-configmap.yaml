@@ -1,0 +1,21 @@
+apiVersion: v1
+data:
+  BACKEND_BENCHMARK_HOST: {{ .Values.backend.env.BACKEND_BENCHMARK_HOST }}
+  BACKEND_GRPC_PORT: "{{ .Values.backend.env.BACKEND_GRPC_PORT }}"
+  BACKEND_INIT_ADMIN_NAME: {{ .Values.backend.env.BACKEND_INIT_ADMIN_NAME }}
+  BACKEND_INIT_ADMIN_PASSWORD: {{ .Values.backend.env.BACKEND_INIT_ADMIN_PASSWORD }}
+  BACKEND_JWT_SECRET: {{ .Values.backend.env.BACKEND_JWT_SECRET }}
+  BACKEND_MYSQL_HOST: {{ .Values.backend.env.BACKEND_MYSQL_HOST }}
+  BACKEND_MYSQL_PORT: "{{ .Values.backend.env.BACKEND_MYSQL_PORT }}"
+  BACKEND_STORAGE_PATH: {{ .Values.backend.env.BACKEND_STORAGE_PATH }}
+  BENCHMARK_GRPC_PORT: "{{ .Values.benchmark.env.BENCHMARK_GRPC_PORT }}"
+  MYSQL_DATABASE: {{ .Values.db.env.MYSQL_DATABASE }}
+  MYSQL_PASSWORD: {{ .Values.db.env.MYSQL_PASSWORD }}
+  MYSQL_ROOT_PASSWORD: {{ .Values.db.env.MYSQL_ROOT_PASSWORD }}
+  MYSQL_USER: {{ .Values.db.env.MYSQL_USER }}
+kind: ConfigMap
+metadata:
+  creationTimestamp: null
+  labels:
+    io.kompose.service: backend-env
+  name: env

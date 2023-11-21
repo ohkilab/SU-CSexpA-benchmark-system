@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert -f compose.yaml
+    kompose.version: 1.28.0 (HEAD)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: envoy
+  name: envoy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: envoy
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose convert -f compose.yaml
+        kompose.version: 1.28.0 (HEAD)
+      creationTimestamp: null
+      labels:
+        io.kompose.network/templates-default: "true"
+        io.kompose.service: envoy
+    spec:
+      containers:
+        - image: {{ .Values.envoy.image }}
+          name: envoy
+          resources: {}
+          imagePullPolicy: Always
+          env:
+            - name: ENVOY_UID
+              value: "{{ .Values.envoy.env.ENVOY_UID }}"
+            - name: ENVOY_GID
+              value: "{{ .Values.envoy.env.ENVOY_GID }}"
+          volumeMounts:
+            - name: envoy-config
+              mountPath: /etc/envoy/
+              readOnly: true
+      volumes:
+        - name: envoy-config
+          configMap:
+            name: envoy-config
+            items:
+              - key: envoy.yaml
+                path: envoy.yaml
+
+      restartPolicy: Always
+
+status: {}

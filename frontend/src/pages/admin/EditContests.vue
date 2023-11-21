@@ -5,7 +5,8 @@ import { ref, Ref } from 'vue';
 
 const { admin } = useAdminStateStore();
 
-const contest: Ref<CreateContestRequest> = ref({})
+// const contest: Ref<CreateContestRequest> = ref({})
+const contest: Ref<any> = ref({})
 
 const createContest = () => {
   console.log(contest.value)

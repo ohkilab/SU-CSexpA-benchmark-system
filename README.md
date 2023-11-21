@@ -53,3 +53,10 @@ To launch services, comment out all lines which contain `network_mode=host` in `
      extra_hosts:
        - "host.docker.internal:host-gateway"
 ```
+
+### Frontend image has to be build from repository root
+Since frontend project is dependent on files outside of its directory, the image has to be built from the project root. The following command can be used to build the frontend image.
+
+```sh
+docker build -t exp-a-frontend -f ./frontend/Dockerfile .
+```
