@@ -1,6 +1,6 @@
 services:
   backend:
-    image: ghcr.io/naborisk/su-csexpa-benchmark-system-backend:main
+    image: ghcr.io/ohkilab/su-csexpa-benchmark-system-backend:main
     # build:
     #   context: backend
     #   dockerfile: Dockerfile
@@ -18,7 +18,7 @@ services:
     ports:
       - 50051:50051
   benchmark-service:
-    image: ghcr.io/naborisk/su-csexpa-benchmark-system-benchmark-service:main
+    image: ghcr.io/ohkilab/su-csexpa-benchmark-system-benchmark-service:main
     # build:
     #   context: benchmark-service
     #   dockerfile: Dockerfile
@@ -41,7 +41,7 @@ services:
     ports:
       - 3306:3306
   frontend:
-    image: ghcr.io/naborisk/su-csexpa-benchmark-system-frontend:main
+    image: ghcr.io/ohkilab/su-csexpa-benchmark-system-frontend:main
     # build:
     #   context: .
     #   dockerfile: frontend/Dockerfile
@@ -52,7 +52,7 @@ services:
       - envoy
       - backend
   envoy:
-    # image: ghcr.io/naborisk/su-csexpa-benchmark-system-envoy:main
+    # image: ghcr.io/ohkilab/su-csexpa-benchmark-system-envoy:main
     # build:
     #   context: ./envoy
     #   dockerfile: ./Dockerfile
