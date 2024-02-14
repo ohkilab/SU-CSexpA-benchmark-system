@@ -111,7 +111,14 @@ func existTags(t *testing.T, slug, tmpPath string, logicType pb.TagSelectionLogi
 		for _, entry := range entries {
 			filenames = append(filenames, entry.Name())
 		}
-		slices.SortFunc(filenames, func(a, b string) bool { return a < b })
+		slices.SortFunc(filenames, func(a, b string) int {
+			if a < b {
+				return -1
+			} else if a == b {
+				return 0
+			}
+			return 1
+		})
 		for i, filename := range filenames {
 			func() {
 				f, err := os.Open(filepath.Join(rootPath, filename))

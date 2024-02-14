@@ -2,6 +2,8 @@ package ranking
 
 import (
 	"context"
+	"log/slog"
+	"slices"
 	"time"
 
 	"entgo.io/ent/dialect/sql"
@@ -11,8 +13,6 @@ import (
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/repository/ent/submit"
 	pb "github.com/ohkilab/SU-CSexpA-benchmark-system/proto-gen/go/services/backend"
 	"github.com/samber/lo"
-	"golang.org/x/exp/slices"
-	"log/slog"
 )
 
 type RankingInteractor struct {
@@ -36,8 +36,8 @@ func (i *RankingInteractor) GetRanking(ctx context.Context, containGuest bool, c
 		i.logger.Error("failed to fetch groups", err)
 		return nil, err
 	}
-	slices.SortFunc(groups, func(left, right *ent.Group) bool {
-		return compareGroup(left, right) == -1
+	slices.SortFunc(groups, func(left, right *ent.Group) int {
+		return compareGroup(left, right)
 	})
 
 	rank := int32(1)
