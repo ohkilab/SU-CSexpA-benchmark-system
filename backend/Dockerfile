@@ -2,7 +2,6 @@ FROM golang:1.21 AS builder
 
 WORKDIR /src
 COPY . .
-RUN go mod vendor
 RUN go build \
     -tags timetzdata \
     -mod=vendor \

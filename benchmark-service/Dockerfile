@@ -2,7 +2,6 @@ FROM golang:1.21 AS builder
 
 WORKDIR /app
 COPY . .
-RUN go mod vendor
 RUN go build -mod=vendor -o benchmark-server ./cmd/server
 
 FROM ubuntu:22.04
