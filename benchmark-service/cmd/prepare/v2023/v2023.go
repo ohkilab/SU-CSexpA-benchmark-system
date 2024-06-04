@@ -95,6 +95,7 @@ func Build(tagPath, geotagPath, destPath string) error {
 	})
 	log.Println("sort done")
 
+	_ = os.MkdirAll(destPath, 0755)
 	jsonFile, err := os.Create(destPath)
 	if err != nil {
 		return err
