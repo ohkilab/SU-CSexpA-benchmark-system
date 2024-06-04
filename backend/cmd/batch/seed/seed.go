@@ -38,65 +38,64 @@ var Command = &cobra.Command{
 		}
 
 		encryptedPassword, _ := bcrypt.GenerateFromPassword([]byte("ohkilab"), bcrypt.DefaultCost)
-		_, err = entClient.Group.Create().
+		entClient.Group.Create().
 			SetName("a01").
 			SetEncryptedPassword(string(encryptedPassword)).
 			SetRole(backend.Role_CONTESTANT.String()).
 			SetYear(2023).
 			SetCreatedAt(timejst.Now()).
-			Save(ctx)
-		if err != nil {
-			return err
-		}
-		_, err = entClient.Group.Create().
+			OnConflict().
+			UpdateNewValues().
+			ExecX(ctx)
+		entClient.Group.Create().
 			SetName("a02").
 			SetEncryptedPassword(string(encryptedPassword)).
 			SetRole(backend.Role_CONTESTANT.String()).
 			SetYear(2023).
 			SetCreatedAt(timejst.Now()).
-			Save(ctx)
-		if err != nil {
-			return err
-		}
-		_, err = entClient.Group.Create().
+			OnConflict().
+			UpdateNewValues().
+			ExecX(ctx)
+		entClient.Group.Create().
 			SetName("a03").
 			SetEncryptedPassword(string(encryptedPassword)).
 			SetRole(backend.Role_CONTESTANT.String()).
 			SetYear(2023).
 			SetCreatedAt(timejst.Now()).
-			Save(ctx)
-		if err != nil {
-			return err
-		}
+			OnConflict().
+			UpdateNewValues().
+			ExecX(ctx)
 
-		_, err = entClient.Contest.Create().
+		entClient.Contest.Create().
 			SetTitle("test contest(予選)").
 			SetSlug("test-contest").
 			SetStartAt(time.Date(2023, time.January, 1, 0, 0, 0, 0, time.UTC)).
-			SetEndAt(time.Date(2023, time.December, 31, 23, 59, 59, 0, time.UTC)).
+			SetEndAt(time.Date(2030, time.December, 31, 23, 59, 59, 0, time.UTC)).
 			SetSubmitLimit(9999).
 			SetTagSelectionLogic(contest.TagSelectionLogicAuto).
 			SetCreatedAt(timejst.Now()).
 			SetValidator(backend.Validator_V2023.String()).
 			SetTimeLimitPerTask(int64(30 * time.Second)).
-			Save(ctx)
+			OnConflict().
+			UpdateNewValues().
+			ExecX(ctx)
 		if err != nil {
 			return err
 		}
-		_, err = entClient.Contest.Create().
+		entClient.Contest.Create().
 			SetTitle("test contest(本戦)").
 			SetSlug("test-contest-ho").
 			SetStartAt(time.Date(2023, time.January, 1, 0, 0, 0, 0, time.UTC)).
-			SetEndAt(time.Date(2023, time.December, 31, 23, 59, 59, 0, time.UTC)).
+			SetEndAt(time.Date(2030, time.December, 31, 23, 59, 59, 0, time.UTC)).
 			SetSubmitLimit(10).
 			SetTagSelectionLogic(contest.TagSelectionLogicManual).
 			SetCreatedAt(timejst.Now()).
 			SetValidator(backend.Validator_V2023.String()).
 			SetTimeLimitPerTask(int64(30 * time.Second)).
-			Save(ctx)
-		if err != nil {
-			return err
-		}
+			OnConflict().
+			UpdateNewValues().
+			ExecX(ctx)
+
 		return nil
 	},
 }
