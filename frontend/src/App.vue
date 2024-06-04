@@ -99,18 +99,12 @@ onMounted(() => {
         情報科学実験A：ベンチマークサーバ
       </div>
       <div class="w-32 flex justify-center">
-        <button v-if="state.role === Role.ADMIN && !route.name?.toString().startsWith('admin')" @click="router.push('/admin')"
-          class="p-2 rounded transition border border-red-500 hover:bg-red-700">管理者モード</button>
-        <button v-else
-          @click="router.push('/contests')"
-          class="p-2 rounded border border-blue-500 transition hover:bg-blue-700">ユーザモード</button>
       </div>
       <button @click="handleLogout" v-if="loggedIn"
         class="p-2 w-40 rounded bg-red-500 transition hover:bg-red-700">ログアウト</button>
     </div>
     <!-- debug mode -->
-    <fieldset v-if="state.debug" class="mx-8 border border-red-500 p-2 flex flex-col gap-2">
-      <legend>Debug Panel</legend>
+    <fieldset v-if="state.debug" class="mx-8 border border-red-500 p-2 flex flex-col gap-2"> <legend>Debug Panel</legend>
       <!-- <pre class="break-all whitespace-pre-wrap">state: {{JSON.stringify(state, null, 4)}}</pre> -->
       <pre class="break-all whitespace-pre-wrap">token: {{ state.token }}</pre>
       <pre class="break-all whitespace-pre-wrap">group: {{ state.benchmarking }}</pre>
