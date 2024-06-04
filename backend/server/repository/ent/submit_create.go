@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"time"
 
+	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/repository/ent/contest"
@@ -21,6 +22,7 @@ type SubmitCreate struct {
 	config
 	mutation *SubmitMutation
 	hooks    []Hook
+	conflict []sql.ConflictOption
 }
 
 // SetURL sets the "url" field.
@@ -255,6 +257,7 @@ func (sc *SubmitCreate) createSpec() (*Submit, *sqlgraph.CreateSpec) {
 		_node = &Submit{config: sc.config}
 		_spec = sqlgraph.NewCreateSpec(submit.Table, sqlgraph.NewFieldSpec(submit.FieldID, field.TypeInt))
 	)
+	_spec.OnConflict = sc.conflict
 	if id, ok := sc.mutation.ID(); ok {
 		_node.ID = id
 		_spec.ID.Value = id
@@ -348,14 +351,474 @@ func (sc *SubmitCreate) createSpec() (*Submit, *sqlgraph.CreateSpec) {
 	return _node, _spec
 }
 
+// OnConflict allows configuring the `ON CONFLICT` / `ON DUPLICATE KEY` clause
+// of the `INSERT` statement. For example:
+//
+//	client.Submit.Create().
+//		SetURL(v).
+//		OnConflict(
+//			// Update the row with the new values
+//			// the was proposed for insertion.
+//			sql.ResolveWithNewValues(),
+//		).
+//		// Override some of the fields with custom
+//		// update values.
+//		Update(func(u *ent.SubmitUpsert) {
+//			SetURL(v+v).
+//		}).
+//		Exec(ctx)
+func (sc *SubmitCreate) OnConflict(opts ...sql.ConflictOption) *SubmitUpsertOne {
+	sc.conflict = opts
+	return &SubmitUpsertOne{
+		create: sc,
+	}
+}
+
+// OnConflictColumns calls `OnConflict` and configures the columns
+// as conflict target. Using this option is equivalent to using:
+//
+//	client.Submit.Create().
+//		OnConflict(sql.ConflictColumns(columns...)).
+//		Exec(ctx)
+func (sc *SubmitCreate) OnConflictColumns(columns ...string) *SubmitUpsertOne {
+	sc.conflict = append(sc.conflict, sql.ConflictColumns(columns...))
+	return &SubmitUpsertOne{
+		create: sc,
+	}
+}
+
+type (
+	// SubmitUpsertOne is the builder for "upsert"-ing
+	//  one Submit node.
+	SubmitUpsertOne struct {
+		create *SubmitCreate
+	}
+
+	// SubmitUpsert is the "OnConflict" setter.
+	SubmitUpsert struct {
+		*sql.UpdateSet
+	}
+)
+
+// SetURL sets the "url" field.
+func (u *SubmitUpsert) SetURL(v string) *SubmitUpsert {
+	u.Set(submit.FieldURL, v)
+	return u
+}
+
+// UpdateURL sets the "url" field to the value that was provided on create.
+func (u *SubmitUpsert) UpdateURL() *SubmitUpsert {
+	u.SetExcluded(submit.FieldURL)
+	return u
+}
+
+// SetScore sets the "score" field.
+func (u *SubmitUpsert) SetScore(v int) *SubmitUpsert {
+	u.Set(submit.FieldScore, v)
+	return u
+}
+
+// UpdateScore sets the "score" field to the value that was provided on create.
+func (u *SubmitUpsert) UpdateScore() *SubmitUpsert {
+	u.SetExcluded(submit.FieldScore)
+	return u
+}
+
+// AddScore adds v to the "score" field.
+func (u *SubmitUpsert) AddScore(v int) *SubmitUpsert {
+	u.Add(submit.FieldScore, v)
+	return u
+}
+
+// ClearScore clears the value of the "score" field.
+func (u *SubmitUpsert) ClearScore() *SubmitUpsert {
+	u.SetNull(submit.FieldScore)
+	return u
+}
+
+// SetLanguage sets the "language" field.
+func (u *SubmitUpsert) SetLanguage(v submit.Language) *SubmitUpsert {
+	u.Set(submit.FieldLanguage, v)
+	return u
+}
+
+// UpdateLanguage sets the "language" field to the value that was provided on create.
+func (u *SubmitUpsert) UpdateLanguage() *SubmitUpsert {
+	u.SetExcluded(submit.FieldLanguage)
+	return u
+}
+
+// ClearLanguage clears the value of the "language" field.
+func (u *SubmitUpsert) ClearLanguage() *SubmitUpsert {
+	u.SetNull(submit.FieldLanguage)
+	return u
+}
+
+// SetMessage sets the "message" field.
+func (u *SubmitUpsert) SetMessage(v string) *SubmitUpsert {
+	u.Set(submit.FieldMessage, v)
+	return u
+}
+
+// UpdateMessage sets the "message" field to the value that was provided on create.
+func (u *SubmitUpsert) UpdateMessage() *SubmitUpsert {
+	u.SetExcluded(submit.FieldMessage)
+	return u
+}
+
+// ClearMessage clears the value of the "message" field.
+func (u *SubmitUpsert) ClearMessage() *SubmitUpsert {
+	u.SetNull(submit.FieldMessage)
+	return u
+}
+
+// SetStatus sets the "status" field.
+func (u *SubmitUpsert) SetStatus(v string) *SubmitUpsert {
+	u.Set(submit.FieldStatus, v)
+	return u
+}
+
+// UpdateStatus sets the "status" field to the value that was provided on create.
+func (u *SubmitUpsert) UpdateStatus() *SubmitUpsert {
+	u.SetExcluded(submit.FieldStatus)
+	return u
+}
+
+// SetTaskNum sets the "task_num" field.
+func (u *SubmitUpsert) SetTaskNum(v int) *SubmitUpsert {
+	u.Set(submit.FieldTaskNum, v)
+	return u
+}
+
+// UpdateTaskNum sets the "task_num" field to the value that was provided on create.
+func (u *SubmitUpsert) UpdateTaskNum() *SubmitUpsert {
+	u.SetExcluded(submit.FieldTaskNum)
+	return u
+}
+
+// AddTaskNum adds v to the "task_num" field.
+func (u *SubmitUpsert) AddTaskNum(v int) *SubmitUpsert {
+	u.Add(submit.FieldTaskNum, v)
+	return u
+}
+
+// SetSubmitedAt sets the "submited_at" field.
+func (u *SubmitUpsert) SetSubmitedAt(v time.Time) *SubmitUpsert {
+	u.Set(submit.FieldSubmitedAt, v)
+	return u
+}
+
+// UpdateSubmitedAt sets the "submited_at" field to the value that was provided on create.
+func (u *SubmitUpsert) UpdateSubmitedAt() *SubmitUpsert {
+	u.SetExcluded(submit.FieldSubmitedAt)
+	return u
+}
+
+// SetCompletedAt sets the "completed_at" field.
+func (u *SubmitUpsert) SetCompletedAt(v time.Time) *SubmitUpsert {
+	u.Set(submit.FieldCompletedAt, v)
+	return u
+}
+
+// UpdateCompletedAt sets the "completed_at" field to the value that was provided on create.
+func (u *SubmitUpsert) UpdateCompletedAt() *SubmitUpsert {
+	u.SetExcluded(submit.FieldCompletedAt)
+	return u
+}
+
+// ClearCompletedAt clears the value of the "completed_at" field.
+func (u *SubmitUpsert) ClearCompletedAt() *SubmitUpsert {
+	u.SetNull(submit.FieldCompletedAt)
+	return u
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (u *SubmitUpsert) SetUpdatedAt(v time.Time) *SubmitUpsert {
+	u.Set(submit.FieldUpdatedAt, v)
+	return u
+}
+
+// UpdateUpdatedAt sets the "updated_at" field to the value that was provided on create.
+func (u *SubmitUpsert) UpdateUpdatedAt() *SubmitUpsert {
+	u.SetExcluded(submit.FieldUpdatedAt)
+	return u
+}
+
+// ClearUpdatedAt clears the value of the "updated_at" field.
+func (u *SubmitUpsert) ClearUpdatedAt() *SubmitUpsert {
+	u.SetNull(submit.FieldUpdatedAt)
+	return u
+}
+
+// UpdateNewValues updates the mutable fields using the new values that were set on create except the ID field.
+// Using this option is equivalent to using:
+//
+//	client.Submit.Create().
+//		OnConflict(
+//			sql.ResolveWithNewValues(),
+//			sql.ResolveWith(func(u *sql.UpdateSet) {
+//				u.SetIgnore(submit.FieldID)
+//			}),
+//		).
+//		Exec(ctx)
+func (u *SubmitUpsertOne) UpdateNewValues() *SubmitUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
+		if _, exists := u.create.mutation.ID(); exists {
+			s.SetIgnore(submit.FieldID)
+		}
+	}))
+	return u
+}
+
+// Ignore sets each column to itself in case of conflict.
+// Using this option is equivalent to using:
+//
+//	client.Submit.Create().
+//	    OnConflict(sql.ResolveWithIgnore()).
+//	    Exec(ctx)
+func (u *SubmitUpsertOne) Ignore() *SubmitUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithIgnore())
+	return u
+}
+
+// DoNothing configures the conflict_action to `DO NOTHING`.
+// Supported only by SQLite and PostgreSQL.
+func (u *SubmitUpsertOne) DoNothing() *SubmitUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.DoNothing())
+	return u
+}
+
+// Update allows overriding fields `UPDATE` values. See the SubmitCreate.OnConflict
+// documentation for more info.
+func (u *SubmitUpsertOne) Update(set func(*SubmitUpsert)) *SubmitUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(update *sql.UpdateSet) {
+		set(&SubmitUpsert{UpdateSet: update})
+	}))
+	return u
+}
+
+// SetURL sets the "url" field.
+func (u *SubmitUpsertOne) SetURL(v string) *SubmitUpsertOne {
+	return u.Update(func(s *SubmitUpsert) {
+		s.SetURL(v)
+	})
+}
+
+// UpdateURL sets the "url" field to the value that was provided on create.
+func (u *SubmitUpsertOne) UpdateURL() *SubmitUpsertOne {
+	return u.Update(func(s *SubmitUpsert) {
+		s.UpdateURL()
+	})
+}
+
+// SetScore sets the "score" field.
+func (u *SubmitUpsertOne) SetScore(v int) *SubmitUpsertOne {
+	return u.Update(func(s *SubmitUpsert) {
+		s.SetScore(v)
+	})
+}
+
+// AddScore adds v to the "score" field.
+func (u *SubmitUpsertOne) AddScore(v int) *SubmitUpsertOne {
+	return u.Update(func(s *SubmitUpsert) {
+		s.AddScore(v)
+	})
+}
+
+// UpdateScore sets the "score" field to the value that was provided on create.
+func (u *SubmitUpsertOne) UpdateScore() *SubmitUpsertOne {
+	return u.Update(func(s *SubmitUpsert) {
+		s.UpdateScore()
+	})
+}
+
+// ClearScore clears the value of the "score" field.
+func (u *SubmitUpsertOne) ClearScore() *SubmitUpsertOne {
+	return u.Update(func(s *SubmitUpsert) {
+		s.ClearScore()
+	})
+}
+
+// SetLanguage sets the "language" field.
+func (u *SubmitUpsertOne) SetLanguage(v submit.Language) *SubmitUpsertOne {
+	return u.Update(func(s *SubmitUpsert) {
+		s.SetLanguage(v)
+	})
+}
+
+// UpdateLanguage sets the "language" field to the value that was provided on create.
+func (u *SubmitUpsertOne) UpdateLanguage() *SubmitUpsertOne {
+	return u.Update(func(s *SubmitUpsert) {
+		s.UpdateLanguage()
+	})
+}
+
+// ClearLanguage clears the value of the "language" field.
+func (u *SubmitUpsertOne) ClearLanguage() *SubmitUpsertOne {
+	return u.Update(func(s *SubmitUpsert) {
+		s.ClearLanguage()
+	})
+}
+
+// SetMessage sets the "message" field.
+func (u *SubmitUpsertOne) SetMessage(v string) *SubmitUpsertOne {
+	return u.Update(func(s *SubmitUpsert) {
+		s.SetMessage(v)
+	})
+}
+
+// UpdateMessage sets the "message" field to the value that was provided on create.
+func (u *SubmitUpsertOne) UpdateMessage() *SubmitUpsertOne {
+	return u.Update(func(s *SubmitUpsert) {
+		s.UpdateMessage()
+	})
+}
+
+// ClearMessage clears the value of the "message" field.
+func (u *SubmitUpsertOne) ClearMessage() *SubmitUpsertOne {
+	return u.Update(func(s *SubmitUpsert) {
+		s.ClearMessage()
+	})
+}
+
+// SetStatus sets the "status" field.
+func (u *SubmitUpsertOne) SetStatus(v string) *SubmitUpsertOne {
+	return u.Update(func(s *SubmitUpsert) {
+		s.SetStatus(v)
+	})
+}
+
+// UpdateStatus sets the "status" field to the value that was provided on create.
+func (u *SubmitUpsertOne) UpdateStatus() *SubmitUpsertOne {
+	return u.Update(func(s *SubmitUpsert) {
+		s.UpdateStatus()
+	})
+}
+
+// SetTaskNum sets the "task_num" field.
+func (u *SubmitUpsertOne) SetTaskNum(v int) *SubmitUpsertOne {
+	return u.Update(func(s *SubmitUpsert) {
+		s.SetTaskNum(v)
+	})
+}
+
+// AddTaskNum adds v to the "task_num" field.
+func (u *SubmitUpsertOne) AddTaskNum(v int) *SubmitUpsertOne {
+	return u.Update(func(s *SubmitUpsert) {
+		s.AddTaskNum(v)
+	})
+}
+
+// UpdateTaskNum sets the "task_num" field to the value that was provided on create.
+func (u *SubmitUpsertOne) UpdateTaskNum() *SubmitUpsertOne {
+	return u.Update(func(s *SubmitUpsert) {
+		s.UpdateTaskNum()
+	})
+}
+
+// SetSubmitedAt sets the "submited_at" field.
+func (u *SubmitUpsertOne) SetSubmitedAt(v time.Time) *SubmitUpsertOne {
+	return u.Update(func(s *SubmitUpsert) {
+		s.SetSubmitedAt(v)
+	})
+}
+
+// UpdateSubmitedAt sets the "submited_at" field to the value that was provided on create.
+func (u *SubmitUpsertOne) UpdateSubmitedAt() *SubmitUpsertOne {
+	return u.Update(func(s *SubmitUpsert) {
+		s.UpdateSubmitedAt()
+	})
+}
+
+// SetCompletedAt sets the "completed_at" field.
+func (u *SubmitUpsertOne) SetCompletedAt(v time.Time) *SubmitUpsertOne {
+	return u.Update(func(s *SubmitUpsert) {
+		s.SetCompletedAt(v)
+	})
+}
+
+// UpdateCompletedAt sets the "completed_at" field to the value that was provided on create.
+func (u *SubmitUpsertOne) UpdateCompletedAt() *SubmitUpsertOne {
+	return u.Update(func(s *SubmitUpsert) {
+		s.UpdateCompletedAt()
+	})
+}
+
+// ClearCompletedAt clears the value of the "completed_at" field.
+func (u *SubmitUpsertOne) ClearCompletedAt() *SubmitUpsertOne {
+	return u.Update(func(s *SubmitUpsert) {
+		s.ClearCompletedAt()
+	})
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (u *SubmitUpsertOne) SetUpdatedAt(v time.Time) *SubmitUpsertOne {
+	return u.Update(func(s *SubmitUpsert) {
+		s.SetUpdatedAt(v)
+	})
+}
+
+// UpdateUpdatedAt sets the "updated_at" field to the value that was provided on create.
+func (u *SubmitUpsertOne) UpdateUpdatedAt() *SubmitUpsertOne {
+	return u.Update(func(s *SubmitUpsert) {
+		s.UpdateUpdatedAt()
+	})
+}
+
+// ClearUpdatedAt clears the value of the "updated_at" field.
+func (u *SubmitUpsertOne) ClearUpdatedAt() *SubmitUpsertOne {
+	return u.Update(func(s *SubmitUpsert) {
+		s.ClearUpdatedAt()
+	})
+}
+
+// Exec executes the query.
+func (u *SubmitUpsertOne) Exec(ctx context.Context) error {
+	if len(u.create.conflict) == 0 {
+		return errors.New("ent: missing options for SubmitCreate.OnConflict")
+	}
+	return u.create.Exec(ctx)
+}
+
+// ExecX is like Exec, but panics if an error occurs.
+func (u *SubmitUpsertOne) ExecX(ctx context.Context) {
+	if err := u.create.Exec(ctx); err != nil {
+		panic(err)
+	}
+}
+
+// Exec executes the UPSERT query and returns the inserted/updated ID.
+func (u *SubmitUpsertOne) ID(ctx context.Context) (id int, err error) {
+	node, err := u.create.Save(ctx)
+	if err != nil {
+		return id, err
+	}
+	return node.ID, nil
+}
+
+// IDX is like ID, but panics if an error occurs.
+func (u *SubmitUpsertOne) IDX(ctx context.Context) int {
+	id, err := u.ID(ctx)
+	if err != nil {
+		panic(err)
+	}
+	return id
+}
+
 // SubmitCreateBulk is the builder for creating many Submit entities in bulk.
 type SubmitCreateBulk struct {
 	config
+	err      error
 	builders []*SubmitCreate
+	conflict []sql.ConflictOption
 }
 
 // Save creates the Submit entities in the database.
 func (scb *SubmitCreateBulk) Save(ctx context.Context) ([]*Submit, error) {
+	if scb.err != nil {
+		return nil, scb.err
+	}
 	specs := make([]*sqlgraph.CreateSpec, len(scb.builders))
 	nodes := make([]*Submit, len(scb.builders))
 	mutators := make([]Mutator, len(scb.builders))
@@ -377,6 +840,7 @@ func (scb *SubmitCreateBulk) Save(ctx context.Context) ([]*Submit, error) {
 					_, err = mutators[i+1].Mutate(root, scb.builders[i+1].mutation)
 				} else {
 					spec := &sqlgraph.BatchCreateSpec{Nodes: specs}
+					spec.OnConflict = scb.conflict
 					// Invoke the actual operation on the latest mutation in the chain.
 					if err = sqlgraph.BatchCreate(ctx, scb.driver, spec); err != nil {
 						if sqlgraph.IsConstraintError(err) {
@@ -427,6 +891,295 @@ func (scb *SubmitCreateBulk) Exec(ctx context.Context) error {
 // ExecX is like Exec, but panics if an error occurs.
 func (scb *SubmitCreateBulk) ExecX(ctx context.Context) {
 	if err := scb.Exec(ctx); err != nil {
+		panic(err)
+	}
+}
+
+// OnConflict allows configuring the `ON CONFLICT` / `ON DUPLICATE KEY` clause
+// of the `INSERT` statement. For example:
+//
+//	client.Submit.CreateBulk(builders...).
+//		OnConflict(
+//			// Update the row with the new values
+//			// the was proposed for insertion.
+//			sql.ResolveWithNewValues(),
+//		).
+//		// Override some of the fields with custom
+//		// update values.
+//		Update(func(u *ent.SubmitUpsert) {
+//			SetURL(v+v).
+//		}).
+//		Exec(ctx)
+func (scb *SubmitCreateBulk) OnConflict(opts ...sql.ConflictOption) *SubmitUpsertBulk {
+	scb.conflict = opts
+	return &SubmitUpsertBulk{
+		create: scb,
+	}
+}
+
+// OnConflictColumns calls `OnConflict` and configures the columns
+// as conflict target. Using this option is equivalent to using:
+//
+//	client.Submit.Create().
+//		OnConflict(sql.ConflictColumns(columns...)).
+//		Exec(ctx)
+func (scb *SubmitCreateBulk) OnConflictColumns(columns ...string) *SubmitUpsertBulk {
+	scb.conflict = append(scb.conflict, sql.ConflictColumns(columns...))
+	return &SubmitUpsertBulk{
+		create: scb,
+	}
+}
+
+// SubmitUpsertBulk is the builder for "upsert"-ing
+// a bulk of Submit nodes.
+type SubmitUpsertBulk struct {
+	create *SubmitCreateBulk
+}
+
+// UpdateNewValues updates the mutable fields using the new values that
+// were set on create. Using this option is equivalent to using:
+//
+//	client.Submit.Create().
+//		OnConflict(
+//			sql.ResolveWithNewValues(),
+//			sql.ResolveWith(func(u *sql.UpdateSet) {
+//				u.SetIgnore(submit.FieldID)
+//			}),
+//		).
+//		Exec(ctx)
+func (u *SubmitUpsertBulk) UpdateNewValues() *SubmitUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
+		for _, b := range u.create.builders {
+			if _, exists := b.mutation.ID(); exists {
+				s.SetIgnore(submit.FieldID)
+			}
+		}
+	}))
+	return u
+}
+
+// Ignore sets each column to itself in case of conflict.
+// Using this option is equivalent to using:
+//
+//	client.Submit.Create().
+//		OnConflict(sql.ResolveWithIgnore()).
+//		Exec(ctx)
+func (u *SubmitUpsertBulk) Ignore() *SubmitUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithIgnore())
+	return u
+}
+
+// DoNothing configures the conflict_action to `DO NOTHING`.
+// Supported only by SQLite and PostgreSQL.
+func (u *SubmitUpsertBulk) DoNothing() *SubmitUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.DoNothing())
+	return u
+}
+
+// Update allows overriding fields `UPDATE` values. See the SubmitCreateBulk.OnConflict
+// documentation for more info.
+func (u *SubmitUpsertBulk) Update(set func(*SubmitUpsert)) *SubmitUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(update *sql.UpdateSet) {
+		set(&SubmitUpsert{UpdateSet: update})
+	}))
+	return u
+}
+
+// SetURL sets the "url" field.
+func (u *SubmitUpsertBulk) SetURL(v string) *SubmitUpsertBulk {
+	return u.Update(func(s *SubmitUpsert) {
+		s.SetURL(v)
+	})
+}
+
+// UpdateURL sets the "url" field to the value that was provided on create.
+func (u *SubmitUpsertBulk) UpdateURL() *SubmitUpsertBulk {
+	return u.Update(func(s *SubmitUpsert) {
+		s.UpdateURL()
+	})
+}
+
+// SetScore sets the "score" field.
+func (u *SubmitUpsertBulk) SetScore(v int) *SubmitUpsertBulk {
+	return u.Update(func(s *SubmitUpsert) {
+		s.SetScore(v)
+	})
+}
+
+// AddScore adds v to the "score" field.
+func (u *SubmitUpsertBulk) AddScore(v int) *SubmitUpsertBulk {
+	return u.Update(func(s *SubmitUpsert) {
+		s.AddScore(v)
+	})
+}
+
+// UpdateScore sets the "score" field to the value that was provided on create.
+func (u *SubmitUpsertBulk) UpdateScore() *SubmitUpsertBulk {
+	return u.Update(func(s *SubmitUpsert) {
+		s.UpdateScore()
+	})
+}
+
+// ClearScore clears the value of the "score" field.
+func (u *SubmitUpsertBulk) ClearScore() *SubmitUpsertBulk {
+	return u.Update(func(s *SubmitUpsert) {
+		s.ClearScore()
+	})
+}
+
+// SetLanguage sets the "language" field.
+func (u *SubmitUpsertBulk) SetLanguage(v submit.Language) *SubmitUpsertBulk {
+	return u.Update(func(s *SubmitUpsert) {
+		s.SetLanguage(v)
+	})
+}
+
+// UpdateLanguage sets the "language" field to the value that was provided on create.
+func (u *SubmitUpsertBulk) UpdateLanguage() *SubmitUpsertBulk {
+	return u.Update(func(s *SubmitUpsert) {
+		s.UpdateLanguage()
+	})
+}
+
+// ClearLanguage clears the value of the "language" field.
+func (u *SubmitUpsertBulk) ClearLanguage() *SubmitUpsertBulk {
+	return u.Update(func(s *SubmitUpsert) {
+		s.ClearLanguage()
+	})
+}
+
+// SetMessage sets the "message" field.
+func (u *SubmitUpsertBulk) SetMessage(v string) *SubmitUpsertBulk {
+	return u.Update(func(s *SubmitUpsert) {
+		s.SetMessage(v)
+	})
+}
+
+// UpdateMessage sets the "message" field to the value that was provided on create.
+func (u *SubmitUpsertBulk) UpdateMessage() *SubmitUpsertBulk {
+	return u.Update(func(s *SubmitUpsert) {
+		s.UpdateMessage()
+	})
+}
+
+// ClearMessage clears the value of the "message" field.
+func (u *SubmitUpsertBulk) ClearMessage() *SubmitUpsertBulk {
+	return u.Update(func(s *SubmitUpsert) {
+		s.ClearMessage()
+	})
+}
+
+// SetStatus sets the "status" field.
+func (u *SubmitUpsertBulk) SetStatus(v string) *SubmitUpsertBulk {
+	return u.Update(func(s *SubmitUpsert) {
+		s.SetStatus(v)
+	})
+}
+
+// UpdateStatus sets the "status" field to the value that was provided on create.
+func (u *SubmitUpsertBulk) UpdateStatus() *SubmitUpsertBulk {
+	return u.Update(func(s *SubmitUpsert) {
+		s.UpdateStatus()
+	})
+}
+
+// SetTaskNum sets the "task_num" field.
+func (u *SubmitUpsertBulk) SetTaskNum(v int) *SubmitUpsertBulk {
+	return u.Update(func(s *SubmitUpsert) {
+		s.SetTaskNum(v)
+	})
+}
+
+// AddTaskNum adds v to the "task_num" field.
+func (u *SubmitUpsertBulk) AddTaskNum(v int) *SubmitUpsertBulk {
+	return u.Update(func(s *SubmitUpsert) {
+		s.AddTaskNum(v)
+	})
+}
+
+// UpdateTaskNum sets the "task_num" field to the value that was provided on create.
+func (u *SubmitUpsertBulk) UpdateTaskNum() *SubmitUpsertBulk {
+	return u.Update(func(s *SubmitUpsert) {
+		s.UpdateTaskNum()
+	})
+}
+
+// SetSubmitedAt sets the "submited_at" field.
+func (u *SubmitUpsertBulk) SetSubmitedAt(v time.Time) *SubmitUpsertBulk {
+	return u.Update(func(s *SubmitUpsert) {
+		s.SetSubmitedAt(v)
+	})
+}
+
+// UpdateSubmitedAt sets the "submited_at" field to the value that was provided on create.
+func (u *SubmitUpsertBulk) UpdateSubmitedAt() *SubmitUpsertBulk {
+	return u.Update(func(s *SubmitUpsert) {
+		s.UpdateSubmitedAt()
+	})
+}
+
+// SetCompletedAt sets the "completed_at" field.
+func (u *SubmitUpsertBulk) SetCompletedAt(v time.Time) *SubmitUpsertBulk {
+	return u.Update(func(s *SubmitUpsert) {
+		s.SetCompletedAt(v)
+	})
+}
+
+// UpdateCompletedAt sets the "completed_at" field to the value that was provided on create.
+func (u *SubmitUpsertBulk) UpdateCompletedAt() *SubmitUpsertBulk {
+	return u.Update(func(s *SubmitUpsert) {
+		s.UpdateCompletedAt()
+	})
+}
+
+// ClearCompletedAt clears the value of the "completed_at" field.
+func (u *SubmitUpsertBulk) ClearCompletedAt() *SubmitUpsertBulk {
+	return u.Update(func(s *SubmitUpsert) {
+		s.ClearCompletedAt()
+	})
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (u *SubmitUpsertBulk) SetUpdatedAt(v time.Time) *SubmitUpsertBulk {
+	return u.Update(func(s *SubmitUpsert) {
+		s.SetUpdatedAt(v)
+	})
+}
+
+// UpdateUpdatedAt sets the "updated_at" field to the value that was provided on create.
+func (u *SubmitUpsertBulk) UpdateUpdatedAt() *SubmitUpsertBulk {
+	return u.Update(func(s *SubmitUpsert) {
+		s.UpdateUpdatedAt()
+	})
+}
+
+// ClearUpdatedAt clears the value of the "updated_at" field.
+func (u *SubmitUpsertBulk) ClearUpdatedAt() *SubmitUpsertBulk {
+	return u.Update(func(s *SubmitUpsert) {
+		s.ClearUpdatedAt()
+	})
+}
+
+// Exec executes the query.
+func (u *SubmitUpsertBulk) Exec(ctx context.Context) error {
+	if u.create.err != nil {
+		return u.create.err
+	}
+	for i, b := range u.create.builders {
+		if len(b.conflict) != 0 {
+			return fmt.Errorf("ent: OnConflict was set for builder %d. Set it on the SubmitCreateBulk instead", i)
+		}
+	}
+	if len(u.create.conflict) == 0 {
+		return errors.New("ent: missing options for SubmitCreateBulk.OnConflict")
+	}
+	return u.create.Exec(ctx)
+}
+
+// ExecX is like Exec, but panics if an error occurs.
+func (u *SubmitUpsertBulk) ExecX(ctx context.Context) {
+	if err := u.create.Exec(ctx); err != nil {
 		panic(err)
 	}
 }

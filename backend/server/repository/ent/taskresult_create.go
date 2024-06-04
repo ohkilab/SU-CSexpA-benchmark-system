@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"time"
 
+	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/repository/ent/submit"
@@ -19,6 +20,7 @@ type TaskResultCreate struct {
 	config
 	mutation *TaskResultMutation
 	hooks    []Hook
+	conflict []sql.ConflictOption
 }
 
 // SetRequestPerSec sets the "request_per_sec" field.
@@ -222,6 +224,7 @@ func (trc *TaskResultCreate) createSpec() (*TaskResult, *sqlgraph.CreateSpec) {
 		_node = &TaskResult{config: trc.config}
 		_spec = sqlgraph.NewCreateSpec(taskresult.Table, sqlgraph.NewFieldSpec(taskresult.FieldID, field.TypeInt))
 	)
+	_spec.OnConflict = trc.conflict
 	if id, ok := trc.mutation.ID(); ok {
 		_node.ID = id
 		_spec.ID.Value = id
@@ -290,14 +293,513 @@ func (trc *TaskResultCreate) createSpec() (*TaskResult, *sqlgraph.CreateSpec) {
 	return _node, _spec
 }
 
+// OnConflict allows configuring the `ON CONFLICT` / `ON DUPLICATE KEY` clause
+// of the `INSERT` statement. For example:
+//
+//	client.TaskResult.Create().
+//		SetRequestPerSec(v).
+//		OnConflict(
+//			// Update the row with the new values
+//			// the was proposed for insertion.
+//			sql.ResolveWithNewValues(),
+//		).
+//		// Override some of the fields with custom
+//		// update values.
+//		Update(func(u *ent.TaskResultUpsert) {
+//			SetRequestPerSec(v+v).
+//		}).
+//		Exec(ctx)
+func (trc *TaskResultCreate) OnConflict(opts ...sql.ConflictOption) *TaskResultUpsertOne {
+	trc.conflict = opts
+	return &TaskResultUpsertOne{
+		create: trc,
+	}
+}
+
+// OnConflictColumns calls `OnConflict` and configures the columns
+// as conflict target. Using this option is equivalent to using:
+//
+//	client.TaskResult.Create().
+//		OnConflict(sql.ConflictColumns(columns...)).
+//		Exec(ctx)
+func (trc *TaskResultCreate) OnConflictColumns(columns ...string) *TaskResultUpsertOne {
+	trc.conflict = append(trc.conflict, sql.ConflictColumns(columns...))
+	return &TaskResultUpsertOne{
+		create: trc,
+	}
+}
+
+type (
+	// TaskResultUpsertOne is the builder for "upsert"-ing
+	//  one TaskResult node.
+	TaskResultUpsertOne struct {
+		create *TaskResultCreate
+	}
+
+	// TaskResultUpsert is the "OnConflict" setter.
+	TaskResultUpsert struct {
+		*sql.UpdateSet
+	}
+)
+
+// SetRequestPerSec sets the "request_per_sec" field.
+func (u *TaskResultUpsert) SetRequestPerSec(v int) *TaskResultUpsert {
+	u.Set(taskresult.FieldRequestPerSec, v)
+	return u
+}
+
+// UpdateRequestPerSec sets the "request_per_sec" field to the value that was provided on create.
+func (u *TaskResultUpsert) UpdateRequestPerSec() *TaskResultUpsert {
+	u.SetExcluded(taskresult.FieldRequestPerSec)
+	return u
+}
+
+// AddRequestPerSec adds v to the "request_per_sec" field.
+func (u *TaskResultUpsert) AddRequestPerSec(v int) *TaskResultUpsert {
+	u.Add(taskresult.FieldRequestPerSec, v)
+	return u
+}
+
+// SetStatus sets the "status" field.
+func (u *TaskResultUpsert) SetStatus(v string) *TaskResultUpsert {
+	u.Set(taskresult.FieldStatus, v)
+	return u
+}
+
+// UpdateStatus sets the "status" field to the value that was provided on create.
+func (u *TaskResultUpsert) UpdateStatus() *TaskResultUpsert {
+	u.SetExcluded(taskresult.FieldStatus)
+	return u
+}
+
+// SetErrorMessage sets the "error_message" field.
+func (u *TaskResultUpsert) SetErrorMessage(v string) *TaskResultUpsert {
+	u.Set(taskresult.FieldErrorMessage, v)
+	return u
+}
+
+// UpdateErrorMessage sets the "error_message" field to the value that was provided on create.
+func (u *TaskResultUpsert) UpdateErrorMessage() *TaskResultUpsert {
+	u.SetExcluded(taskresult.FieldErrorMessage)
+	return u
+}
+
+// ClearErrorMessage clears the value of the "error_message" field.
+func (u *TaskResultUpsert) ClearErrorMessage() *TaskResultUpsert {
+	u.SetNull(taskresult.FieldErrorMessage)
+	return u
+}
+
+// SetURL sets the "url" field.
+func (u *TaskResultUpsert) SetURL(v string) *TaskResultUpsert {
+	u.Set(taskresult.FieldURL, v)
+	return u
+}
+
+// UpdateURL sets the "url" field to the value that was provided on create.
+func (u *TaskResultUpsert) UpdateURL() *TaskResultUpsert {
+	u.SetExcluded(taskresult.FieldURL)
+	return u
+}
+
+// SetMethod sets the "method" field.
+func (u *TaskResultUpsert) SetMethod(v string) *TaskResultUpsert {
+	u.Set(taskresult.FieldMethod, v)
+	return u
+}
+
+// UpdateMethod sets the "method" field to the value that was provided on create.
+func (u *TaskResultUpsert) UpdateMethod() *TaskResultUpsert {
+	u.SetExcluded(taskresult.FieldMethod)
+	return u
+}
+
+// SetRequestContentType sets the "request_content_type" field.
+func (u *TaskResultUpsert) SetRequestContentType(v string) *TaskResultUpsert {
+	u.Set(taskresult.FieldRequestContentType, v)
+	return u
+}
+
+// UpdateRequestContentType sets the "request_content_type" field to the value that was provided on create.
+func (u *TaskResultUpsert) UpdateRequestContentType() *TaskResultUpsert {
+	u.SetExcluded(taskresult.FieldRequestContentType)
+	return u
+}
+
+// SetRequestBody sets the "request_body" field.
+func (u *TaskResultUpsert) SetRequestBody(v string) *TaskResultUpsert {
+	u.Set(taskresult.FieldRequestBody, v)
+	return u
+}
+
+// UpdateRequestBody sets the "request_body" field to the value that was provided on create.
+func (u *TaskResultUpsert) UpdateRequestBody() *TaskResultUpsert {
+	u.SetExcluded(taskresult.FieldRequestBody)
+	return u
+}
+
+// ClearRequestBody clears the value of the "request_body" field.
+func (u *TaskResultUpsert) ClearRequestBody() *TaskResultUpsert {
+	u.SetNull(taskresult.FieldRequestBody)
+	return u
+}
+
+// SetThreadNum sets the "thread_num" field.
+func (u *TaskResultUpsert) SetThreadNum(v int) *TaskResultUpsert {
+	u.Set(taskresult.FieldThreadNum, v)
+	return u
+}
+
+// UpdateThreadNum sets the "thread_num" field to the value that was provided on create.
+func (u *TaskResultUpsert) UpdateThreadNum() *TaskResultUpsert {
+	u.SetExcluded(taskresult.FieldThreadNum)
+	return u
+}
+
+// AddThreadNum adds v to the "thread_num" field.
+func (u *TaskResultUpsert) AddThreadNum(v int) *TaskResultUpsert {
+	u.Add(taskresult.FieldThreadNum, v)
+	return u
+}
+
+// SetAttemptCount sets the "attempt_count" field.
+func (u *TaskResultUpsert) SetAttemptCount(v int) *TaskResultUpsert {
+	u.Set(taskresult.FieldAttemptCount, v)
+	return u
+}
+
+// UpdateAttemptCount sets the "attempt_count" field to the value that was provided on create.
+func (u *TaskResultUpsert) UpdateAttemptCount() *TaskResultUpsert {
+	u.SetExcluded(taskresult.FieldAttemptCount)
+	return u
+}
+
+// AddAttemptCount adds v to the "attempt_count" field.
+func (u *TaskResultUpsert) AddAttemptCount(v int) *TaskResultUpsert {
+	u.Add(taskresult.FieldAttemptCount, v)
+	return u
+}
+
+// SetCreatedAt sets the "created_at" field.
+func (u *TaskResultUpsert) SetCreatedAt(v time.Time) *TaskResultUpsert {
+	u.Set(taskresult.FieldCreatedAt, v)
+	return u
+}
+
+// UpdateCreatedAt sets the "created_at" field to the value that was provided on create.
+func (u *TaskResultUpsert) UpdateCreatedAt() *TaskResultUpsert {
+	u.SetExcluded(taskresult.FieldCreatedAt)
+	return u
+}
+
+// SetDeletedAt sets the "deleted_at" field.
+func (u *TaskResultUpsert) SetDeletedAt(v time.Time) *TaskResultUpsert {
+	u.Set(taskresult.FieldDeletedAt, v)
+	return u
+}
+
+// UpdateDeletedAt sets the "deleted_at" field to the value that was provided on create.
+func (u *TaskResultUpsert) UpdateDeletedAt() *TaskResultUpsert {
+	u.SetExcluded(taskresult.FieldDeletedAt)
+	return u
+}
+
+// ClearDeletedAt clears the value of the "deleted_at" field.
+func (u *TaskResultUpsert) ClearDeletedAt() *TaskResultUpsert {
+	u.SetNull(taskresult.FieldDeletedAt)
+	return u
+}
+
+// UpdateNewValues updates the mutable fields using the new values that were set on create except the ID field.
+// Using this option is equivalent to using:
+//
+//	client.TaskResult.Create().
+//		OnConflict(
+//			sql.ResolveWithNewValues(),
+//			sql.ResolveWith(func(u *sql.UpdateSet) {
+//				u.SetIgnore(taskresult.FieldID)
+//			}),
+//		).
+//		Exec(ctx)
+func (u *TaskResultUpsertOne) UpdateNewValues() *TaskResultUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
+		if _, exists := u.create.mutation.ID(); exists {
+			s.SetIgnore(taskresult.FieldID)
+		}
+	}))
+	return u
+}
+
+// Ignore sets each column to itself in case of conflict.
+// Using this option is equivalent to using:
+//
+//	client.TaskResult.Create().
+//	    OnConflict(sql.ResolveWithIgnore()).
+//	    Exec(ctx)
+func (u *TaskResultUpsertOne) Ignore() *TaskResultUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithIgnore())
+	return u
+}
+
+// DoNothing configures the conflict_action to `DO NOTHING`.
+// Supported only by SQLite and PostgreSQL.
+func (u *TaskResultUpsertOne) DoNothing() *TaskResultUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.DoNothing())
+	return u
+}
+
+// Update allows overriding fields `UPDATE` values. See the TaskResultCreate.OnConflict
+// documentation for more info.
+func (u *TaskResultUpsertOne) Update(set func(*TaskResultUpsert)) *TaskResultUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(update *sql.UpdateSet) {
+		set(&TaskResultUpsert{UpdateSet: update})
+	}))
+	return u
+}
+
+// SetRequestPerSec sets the "request_per_sec" field.
+func (u *TaskResultUpsertOne) SetRequestPerSec(v int) *TaskResultUpsertOne {
+	return u.Update(func(s *TaskResultUpsert) {
+		s.SetRequestPerSec(v)
+	})
+}
+
+// AddRequestPerSec adds v to the "request_per_sec" field.
+func (u *TaskResultUpsertOne) AddRequestPerSec(v int) *TaskResultUpsertOne {
+	return u.Update(func(s *TaskResultUpsert) {
+		s.AddRequestPerSec(v)
+	})
+}
+
+// UpdateRequestPerSec sets the "request_per_sec" field to the value that was provided on create.
+func (u *TaskResultUpsertOne) UpdateRequestPerSec() *TaskResultUpsertOne {
+	return u.Update(func(s *TaskResultUpsert) {
+		s.UpdateRequestPerSec()
+	})
+}
+
+// SetStatus sets the "status" field.
+func (u *TaskResultUpsertOne) SetStatus(v string) *TaskResultUpsertOne {
+	return u.Update(func(s *TaskResultUpsert) {
+		s.SetStatus(v)
+	})
+}
+
+// UpdateStatus sets the "status" field to the value that was provided on create.
+func (u *TaskResultUpsertOne) UpdateStatus() *TaskResultUpsertOne {
+	return u.Update(func(s *TaskResultUpsert) {
+		s.UpdateStatus()
+	})
+}
+
+// SetErrorMessage sets the "error_message" field.
+func (u *TaskResultUpsertOne) SetErrorMessage(v string) *TaskResultUpsertOne {
+	return u.Update(func(s *TaskResultUpsert) {
+		s.SetErrorMessage(v)
+	})
+}
+
+// UpdateErrorMessage sets the "error_message" field to the value that was provided on create.
+func (u *TaskResultUpsertOne) UpdateErrorMessage() *TaskResultUpsertOne {
+	return u.Update(func(s *TaskResultUpsert) {
+		s.UpdateErrorMessage()
+	})
+}
+
+// ClearErrorMessage clears the value of the "error_message" field.
+func (u *TaskResultUpsertOne) ClearErrorMessage() *TaskResultUpsertOne {
+	return u.Update(func(s *TaskResultUpsert) {
+		s.ClearErrorMessage()
+	})
+}
+
+// SetURL sets the "url" field.
+func (u *TaskResultUpsertOne) SetURL(v string) *TaskResultUpsertOne {
+	return u.Update(func(s *TaskResultUpsert) {
+		s.SetURL(v)
+	})
+}
+
+// UpdateURL sets the "url" field to the value that was provided on create.
+func (u *TaskResultUpsertOne) UpdateURL() *TaskResultUpsertOne {
+	return u.Update(func(s *TaskResultUpsert) {
+		s.UpdateURL()
+	})
+}
+
+// SetMethod sets the "method" field.
+func (u *TaskResultUpsertOne) SetMethod(v string) *TaskResultUpsertOne {
+	return u.Update(func(s *TaskResultUpsert) {
+		s.SetMethod(v)
+	})
+}
+
+// UpdateMethod sets the "method" field to the value that was provided on create.
+func (u *TaskResultUpsertOne) UpdateMethod() *TaskResultUpsertOne {
+	return u.Update(func(s *TaskResultUpsert) {
+		s.UpdateMethod()
+	})
+}
+
+// SetRequestContentType sets the "request_content_type" field.
+func (u *TaskResultUpsertOne) SetRequestContentType(v string) *TaskResultUpsertOne {
+	return u.Update(func(s *TaskResultUpsert) {
+		s.SetRequestContentType(v)
+	})
+}
+
+// UpdateRequestContentType sets the "request_content_type" field to the value that was provided on create.
+func (u *TaskResultUpsertOne) UpdateRequestContentType() *TaskResultUpsertOne {
+	return u.Update(func(s *TaskResultUpsert) {
+		s.UpdateRequestContentType()
+	})
+}
+
+// SetRequestBody sets the "request_body" field.
+func (u *TaskResultUpsertOne) SetRequestBody(v string) *TaskResultUpsertOne {
+	return u.Update(func(s *TaskResultUpsert) {
+		s.SetRequestBody(v)
+	})
+}
+
+// UpdateRequestBody sets the "request_body" field to the value that was provided on create.
+func (u *TaskResultUpsertOne) UpdateRequestBody() *TaskResultUpsertOne {
+	return u.Update(func(s *TaskResultUpsert) {
+		s.UpdateRequestBody()
+	})
+}
+
+// ClearRequestBody clears the value of the "request_body" field.
+func (u *TaskResultUpsertOne) ClearRequestBody() *TaskResultUpsertOne {
+	return u.Update(func(s *TaskResultUpsert) {
+		s.ClearRequestBody()
+	})
+}
+
+// SetThreadNum sets the "thread_num" field.
+func (u *TaskResultUpsertOne) SetThreadNum(v int) *TaskResultUpsertOne {
+	return u.Update(func(s *TaskResultUpsert) {
+		s.SetThreadNum(v)
+	})
+}
+
+// AddThreadNum adds v to the "thread_num" field.
+func (u *TaskResultUpsertOne) AddThreadNum(v int) *TaskResultUpsertOne {
+	return u.Update(func(s *TaskResultUpsert) {
+		s.AddThreadNum(v)
+	})
+}
+
+// UpdateThreadNum sets the "thread_num" field to the value that was provided on create.
+func (u *TaskResultUpsertOne) UpdateThreadNum() *TaskResultUpsertOne {
+	return u.Update(func(s *TaskResultUpsert) {
+		s.UpdateThreadNum()
+	})
+}
+
+// SetAttemptCount sets the "attempt_count" field.
+func (u *TaskResultUpsertOne) SetAttemptCount(v int) *TaskResultUpsertOne {
+	return u.Update(func(s *TaskResultUpsert) {
+		s.SetAttemptCount(v)
+	})
+}
+
+// AddAttemptCount adds v to the "attempt_count" field.
+func (u *TaskResultUpsertOne) AddAttemptCount(v int) *TaskResultUpsertOne {
+	return u.Update(func(s *TaskResultUpsert) {
+		s.AddAttemptCount(v)
+	})
+}
+
+// UpdateAttemptCount sets the "attempt_count" field to the value that was provided on create.
+func (u *TaskResultUpsertOne) UpdateAttemptCount() *TaskResultUpsertOne {
+	return u.Update(func(s *TaskResultUpsert) {
+		s.UpdateAttemptCount()
+	})
+}
+
+// SetCreatedAt sets the "created_at" field.
+func (u *TaskResultUpsertOne) SetCreatedAt(v time.Time) *TaskResultUpsertOne {
+	return u.Update(func(s *TaskResultUpsert) {
+		s.SetCreatedAt(v)
+	})
+}
+
+// UpdateCreatedAt sets the "created_at" field to the value that was provided on create.
+func (u *TaskResultUpsertOne) UpdateCreatedAt() *TaskResultUpsertOne {
+	return u.Update(func(s *TaskResultUpsert) {
+		s.UpdateCreatedAt()
+	})
+}
+
+// SetDeletedAt sets the "deleted_at" field.
+func (u *TaskResultUpsertOne) SetDeletedAt(v time.Time) *TaskResultUpsertOne {
+	return u.Update(func(s *TaskResultUpsert) {
+		s.SetDeletedAt(v)
+	})
+}
+
+// UpdateDeletedAt sets the "deleted_at" field to the value that was provided on create.
+func (u *TaskResultUpsertOne) UpdateDeletedAt() *TaskResultUpsertOne {
+	return u.Update(func(s *TaskResultUpsert) {
+		s.UpdateDeletedAt()
+	})
+}
+
+// ClearDeletedAt clears the value of the "deleted_at" field.
+func (u *TaskResultUpsertOne) ClearDeletedAt() *TaskResultUpsertOne {
+	return u.Update(func(s *TaskResultUpsert) {
+		s.ClearDeletedAt()
+	})
+}
+
+// Exec executes the query.
+func (u *TaskResultUpsertOne) Exec(ctx context.Context) error {
+	if len(u.create.conflict) == 0 {
+		return errors.New("ent: missing options for TaskResultCreate.OnConflict")
+	}
+	return u.create.Exec(ctx)
+}
+
+// ExecX is like Exec, but panics if an error occurs.
+func (u *TaskResultUpsertOne) ExecX(ctx context.Context) {
+	if err := u.create.Exec(ctx); err != nil {
+		panic(err)
+	}
+}
+
+// Exec executes the UPSERT query and returns the inserted/updated ID.
+func (u *TaskResultUpsertOne) ID(ctx context.Context) (id int, err error) {
+	node, err := u.create.Save(ctx)
+	if err != nil {
+		return id, err
+	}
+	return node.ID, nil
+}
+
+// IDX is like ID, but panics if an error occurs.
+func (u *TaskResultUpsertOne) IDX(ctx context.Context) int {
+	id, err := u.ID(ctx)
+	if err != nil {
+		panic(err)
+	}
+	return id
+}
+
 // TaskResultCreateBulk is the builder for creating many TaskResult entities in bulk.
 type TaskResultCreateBulk struct {
 	config
+	err      error
 	builders []*TaskResultCreate
+	conflict []sql.ConflictOption
 }
 
 // Save creates the TaskResult entities in the database.
 func (trcb *TaskResultCreateBulk) Save(ctx context.Context) ([]*TaskResult, error) {
+	if trcb.err != nil {
+		return nil, trcb.err
+	}
 	specs := make([]*sqlgraph.CreateSpec, len(trcb.builders))
 	nodes := make([]*TaskResult, len(trcb.builders))
 	mutators := make([]Mutator, len(trcb.builders))
@@ -319,6 +821,7 @@ func (trcb *TaskResultCreateBulk) Save(ctx context.Context) ([]*TaskResult, erro
 					_, err = mutators[i+1].Mutate(root, trcb.builders[i+1].mutation)
 				} else {
 					spec := &sqlgraph.BatchCreateSpec{Nodes: specs}
+					spec.OnConflict = trcb.conflict
 					// Invoke the actual operation on the latest mutation in the chain.
 					if err = sqlgraph.BatchCreate(ctx, trcb.driver, spec); err != nil {
 						if sqlgraph.IsConstraintError(err) {
@@ -369,6 +872,316 @@ func (trcb *TaskResultCreateBulk) Exec(ctx context.Context) error {
 // ExecX is like Exec, but panics if an error occurs.
 func (trcb *TaskResultCreateBulk) ExecX(ctx context.Context) {
 	if err := trcb.Exec(ctx); err != nil {
+		panic(err)
+	}
+}
+
+// OnConflict allows configuring the `ON CONFLICT` / `ON DUPLICATE KEY` clause
+// of the `INSERT` statement. For example:
+//
+//	client.TaskResult.CreateBulk(builders...).
+//		OnConflict(
+//			// Update the row with the new values
+//			// the was proposed for insertion.
+//			sql.ResolveWithNewValues(),
+//		).
+//		// Override some of the fields with custom
+//		// update values.
+//		Update(func(u *ent.TaskResultUpsert) {
+//			SetRequestPerSec(v+v).
+//		}).
+//		Exec(ctx)
+func (trcb *TaskResultCreateBulk) OnConflict(opts ...sql.ConflictOption) *TaskResultUpsertBulk {
+	trcb.conflict = opts
+	return &TaskResultUpsertBulk{
+		create: trcb,
+	}
+}
+
+// OnConflictColumns calls `OnConflict` and configures the columns
+// as conflict target. Using this option is equivalent to using:
+//
+//	client.TaskResult.Create().
+//		OnConflict(sql.ConflictColumns(columns...)).
+//		Exec(ctx)
+func (trcb *TaskResultCreateBulk) OnConflictColumns(columns ...string) *TaskResultUpsertBulk {
+	trcb.conflict = append(trcb.conflict, sql.ConflictColumns(columns...))
+	return &TaskResultUpsertBulk{
+		create: trcb,
+	}
+}
+
+// TaskResultUpsertBulk is the builder for "upsert"-ing
+// a bulk of TaskResult nodes.
+type TaskResultUpsertBulk struct {
+	create *TaskResultCreateBulk
+}
+
+// UpdateNewValues updates the mutable fields using the new values that
+// were set on create. Using this option is equivalent to using:
+//
+//	client.TaskResult.Create().
+//		OnConflict(
+//			sql.ResolveWithNewValues(),
+//			sql.ResolveWith(func(u *sql.UpdateSet) {
+//				u.SetIgnore(taskresult.FieldID)
+//			}),
+//		).
+//		Exec(ctx)
+func (u *TaskResultUpsertBulk) UpdateNewValues() *TaskResultUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
+		for _, b := range u.create.builders {
+			if _, exists := b.mutation.ID(); exists {
+				s.SetIgnore(taskresult.FieldID)
+			}
+		}
+	}))
+	return u
+}
+
+// Ignore sets each column to itself in case of conflict.
+// Using this option is equivalent to using:
+//
+//	client.TaskResult.Create().
+//		OnConflict(sql.ResolveWithIgnore()).
+//		Exec(ctx)
+func (u *TaskResultUpsertBulk) Ignore() *TaskResultUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithIgnore())
+	return u
+}
+
+// DoNothing configures the conflict_action to `DO NOTHING`.
+// Supported only by SQLite and PostgreSQL.
+func (u *TaskResultUpsertBulk) DoNothing() *TaskResultUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.DoNothing())
+	return u
+}
+
+// Update allows overriding fields `UPDATE` values. See the TaskResultCreateBulk.OnConflict
+// documentation for more info.
+func (u *TaskResultUpsertBulk) Update(set func(*TaskResultUpsert)) *TaskResultUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(update *sql.UpdateSet) {
+		set(&TaskResultUpsert{UpdateSet: update})
+	}))
+	return u
+}
+
+// SetRequestPerSec sets the "request_per_sec" field.
+func (u *TaskResultUpsertBulk) SetRequestPerSec(v int) *TaskResultUpsertBulk {
+	return u.Update(func(s *TaskResultUpsert) {
+		s.SetRequestPerSec(v)
+	})
+}
+
+// AddRequestPerSec adds v to the "request_per_sec" field.
+func (u *TaskResultUpsertBulk) AddRequestPerSec(v int) *TaskResultUpsertBulk {
+	return u.Update(func(s *TaskResultUpsert) {
+		s.AddRequestPerSec(v)
+	})
+}
+
+// UpdateRequestPerSec sets the "request_per_sec" field to the value that was provided on create.
+func (u *TaskResultUpsertBulk) UpdateRequestPerSec() *TaskResultUpsertBulk {
+	return u.Update(func(s *TaskResultUpsert) {
+		s.UpdateRequestPerSec()
+	})
+}
+
+// SetStatus sets the "status" field.
+func (u *TaskResultUpsertBulk) SetStatus(v string) *TaskResultUpsertBulk {
+	return u.Update(func(s *TaskResultUpsert) {
+		s.SetStatus(v)
+	})
+}
+
+// UpdateStatus sets the "status" field to the value that was provided on create.
+func (u *TaskResultUpsertBulk) UpdateStatus() *TaskResultUpsertBulk {
+	return u.Update(func(s *TaskResultUpsert) {
+		s.UpdateStatus()
+	})
+}
+
+// SetErrorMessage sets the "error_message" field.
+func (u *TaskResultUpsertBulk) SetErrorMessage(v string) *TaskResultUpsertBulk {
+	return u.Update(func(s *TaskResultUpsert) {
+		s.SetErrorMessage(v)
+	})
+}
+
+// UpdateErrorMessage sets the "error_message" field to the value that was provided on create.
+func (u *TaskResultUpsertBulk) UpdateErrorMessage() *TaskResultUpsertBulk {
+	return u.Update(func(s *TaskResultUpsert) {
+		s.UpdateErrorMessage()
+	})
+}
+
+// ClearErrorMessage clears the value of the "error_message" field.
+func (u *TaskResultUpsertBulk) ClearErrorMessage() *TaskResultUpsertBulk {
+	return u.Update(func(s *TaskResultUpsert) {
+		s.ClearErrorMessage()
+	})
+}
+
+// SetURL sets the "url" field.
+func (u *TaskResultUpsertBulk) SetURL(v string) *TaskResultUpsertBulk {
+	return u.Update(func(s *TaskResultUpsert) {
+		s.SetURL(v)
+	})
+}
+
+// UpdateURL sets the "url" field to the value that was provided on create.
+func (u *TaskResultUpsertBulk) UpdateURL() *TaskResultUpsertBulk {
+	return u.Update(func(s *TaskResultUpsert) {
+		s.UpdateURL()
+	})
+}
+
+// SetMethod sets the "method" field.
+func (u *TaskResultUpsertBulk) SetMethod(v string) *TaskResultUpsertBulk {
+	return u.Update(func(s *TaskResultUpsert) {
+		s.SetMethod(v)
+	})
+}
+
+// UpdateMethod sets the "method" field to the value that was provided on create.
+func (u *TaskResultUpsertBulk) UpdateMethod() *TaskResultUpsertBulk {
+	return u.Update(func(s *TaskResultUpsert) {
+		s.UpdateMethod()
+	})
+}
+
+// SetRequestContentType sets the "request_content_type" field.
+func (u *TaskResultUpsertBulk) SetRequestContentType(v string) *TaskResultUpsertBulk {
+	return u.Update(func(s *TaskResultUpsert) {
+		s.SetRequestContentType(v)
+	})
+}
+
+// UpdateRequestContentType sets the "request_content_type" field to the value that was provided on create.
+func (u *TaskResultUpsertBulk) UpdateRequestContentType() *TaskResultUpsertBulk {
+	return u.Update(func(s *TaskResultUpsert) {
+		s.UpdateRequestContentType()
+	})
+}
+
+// SetRequestBody sets the "request_body" field.
+func (u *TaskResultUpsertBulk) SetRequestBody(v string) *TaskResultUpsertBulk {
+	return u.Update(func(s *TaskResultUpsert) {
+		s.SetRequestBody(v)
+	})
+}
+
+// UpdateRequestBody sets the "request_body" field to the value that was provided on create.
+func (u *TaskResultUpsertBulk) UpdateRequestBody() *TaskResultUpsertBulk {
+	return u.Update(func(s *TaskResultUpsert) {
+		s.UpdateRequestBody()
+	})
+}
+
+// ClearRequestBody clears the value of the "request_body" field.
+func (u *TaskResultUpsertBulk) ClearRequestBody() *TaskResultUpsertBulk {
+	return u.Update(func(s *TaskResultUpsert) {
+		s.ClearRequestBody()
+	})
+}
+
+// SetThreadNum sets the "thread_num" field.
+func (u *TaskResultUpsertBulk) SetThreadNum(v int) *TaskResultUpsertBulk {
+	return u.Update(func(s *TaskResultUpsert) {
+		s.SetThreadNum(v)
+	})
+}
+
+// AddThreadNum adds v to the "thread_num" field.
+func (u *TaskResultUpsertBulk) AddThreadNum(v int) *TaskResultUpsertBulk {
+	return u.Update(func(s *TaskResultUpsert) {
+		s.AddThreadNum(v)
+	})
+}
+
+// UpdateThreadNum sets the "thread_num" field to the value that was provided on create.
+func (u *TaskResultUpsertBulk) UpdateThreadNum() *TaskResultUpsertBulk {
+	return u.Update(func(s *TaskResultUpsert) {
+		s.UpdateThreadNum()
+	})
+}
+
+// SetAttemptCount sets the "attempt_count" field.
+func (u *TaskResultUpsertBulk) SetAttemptCount(v int) *TaskResultUpsertBulk {
+	return u.Update(func(s *TaskResultUpsert) {
+		s.SetAttemptCount(v)
+	})
+}
+
+// AddAttemptCount adds v to the "attempt_count" field.
+func (u *TaskResultUpsertBulk) AddAttemptCount(v int) *TaskResultUpsertBulk {
+	return u.Update(func(s *TaskResultUpsert) {
+		s.AddAttemptCount(v)
+	})
+}
+
+// UpdateAttemptCount sets the "attempt_count" field to the value that was provided on create.
+func (u *TaskResultUpsertBulk) UpdateAttemptCount() *TaskResultUpsertBulk {
+	return u.Update(func(s *TaskResultUpsert) {
+		s.UpdateAttemptCount()
+	})
+}
+
+// SetCreatedAt sets the "created_at" field.
+func (u *TaskResultUpsertBulk) SetCreatedAt(v time.Time) *TaskResultUpsertBulk {
+	return u.Update(func(s *TaskResultUpsert) {
+		s.SetCreatedAt(v)
+	})
+}
+
+// UpdateCreatedAt sets the "created_at" field to the value that was provided on create.
+func (u *TaskResultUpsertBulk) UpdateCreatedAt() *TaskResultUpsertBulk {
+	return u.Update(func(s *TaskResultUpsert) {
+		s.UpdateCreatedAt()
+	})
+}
+
+// SetDeletedAt sets the "deleted_at" field.
+func (u *TaskResultUpsertBulk) SetDeletedAt(v time.Time) *TaskResultUpsertBulk {
+	return u.Update(func(s *TaskResultUpsert) {
+		s.SetDeletedAt(v)
+	})
+}
+
+// UpdateDeletedAt sets the "deleted_at" field to the value that was provided on create.
+func (u *TaskResultUpsertBulk) UpdateDeletedAt() *TaskResultUpsertBulk {
+	return u.Update(func(s *TaskResultUpsert) {
+		s.UpdateDeletedAt()
+	})
+}
+
+// ClearDeletedAt clears the value of the "deleted_at" field.
+func (u *TaskResultUpsertBulk) ClearDeletedAt() *TaskResultUpsertBulk {
+	return u.Update(func(s *TaskResultUpsert) {
+		s.ClearDeletedAt()
+	})
+}
+
+// Exec executes the query.
+func (u *TaskResultUpsertBulk) Exec(ctx context.Context) error {
+	if u.create.err != nil {
+		return u.create.err
+	}
+	for i, b := range u.create.builders {
+		if len(b.conflict) != 0 {
+			return fmt.Errorf("ent: OnConflict was set for builder %d. Set it on the TaskResultCreateBulk instead", i)
+		}
+	}
+	if len(u.create.conflict) == 0 {
+		return errors.New("ent: missing options for TaskResultCreateBulk.OnConflict")
+	}
+	return u.create.Exec(ctx)
+}
+
+// ExecX is like Exec, but panics if an error occurs.
+func (u *TaskResultUpsertBulk) ExecX(ctx context.Context) {
+	if err := u.create.Exec(ctx); err != nil {
 		panic(err)
 	}
 }

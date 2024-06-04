@@ -36,6 +36,14 @@ func (tru *TaskResultUpdate) SetRequestPerSec(i int) *TaskResultUpdate {
 	return tru
 }
 
+// SetNillableRequestPerSec sets the "request_per_sec" field if the given value is not nil.
+func (tru *TaskResultUpdate) SetNillableRequestPerSec(i *int) *TaskResultUpdate {
+	if i != nil {
+		tru.SetRequestPerSec(*i)
+	}
+	return tru
+}
+
 // AddRequestPerSec adds i to the "request_per_sec" field.
 func (tru *TaskResultUpdate) AddRequestPerSec(i int) *TaskResultUpdate {
 	tru.mutation.AddRequestPerSec(i)
@@ -45,6 +53,14 @@ func (tru *TaskResultUpdate) AddRequestPerSec(i int) *TaskResultUpdate {
 // SetStatus sets the "status" field.
 func (tru *TaskResultUpdate) SetStatus(s string) *TaskResultUpdate {
 	tru.mutation.SetStatus(s)
+	return tru
+}
+
+// SetNillableStatus sets the "status" field if the given value is not nil.
+func (tru *TaskResultUpdate) SetNillableStatus(s *string) *TaskResultUpdate {
+	if s != nil {
+		tru.SetStatus(*s)
+	}
 	return tru
 }
 
@@ -74,15 +90,39 @@ func (tru *TaskResultUpdate) SetURL(s string) *TaskResultUpdate {
 	return tru
 }
 
+// SetNillableURL sets the "url" field if the given value is not nil.
+func (tru *TaskResultUpdate) SetNillableURL(s *string) *TaskResultUpdate {
+	if s != nil {
+		tru.SetURL(*s)
+	}
+	return tru
+}
+
 // SetMethod sets the "method" field.
 func (tru *TaskResultUpdate) SetMethod(s string) *TaskResultUpdate {
 	tru.mutation.SetMethod(s)
 	return tru
 }
 
+// SetNillableMethod sets the "method" field if the given value is not nil.
+func (tru *TaskResultUpdate) SetNillableMethod(s *string) *TaskResultUpdate {
+	if s != nil {
+		tru.SetMethod(*s)
+	}
+	return tru
+}
+
 // SetRequestContentType sets the "request_content_type" field.
 func (tru *TaskResultUpdate) SetRequestContentType(s string) *TaskResultUpdate {
 	tru.mutation.SetRequestContentType(s)
+	return tru
+}
+
+// SetNillableRequestContentType sets the "request_content_type" field if the given value is not nil.
+func (tru *TaskResultUpdate) SetNillableRequestContentType(s *string) *TaskResultUpdate {
+	if s != nil {
+		tru.SetRequestContentType(*s)
+	}
 	return tru
 }
 
@@ -113,6 +153,14 @@ func (tru *TaskResultUpdate) SetThreadNum(i int) *TaskResultUpdate {
 	return tru
 }
 
+// SetNillableThreadNum sets the "thread_num" field if the given value is not nil.
+func (tru *TaskResultUpdate) SetNillableThreadNum(i *int) *TaskResultUpdate {
+	if i != nil {
+		tru.SetThreadNum(*i)
+	}
+	return tru
+}
+
 // AddThreadNum adds i to the "thread_num" field.
 func (tru *TaskResultUpdate) AddThreadNum(i int) *TaskResultUpdate {
 	tru.mutation.AddThreadNum(i)
@@ -126,6 +174,14 @@ func (tru *TaskResultUpdate) SetAttemptCount(i int) *TaskResultUpdate {
 	return tru
 }
 
+// SetNillableAttemptCount sets the "attempt_count" field if the given value is not nil.
+func (tru *TaskResultUpdate) SetNillableAttemptCount(i *int) *TaskResultUpdate {
+	if i != nil {
+		tru.SetAttemptCount(*i)
+	}
+	return tru
+}
+
 // AddAttemptCount adds i to the "attempt_count" field.
 func (tru *TaskResultUpdate) AddAttemptCount(i int) *TaskResultUpdate {
 	tru.mutation.AddAttemptCount(i)
@@ -135,6 +191,14 @@ func (tru *TaskResultUpdate) AddAttemptCount(i int) *TaskResultUpdate {
 // SetCreatedAt sets the "created_at" field.
 func (tru *TaskResultUpdate) SetCreatedAt(t time.Time) *TaskResultUpdate {
 	tru.mutation.SetCreatedAt(t)
+	return tru
+}
+
+// SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
+func (tru *TaskResultUpdate) SetNillableCreatedAt(t *time.Time) *TaskResultUpdate {
+	if t != nil {
+		tru.SetCreatedAt(*t)
+	}
 	return tru
 }
 
@@ -331,6 +395,14 @@ func (truo *TaskResultUpdateOne) SetRequestPerSec(i int) *TaskResultUpdateOne {
 	return truo
 }
 
+// SetNillableRequestPerSec sets the "request_per_sec" field if the given value is not nil.
+func (truo *TaskResultUpdateOne) SetNillableRequestPerSec(i *int) *TaskResultUpdateOne {
+	if i != nil {
+		truo.SetRequestPerSec(*i)
+	}
+	return truo
+}
+
 // AddRequestPerSec adds i to the "request_per_sec" field.
 func (truo *TaskResultUpdateOne) AddRequestPerSec(i int) *TaskResultUpdateOne {
 	truo.mutation.AddRequestPerSec(i)
@@ -340,6 +412,14 @@ func (truo *TaskResultUpdateOne) AddRequestPerSec(i int) *TaskResultUpdateOne {
 // SetStatus sets the "status" field.
 func (truo *TaskResultUpdateOne) SetStatus(s string) *TaskResultUpdateOne {
 	truo.mutation.SetStatus(s)
+	return truo
+}
+
+// SetNillableStatus sets the "status" field if the given value is not nil.
+func (truo *TaskResultUpdateOne) SetNillableStatus(s *string) *TaskResultUpdateOne {
+	if s != nil {
+		truo.SetStatus(*s)
+	}
 	return truo
 }
 
@@ -369,15 +449,39 @@ func (truo *TaskResultUpdateOne) SetURL(s string) *TaskResultUpdateOne {
 	return truo
 }
 
+// SetNillableURL sets the "url" field if the given value is not nil.
+func (truo *TaskResultUpdateOne) SetNillableURL(s *string) *TaskResultUpdateOne {
+	if s != nil {
+		truo.SetURL(*s)
+	}
+	return truo
+}
+
 // SetMethod sets the "method" field.
 func (truo *TaskResultUpdateOne) SetMethod(s string) *TaskResultUpdateOne {
 	truo.mutation.SetMethod(s)
 	return truo
 }
 
+// SetNillableMethod sets the "method" field if the given value is not nil.
+func (truo *TaskResultUpdateOne) SetNillableMethod(s *string) *TaskResultUpdateOne {
+	if s != nil {
+		truo.SetMethod(*s)
+	}
+	return truo
+}
+
 // SetRequestContentType sets the "request_content_type" field.
 func (truo *TaskResultUpdateOne) SetRequestContentType(s string) *TaskResultUpdateOne {
 	truo.mutation.SetRequestContentType(s)
+	return truo
+}
+
+// SetNillableRequestContentType sets the "request_content_type" field if the given value is not nil.
+func (truo *TaskResultUpdateOne) SetNillableRequestContentType(s *string) *TaskResultUpdateOne {
+	if s != nil {
+		truo.SetRequestContentType(*s)
+	}
 	return truo
 }
 
@@ -408,6 +512,14 @@ func (truo *TaskResultUpdateOne) SetThreadNum(i int) *TaskResultUpdateOne {
 	return truo
 }
 
+// SetNillableThreadNum sets the "thread_num" field if the given value is not nil.
+func (truo *TaskResultUpdateOne) SetNillableThreadNum(i *int) *TaskResultUpdateOne {
+	if i != nil {
+		truo.SetThreadNum(*i)
+	}
+	return truo
+}
+
 // AddThreadNum adds i to the "thread_num" field.
 func (truo *TaskResultUpdateOne) AddThreadNum(i int) *TaskResultUpdateOne {
 	truo.mutation.AddThreadNum(i)
@@ -421,6 +533,14 @@ func (truo *TaskResultUpdateOne) SetAttemptCount(i int) *TaskResultUpdateOne {
 	return truo
 }
 
+// SetNillableAttemptCount sets the "attempt_count" field if the given value is not nil.
+func (truo *TaskResultUpdateOne) SetNillableAttemptCount(i *int) *TaskResultUpdateOne {
+	if i != nil {
+		truo.SetAttemptCount(*i)
+	}
+	return truo
+}
+
 // AddAttemptCount adds i to the "attempt_count" field.
 func (truo *TaskResultUpdateOne) AddAttemptCount(i int) *TaskResultUpdateOne {
 	truo.mutation.AddAttemptCount(i)
@@ -430,6 +550,14 @@ func (truo *TaskResultUpdateOne) AddAttemptCount(i int) *TaskResultUpdateOne {
 // SetCreatedAt sets the "created_at" field.
 func (truo *TaskResultUpdateOne) SetCreatedAt(t time.Time) *TaskResultUpdateOne {
 	truo.mutation.SetCreatedAt(t)
+	return truo
+}
+
+// SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
+func (truo *TaskResultUpdateOne) SetNillableCreatedAt(t *time.Time) *TaskResultUpdateOne {
+	if t != nil {
+		truo.SetCreatedAt(*t)
+	}
 	return truo
 }
 

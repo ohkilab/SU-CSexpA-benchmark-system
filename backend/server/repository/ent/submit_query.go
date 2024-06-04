@@ -527,7 +527,6 @@ func (sq *SubmitQuery) loadTaskResults(ctx context.Context, query *TaskResultQue
 	}
 	return nil
 }
-
 func (sq *SubmitQuery) loadGroups(ctx context.Context, query *GroupQuery, nodes []*Submit, init func(*Submit), assign func(*Submit, *Group)) error {
 	ids := make([]int, 0, len(nodes))
 	nodeids := make(map[int][]*Submit)
@@ -560,7 +559,6 @@ func (sq *SubmitQuery) loadGroups(ctx context.Context, query *GroupQuery, nodes 
 	}
 	return nil
 }
-
 func (sq *SubmitQuery) loadContests(ctx context.Context, query *ContestQuery, nodes []*Submit, init func(*Submit), assign func(*Submit, *Contest)) error {
 	ids := make([]int, 0, len(nodes))
 	nodeids := make(map[int][]*Submit)

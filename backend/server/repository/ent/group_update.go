@@ -35,9 +35,25 @@ func (gu *GroupUpdate) SetName(s string) *GroupUpdate {
 	return gu
 }
 
+// SetNillableName sets the "name" field if the given value is not nil.
+func (gu *GroupUpdate) SetNillableName(s *string) *GroupUpdate {
+	if s != nil {
+		gu.SetName(*s)
+	}
+	return gu
+}
+
 // SetRole sets the "role" field.
 func (gu *GroupUpdate) SetRole(s string) *GroupUpdate {
 	gu.mutation.SetRole(s)
+	return gu
+}
+
+// SetNillableRole sets the "role" field if the given value is not nil.
+func (gu *GroupUpdate) SetNillableRole(s *string) *GroupUpdate {
+	if s != nil {
+		gu.SetRole(*s)
+	}
 	return gu
 }
 
@@ -45,6 +61,14 @@ func (gu *GroupUpdate) SetRole(s string) *GroupUpdate {
 func (gu *GroupUpdate) SetYear(i int) *GroupUpdate {
 	gu.mutation.ResetYear()
 	gu.mutation.SetYear(i)
+	return gu
+}
+
+// SetNillableYear sets the "year" field if the given value is not nil.
+func (gu *GroupUpdate) SetNillableYear(i *int) *GroupUpdate {
+	if i != nil {
+		gu.SetYear(*i)
+	}
 	return gu
 }
 
@@ -60,9 +84,25 @@ func (gu *GroupUpdate) SetEncryptedPassword(s string) *GroupUpdate {
 	return gu
 }
 
+// SetNillableEncryptedPassword sets the "encrypted_password" field if the given value is not nil.
+func (gu *GroupUpdate) SetNillableEncryptedPassword(s *string) *GroupUpdate {
+	if s != nil {
+		gu.SetEncryptedPassword(*s)
+	}
+	return gu
+}
+
 // SetCreatedAt sets the "created_at" field.
 func (gu *GroupUpdate) SetCreatedAt(t time.Time) *GroupUpdate {
 	gu.mutation.SetCreatedAt(t)
+	return gu
+}
+
+// SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
+func (gu *GroupUpdate) SetNillableCreatedAt(t *time.Time) *GroupUpdate {
+	if t != nil {
+		gu.SetCreatedAt(*t)
+	}
 	return gu
 }
 
@@ -258,9 +298,25 @@ func (guo *GroupUpdateOne) SetName(s string) *GroupUpdateOne {
 	return guo
 }
 
+// SetNillableName sets the "name" field if the given value is not nil.
+func (guo *GroupUpdateOne) SetNillableName(s *string) *GroupUpdateOne {
+	if s != nil {
+		guo.SetName(*s)
+	}
+	return guo
+}
+
 // SetRole sets the "role" field.
 func (guo *GroupUpdateOne) SetRole(s string) *GroupUpdateOne {
 	guo.mutation.SetRole(s)
+	return guo
+}
+
+// SetNillableRole sets the "role" field if the given value is not nil.
+func (guo *GroupUpdateOne) SetNillableRole(s *string) *GroupUpdateOne {
+	if s != nil {
+		guo.SetRole(*s)
+	}
 	return guo
 }
 
@@ -268,6 +324,14 @@ func (guo *GroupUpdateOne) SetRole(s string) *GroupUpdateOne {
 func (guo *GroupUpdateOne) SetYear(i int) *GroupUpdateOne {
 	guo.mutation.ResetYear()
 	guo.mutation.SetYear(i)
+	return guo
+}
+
+// SetNillableYear sets the "year" field if the given value is not nil.
+func (guo *GroupUpdateOne) SetNillableYear(i *int) *GroupUpdateOne {
+	if i != nil {
+		guo.SetYear(*i)
+	}
 	return guo
 }
 
@@ -283,9 +347,25 @@ func (guo *GroupUpdateOne) SetEncryptedPassword(s string) *GroupUpdateOne {
 	return guo
 }
 
+// SetNillableEncryptedPassword sets the "encrypted_password" field if the given value is not nil.
+func (guo *GroupUpdateOne) SetNillableEncryptedPassword(s *string) *GroupUpdateOne {
+	if s != nil {
+		guo.SetEncryptedPassword(*s)
+	}
+	return guo
+}
+
 // SetCreatedAt sets the "created_at" field.
 func (guo *GroupUpdateOne) SetCreatedAt(t time.Time) *GroupUpdateOne {
 	guo.mutation.SetCreatedAt(t)
+	return guo
+}
+
+// SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
+func (guo *GroupUpdateOne) SetNillableCreatedAt(t *time.Time) *GroupUpdateOne {
+	if t != nil {
+		guo.SetCreatedAt(*t)
+	}
 	return guo
 }
 
