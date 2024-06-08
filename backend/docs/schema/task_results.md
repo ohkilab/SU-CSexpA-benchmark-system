@@ -25,7 +25,7 @@ CREATE TABLE `task_results` (
   PRIMARY KEY (`id`),
   KEY `task_results_submits_taskResults` (`submit_task_results`),
   CONSTRAINT `task_results_submits_taskResults` FOREIGN KEY (`submit_task_results`) REFERENCES `submits` (`id`) ON DELETE SET NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin
+) ENGINE=InnoDB AUTO_INCREMENT=[Redacted by tbls] DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin
 ```
 
 </details>

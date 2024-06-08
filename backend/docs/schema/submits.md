@@ -26,7 +26,7 @@ CREATE TABLE `submits` (
   KEY `submits_groups_submits` (`group_submits`),
   CONSTRAINT `submits_contests_submits` FOREIGN KEY (`contest_submits`) REFERENCES `contests` (`id`) ON DELETE SET NULL,
   CONSTRAINT `submits_groups_submits` FOREIGN KEY (`group_submits`) REFERENCES `groups` (`id`) ON DELETE SET NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin
+) ENGINE=InnoDB AUTO_INCREMENT=[Redacted by tbls] DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin
 ```
 
 </details>

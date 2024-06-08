@@ -70,12 +70,10 @@ func (e SubmitEdges) TaskResultsOrErr() ([]*TaskResult, error) {
 // GroupsOrErr returns the Groups value or an error if the edge
 // was not loaded in eager-loading, or loaded but was not found.
 func (e SubmitEdges) GroupsOrErr() (*Group, error) {
-	if e.loadedTypes[1] {
-		if e.Groups == nil {
-			// Edge was loaded but was not found.
-			return nil, &NotFoundError{label: group.Label}
-		}
+	if e.Groups != nil {
 		return e.Groups, nil
+	} else if e.loadedTypes[1] {
+		return nil, &NotFoundError{label: group.Label}
 	}
 	return nil, &NotLoadedError{edge: "groups"}
 }
@@ -83,12 +81,10 @@ func (e SubmitEdges) GroupsOrErr() (*Group, error) {
 // ContestsOrErr returns the Contests value or an error if the edge
 // was not loaded in eager-loading, or loaded but was not found.
 func (e SubmitEdges) ContestsOrErr() (*Contest, error) {
-	if e.loadedTypes[2] {
-		if e.Contests == nil {
-			// Edge was loaded but was not found.
-			return nil, &NotFoundError{label: contest.Label}
-		}
+	if e.Contests != nil {
 		return e.Contests, nil
+	} else if e.loadedTypes[2] {
+		return nil, &NotFoundError{label: contest.Label}
 	}
 	return nil, &NotLoadedError{edge: "contests"}
 }

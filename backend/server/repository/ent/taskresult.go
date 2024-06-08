@@ -59,12 +59,10 @@ type TaskResultEdges struct {
 // SubmitsOrErr returns the Submits value or an error if the edge
 // was not loaded in eager-loading, or loaded but was not found.
 func (e TaskResultEdges) SubmitsOrErr() (*Submit, error) {
-	if e.loadedTypes[0] {
-		if e.Submits == nil {
-			// Edge was loaded but was not found.
-			return nil, &NotFoundError{label: submit.Label}
-		}
+	if e.Submits != nil {
 		return e.Submits, nil
+	} else if e.loadedTypes[0] {
+		return nil, &NotFoundError{label: submit.Label}
 	}
 	return nil, &NotLoadedError{edge: "submits"}
 }
