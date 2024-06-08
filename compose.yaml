@@ -31,8 +31,6 @@ services:
       - .env
     volumes:
       - ./data:/var/lib/mysql
-    ports:
-      - 3306:3306
   frontend:
     image: ghcr.io/ohkilab/su-csexpa-benchmark-system-frontend:main
     # build:
