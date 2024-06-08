@@ -10,7 +10,7 @@ RUN go build \
 
 FROM ubuntu:22.04
 
-RUN apt-get update && apt-get install -y tzdata \
+RUN apt-get update && apt-get install -y --no-install-recommends tzdata \
     && rm -rf /var/lib/apt/lists/*
 ENV TZ Asia/Tokyo
 
