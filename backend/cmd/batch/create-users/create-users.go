@@ -10,7 +10,6 @@ import (
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/cmd/batch/config"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/core/timejst"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/repository/ent"
-	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/repository/ent/group"
 	"github.com/spf13/cobra"
 	"golang.org/x/crypto/bcrypt"
 	"gopkg.in/yaml.v3"
@@ -56,13 +55,11 @@ var Command = &cobra.Command{
 			if err != nil {
 				return err
 			}
-			if err := group.RoleValidator(group.Role(user.Role)); err != nil {
-				log.Fatal("role の形式が正しくありません: ", err)
-			}
 			group, err := entClient.Group.Create().
 				SetName(user.Name).
 				SetEncryptedPassword(string(b)).
-				SetRole(group.Role(user.Role)).
+				SetRole(user.Role).
+				SetYear(user.Year).
 				SetCreatedAt(timejst.Now()).
 				Save(ctx)
 			if err != nil {
