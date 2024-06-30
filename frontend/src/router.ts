@@ -5,9 +5,6 @@ import Submissions from "./pages/Submissions.vue";
 import Login from "./pages/Login.vue";
 import Loading from "./pages/Loading.vue";
 import Contests from "./pages/Contests.vue";
-import Admin from "./pages/Admin.vue";
-import EditContests from "./pages/admin/EditContests.vue";
-import EditGroups from "./pages/admin/EditGroups.vue";
 
 const routes = [
   {
@@ -39,23 +36,6 @@ const routes = [
     path: "/contests",
     name: "contests",
     component: Contests,
-  },
-  {
-    path: "/admin",
-    name: 'admin',
-    component: Admin,
-    children: [
-      {
-        path: "contests",
-        name: 'admin-contests',
-        component: EditContests,
-      },
-      {
-        path: "groups",
-        name: 'admin-groups',
-        component: EditGroups,
-      },
-    ],
   },
 ];
 
