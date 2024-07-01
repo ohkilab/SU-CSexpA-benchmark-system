@@ -114,7 +114,7 @@ func validateAndSend(
 		Ok:                true,
 		TimeElapsed:       timeElapsed.Microseconds(),
 		TotalRequests:     task.AttemptCount,
-		RequestsPerSecond: int32(float64(task.AttemptCount) / timeElapsed.Seconds()),
+		RequestsPerSecond: int32(float64(task.AttemptCount) * 10 / timeElapsed.Seconds()),
 		Task:              task,
 		Status:            backendpb.Status_SUCCESS,
 	})
