@@ -5,6 +5,10 @@
 - [docker](https://docs.docker.com/engine/install/)
 - [go](https://go.dev/doc/install)
 
+## setup
+
+put `benchmark-service/csv/tag.csv` and `benchmark-service/csv/geotag.csv`
+
 ## launch
 
 ### 1. create `.env`

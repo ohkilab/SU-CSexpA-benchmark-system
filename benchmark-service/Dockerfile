@@ -1,13 +1,12 @@
-FROM golang:1.21 AS builder
+FROM golang:1.22 AS builder
 
 WORKDIR /app
 COPY . .
-RUN go mod vendor
 RUN go build -mod=vendor -o benchmark-server ./cmd/server
 
 FROM ubuntu:22.04
 
-RUN apt-get update && apt-get install -y tzdata  && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y --no-install-recommends tzdata  && rm -rf /var/lib/apt/lists/*
 ENV TZ Asia/Tokyo
 
 WORKDIR /app

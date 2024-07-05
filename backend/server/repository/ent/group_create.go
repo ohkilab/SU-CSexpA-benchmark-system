@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"time"
 
+	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/repository/ent/group"
@@ -19,6 +20,7 @@ type GroupCreate struct {
 	config
 	mutation *GroupMutation
 	hooks    []Hook
+	conflict []sql.ConflictOption
 }
 
 // SetName sets the "name" field.
@@ -163,6 +165,7 @@ func (gc *GroupCreate) createSpec() (*Group, *sqlgraph.CreateSpec) {
 		_node = &Group{config: gc.config}
 		_spec = sqlgraph.NewCreateSpec(group.Table, sqlgraph.NewFieldSpec(group.FieldID, field.TypeInt))
 	)
+	_spec.OnConflict = gc.conflict
 	if id, ok := gc.mutation.ID(); ok {
 		_node.ID = id
 		_spec.ID.Value = id
@@ -210,14 +213,331 @@ func (gc *GroupCreate) createSpec() (*Group, *sqlgraph.CreateSpec) {
 	return _node, _spec
 }
 
+// OnConflict allows configuring the `ON CONFLICT` / `ON DUPLICATE KEY` clause
+// of the `INSERT` statement. For example:
+//
+//	client.Group.Create().
+//		SetName(v).
+//		OnConflict(
+//			// Update the row with the new values
+//			// the was proposed for insertion.
+//			sql.ResolveWithNewValues(),
+//		).
+//		// Override some of the fields with custom
+//		// update values.
+//		Update(func(u *ent.GroupUpsert) {
+//			SetName(v+v).
+//		}).
+//		Exec(ctx)
+func (gc *GroupCreate) OnConflict(opts ...sql.ConflictOption) *GroupUpsertOne {
+	gc.conflict = opts
+	return &GroupUpsertOne{
+		create: gc,
+	}
+}
+
+// OnConflictColumns calls `OnConflict` and configures the columns
+// as conflict target. Using this option is equivalent to using:
+//
+//	client.Group.Create().
+//		OnConflict(sql.ConflictColumns(columns...)).
+//		Exec(ctx)
+func (gc *GroupCreate) OnConflictColumns(columns ...string) *GroupUpsertOne {
+	gc.conflict = append(gc.conflict, sql.ConflictColumns(columns...))
+	return &GroupUpsertOne{
+		create: gc,
+	}
+}
+
+type (
+	// GroupUpsertOne is the builder for "upsert"-ing
+	//  one Group node.
+	GroupUpsertOne struct {
+		create *GroupCreate
+	}
+
+	// GroupUpsert is the "OnConflict" setter.
+	GroupUpsert struct {
+		*sql.UpdateSet
+	}
+)
+
+// SetName sets the "name" field.
+func (u *GroupUpsert) SetName(v string) *GroupUpsert {
+	u.Set(group.FieldName, v)
+	return u
+}
+
+// UpdateName sets the "name" field to the value that was provided on create.
+func (u *GroupUpsert) UpdateName() *GroupUpsert {
+	u.SetExcluded(group.FieldName)
+	return u
+}
+
+// SetRole sets the "role" field.
+func (u *GroupUpsert) SetRole(v string) *GroupUpsert {
+	u.Set(group.FieldRole, v)
+	return u
+}
+
+// UpdateRole sets the "role" field to the value that was provided on create.
+func (u *GroupUpsert) UpdateRole() *GroupUpsert {
+	u.SetExcluded(group.FieldRole)
+	return u
+}
+
+// SetYear sets the "year" field.
+func (u *GroupUpsert) SetYear(v int) *GroupUpsert {
+	u.Set(group.FieldYear, v)
+	return u
+}
+
+// UpdateYear sets the "year" field to the value that was provided on create.
+func (u *GroupUpsert) UpdateYear() *GroupUpsert {
+	u.SetExcluded(group.FieldYear)
+	return u
+}
+
+// AddYear adds v to the "year" field.
+func (u *GroupUpsert) AddYear(v int) *GroupUpsert {
+	u.Add(group.FieldYear, v)
+	return u
+}
+
+// SetEncryptedPassword sets the "encrypted_password" field.
+func (u *GroupUpsert) SetEncryptedPassword(v string) *GroupUpsert {
+	u.Set(group.FieldEncryptedPassword, v)
+	return u
+}
+
+// UpdateEncryptedPassword sets the "encrypted_password" field to the value that was provided on create.
+func (u *GroupUpsert) UpdateEncryptedPassword() *GroupUpsert {
+	u.SetExcluded(group.FieldEncryptedPassword)
+	return u
+}
+
+// SetCreatedAt sets the "created_at" field.
+func (u *GroupUpsert) SetCreatedAt(v time.Time) *GroupUpsert {
+	u.Set(group.FieldCreatedAt, v)
+	return u
+}
+
+// UpdateCreatedAt sets the "created_at" field to the value that was provided on create.
+func (u *GroupUpsert) UpdateCreatedAt() *GroupUpsert {
+	u.SetExcluded(group.FieldCreatedAt)
+	return u
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (u *GroupUpsert) SetUpdatedAt(v time.Time) *GroupUpsert {
+	u.Set(group.FieldUpdatedAt, v)
+	return u
+}
+
+// UpdateUpdatedAt sets the "updated_at" field to the value that was provided on create.
+func (u *GroupUpsert) UpdateUpdatedAt() *GroupUpsert {
+	u.SetExcluded(group.FieldUpdatedAt)
+	return u
+}
+
+// ClearUpdatedAt clears the value of the "updated_at" field.
+func (u *GroupUpsert) ClearUpdatedAt() *GroupUpsert {
+	u.SetNull(group.FieldUpdatedAt)
+	return u
+}
+
+// UpdateNewValues updates the mutable fields using the new values that were set on create except the ID field.
+// Using this option is equivalent to using:
+//
+//	client.Group.Create().
+//		OnConflict(
+//			sql.ResolveWithNewValues(),
+//			sql.ResolveWith(func(u *sql.UpdateSet) {
+//				u.SetIgnore(group.FieldID)
+//			}),
+//		).
+//		Exec(ctx)
+func (u *GroupUpsertOne) UpdateNewValues() *GroupUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
+		if _, exists := u.create.mutation.ID(); exists {
+			s.SetIgnore(group.FieldID)
+		}
+	}))
+	return u
+}
+
+// Ignore sets each column to itself in case of conflict.
+// Using this option is equivalent to using:
+//
+//	client.Group.Create().
+//	    OnConflict(sql.ResolveWithIgnore()).
+//	    Exec(ctx)
+func (u *GroupUpsertOne) Ignore() *GroupUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithIgnore())
+	return u
+}
+
+// DoNothing configures the conflict_action to `DO NOTHING`.
+// Supported only by SQLite and PostgreSQL.
+func (u *GroupUpsertOne) DoNothing() *GroupUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.DoNothing())
+	return u
+}
+
+// Update allows overriding fields `UPDATE` values. See the GroupCreate.OnConflict
+// documentation for more info.
+func (u *GroupUpsertOne) Update(set func(*GroupUpsert)) *GroupUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(update *sql.UpdateSet) {
+		set(&GroupUpsert{UpdateSet: update})
+	}))
+	return u
+}
+
+// SetName sets the "name" field.
+func (u *GroupUpsertOne) SetName(v string) *GroupUpsertOne {
+	return u.Update(func(s *GroupUpsert) {
+		s.SetName(v)
+	})
+}
+
+// UpdateName sets the "name" field to the value that was provided on create.
+func (u *GroupUpsertOne) UpdateName() *GroupUpsertOne {
+	return u.Update(func(s *GroupUpsert) {
+		s.UpdateName()
+	})
+}
+
+// SetRole sets the "role" field.
+func (u *GroupUpsertOne) SetRole(v string) *GroupUpsertOne {
+	return u.Update(func(s *GroupUpsert) {
+		s.SetRole(v)
+	})
+}
+
+// UpdateRole sets the "role" field to the value that was provided on create.
+func (u *GroupUpsertOne) UpdateRole() *GroupUpsertOne {
+	return u.Update(func(s *GroupUpsert) {
+		s.UpdateRole()
+	})
+}
+
+// SetYear sets the "year" field.
+func (u *GroupUpsertOne) SetYear(v int) *GroupUpsertOne {
+	return u.Update(func(s *GroupUpsert) {
+		s.SetYear(v)
+	})
+}
+
+// AddYear adds v to the "year" field.
+func (u *GroupUpsertOne) AddYear(v int) *GroupUpsertOne {
+	return u.Update(func(s *GroupUpsert) {
+		s.AddYear(v)
+	})
+}
+
+// UpdateYear sets the "year" field to the value that was provided on create.
+func (u *GroupUpsertOne) UpdateYear() *GroupUpsertOne {
+	return u.Update(func(s *GroupUpsert) {
+		s.UpdateYear()
+	})
+}
+
+// SetEncryptedPassword sets the "encrypted_password" field.
+func (u *GroupUpsertOne) SetEncryptedPassword(v string) *GroupUpsertOne {
+	return u.Update(func(s *GroupUpsert) {
+		s.SetEncryptedPassword(v)
+	})
+}
+
+// UpdateEncryptedPassword sets the "encrypted_password" field to the value that was provided on create.
+func (u *GroupUpsertOne) UpdateEncryptedPassword() *GroupUpsertOne {
+	return u.Update(func(s *GroupUpsert) {
+		s.UpdateEncryptedPassword()
+	})
+}
+
+// SetCreatedAt sets the "created_at" field.
+func (u *GroupUpsertOne) SetCreatedAt(v time.Time) *GroupUpsertOne {
+	return u.Update(func(s *GroupUpsert) {
+		s.SetCreatedAt(v)
+	})
+}
+
+// UpdateCreatedAt sets the "created_at" field to the value that was provided on create.
+func (u *GroupUpsertOne) UpdateCreatedAt() *GroupUpsertOne {
+	return u.Update(func(s *GroupUpsert) {
+		s.UpdateCreatedAt()
+	})
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (u *GroupUpsertOne) SetUpdatedAt(v time.Time) *GroupUpsertOne {
+	return u.Update(func(s *GroupUpsert) {
+		s.SetUpdatedAt(v)
+	})
+}
+
+// UpdateUpdatedAt sets the "updated_at" field to the value that was provided on create.
+func (u *GroupUpsertOne) UpdateUpdatedAt() *GroupUpsertOne {
+	return u.Update(func(s *GroupUpsert) {
+		s.UpdateUpdatedAt()
+	})
+}
+
+// ClearUpdatedAt clears the value of the "updated_at" field.
+func (u *GroupUpsertOne) ClearUpdatedAt() *GroupUpsertOne {
+	return u.Update(func(s *GroupUpsert) {
+		s.ClearUpdatedAt()
+	})
+}
+
+// Exec executes the query.
+func (u *GroupUpsertOne) Exec(ctx context.Context) error {
+	if len(u.create.conflict) == 0 {
+		return errors.New("ent: missing options for GroupCreate.OnConflict")
+	}
+	return u.create.Exec(ctx)
+}
+
+// ExecX is like Exec, but panics if an error occurs.
+func (u *GroupUpsertOne) ExecX(ctx context.Context) {
+	if err := u.create.Exec(ctx); err != nil {
+		panic(err)
+	}
+}
+
+// Exec executes the UPSERT query and returns the inserted/updated ID.
+func (u *GroupUpsertOne) ID(ctx context.Context) (id int, err error) {
+	node, err := u.create.Save(ctx)
+	if err != nil {
+		return id, err
+	}
+	return node.ID, nil
+}
+
+// IDX is like ID, but panics if an error occurs.
+func (u *GroupUpsertOne) IDX(ctx context.Context) int {
+	id, err := u.ID(ctx)
+	if err != nil {
+		panic(err)
+	}
+	return id
+}
+
 // GroupCreateBulk is the builder for creating many Group entities in bulk.
 type GroupCreateBulk struct {
 	config
+	err      error
 	builders []*GroupCreate
+	conflict []sql.ConflictOption
 }
 
 // Save creates the Group entities in the database.
 func (gcb *GroupCreateBulk) Save(ctx context.Context) ([]*Group, error) {
+	if gcb.err != nil {
+		return nil, gcb.err
+	}
 	specs := make([]*sqlgraph.CreateSpec, len(gcb.builders))
 	nodes := make([]*Group, len(gcb.builders))
 	mutators := make([]Mutator, len(gcb.builders))
@@ -239,6 +559,7 @@ func (gcb *GroupCreateBulk) Save(ctx context.Context) ([]*Group, error) {
 					_, err = mutators[i+1].Mutate(root, gcb.builders[i+1].mutation)
 				} else {
 					spec := &sqlgraph.BatchCreateSpec{Nodes: specs}
+					spec.OnConflict = gcb.conflict
 					// Invoke the actual operation on the latest mutation in the chain.
 					if err = sqlgraph.BatchCreate(ctx, gcb.driver, spec); err != nil {
 						if sqlgraph.IsConstraintError(err) {
@@ -289,6 +610,218 @@ func (gcb *GroupCreateBulk) Exec(ctx context.Context) error {
 // ExecX is like Exec, but panics if an error occurs.
 func (gcb *GroupCreateBulk) ExecX(ctx context.Context) {
 	if err := gcb.Exec(ctx); err != nil {
+		panic(err)
+	}
+}
+
+// OnConflict allows configuring the `ON CONFLICT` / `ON DUPLICATE KEY` clause
+// of the `INSERT` statement. For example:
+//
+//	client.Group.CreateBulk(builders...).
+//		OnConflict(
+//			// Update the row with the new values
+//			// the was proposed for insertion.
+//			sql.ResolveWithNewValues(),
+//		).
+//		// Override some of the fields with custom
+//		// update values.
+//		Update(func(u *ent.GroupUpsert) {
+//			SetName(v+v).
+//		}).
+//		Exec(ctx)
+func (gcb *GroupCreateBulk) OnConflict(opts ...sql.ConflictOption) *GroupUpsertBulk {
+	gcb.conflict = opts
+	return &GroupUpsertBulk{
+		create: gcb,
+	}
+}
+
+// OnConflictColumns calls `OnConflict` and configures the columns
+// as conflict target. Using this option is equivalent to using:
+//
+//	client.Group.Create().
+//		OnConflict(sql.ConflictColumns(columns...)).
+//		Exec(ctx)
+func (gcb *GroupCreateBulk) OnConflictColumns(columns ...string) *GroupUpsertBulk {
+	gcb.conflict = append(gcb.conflict, sql.ConflictColumns(columns...))
+	return &GroupUpsertBulk{
+		create: gcb,
+	}
+}
+
+// GroupUpsertBulk is the builder for "upsert"-ing
+// a bulk of Group nodes.
+type GroupUpsertBulk struct {
+	create *GroupCreateBulk
+}
+
+// UpdateNewValues updates the mutable fields using the new values that
+// were set on create. Using this option is equivalent to using:
+//
+//	client.Group.Create().
+//		OnConflict(
+//			sql.ResolveWithNewValues(),
+//			sql.ResolveWith(func(u *sql.UpdateSet) {
+//				u.SetIgnore(group.FieldID)
+//			}),
+//		).
+//		Exec(ctx)
+func (u *GroupUpsertBulk) UpdateNewValues() *GroupUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
+		for _, b := range u.create.builders {
+			if _, exists := b.mutation.ID(); exists {
+				s.SetIgnore(group.FieldID)
+			}
+		}
+	}))
+	return u
+}
+
+// Ignore sets each column to itself in case of conflict.
+// Using this option is equivalent to using:
+//
+//	client.Group.Create().
+//		OnConflict(sql.ResolveWithIgnore()).
+//		Exec(ctx)
+func (u *GroupUpsertBulk) Ignore() *GroupUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithIgnore())
+	return u
+}
+
+// DoNothing configures the conflict_action to `DO NOTHING`.
+// Supported only by SQLite and PostgreSQL.
+func (u *GroupUpsertBulk) DoNothing() *GroupUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.DoNothing())
+	return u
+}
+
+// Update allows overriding fields `UPDATE` values. See the GroupCreateBulk.OnConflict
+// documentation for more info.
+func (u *GroupUpsertBulk) Update(set func(*GroupUpsert)) *GroupUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(update *sql.UpdateSet) {
+		set(&GroupUpsert{UpdateSet: update})
+	}))
+	return u
+}
+
+// SetName sets the "name" field.
+func (u *GroupUpsertBulk) SetName(v string) *GroupUpsertBulk {
+	return u.Update(func(s *GroupUpsert) {
+		s.SetName(v)
+	})
+}
+
+// UpdateName sets the "name" field to the value that was provided on create.
+func (u *GroupUpsertBulk) UpdateName() *GroupUpsertBulk {
+	return u.Update(func(s *GroupUpsert) {
+		s.UpdateName()
+	})
+}
+
+// SetRole sets the "role" field.
+func (u *GroupUpsertBulk) SetRole(v string) *GroupUpsertBulk {
+	return u.Update(func(s *GroupUpsert) {
+		s.SetRole(v)
+	})
+}
+
+// UpdateRole sets the "role" field to the value that was provided on create.
+func (u *GroupUpsertBulk) UpdateRole() *GroupUpsertBulk {
+	return u.Update(func(s *GroupUpsert) {
+		s.UpdateRole()
+	})
+}
+
+// SetYear sets the "year" field.
+func (u *GroupUpsertBulk) SetYear(v int) *GroupUpsertBulk {
+	return u.Update(func(s *GroupUpsert) {
+		s.SetYear(v)
+	})
+}
+
+// AddYear adds v to the "year" field.
+func (u *GroupUpsertBulk) AddYear(v int) *GroupUpsertBulk {
+	return u.Update(func(s *GroupUpsert) {
+		s.AddYear(v)
+	})
+}
+
+// UpdateYear sets the "year" field to the value that was provided on create.
+func (u *GroupUpsertBulk) UpdateYear() *GroupUpsertBulk {
+	return u.Update(func(s *GroupUpsert) {
+		s.UpdateYear()
+	})
+}
+
+// SetEncryptedPassword sets the "encrypted_password" field.
+func (u *GroupUpsertBulk) SetEncryptedPassword(v string) *GroupUpsertBulk {
+	return u.Update(func(s *GroupUpsert) {
+		s.SetEncryptedPassword(v)
+	})
+}
+
+// UpdateEncryptedPassword sets the "encrypted_password" field to the value that was provided on create.
+func (u *GroupUpsertBulk) UpdateEncryptedPassword() *GroupUpsertBulk {
+	return u.Update(func(s *GroupUpsert) {
+		s.UpdateEncryptedPassword()
+	})
+}
+
+// SetCreatedAt sets the "created_at" field.
+func (u *GroupUpsertBulk) SetCreatedAt(v time.Time) *GroupUpsertBulk {
+	return u.Update(func(s *GroupUpsert) {
+		s.SetCreatedAt(v)
+	})
+}
+
+// UpdateCreatedAt sets the "created_at" field to the value that was provided on create.
+func (u *GroupUpsertBulk) UpdateCreatedAt() *GroupUpsertBulk {
+	return u.Update(func(s *GroupUpsert) {
+		s.UpdateCreatedAt()
+	})
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (u *GroupUpsertBulk) SetUpdatedAt(v time.Time) *GroupUpsertBulk {
+	return u.Update(func(s *GroupUpsert) {
+		s.SetUpdatedAt(v)
+	})
+}
+
+// UpdateUpdatedAt sets the "updated_at" field to the value that was provided on create.
+func (u *GroupUpsertBulk) UpdateUpdatedAt() *GroupUpsertBulk {
+	return u.Update(func(s *GroupUpsert) {
+		s.UpdateUpdatedAt()
+	})
+}
+
+// ClearUpdatedAt clears the value of the "updated_at" field.
+func (u *GroupUpsertBulk) ClearUpdatedAt() *GroupUpsertBulk {
+	return u.Update(func(s *GroupUpsert) {
+		s.ClearUpdatedAt()
+	})
+}
+
+// Exec executes the query.
+func (u *GroupUpsertBulk) Exec(ctx context.Context) error {
+	if u.create.err != nil {
+		return u.create.err
+	}
+	for i, b := range u.create.builders {
+		if len(b.conflict) != 0 {
+			return fmt.Errorf("ent: OnConflict was set for builder %d. Set it on the GroupCreateBulk instead", i)
+		}
+	}
+	if len(u.create.conflict) == 0 {
+		return errors.New("ent: missing options for GroupCreateBulk.OnConflict")
+	}
+	return u.create.Exec(ctx)
+}
+
+// ExecX is like Exec, but panics if an error occurs.
+func (u *GroupUpsertBulk) ExecX(ctx context.Context) {
+	if err := u.create.Exec(ctx); err != nil {
 		panic(err)
 	}
 }

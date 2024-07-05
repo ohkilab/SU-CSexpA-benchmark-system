@@ -1,13 +1,11 @@
 services:
   backend:
-    image: ghcr.io/ohkilab/su-csexpa-benchmark-system-backend:main
-    # build:
-    #   context: backend
-    #   dockerfile: Dockerfile
+    build:
+      context: backend
+      dockerfile: Dockerfile
     env_file:
       - .env
     restart: always
-    # network_mode: host
     depends_on:
       - db
       - benchmark-service
@@ -18,13 +16,12 @@ services:
     ports:
       - 50051:50051
   benchmark-service:
-    image: ghcr.io/ohkilab/su-csexpa-benchmark-system-benchmark-service:main
-    # build:
-    #   context: benchmark-service
-    #   dockerfile: Dockerfile
+    build:
+      context: benchmark-service
+      dockerfile: Dockerfile
     env_file:
       - .env
-    # network_mode: host
+    network_mode: host
     restart: always
     extra_hosts:
       - "host.docker.internal:host-gateway"
@@ -35,29 +32,23 @@ services:
     restart: always
     env_file:
       - .env
-    # network_mode: host
     volumes:
       - ./data:/var/lib/mysql
     ports:
       - 3306:3306
   frontend:
-    image: ghcr.io/ohkilab/su-csexpa-benchmark-system-frontend:main
-    # build:
-    #   context: .
-    #   dockerfile: frontend/Dockerfile
+    build:
+      context: .
+      dockerfile: frontend/Dockerfile
     environment:
       - NGINX_PORT=80
-    # network_mode: host
     depends_on:
       - envoy
       - backend
   envoy:
-    # image: ghcr.io/ohkilab/su-csexpa-benchmark-system-envoy:main
-    # build:
-    #   context: ./envoy
-    #   dockerfile: ./Dockerfile
     image: envoyproxy/envoy:v1.26-latest
-    # network_mode: host
+    environment:
+      - ENVOY_UID=0
     volumes:
       - ./envoy/envoy.yaml:/etc/envoy/envoy.yaml
     extra_hosts:
@@ -65,3 +56,5 @@ services:
     ports:
       - 8080:8080
       - 80:80
+    depends_on:
+      - backend

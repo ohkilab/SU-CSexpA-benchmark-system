@@ -35,9 +35,25 @@ func (cu *ContestUpdate) SetTitle(s string) *ContestUpdate {
 	return cu
 }
 
+// SetNillableTitle sets the "title" field if the given value is not nil.
+func (cu *ContestUpdate) SetNillableTitle(s *string) *ContestUpdate {
+	if s != nil {
+		cu.SetTitle(*s)
+	}
+	return cu
+}
+
 // SetStartAt sets the "start_at" field.
 func (cu *ContestUpdate) SetStartAt(t time.Time) *ContestUpdate {
 	cu.mutation.SetStartAt(t)
+	return cu
+}
+
+// SetNillableStartAt sets the "start_at" field if the given value is not nil.
+func (cu *ContestUpdate) SetNillableStartAt(t *time.Time) *ContestUpdate {
+	if t != nil {
+		cu.SetStartAt(*t)
+	}
 	return cu
 }
 
@@ -47,10 +63,26 @@ func (cu *ContestUpdate) SetEndAt(t time.Time) *ContestUpdate {
 	return cu
 }
 
+// SetNillableEndAt sets the "end_at" field if the given value is not nil.
+func (cu *ContestUpdate) SetNillableEndAt(t *time.Time) *ContestUpdate {
+	if t != nil {
+		cu.SetEndAt(*t)
+	}
+	return cu
+}
+
 // SetSubmitLimit sets the "submit_limit" field.
 func (cu *ContestUpdate) SetSubmitLimit(i int) *ContestUpdate {
 	cu.mutation.ResetSubmitLimit()
 	cu.mutation.SetSubmitLimit(i)
+	return cu
+}
+
+// SetNillableSubmitLimit sets the "submit_limit" field if the given value is not nil.
+func (cu *ContestUpdate) SetNillableSubmitLimit(i *int) *ContestUpdate {
+	if i != nil {
+		cu.SetSubmitLimit(*i)
+	}
 	return cu
 }
 
@@ -66,15 +98,39 @@ func (cu *ContestUpdate) SetSlug(s string) *ContestUpdate {
 	return cu
 }
 
+// SetNillableSlug sets the "slug" field if the given value is not nil.
+func (cu *ContestUpdate) SetNillableSlug(s *string) *ContestUpdate {
+	if s != nil {
+		cu.SetSlug(*s)
+	}
+	return cu
+}
+
 // SetTagSelectionLogic sets the "tag_selection_logic" field.
 func (cu *ContestUpdate) SetTagSelectionLogic(csl contest.TagSelectionLogic) *ContestUpdate {
 	cu.mutation.SetTagSelectionLogic(csl)
 	return cu
 }
 
+// SetNillableTagSelectionLogic sets the "tag_selection_logic" field if the given value is not nil.
+func (cu *ContestUpdate) SetNillableTagSelectionLogic(csl *contest.TagSelectionLogic) *ContestUpdate {
+	if csl != nil {
+		cu.SetTagSelectionLogic(*csl)
+	}
+	return cu
+}
+
 // SetValidator sets the "validator" field.
 func (cu *ContestUpdate) SetValidator(s string) *ContestUpdate {
 	cu.mutation.SetValidator(s)
+	return cu
+}
+
+// SetNillableValidator sets the "validator" field if the given value is not nil.
+func (cu *ContestUpdate) SetNillableValidator(s *string) *ContestUpdate {
+	if s != nil {
+		cu.SetValidator(*s)
+	}
 	return cu
 }
 
@@ -108,6 +164,14 @@ func (cu *ContestUpdate) ClearTimeLimitPerTask() *ContestUpdate {
 // SetCreatedAt sets the "created_at" field.
 func (cu *ContestUpdate) SetCreatedAt(t time.Time) *ContestUpdate {
 	cu.mutation.SetCreatedAt(t)
+	return cu
+}
+
+// SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
+func (cu *ContestUpdate) SetNillableCreatedAt(t *time.Time) *ContestUpdate {
+	if t != nil {
+		cu.SetCreatedAt(*t)
+	}
 	return cu
 }
 
@@ -334,9 +398,25 @@ func (cuo *ContestUpdateOne) SetTitle(s string) *ContestUpdateOne {
 	return cuo
 }
 
+// SetNillableTitle sets the "title" field if the given value is not nil.
+func (cuo *ContestUpdateOne) SetNillableTitle(s *string) *ContestUpdateOne {
+	if s != nil {
+		cuo.SetTitle(*s)
+	}
+	return cuo
+}
+
 // SetStartAt sets the "start_at" field.
 func (cuo *ContestUpdateOne) SetStartAt(t time.Time) *ContestUpdateOne {
 	cuo.mutation.SetStartAt(t)
+	return cuo
+}
+
+// SetNillableStartAt sets the "start_at" field if the given value is not nil.
+func (cuo *ContestUpdateOne) SetNillableStartAt(t *time.Time) *ContestUpdateOne {
+	if t != nil {
+		cuo.SetStartAt(*t)
+	}
 	return cuo
 }
 
@@ -346,10 +426,26 @@ func (cuo *ContestUpdateOne) SetEndAt(t time.Time) *ContestUpdateOne {
 	return cuo
 }
 
+// SetNillableEndAt sets the "end_at" field if the given value is not nil.
+func (cuo *ContestUpdateOne) SetNillableEndAt(t *time.Time) *ContestUpdateOne {
+	if t != nil {
+		cuo.SetEndAt(*t)
+	}
+	return cuo
+}
+
 // SetSubmitLimit sets the "submit_limit" field.
 func (cuo *ContestUpdateOne) SetSubmitLimit(i int) *ContestUpdateOne {
 	cuo.mutation.ResetSubmitLimit()
 	cuo.mutation.SetSubmitLimit(i)
+	return cuo
+}
+
+// SetNillableSubmitLimit sets the "submit_limit" field if the given value is not nil.
+func (cuo *ContestUpdateOne) SetNillableSubmitLimit(i *int) *ContestUpdateOne {
+	if i != nil {
+		cuo.SetSubmitLimit(*i)
+	}
 	return cuo
 }
 
@@ -365,15 +461,39 @@ func (cuo *ContestUpdateOne) SetSlug(s string) *ContestUpdateOne {
 	return cuo
 }
 
+// SetNillableSlug sets the "slug" field if the given value is not nil.
+func (cuo *ContestUpdateOne) SetNillableSlug(s *string) *ContestUpdateOne {
+	if s != nil {
+		cuo.SetSlug(*s)
+	}
+	return cuo
+}
+
 // SetTagSelectionLogic sets the "tag_selection_logic" field.
 func (cuo *ContestUpdateOne) SetTagSelectionLogic(csl contest.TagSelectionLogic) *ContestUpdateOne {
 	cuo.mutation.SetTagSelectionLogic(csl)
 	return cuo
 }
 
+// SetNillableTagSelectionLogic sets the "tag_selection_logic" field if the given value is not nil.
+func (cuo *ContestUpdateOne) SetNillableTagSelectionLogic(csl *contest.TagSelectionLogic) *ContestUpdateOne {
+	if csl != nil {
+		cuo.SetTagSelectionLogic(*csl)
+	}
+	return cuo
+}
+
 // SetValidator sets the "validator" field.
 func (cuo *ContestUpdateOne) SetValidator(s string) *ContestUpdateOne {
 	cuo.mutation.SetValidator(s)
+	return cuo
+}
+
+// SetNillableValidator sets the "validator" field if the given value is not nil.
+func (cuo *ContestUpdateOne) SetNillableValidator(s *string) *ContestUpdateOne {
+	if s != nil {
+		cuo.SetValidator(*s)
+	}
 	return cuo
 }
 
@@ -407,6 +527,14 @@ func (cuo *ContestUpdateOne) ClearTimeLimitPerTask() *ContestUpdateOne {
 // SetCreatedAt sets the "created_at" field.
 func (cuo *ContestUpdateOne) SetCreatedAt(t time.Time) *ContestUpdateOne {
 	cuo.mutation.SetCreatedAt(t)
+	return cuo
+}
+
+// SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
+func (cuo *ContestUpdateOne) SetNillableCreatedAt(t *time.Time) *ContestUpdateOne {
+	if t != nil {
+		cuo.SetCreatedAt(*t)
+	}
 	return cuo
 }
 

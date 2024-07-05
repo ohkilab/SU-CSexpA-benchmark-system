@@ -37,6 +37,14 @@ func (su *SubmitUpdate) SetURL(s string) *SubmitUpdate {
 	return su
 }
 
+// SetNillableURL sets the "url" field if the given value is not nil.
+func (su *SubmitUpdate) SetNillableURL(s *string) *SubmitUpdate {
+	if s != nil {
+		su.SetURL(*s)
+	}
+	return su
+}
+
 // SetScore sets the "score" field.
 func (su *SubmitUpdate) SetScore(i int) *SubmitUpdate {
 	su.mutation.ResetScore()
@@ -110,10 +118,26 @@ func (su *SubmitUpdate) SetStatus(s string) *SubmitUpdate {
 	return su
 }
 
+// SetNillableStatus sets the "status" field if the given value is not nil.
+func (su *SubmitUpdate) SetNillableStatus(s *string) *SubmitUpdate {
+	if s != nil {
+		su.SetStatus(*s)
+	}
+	return su
+}
+
 // SetTaskNum sets the "task_num" field.
 func (su *SubmitUpdate) SetTaskNum(i int) *SubmitUpdate {
 	su.mutation.ResetTaskNum()
 	su.mutation.SetTaskNum(i)
+	return su
+}
+
+// SetNillableTaskNum sets the "task_num" field if the given value is not nil.
+func (su *SubmitUpdate) SetNillableTaskNum(i *int) *SubmitUpdate {
+	if i != nil {
+		su.SetTaskNum(*i)
+	}
 	return su
 }
 
@@ -126,6 +150,14 @@ func (su *SubmitUpdate) AddTaskNum(i int) *SubmitUpdate {
 // SetSubmitedAt sets the "submited_at" field.
 func (su *SubmitUpdate) SetSubmitedAt(t time.Time) *SubmitUpdate {
 	su.mutation.SetSubmitedAt(t)
+	return su
+}
+
+// SetNillableSubmitedAt sets the "submited_at" field if the given value is not nil.
+func (su *SubmitUpdate) SetNillableSubmitedAt(t *time.Time) *SubmitUpdate {
+	if t != nil {
+		su.SetSubmitedAt(*t)
+	}
 	return su
 }
 
@@ -486,6 +518,14 @@ func (suo *SubmitUpdateOne) SetURL(s string) *SubmitUpdateOne {
 	return suo
 }
 
+// SetNillableURL sets the "url" field if the given value is not nil.
+func (suo *SubmitUpdateOne) SetNillableURL(s *string) *SubmitUpdateOne {
+	if s != nil {
+		suo.SetURL(*s)
+	}
+	return suo
+}
+
 // SetScore sets the "score" field.
 func (suo *SubmitUpdateOne) SetScore(i int) *SubmitUpdateOne {
 	suo.mutation.ResetScore()
@@ -559,10 +599,26 @@ func (suo *SubmitUpdateOne) SetStatus(s string) *SubmitUpdateOne {
 	return suo
 }
 
+// SetNillableStatus sets the "status" field if the given value is not nil.
+func (suo *SubmitUpdateOne) SetNillableStatus(s *string) *SubmitUpdateOne {
+	if s != nil {
+		suo.SetStatus(*s)
+	}
+	return suo
+}
+
 // SetTaskNum sets the "task_num" field.
 func (suo *SubmitUpdateOne) SetTaskNum(i int) *SubmitUpdateOne {
 	suo.mutation.ResetTaskNum()
 	suo.mutation.SetTaskNum(i)
+	return suo
+}
+
+// SetNillableTaskNum sets the "task_num" field if the given value is not nil.
+func (suo *SubmitUpdateOne) SetNillableTaskNum(i *int) *SubmitUpdateOne {
+	if i != nil {
+		suo.SetTaskNum(*i)
+	}
 	return suo
 }
 
@@ -575,6 +631,14 @@ func (suo *SubmitUpdateOne) AddTaskNum(i int) *SubmitUpdateOne {
 // SetSubmitedAt sets the "submited_at" field.
 func (suo *SubmitUpdateOne) SetSubmitedAt(t time.Time) *SubmitUpdateOne {
 	suo.mutation.SetSubmitedAt(t)
+	return suo
+}
+
+// SetNillableSubmitedAt sets the "submited_at" field if the given value is not nil.
+func (suo *SubmitUpdateOne) SetNillableSubmitedAt(t *time.Time) *SubmitUpdateOne {
+	if t != nil {
+		suo.SetSubmitedAt(*t)
+	}
 	return suo
 }
 
