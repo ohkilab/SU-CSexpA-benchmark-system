@@ -1,8 +1,6 @@
 services:
   backend:
-    build:
-      context: .
-      dockerfile: ./backend/ga.Dockerfile
+    image: ghcr.io/ohkilab/su-csexpa-benchmark-system-backend:main
     env_file:
       - .env
     restart: always
@@ -14,9 +12,7 @@ services:
     extra_hosts:
       - "host.docker.internal:host-gateway"
   benchmark-service:
-    build:
-      context: .
-      dockerfile: ./benchmark-service/ga.Dockerfile
+    image: ghcr.io/ohkilab/su-csexpa-benchmark-system-benchmark-service:main
     env_file:
       - .env
     restart: always
@@ -29,12 +25,8 @@ services:
       - .env
     volumes:
       - ./data:/var/lib/mysql
-    ports:          # Needed for running 'make seed', can be removed after seed
-      - 3306:3306
   frontend:
-    build:
-      context: .
-      dockerfile: frontend/Dockerfile
+    image: ghcr.io/ohkilab/su-csexpa-benchmark-system-frontend:main
     environment:
       - NGINX_PORT=80
     depends_on:
