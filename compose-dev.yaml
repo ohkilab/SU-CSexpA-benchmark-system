@@ -1,0 +1,71 @@
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: ./backend/ga.Dockerfile
+    env_file:
+      - .env
+    restart: always
+    # network_mode: host
+    depends_on:
+      - db
+      - benchmark-service
+    volumes:
+      - "./backend/storage:/app/storage"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    ports:
+      - 50051:50051
+  benchmark-service:
+    build:
+      context: .
+      dockerfile: ./benchmark-service/ga.Dockerfile
+    env_file:
+      - .env
+    # network_mode: host
+    restart: always
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    ports:
+      - 50052:50052
+  db:
+    image: mysql:8.0
+    restart: always
+    env_file:
+      - .env
+    # network_mode: host
+    volumes:
+      - ./data:/var/lib/mysql
+    ports:
+      - 3306:3306
+  frontend:
+    image: node:20
+    working_dir: /proto-gen/web
+    volumes:
+      - ./frontend:/frontend/:rw
+      - ./proto-gen/:/proto-gen/:rw
+    command: >
+      bash -c "npm i && cd /frontend && npm i -g pnpm && pnpm install && pnpm run dev"
+    # build:
+    #   context: .
+    #   dockerfile: frontend/Dockerfile
+    environment:
+      - NGINX_PORT=80
+      - OUTER_PORT_FRONTEND=80
+      - INNER_PORT_FRONTEND=80
+    # network_mode: host
+    depends_on:
+      - envoy
+      - backend
+    # ports:
+    #   - 80:80
+  envoy:
+    image: envoyproxy/envoy:v1.26-latest
+    # network_mode: host
+    volumes:
+      - ./envoy/envoy.yaml:/etc/envoy/envoy.yaml
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    ports:
+      - 8080:8080
+      - 80:80
