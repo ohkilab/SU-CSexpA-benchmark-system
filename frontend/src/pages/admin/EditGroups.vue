@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref } from "vue";
+import { parse as parseYaml } from "yaml";
 import type { CreateGroupsRequest_CreateGroupsGroup } from "proto-gen-web/services/backend/messages";
 import { Role } from "proto-gen-web/services/backend/resources";
 import { useAdminStateStore } from "../../stores/adminState";
@@ -39,6 +40,12 @@ const roleOptions = [
   { label: "ADMIN", value: Role.ADMIN },
 ];
 
+const roleNameToValue: Record<string, Role> = {
+  CONTESTANT: Role.CONTESTANT,
+  GUEST: Role.GUEST,
+  ADMIN: Role.ADMIN,
+};
+
 const authOptions = () => ({
   meta: { authorization: "Bearer " + state.token },
 });
@@ -59,6 +66,83 @@ const addRow = () => {
 const removeRow = (index: number) => {
   if (rows.value.length <= 1) return;
   rows.value.splice(index, 1);
+};
+
+const isRecord = (value: unknown): value is Record<string, unknown> =>
+  typeof value === "object" && value !== null && !Array.isArray(value);
+
+const parseRole = (value: unknown): Role | null => {
+  if (typeof value !== "string") return null;
+  return roleNameToValue[value.trim().toUpperCase()] ?? null;
+};
+
+const parseYear = (value: unknown): number | null => {
+  const year =
+    typeof value === "number"
+      ? value
+      : typeof value === "string"
+        ? Number(value.trim())
+        : Number.NaN;
+  if (!Number.isInteger(year) || year <= 0) return null;
+  return year;
+};
+
+const parseGroupsYaml = (text: string): GroupRow[] => {
+  const parsed = parseYaml(text) as unknown;
+  if (!Array.isArray(parsed)) {
+    throw new Error("YAMLはトップレベル配列にしてください。");
+  }
+  if (parsed.length === 0) {
+    throw new Error("YAMLにグループが含まれていません。");
+  }
+
+  return parsed.map((entry, index) => {
+    const rowNumber = index + 1;
+    if (!isRecord(entry)) {
+      throw new Error(`${rowNumber}件目はオブジェクトにしてください。`);
+    }
+
+    const name = typeof entry.name === "string" ? entry.name.trim() : "";
+    const password = typeof entry.password === "string" ? entry.password : "";
+    const year = parseYear(entry.year);
+    const role = parseRole(entry.role);
+
+    if (name.length === 0) {
+      throw new Error(`${rowNumber}件目のnameを入力してください。`);
+    }
+    if (password.trim().length === 0) {
+      throw new Error(`${rowNumber}件目のpasswordを入力してください。`);
+    }
+    if (year === null) {
+      throw new Error(`${rowNumber}件目のyearが不正です。`);
+    }
+    if (role === null) {
+      throw new Error(`${rowNumber}件目のroleが不正です。`);
+    }
+
+    return {
+      id: nextRowId++,
+      name,
+      password,
+      year,
+      role,
+    };
+  });
+};
+
+const importGroupsFromYaml = async (event: Event) => {
+  const input = event.target as HTMLInputElement;
+  const file = input.files?.[0];
+  input.value = "";
+  if (!file) return;
+
+  try {
+    const importedRows = parseGroupsYaml(await file.text());
+    rows.value = importedRows;
+    setNotice("success", `${importedRows.length}件のグループを読み込みました。`);
+  } catch (error) {
+    setNotice("error", "YAMLの読み込みに失敗しました: " + formatError(error));
+  }
 };
 
 const buildGroups = (): CreateGroupsRequest_CreateGroupsGroup[] | null => {
@@ -129,6 +213,17 @@ const createGroups = async () => {
       >
         行を追加
       </button>
+      <label
+        class="cursor-pointer rounded bg-gray-600 px-3 py-2 transition hover:bg-gray-500"
+      >
+        YAMLを読み込み
+        <input
+          class="sr-only"
+          accept=".yaml,.yml,text/yaml,application/x-yaml,text/plain"
+          type="file"
+          @change="importGroupsFromYaml"
+        />
+      </label>
       <div
         v-if="notice"
         class="rounded px-3 py-2 text-sm"

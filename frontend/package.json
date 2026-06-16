@@ -22,7 +22,8 @@
     "proto-gen-web": "link:../proto-gen/web",
     "vue": "^3.2.47",
     "vue-chartjs": "^5.2.0",
-    "vue-router": "^4.1.6"
+    "vue-router": "^4.1.6",
+    "yaml": "^1.10.2"
   },
   "devDependencies": {
     "autoprefixer": "^10.4.14",

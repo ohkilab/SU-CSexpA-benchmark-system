@@ -140,6 +140,94 @@ const splitTags = (value: string): string[] =>
     .map((tag) => tag.trim())
     .filter((tag) => tag.length > 0);
 
+const importAutoTagsFromFile = async (event: Event) => {
+  const input = event.target as HTMLInputElement;
+  const file = input.files?.[0];
+  input.value = "";
+  if (!file) return;
+
+  try {
+    const text = await file.text();
+    const tags = splitTags(text);
+    if (tags.length === 0) {
+      setNotice("error", "Autoタグファイルにタグが含まれていません。");
+      return;
+    }
+    createForm.value.autoTags = text;
+    setNotice("success", `${tags.length}件のAutoタグを読み込みました。`);
+  } catch (error) {
+    setNotice(
+      "error",
+      "Autoタグファイルの読み込みに失敗しました: " + formatError(error),
+    );
+  }
+};
+
+const getDirectChildFileName = (file: File): string | null => {
+  const relativePath = file.webkitRelativePath || file.name;
+  const parts = relativePath.split("/").filter((part) => part.length > 0);
+  if (parts.length === 0 || parts.length > 2) return null;
+  return parts[parts.length - 1];
+};
+
+const importManualTagsFromDirectory = async (event: Event) => {
+  const input = event.target as HTMLInputElement;
+  const files = Array.from(input.files ?? []);
+  input.value = "";
+  if (files.length === 0) return;
+
+  try {
+    const filesByAttempt = new Map<number, File>();
+
+    for (const file of files) {
+      const fileName = getDirectChildFileName(file);
+      const match = fileName?.match(/^([1-9]\d*)\.txt$/);
+      if (!match) continue;
+
+      const attemptNumber = Number(match[1]);
+      if (filesByAttempt.has(attemptNumber)) {
+        throw new Error(`${attemptNumber}.txt が重複しています。`);
+      }
+      filesByAttempt.set(attemptNumber, file);
+    }
+
+    if (!filesByAttempt.has(1)) {
+      throw new Error("1.txt が見つかりません。");
+    }
+
+    const attemptNumbers = [...filesByAttempt.keys()].sort((a, b) => a - b);
+    for (let expected = 1; expected <= attemptNumbers.length; expected++) {
+      if (attemptNumbers[expected - 1] !== expected) {
+        throw new Error(`${expected}.txt が見つかりません。`);
+      }
+    }
+
+    const tagTexts: string[] = [];
+    for (const attemptNumber of attemptNumbers) {
+      const text = await filesByAttempt.get(attemptNumber)!.text();
+      if (splitTags(text).length === 0) {
+        throw new Error(`${attemptNumber}.txt にタグが含まれていません。`);
+      }
+      tagTexts.push(text);
+    }
+
+    createForm.value.manualAttempts = tagTexts.map((tags) => ({
+      id: nextAttemptId++,
+      tags,
+    }));
+    setNotice(
+      "success",
+      `${tagTexts.length}試行分のManualタグを読み込みました。`,
+    );
+  } catch (error) {
+    setNotice(
+      "error",
+      "Manualタグディレクトリの読み込みに失敗しました: " +
+        formatError(error),
+    );
+  }
+};
+
 const validateDateRange = (startAt: string, endAt: string): boolean => {
   const start = new Date(startAt).getTime();
   const end = new Date(endAt).getTime();
@@ -480,23 +568,50 @@ onMounted(() => {
           </label>
         </div>
 
-        <label v-if="createForm.tagMode === 'auto'" class="flex flex-col gap-1">
-          <span>Autoタグ（1行1タグ）</span>
+        <div v-if="createForm.tagMode === 'auto'" class="flex flex-col gap-2">
+          <div class="flex flex-wrap items-center justify-between gap-3">
+            <span>Autoタグ（1行1タグ）</span>
+            <label
+              class="cursor-pointer rounded bg-gray-600 px-3 py-2 transition hover:bg-gray-500"
+            >
+              ファイルを読み込み
+              <input
+                class="sr-only"
+                accept=".txt,text/plain"
+                type="file"
+                @change="importAutoTagsFromFile"
+              />
+            </label>
+          </div>
           <textarea
             v-model="createForm.autoTags"
             class="min-h-28 rounded bg-gray-500 p-2 focus:bg-gray-600 focus:outline-none"
           ></textarea>
-        </label>
+        </div>
 
         <div v-else class="flex flex-col gap-2">
-          <div class="flex items-center justify-between gap-3">
+          <div class="flex flex-wrap items-center justify-between gap-3">
             <span>Manualタグ（試行ごと、1行1タグ）</span>
-            <button
-              class="rounded bg-gray-600 px-3 py-2 transition hover:bg-gray-500"
-              @click="addManualAttempt"
-            >
-              試行を追加
-            </button>
+            <div class="flex flex-wrap gap-2">
+              <label
+                class="cursor-pointer rounded bg-gray-600 px-3 py-2 transition hover:bg-gray-500"
+              >
+                ディレクトリを読み込み
+                <input
+                  class="sr-only"
+                  type="file"
+                  multiple
+                  webkitdirectory
+                  @change="importManualTagsFromDirectory"
+                />
+              </label>
+              <button
+                class="rounded bg-gray-600 px-3 py-2 transition hover:bg-gray-500"
+                @click="addManualAttempt"
+              >
+                試行を追加
+              </button>
+            </div>
           </div>
           <div
             v-for="(attempt, index) in createForm.manualAttempts"
