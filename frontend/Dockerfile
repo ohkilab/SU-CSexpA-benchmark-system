@@ -3,7 +3,7 @@
 # build
 FROM node:18.17-alpine3.18 AS builder
 
-RUN npm i -g pnpm
+RUN npm i -g pnpm@8.15.9
 
 # WORKDIR /app/proto-gen
 COPY ./proto-gen /app/proto-gen

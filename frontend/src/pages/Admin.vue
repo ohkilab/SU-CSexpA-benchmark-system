@@ -8,11 +8,11 @@ const route = useRoute();
 const adminState = useAdminStateStore();
 
 onMounted(() => {
-  if (adminState.currentPath === "") {
+  if (adminState.currentPath === "" || adminState.currentPath === "/admin") {
     adminState.currentPath = "/admin/contests";
-    router.push(adminState.currentPath);
+    router.replace(adminState.currentPath);
   } else {
-    router.push(adminState.currentPath);
+    router.replace(adminState.currentPath);
   }
 });
 

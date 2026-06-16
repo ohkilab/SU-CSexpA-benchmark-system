@@ -1,0 +1,18 @@
+services:
+  backend:
+    image: su-csexpa-benchmark-system-backend:local
+    build:
+      context: .
+      dockerfile: backend/ga.Dockerfile
+
+  benchmark-service:
+    image: su-csexpa-benchmark-system-benchmark-service:local
+    build:
+      context: .
+      dockerfile: benchmark-service/ga.Dockerfile
+
+  frontend:
+    image: su-csexpa-benchmark-system-frontend:local
+    build:
+      context: .
+      dockerfile: frontend/Dockerfile

@@ -1,3 +1,5 @@
 .env
 /data
 node_modules/
+LOCAL_OPERATIONS.md
+backend/storage/tags/

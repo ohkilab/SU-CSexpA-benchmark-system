@@ -20,6 +20,6 @@ library.add(fas);
 
 createApp(App)
   .component("font-awesome-icon", FontAwesomeIcon)
-  .use(router)
   .use(pinia)
+  .use(router)
   .mount("#app");

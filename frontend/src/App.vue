@@ -7,6 +7,7 @@ import { useStateStore } from './stores/state'
 import { useBackendStore } from './stores/backend'
 import { useAdminStateStore } from './stores/adminState';
 import { Role } from 'proto-gen-web/services/backend/resources';
+import { getBackendBaseUrl } from './stores/backendUrl';
 
 const loggedIn = ref(false)
 const state = useStateStore()
@@ -29,12 +30,14 @@ const PROD = import.meta.env.PROD
 const errMsg = ref('')
 
 const handleLogin = (id: string, password: string) => {
+  const baseUrl = getBackendBaseUrl(state.devBaseUrl)
 
   backendStore.backend = new BackendServiceClient(
     new GrpcWebFetchTransport({
-      baseUrl: import.meta.env.PROD ? `http://${window.location.hostname}:8080` : state.devBaseUrl
+      baseUrl
     })
   )
+  adminState.setBaseUrl(baseUrl)
 
   backendStore.backend.postLogin({ id, password }).then(value => {
     if (import.meta.env.DEV) console.log('Login', value)
@@ -63,13 +66,15 @@ onMounted(() => {
   // try login with token
   if (state.token) {
     console.log('try login with token')
+    const baseUrl = getBackendBaseUrl(state.devBaseUrl)
     backendStore.backend = new BackendServiceClient(
       new GrpcWebFetchTransport({
-        baseUrl: import.meta.env.PROD ? `http://${window.location.hostname}:8080` : state.devBaseUrl
+        baseUrl
       })
     )
+    adminState.setBaseUrl(baseUrl)
 
-    backendStore.backend.verifyToken({ token: state.token })
+    backendStore.backend.verifyToken({}, { meta: { authorization: "Bearer " + state.token } })
       .then(_ => {
         console.log(_)
         // successfully logged in with token, load token and group name into app
@@ -134,7 +139,7 @@ onMounted(() => {
       <div v-if="loggedIn && !state.benchmarking && $route.name !== 'contests'" class="flex w-full px-12 text-lg">
         <router-link to="/contests"
           class="w-48 rounded transition hover:scale-105 shadow-md shadow-black p-2 text-center border border-gray-500 bg-red-500 mr-auto">
-          &#x2190 <div class="inline">コンテスト一覧</div> </router-link>
+          &#x2190; <div class="inline">コンテスト一覧</div> </router-link>
         <div class="mx-auto flex gap-5">
           <router-link class="p-2 rounded shadow-md shadow-black hover:scale-105 transition border border-gray-500"
             active-class="bg-blue-500" to="/benchmark">ベンチマーク</router-link>

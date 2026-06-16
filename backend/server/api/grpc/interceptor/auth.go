@@ -50,3 +50,18 @@ func Auth(secret []byte) grpc.UnaryServerInterceptor {
 func GetClaimsFromContext(ctx context.Context) *auth.Claims {
 	return ctx.Value(claimsKey).(*auth.Claims)
 }
+
+func RequireRole(ctx context.Context, role backend.Role) error {
+	claims, ok := ctx.Value(claimsKey).(*auth.Claims)
+	if !ok || claims == nil {
+		return status.Error(codes.Unauthenticated, "missing claims")
+	}
+	if claims.Role != role.String() {
+		return status.Error(codes.PermissionDenied, "permission denied")
+	}
+	return nil
+}
+
+func RequireAdmin(ctx context.Context) error {
+	return RequireRole(ctx, backend.Role_ADMIN)
+}
