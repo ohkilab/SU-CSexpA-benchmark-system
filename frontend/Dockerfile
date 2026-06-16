@@ -1,23 +1,20 @@
 # Note: build from repository root
 #  e.g.: docker build -t exp-a-frontend -f ./frontend/Dockerfile .
 # build
-FROM node:18.17-alpine3.18 AS builder
+FROM node:18.17-bookworm-slim AS builder
 
 RUN npm i -g pnpm@8.15.9
 
-# WORKDIR /app/proto-gen
-COPY ./proto-gen /app/proto-gen
-
 WORKDIR /app/proto-gen/web
-RUN pnpm i --prod
-
-# WORKDIR /app/frontend
-COPY ./frontend /app/frontend
+COPY ./proto-gen/web/package.json ./proto-gen/web/pnpm-lock.yaml ./
+RUN pnpm install --frozen-lockfile
 
 WORKDIR /app/frontend
-RUN pnpm i
+COPY ./frontend/package.json ./frontend/pnpm-lock.yaml ./
+RUN pnpm install --frozen-lockfile
 
-COPY . .
+COPY ./proto-gen /app/proto-gen
+COPY ./frontend /app/frontend
 RUN pnpm build
 
 # serve in nginx
