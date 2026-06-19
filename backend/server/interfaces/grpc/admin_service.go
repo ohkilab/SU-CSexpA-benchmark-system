@@ -19,8 +19,8 @@ type adminServiceServer struct {
 	pb.UnimplementedAdminServiceServer
 }
 
-func NewAdminService(entClient *ent.Client, logger *slog.Logger, tagRepository tag.Repository) pb.AdminServiceServer {
-	interactor := admin.NewInteractor(entClient, logger, tagRepository)
+func NewAdminService(entClient *ent.Client, logger *slog.Logger, tagRepository tag.Repository, v2026ContestSlug string) pb.AdminServiceServer {
+	interactor := admin.NewInteractor(entClient, logger, tagRepository, v2026ContestSlug)
 	return &adminServiceServer{interactor, pb.UnimplementedAdminServiceServer{}}
 }
 
@@ -31,7 +31,7 @@ func (s *adminServiceServer) CreateContest(ctx context.Context, req *pb.CreateCo
 	if req.TimeLimitPerTask <= 0 {
 		return nil, status.Error(codes.InvalidArgument, "time_limit_per_task must be positive")
 	}
-	if strings.TrimSpace(req.Slug) == "" {
+	if strings.TrimSpace(req.Slug) == "" && !(req.UseExistingTagFiles && req.Validator == pb.Validator_V2026) {
 		return nil, status.Error(codes.InvalidArgument, "slug is required")
 	}
 	if strings.TrimSpace(req.Title) == "" {
@@ -51,16 +51,24 @@ func (s *adminServiceServer) CreateContest(ctx context.Context, req *pb.CreateCo
 	}
 	switch selection := req.TagSelection.(type) {
 	case *pb.CreateContestRequest_Auto:
-		if selection.Auto == nil || selection.Auto.Tags == nil || len(selection.Auto.Tags.Tags) == 0 {
+		if selection.Auto == nil {
+			return nil, status.Error(codes.InvalidArgument, "auto tags are required")
+		}
+		if !req.UseExistingTagFiles && (selection.Auto.Tags == nil || len(selection.Auto.Tags.Tags) == 0) {
 			return nil, status.Error(codes.InvalidArgument, "auto tags are required")
 		}
 	case *pb.CreateContestRequest_Manual:
-		if selection.Manual == nil || len(selection.Manual.TagsList) == 0 {
+		if selection.Manual == nil {
 			return nil, status.Error(codes.InvalidArgument, "manual tags are required")
 		}
-		for _, tags := range selection.Manual.TagsList {
-			if tags == nil || len(tags.Tags) == 0 {
-				return nil, status.Error(codes.InvalidArgument, "manual tags must not contain empty attempts")
+		if !req.UseExistingTagFiles {
+			if len(selection.Manual.TagsList) == 0 {
+				return nil, status.Error(codes.InvalidArgument, "manual tags are required")
+			}
+			for _, tags := range selection.Manual.TagsList {
+				if tags == nil || len(tags.Tags) == 0 {
+					return nil, status.Error(codes.InvalidArgument, "manual tags must not contain empty attempts")
+				}
 			}
 		}
 	default:
@@ -88,6 +96,16 @@ func (s *adminServiceServer) UpdateContest(ctx context.Context, req *pb.UpdateCo
 		}
 	}
 	return s.adminInteractor.UpdateContest(ctx, req)
+}
+
+func (s *adminServiceServer) DeleteContest(ctx context.Context, req *pb.DeleteContestRequest) (*pb.DeleteContestResponse, error) {
+	if err := interceptor.RequireAdmin(ctx); err != nil {
+		return nil, err
+	}
+	if strings.TrimSpace(req.ContestSlug) == "" {
+		return nil, status.Error(codes.InvalidArgument, "contest_slug is required")
+	}
+	return s.adminInteractor.DeleteContest(ctx, req)
 }
 
 func isKnownValidator(validator pb.Validator) bool {
@@ -123,4 +141,25 @@ func (s *adminServiceServer) CreateGroups(ctx context.Context, req *pb.CreateGro
 		}
 	}
 	return s.adminInteractor.CreateGroups(ctx, req)
+}
+
+func (s *adminServiceServer) ListGroups(ctx context.Context, req *pb.ListGroupsRequest) (*pb.ListGroupsResponse, error) {
+	if err := interceptor.RequireAdmin(ctx); err != nil {
+		return nil, err
+	}
+	return s.adminInteractor.ListGroups(ctx, req)
+}
+
+func (s *adminServiceServer) DeleteGroup(ctx context.Context, req *pb.DeleteGroupRequest) (*pb.DeleteGroupResponse, error) {
+	if err := interceptor.RequireAdmin(ctx); err != nil {
+		return nil, err
+	}
+	if req.GroupId <= 0 {
+		return nil, status.Error(codes.InvalidArgument, "group_id must be positive")
+	}
+	claims := interceptor.GetClaimsFromContext(ctx)
+	if claims.GroupID == int(req.GroupId) {
+		return nil, status.Error(codes.FailedPrecondition, "cannot delete current admin group")
+	}
+	return s.adminInteractor.DeleteGroup(ctx, req)
 }

@@ -46,9 +46,11 @@ v2026/
 $ V2026_BUNDLE_DIR=/secure/path/v2026 make up-official
 ```
 
-`V2026_BUNDLE_DIR` と `V2026_CONTEST_SLUG` は `.env` に書いておくこともできます。一時的に別の bundle を使う場合は、上のようにコマンドの環境変数で上書きできます。
+`V2026_BUNDLE_DIR` は `.env` に書いておくこともできます。一時的に別の bundle を使う場合は、上のようにコマンドの環境変数で上書きできます。
 
-コンテスト slug が `v2026` 以外の場合は、mount 先のタグディレクトリ名を合わせます。
+起動後は管理画面の「コンテスト作成」で validator に `V2026` を選んで contest を作成します。V2026 では slug とタグ本文は入力せず、bundle 内の既存タグファイルを使います。
+
+通常の V2026 contest slug は `v2026` です。どうしても slug を変える場合だけ、mount 先のタグディレクトリ名を合わせます。
 
 ```shell
 $ V2026_BUNDLE_DIR=/secure/path/v2026 V2026_CONTEST_SLUG=exp-a-2026-final make up-official

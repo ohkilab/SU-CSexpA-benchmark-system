@@ -34,7 +34,7 @@ func LaunchBenchmarkGrpcServer(t *testing.T) (*pkggrpc.ClientConn, func()) {
 	t.Helper()
 	server := pkggrpc.NewServer()
 	client := benchmark.NewClient()
-	benchmarkService := service.New(client, make(map[string]validation.Validator))
+	benchmarkService := service.New(client, make(map[backend.Validator]validation.Validator))
 	server.RegisterService(&pb.BenchmarkService_ServiceDesc, benchmarkService)
 	lsnr, err := net.Listen("tcp", ":3777")
 	if err != nil {

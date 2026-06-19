@@ -1,7 +1,10 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { onMounted, ref } from "vue";
 import { parse as parseYaml } from "yaml";
-import type { CreateGroupsRequest_CreateGroupsGroup } from "proto-gen-web/services/backend/messages";
+import type {
+  AdminGroup,
+  CreateGroupsRequest_CreateGroupsGroup,
+} from "proto-gen-web/services/backend/messages";
 import { Role } from "proto-gen-web/services/backend/resources";
 import { useAdminStateStore } from "../../stores/adminState";
 import { useStateStore } from "../../stores/state";
@@ -31,7 +34,10 @@ const adminState = useAdminStateStore();
 const state = useStateStore();
 
 const rows = ref<GroupRow[]>([newGroupRow()]);
+const groups = ref<AdminGroup[]>([]);
+const loadingGroups = ref(false);
 const saving = ref(false);
+const deletingGroupId = ref<number | null>(null);
 const notice = ref<{ type: NoticeType; message: string } | null>(null);
 
 const roleOptions = [
@@ -59,6 +65,9 @@ const formatError = (error: unknown): string => {
   return String(error);
 };
 
+const roleLabel = (role: Role): string =>
+  roleOptions.find((option) => option.value === role)?.label ?? String(role);
+
 const addRow = () => {
   rows.value.push(newGroupRow());
 };
@@ -81,8 +90,8 @@ const parseYear = (value: unknown): number | null => {
     typeof value === "number"
       ? value
       : typeof value === "string"
-        ? Number(value.trim())
-        : Number.NaN;
+      ? Number(value.trim())
+      : Number.NaN;
   if (!Number.isInteger(year) || year <= 0) return null;
   return year;
 };
@@ -139,7 +148,10 @@ const importGroupsFromYaml = async (event: Event) => {
   try {
     const importedRows = parseGroupsYaml(await file.text());
     rows.value = importedRows;
-    setNotice("success", `${importedRows.length}件のグループを読み込みました。`);
+    setNotice(
+      "success",
+      `${importedRows.length}件のグループを読み込みました。`,
+    );
   } catch (error) {
     setNotice("error", "YAMLの読み込みに失敗しました: " + formatError(error));
   }
@@ -183,6 +195,21 @@ const buildGroups = (): CreateGroupsRequest_CreateGroupsGroup[] | null => {
   return groups;
 };
 
+const fetchGroups = async () => {
+  loadingGroups.value = true;
+  try {
+    const res = await adminState.admin.listGroups({}, authOptions());
+    groups.value = res.response.groups ?? [];
+  } catch (error) {
+    setNotice(
+      "error",
+      "グループ一覧の取得に失敗しました: " + formatError(error),
+    );
+  } finally {
+    loadingGroups.value = false;
+  }
+};
+
 const createGroups = async () => {
   const groups = buildGroups();
   if (!groups) return;
@@ -195,12 +222,38 @@ const createGroups = async () => {
       `${res.response.groups.length}件のグループを作成しました。`,
     );
     rows.value = [newGroupRow()];
+    await fetchGroups();
   } catch (error) {
     setNotice("error", "グループ作成に失敗しました: " + formatError(error));
   } finally {
     saving.value = false;
   }
 };
+
+const deleteGroup = async (group: AdminGroup) => {
+  if (
+    !window.confirm(
+      `グループ「${group.name}」（${group.year}年度）を削除しますか？`,
+    )
+  ) {
+    return;
+  }
+
+  deletingGroupId.value = group.id;
+  try {
+    await adminState.admin.deleteGroup({ groupId: group.id }, authOptions());
+    setNotice("success", `グループ「${group.name}」を削除しました。`);
+    await fetchGroups();
+  } catch (error) {
+    setNotice("error", "グループ削除に失敗しました: " + formatError(error));
+  } finally {
+    deletingGroupId.value = null;
+  }
+};
+
+onMounted(() => {
+  fetchGroups();
+});
 </script>
 
 <template>
@@ -224,6 +277,13 @@ const createGroups = async () => {
           @change="importGroupsFromYaml"
         />
       </label>
+      <button
+        class="rounded bg-gray-600 px-3 py-2 transition hover:bg-gray-500 disabled:opacity-50"
+        :disabled="loadingGroups"
+        @click="fetchGroups"
+      >
+        再読み込み
+      </button>
       <div
         v-if="notice"
         class="rounded px-3 py-2 text-sm"
@@ -233,81 +293,134 @@ const createGroups = async () => {
       </div>
     </div>
 
-    <div class="overflow-x-auto">
-      <table class="w-full min-w-[760px] table-fixed text-sm">
-        <thead class="bg-gray-800">
-          <tr>
-            <th class="w-52 px-3 py-2 text-left">グループ名</th>
-            <th class="w-56 px-3 py-2 text-left">パスワード</th>
-            <th class="w-28 px-3 py-2 text-left">年度</th>
-            <th class="w-40 px-3 py-2 text-left">ロール</th>
-            <th class="w-24 px-3 py-2"></th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr
-            v-for="(row, index) in rows"
-            :key="row.id"
-            class="border-b border-gray-800 bg-gray-900"
-          >
-            <td class="px-3 py-2">
-              <input
-                v-model="row.name"
-                class="w-full rounded bg-gray-500 p-2 focus:bg-gray-600 focus:outline-none"
-                placeholder="group-name"
-                type="text"
-              />
-            </td>
-            <td class="px-3 py-2">
-              <input
-                v-model="row.password"
-                class="w-full rounded bg-gray-500 p-2 focus:bg-gray-600 focus:outline-none"
-                placeholder="password"
-                type="password"
-              />
-            </td>
-            <td class="px-3 py-2">
-              <input
-                v-model.number="row.year"
-                class="w-full rounded bg-gray-500 p-2 focus:bg-gray-600 focus:outline-none"
-                min="1"
-                type="number"
-              />
-            </td>
-            <td class="px-3 py-2">
-              <select
-                v-model.number="row.role"
-                class="w-full rounded bg-gray-500 p-2 focus:bg-gray-600 focus:outline-none"
+    <section class="flex flex-col gap-3">
+      <h2 class="text-lg">既存グループ</h2>
+      <div class="overflow-x-auto">
+        <table class="w-full min-w-[640px] table-fixed text-sm">
+          <thead class="bg-gray-800">
+            <tr>
+              <th class="w-20 px-3 py-2 text-right">ID</th>
+              <th class="w-52 px-3 py-2 text-left">グループ名</th>
+              <th class="w-28 px-3 py-2 text-left">年度</th>
+              <th class="w-40 px-3 py-2 text-left">ロール</th>
+              <th class="w-28 px-3 py-2"></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-if="loadingGroups">
+              <td class="px-3 py-4 text-center text-gray-300" colspan="5">
+                読み込み中...
+              </td>
+            </tr>
+            <tr v-else-if="groups.length === 0">
+              <td class="px-3 py-4 text-center text-gray-300" colspan="5">
+                グループがありません
+              </td>
+            </tr>
+            <template v-else>
+              <tr
+                v-for="group in groups"
+                :key="group.id"
+                class="border-b border-gray-800 bg-gray-900"
               >
-                <option
-                  v-for="option in roleOptions"
-                  :key="option.value"
-                  :value="option.value"
-                >
-                  {{ option.label }}
-                </option>
-              </select>
-            </td>
-            <td class="px-3 py-2 text-right">
-              <button
-                class="rounded bg-red-600 px-3 py-2 transition hover:bg-red-500 disabled:opacity-50"
-                :disabled="rows.length <= 1"
-                @click="removeRow(index)"
-              >
-                削除
-              </button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+                <td class="px-3 py-2 text-right">{{ group.id }}</td>
+                <td class="truncate px-3 py-2">{{ group.name }}</td>
+                <td class="px-3 py-2">{{ group.year }}</td>
+                <td class="px-3 py-2">{{ roleLabel(group.role) }}</td>
+                <td class="px-3 py-2 text-right">
+                  <button
+                    class="rounded bg-red-600 px-3 py-2 transition hover:bg-red-500 disabled:opacity-50"
+                    :disabled="deletingGroupId !== null"
+                    @click="deleteGroup(group)"
+                  >
+                    {{ deletingGroupId === group.id ? "削除中..." : "削除" }}
+                  </button>
+                </td>
+              </tr>
+            </template>
+          </tbody>
+        </table>
+      </div>
+    </section>
 
-    <button
-      class="w-fit rounded bg-blue-600 px-4 py-2 transition hover:bg-blue-500 disabled:opacity-50"
-      :disabled="saving"
-      @click="createGroups"
-    >
-      {{ saving ? "作成中..." : "グループを作成" }}
-    </button>
+    <section class="flex flex-col gap-3 border-t border-gray-600 pt-5">
+      <h2 class="text-lg">新規作成</h2>
+      <div class="overflow-x-auto">
+        <table class="w-full min-w-[760px] table-fixed text-sm">
+          <thead class="bg-gray-800">
+            <tr>
+              <th class="w-52 px-3 py-2 text-left">グループ名</th>
+              <th class="w-56 px-3 py-2 text-left">パスワード</th>
+              <th class="w-28 px-3 py-2 text-left">年度</th>
+              <th class="w-40 px-3 py-2 text-left">ロール</th>
+              <th class="w-24 px-3 py-2"></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr
+              v-for="(row, index) in rows"
+              :key="row.id"
+              class="border-b border-gray-800 bg-gray-900"
+            >
+              <td class="px-3 py-2">
+                <input
+                  v-model="row.name"
+                  class="w-full rounded bg-gray-500 p-2 focus:bg-gray-600 focus:outline-none"
+                  placeholder="group-name"
+                  type="text"
+                />
+              </td>
+              <td class="px-3 py-2">
+                <input
+                  v-model="row.password"
+                  class="w-full rounded bg-gray-500 p-2 focus:bg-gray-600 focus:outline-none"
+                  placeholder="password"
+                  type="password"
+                />
+              </td>
+              <td class="px-3 py-2">
+                <input
+                  v-model.number="row.year"
+                  class="w-full rounded bg-gray-500 p-2 focus:bg-gray-600 focus:outline-none"
+                  min="1"
+                  type="number"
+                />
+              </td>
+              <td class="px-3 py-2">
+                <select
+                  v-model.number="row.role"
+                  class="w-full rounded bg-gray-500 p-2 focus:bg-gray-600 focus:outline-none"
+                >
+                  <option
+                    v-for="option in roleOptions"
+                    :key="option.value"
+                    :value="option.value"
+                  >
+                    {{ option.label }}
+                  </option>
+                </select>
+              </td>
+              <td class="px-3 py-2 text-right">
+                <button
+                  class="rounded bg-red-600 px-3 py-2 transition hover:bg-red-500 disabled:opacity-50"
+                  :disabled="rows.length <= 1"
+                  @click="removeRow(index)"
+                >
+                  削除
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <button
+        class="w-fit rounded bg-blue-600 px-4 py-2 transition hover:bg-blue-500 disabled:opacity-50"
+        :disabled="saving"
+        @click="createGroups"
+      >
+        {{ saving ? "作成中..." : "グループを作成" }}
+      </button>
+    </section>
   </div>
 </template>

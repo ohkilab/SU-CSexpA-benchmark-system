@@ -31,5 +31,8 @@ service HealthcheckService {
 service AdminService {
   rpc CreateContest(CreateContestRequest) returns (CreateContestResponse);
   rpc UpdateContest(UpdateContestRequest) returns (UpdateContestResponse);
+  rpc DeleteContest(DeleteContestRequest) returns (DeleteContestResponse);
   rpc CreateGroups(CreateGroupsRequest) returns (CreateGroupsResponse);
+  rpc ListGroups(ListGroupsRequest) returns (ListGroupsResponse);
+  rpc DeleteGroup(DeleteGroupRequest) returns (DeleteGroupResponse);
 }

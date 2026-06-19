@@ -15,6 +15,7 @@ type Config struct {
 	InitAdminName     string `envconfig:"BACKEND_INIT_ADMIN_NAME" required:"true"`
 	InitAdminPassword string `envconfig:"BACKEND_INIT_ADMIN_PASSWORD" required:"true"`
 	StoragePath       string `envconfig:"BACKEND_STORAGE_PATH" required:"true"`
+	V2026ContestSlug  string `envconfig:"V2026_CONTEST_SLUG" default:"v2026"`
 }
 
 func New() (*Config, error) {

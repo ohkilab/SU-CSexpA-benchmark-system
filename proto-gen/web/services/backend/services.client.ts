@@ -2,8 +2,14 @@
 // @generated from protobuf file "services/backend/services.proto" (package "backend", syntax proto3)
 // tslint:disable
 import { AdminService } from "./services";
+import type { DeleteGroupResponse } from "./messages";
+import type { DeleteGroupRequest } from "./messages";
+import type { ListGroupsResponse } from "./messages";
+import type { ListGroupsRequest } from "./messages";
 import type { CreateGroupsResponse } from "./messages";
 import type { CreateGroupsRequest } from "./messages";
+import type { DeleteContestResponse } from "./messages";
+import type { DeleteContestRequest } from "./messages";
 import type { UpdateContestResponse } from "./messages";
 import type { UpdateContestRequest } from "./messages";
 import type { CreateContestResponse } from "./messages";
@@ -218,9 +224,21 @@ export interface IAdminServiceClient {
      */
     updateContest(input: UpdateContestRequest, options?: RpcOptions): UnaryCall<UpdateContestRequest, UpdateContestResponse>;
     /**
+     * @generated from protobuf rpc: DeleteContest(backend.DeleteContestRequest) returns (backend.DeleteContestResponse);
+     */
+    deleteContest(input: DeleteContestRequest, options?: RpcOptions): UnaryCall<DeleteContestRequest, DeleteContestResponse>;
+    /**
      * @generated from protobuf rpc: CreateGroups(backend.CreateGroupsRequest) returns (backend.CreateGroupsResponse);
      */
     createGroups(input: CreateGroupsRequest, options?: RpcOptions): UnaryCall<CreateGroupsRequest, CreateGroupsResponse>;
+    /**
+     * @generated from protobuf rpc: ListGroups(backend.ListGroupsRequest) returns (backend.ListGroupsResponse);
+     */
+    listGroups(input: ListGroupsRequest, options?: RpcOptions): UnaryCall<ListGroupsRequest, ListGroupsResponse>;
+    /**
+     * @generated from protobuf rpc: DeleteGroup(backend.DeleteGroupRequest) returns (backend.DeleteGroupResponse);
+     */
+    deleteGroup(input: DeleteGroupRequest, options?: RpcOptions): UnaryCall<DeleteGroupRequest, DeleteGroupResponse>;
 }
 /**
  * @generated from protobuf service backend.AdminService
@@ -246,10 +264,31 @@ export class AdminServiceClient implements IAdminServiceClient, ServiceInfo {
         return stackIntercept<UpdateContestRequest, UpdateContestResponse>("unary", this._transport, method, opt, input);
     }
     /**
+     * @generated from protobuf rpc: DeleteContest(backend.DeleteContestRequest) returns (backend.DeleteContestResponse);
+     */
+    deleteContest(input: DeleteContestRequest, options?: RpcOptions): UnaryCall<DeleteContestRequest, DeleteContestResponse> {
+        const method = this.methods[2], opt = this._transport.mergeOptions(options);
+        return stackIntercept<DeleteContestRequest, DeleteContestResponse>("unary", this._transport, method, opt, input);
+    }
+    /**
      * @generated from protobuf rpc: CreateGroups(backend.CreateGroupsRequest) returns (backend.CreateGroupsResponse);
      */
     createGroups(input: CreateGroupsRequest, options?: RpcOptions): UnaryCall<CreateGroupsRequest, CreateGroupsResponse> {
-        const method = this.methods[2], opt = this._transport.mergeOptions(options);
+        const method = this.methods[3], opt = this._transport.mergeOptions(options);
         return stackIntercept<CreateGroupsRequest, CreateGroupsResponse>("unary", this._transport, method, opt, input);
+    }
+    /**
+     * @generated from protobuf rpc: ListGroups(backend.ListGroupsRequest) returns (backend.ListGroupsResponse);
+     */
+    listGroups(input: ListGroupsRequest, options?: RpcOptions): UnaryCall<ListGroupsRequest, ListGroupsResponse> {
+        const method = this.methods[4], opt = this._transport.mergeOptions(options);
+        return stackIntercept<ListGroupsRequest, ListGroupsResponse>("unary", this._transport, method, opt, input);
+    }
+    /**
+     * @generated from protobuf rpc: DeleteGroup(backend.DeleteGroupRequest) returns (backend.DeleteGroupResponse);
+     */
+    deleteGroup(input: DeleteGroupRequest, options?: RpcOptions): UnaryCall<DeleteGroupRequest, DeleteGroupResponse> {
+        const method = this.methods[5], opt = this._transport.mergeOptions(options);
+        return stackIntercept<DeleteGroupRequest, DeleteGroupResponse>("unary", this._transport, method, opt, input);
     }
 }

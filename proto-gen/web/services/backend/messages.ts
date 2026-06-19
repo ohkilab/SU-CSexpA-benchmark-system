@@ -211,6 +211,10 @@ export interface CreateContestRequest {
      * @generated from protobuf field: int32 time_limit_per_task = 12;
      */
     timeLimitPerTask: number; // sec
+    /**
+     * @generated from protobuf field: bool use_existing_tag_files = 13;
+     */
+    useExistingTagFiles: boolean;
 }
 /**
  * @generated from protobuf message backend.CreateContestResponse
@@ -446,6 +450,69 @@ export interface CreateGroupsResponse {
      * @generated from protobuf field: repeated backend.Group groups = 1;
      */
     groups: Group[];
+}
+/**
+ * @generated from protobuf message backend.AdminGroup
+ */
+export interface AdminGroup {
+    /**
+     * @generated from protobuf field: int32 id = 1;
+     */
+    id: number;
+    /**
+     * @generated from protobuf field: string name = 2;
+     */
+    name: string;
+    /**
+     * @generated from protobuf field: int32 year = 3;
+     */
+    year: number;
+    /**
+     * @generated from protobuf field: backend.Role role = 4;
+     */
+    role: Role;
+}
+/**
+ * @generated from protobuf message backend.ListGroupsRequest
+ */
+export interface ListGroupsRequest {
+}
+/**
+ * @generated from protobuf message backend.ListGroupsResponse
+ */
+export interface ListGroupsResponse {
+    /**
+     * @generated from protobuf field: repeated backend.AdminGroup groups = 1;
+     */
+    groups: AdminGroup[];
+}
+/**
+ * @generated from protobuf message backend.DeleteContestRequest
+ */
+export interface DeleteContestRequest {
+    /**
+     * @generated from protobuf field: string contest_slug = 1;
+     */
+    contestSlug: string;
+}
+/**
+ * @generated from protobuf message backend.DeleteContestResponse
+ */
+export interface DeleteContestResponse {
+}
+/**
+ * @generated from protobuf message backend.DeleteGroupRequest
+ */
+export interface DeleteGroupRequest {
+    /**
+     * @generated from protobuf field: int32 group_id = 1;
+     */
+    groupId: number;
+}
+/**
+ * @generated from protobuf message backend.DeleteGroupResponse
+ */
+export interface DeleteGroupResponse {
 }
 // @generated message type with reflection information, may provide speed optimized methods
 class PostLoginRequest$Type extends MessageType<PostLoginRequest> {
@@ -933,11 +1000,12 @@ class CreateContestRequest$Type extends MessageType<CreateContestRequest> {
             { no: 9, name: "auto", kind: "message", oneof: "tagSelection", T: () => TagSelectionLogicAuto },
             { no: 10, name: "manual", kind: "message", oneof: "tagSelection", T: () => TagSelectionLogicManual },
             { no: 11, name: "validator", kind: "enum", T: () => ["backend.Validator", Validator] },
-            { no: 12, name: "time_limit_per_task", kind: "scalar", T: 5 /*ScalarType.INT32*/ }
+            { no: 12, name: "time_limit_per_task", kind: "scalar", T: 5 /*ScalarType.INT32*/ },
+            { no: 13, name: "use_existing_tag_files", kind: "scalar", T: 8 /*ScalarType.BOOL*/ }
         ]);
     }
     create(value?: PartialMessage<CreateContestRequest>): CreateContestRequest {
-        const message = { title: "", submitLimit: 0, slug: "", tagSelection: { oneofKind: undefined }, validator: 0, timeLimitPerTask: 0 };
+        const message = { title: "", submitLimit: 0, slug: "", tagSelection: { oneofKind: undefined }, validator: 0, timeLimitPerTask: 0, useExistingTagFiles: false };
         globalThis.Object.defineProperty(message, MESSAGE_TYPE, { enumerable: false, value: this });
         if (value !== undefined)
             reflectionMergePartial<CreateContestRequest>(this, message, value);
@@ -981,6 +1049,9 @@ class CreateContestRequest$Type extends MessageType<CreateContestRequest> {
                 case /* int32 time_limit_per_task */ 12:
                     message.timeLimitPerTask = reader.int32();
                     break;
+                case /* bool use_existing_tag_files */ 13:
+                    message.useExistingTagFiles = reader.bool();
+                    break;
                 default:
                     let u = options.readUnknownField;
                     if (u === "throw")
@@ -1020,6 +1091,9 @@ class CreateContestRequest$Type extends MessageType<CreateContestRequest> {
         /* int32 time_limit_per_task = 12; */
         if (message.timeLimitPerTask !== 0)
             writer.tag(12, WireType.Varint).int32(message.timeLimitPerTask);
+        /* bool use_existing_tag_files = 13; */
+        if (message.useExistingTagFiles !== false)
+            writer.tag(13, WireType.Varint).bool(message.useExistingTagFiles);
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
@@ -2066,3 +2140,290 @@ class CreateGroupsResponse$Type extends MessageType<CreateGroupsResponse> {
  * @generated MessageType for protobuf message backend.CreateGroupsResponse
  */
 export const CreateGroupsResponse = new CreateGroupsResponse$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class AdminGroup$Type extends MessageType<AdminGroup> {
+    constructor() {
+        super("backend.AdminGroup", [
+            { no: 1, name: "id", kind: "scalar", T: 5 /*ScalarType.INT32*/ },
+            { no: 2, name: "name", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 3, name: "year", kind: "scalar", T: 5 /*ScalarType.INT32*/ },
+            { no: 4, name: "role", kind: "enum", T: () => ["backend.Role", Role] }
+        ]);
+    }
+    create(value?: PartialMessage<AdminGroup>): AdminGroup {
+        const message = { id: 0, name: "", year: 0, role: 0 };
+        globalThis.Object.defineProperty(message, MESSAGE_TYPE, { enumerable: false, value: this });
+        if (value !== undefined)
+            reflectionMergePartial<AdminGroup>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: AdminGroup): AdminGroup {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* int32 id */ 1:
+                    message.id = reader.int32();
+                    break;
+                case /* string name */ 2:
+                    message.name = reader.string();
+                    break;
+                case /* int32 year */ 3:
+                    message.year = reader.int32();
+                    break;
+                case /* backend.Role role */ 4:
+                    message.role = reader.int32();
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: AdminGroup, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* int32 id = 1; */
+        if (message.id !== 0)
+            writer.tag(1, WireType.Varint).int32(message.id);
+        /* string name = 2; */
+        if (message.name !== "")
+            writer.tag(2, WireType.LengthDelimited).string(message.name);
+        /* int32 year = 3; */
+        if (message.year !== 0)
+            writer.tag(3, WireType.Varint).int32(message.year);
+        /* backend.Role role = 4; */
+        if (message.role !== 0)
+            writer.tag(4, WireType.Varint).int32(message.role);
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message backend.AdminGroup
+ */
+export const AdminGroup = new AdminGroup$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class ListGroupsRequest$Type extends MessageType<ListGroupsRequest> {
+    constructor() {
+        super("backend.ListGroupsRequest", []);
+    }
+    create(value?: PartialMessage<ListGroupsRequest>): ListGroupsRequest {
+        const message = {};
+        globalThis.Object.defineProperty(message, MESSAGE_TYPE, { enumerable: false, value: this });
+        if (value !== undefined)
+            reflectionMergePartial<ListGroupsRequest>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: ListGroupsRequest): ListGroupsRequest {
+        return target ?? this.create();
+    }
+    internalBinaryWrite(message: ListGroupsRequest, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message backend.ListGroupsRequest
+ */
+export const ListGroupsRequest = new ListGroupsRequest$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class ListGroupsResponse$Type extends MessageType<ListGroupsResponse> {
+    constructor() {
+        super("backend.ListGroupsResponse", [
+            { no: 1, name: "groups", kind: "message", repeat: 1 /*RepeatType.PACKED*/, T: () => AdminGroup }
+        ]);
+    }
+    create(value?: PartialMessage<ListGroupsResponse>): ListGroupsResponse {
+        const message = { groups: [] };
+        globalThis.Object.defineProperty(message, MESSAGE_TYPE, { enumerable: false, value: this });
+        if (value !== undefined)
+            reflectionMergePartial<ListGroupsResponse>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: ListGroupsResponse): ListGroupsResponse {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* repeated backend.AdminGroup groups */ 1:
+                    message.groups.push(AdminGroup.internalBinaryRead(reader, reader.uint32(), options));
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: ListGroupsResponse, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* repeated backend.AdminGroup groups = 1; */
+        for (let i = 0; i < message.groups.length; i++)
+            AdminGroup.internalBinaryWrite(message.groups[i], writer.tag(1, WireType.LengthDelimited).fork(), options).join();
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message backend.ListGroupsResponse
+ */
+export const ListGroupsResponse = new ListGroupsResponse$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class DeleteContestRequest$Type extends MessageType<DeleteContestRequest> {
+    constructor() {
+        super("backend.DeleteContestRequest", [
+            { no: 1, name: "contest_slug", kind: "scalar", T: 9 /*ScalarType.STRING*/ }
+        ]);
+    }
+    create(value?: PartialMessage<DeleteContestRequest>): DeleteContestRequest {
+        const message = { contestSlug: "" };
+        globalThis.Object.defineProperty(message, MESSAGE_TYPE, { enumerable: false, value: this });
+        if (value !== undefined)
+            reflectionMergePartial<DeleteContestRequest>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: DeleteContestRequest): DeleteContestRequest {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* string contest_slug */ 1:
+                    message.contestSlug = reader.string();
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: DeleteContestRequest, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* string contest_slug = 1; */
+        if (message.contestSlug !== "")
+            writer.tag(1, WireType.LengthDelimited).string(message.contestSlug);
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message backend.DeleteContestRequest
+ */
+export const DeleteContestRequest = new DeleteContestRequest$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class DeleteContestResponse$Type extends MessageType<DeleteContestResponse> {
+    constructor() {
+        super("backend.DeleteContestResponse", []);
+    }
+    create(value?: PartialMessage<DeleteContestResponse>): DeleteContestResponse {
+        const message = {};
+        globalThis.Object.defineProperty(message, MESSAGE_TYPE, { enumerable: false, value: this });
+        if (value !== undefined)
+            reflectionMergePartial<DeleteContestResponse>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: DeleteContestResponse): DeleteContestResponse {
+        return target ?? this.create();
+    }
+    internalBinaryWrite(message: DeleteContestResponse, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message backend.DeleteContestResponse
+ */
+export const DeleteContestResponse = new DeleteContestResponse$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class DeleteGroupRequest$Type extends MessageType<DeleteGroupRequest> {
+    constructor() {
+        super("backend.DeleteGroupRequest", [
+            { no: 1, name: "group_id", kind: "scalar", T: 5 /*ScalarType.INT32*/ }
+        ]);
+    }
+    create(value?: PartialMessage<DeleteGroupRequest>): DeleteGroupRequest {
+        const message = { groupId: 0 };
+        globalThis.Object.defineProperty(message, MESSAGE_TYPE, { enumerable: false, value: this });
+        if (value !== undefined)
+            reflectionMergePartial<DeleteGroupRequest>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: DeleteGroupRequest): DeleteGroupRequest {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* int32 group_id */ 1:
+                    message.groupId = reader.int32();
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: DeleteGroupRequest, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* int32 group_id = 1; */
+        if (message.groupId !== 0)
+            writer.tag(1, WireType.Varint).int32(message.groupId);
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message backend.DeleteGroupRequest
+ */
+export const DeleteGroupRequest = new DeleteGroupRequest$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class DeleteGroupResponse$Type extends MessageType<DeleteGroupResponse> {
+    constructor() {
+        super("backend.DeleteGroupResponse", []);
+    }
+    create(value?: PartialMessage<DeleteGroupResponse>): DeleteGroupResponse {
+        const message = {};
+        globalThis.Object.defineProperty(message, MESSAGE_TYPE, { enumerable: false, value: this });
+        if (value !== undefined)
+            reflectionMergePartial<DeleteGroupResponse>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: DeleteGroupResponse): DeleteGroupResponse {
+        return target ?? this.create();
+    }
+    internalBinaryWrite(message: DeleteGroupResponse, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message backend.DeleteGroupResponse
+ */
+export const DeleteGroupResponse = new DeleteGroupResponse$Type();

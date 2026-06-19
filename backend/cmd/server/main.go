@@ -12,9 +12,9 @@ import (
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/repository/tag"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/worker"
 	benchmarkpb "github.com/ohkilab/SU-CSexpA-benchmark-system/proto-gen/go/services/benchmark-service"
-	"log/slog"
 	pkggrpc "google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
+	"log/slog"
 )
 
 func main() {
@@ -62,6 +62,7 @@ func main() {
 		grpc.WithTagRepository(tag.NewRespository(config.StoragePath)),
 		grpc.UseLogMiddleware(),
 		grpc.WithInitAdmin(config.InitAdminName, config.InitAdminPassword),
+		grpc.WithV2026ContestSlug(config.V2026ContestSlug),
 		grpc.WithLimit(100),
 	)
 	if err != nil {

@@ -17,6 +17,7 @@ type option struct {
 	limit             int
 	initAdminName     string
 	initAdminPassword string
+	v2026ContestSlug  string
 }
 
 type OptionFunc func(*option)
@@ -67,5 +68,11 @@ func WithInitAdmin(name, password string) OptionFunc {
 	return func(o *option) {
 		o.initAdminName = name
 		o.initAdminPassword = password
+	}
+}
+
+func WithV2026ContestSlug(slug string) OptionFunc {
+	return func(o *option) {
+		o.v2026ContestSlug = slug
 	}
 }

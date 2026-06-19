@@ -8,6 +8,7 @@ type mockRepository struct {
 	getTags         func(contestSlug string, count int) ([]string, error)
 	createRandomTag func(contestSlug string, tags []string) error
 	createTags      func(contestSlug string, tagsList [][]string) error
+	deleteTags      func(contestSlug string) error
 }
 
 func MockRepository(
@@ -16,7 +17,7 @@ func MockRepository(
 	createRandomTag func(contestSlug string, tags []string) error,
 	createTags func(contestSlug string, tagsList [][]string) error,
 ) Repository {
-	return &mockRepository{getRandomTags, getTags, createRandomTag, createTags}
+	return &mockRepository{getRandomTags, getTags, createRandomTag, createTags, nil}
 }
 
 func (r *mockRepository) GetRandomTags(contestSlug string, num int) ([]string, error) {
@@ -43,6 +44,13 @@ func (r *mockRepository) CreateRandomTag(contestSlug string, tags []string) erro
 func (r *mockRepository) CreateTags(contestSlug string, tagsList [][]string) error {
 	if r.createTags != nil {
 		return r.createTags(contestSlug, tagsList)
+	}
+	return nil
+}
+
+func (r *mockRepository) DeleteContestTags(contestSlug string) error {
+	if r.deleteTags != nil {
+		return r.deleteTags(contestSlug)
 	}
 	return nil
 }

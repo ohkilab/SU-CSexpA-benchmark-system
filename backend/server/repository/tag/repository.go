@@ -19,6 +19,7 @@ type Repository interface {
 	GetTags(contestSlug string, count int) ([]string, error)
 	CreateRandomTag(contestSlug string, tags []string) error
 	CreateTags(contestSlug string, tagsList [][]string) error
+	DeleteContestTags(contestSlug string) error
 }
 
 type repository struct {
@@ -78,6 +79,10 @@ func (r *repository) CreateTags(contestSlug string, tagsList [][]string) error {
 		f.Close()
 	}
 	return nil
+}
+
+func (r *repository) DeleteContestTags(contestSlug string) error {
+	return os.RemoveAll(filepath.Join(r.storagePath, fmt.Sprintf("tags/%s", contestSlug)))
 }
 
 func writeTags(w io.Writer, tags []string) error {

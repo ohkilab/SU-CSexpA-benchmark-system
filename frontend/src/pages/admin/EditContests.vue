@@ -82,6 +82,7 @@ const editForm = ref<EditContestForm>({
 const loading = ref(false);
 const savingCreate = ref(false);
 const savingUpdate = ref(false);
+const deletingContest = ref(false);
 const notice = ref<{ type: NoticeType; message: string } | null>(null);
 
 const validatorOptions = [
@@ -92,6 +93,9 @@ const validatorOptions = [
 
 const selectedContest = computed(() =>
   contests.value.find((contest) => contest.slug === selectedContestSlug.value),
+);
+const createUsesExistingTagFiles = computed(
+  () => createForm.value.validator === Validator.V2026,
 );
 
 const authOptions = () => ({
@@ -223,8 +227,7 @@ const importManualTagsFromDirectory = async (event: Event) => {
   } catch (error) {
     setNotice(
       "error",
-      "Manualタグディレクトリの読み込みに失敗しました: " +
-        formatError(error),
+      "Manualタグディレクトリの読み込みに失敗しました: " + formatError(error),
     );
   }
 };
@@ -244,7 +247,11 @@ const fetchContests = async () => {
       const current = contests.value.find(
         (contest) => contest.slug === selectedContestSlug.value,
       );
-      if (current) selectContest(current);
+      if (current) {
+        selectContest(current);
+      } else {
+        selectedContestSlug.value = "";
+      }
     }
   } catch (error) {
     setNotice(
@@ -281,8 +288,13 @@ const buildCreateRequest = (): CreateContestRequest | null => {
   const form = createForm.value;
   const startAt = toTimestamp(form.startAt);
   const endAt = toTimestamp(form.endAt);
-  if (!form.title.trim() || !form.slug.trim()) {
-    setNotice("error", "タイトルとslugを入力してください。");
+  const useExistingTagFiles = createUsesExistingTagFiles.value;
+  if (!form.title.trim()) {
+    setNotice("error", "タイトルを入力してください。");
+    return null;
+  }
+  if (!useExistingTagFiles && !form.slug.trim()) {
+    setNotice("error", "slugを入力してください。");
     return null;
   }
   if (!startAt || !endAt || !validateDateRange(form.startAt, form.endAt)) {
@@ -296,15 +308,28 @@ const buildCreateRequest = (): CreateContestRequest | null => {
 
   const baseRequest = {
     title: form.title.trim(),
-    slug: form.slug.trim(),
+    slug: useExistingTagFiles ? "" : form.slug.trim(),
     startAt,
     endAt,
     submitLimit: form.submitLimit,
     validator: Number(form.validator) as Validator,
     timeLimitPerTask: form.timeLimitPerTask,
+    useExistingTagFiles,
   };
 
   if (form.tagMode === "auto") {
+    if (useExistingTagFiles) {
+      return {
+        ...baseRequest,
+        tagSelection: {
+          oneofKind: "auto",
+          auto: {
+            type: TagSelectionLogicType.AUTO,
+          },
+        },
+      };
+    }
+
     const tags = splitTags(form.autoTags);
     if (tags.length === 0) {
       setNotice("error", "Autoタグを1件以上入力してください。");
@@ -317,6 +342,19 @@ const buildCreateRequest = (): CreateContestRequest | null => {
         auto: {
           type: TagSelectionLogicType.AUTO,
           tags: { tags },
+        },
+      },
+    };
+  }
+
+  if (useExistingTagFiles) {
+    return {
+      ...baseRequest,
+      tagSelection: {
+        oneofKind: "manual",
+        manual: {
+          type: TagSelectionLogicType.MANUAL,
+          tagsList: [],
         },
       },
     };
@@ -358,7 +396,15 @@ const createContest = async () => {
     createForm.value = newCreateForm();
     await fetchContests();
   } catch (error) {
-    setNotice("error", "コンテスト作成に失敗しました: " + formatError(error));
+    const message = formatError(error);
+    if (
+      request.useExistingTagFiles &&
+      message.toLowerCase().includes("already")
+    ) {
+      setNotice("error", "既にV2026 contestが存在します。");
+    } else {
+      setNotice("error", "コンテスト作成に失敗しました: " + message);
+    }
   } finally {
     savingCreate.value = false;
   }
@@ -408,6 +454,44 @@ const updateContest = async () => {
     setNotice("error", "コンテスト更新に失敗しました: " + formatError(error));
   } finally {
     savingUpdate.value = false;
+  }
+};
+
+const deleteContest = async () => {
+  const contest = selectedContest.value;
+  if (!contest) {
+    setNotice("error", "削除するコンテストを選択してください。");
+    return;
+  }
+  if (
+    !window.confirm(
+      `コンテスト「${contest.title}」（${contest.slug}）を削除しますか？`,
+    )
+  ) {
+    return;
+  }
+
+  deletingContest.value = true;
+  try {
+    await adminState.admin.deleteContest(
+      { contestSlug: contest.slug },
+      authOptions(),
+    );
+    setNotice("success", `コンテスト「${contest.title}」を削除しました。`);
+    selectedContestSlug.value = "";
+    editForm.value = {
+      contestSlug: "",
+      title: "",
+      startAt: "",
+      endAt: "",
+      submitLimit: 1,
+      validator: Validator.V2026,
+    };
+    await fetchContests();
+  } catch (error) {
+    setNotice("error", "コンテスト削除に失敗しました: " + formatError(error));
+  } finally {
+    deletingContest.value = false;
   }
 };
 
@@ -500,7 +584,10 @@ onMounted(() => {
               type="text"
             />
           </label>
-          <label class="flex flex-col gap-1">
+          <label
+            v-if="!createUsesExistingTagFiles"
+            class="flex flex-col gap-1"
+          >
             <span>slug</span>
             <input
               v-model="createForm.slug"
@@ -569,7 +656,10 @@ onMounted(() => {
           </label>
         </div>
 
-        <div v-if="createForm.tagMode === 'auto'" class="flex flex-col gap-2">
+        <div
+          v-if="!createUsesExistingTagFiles && createForm.tagMode === 'auto'"
+          class="flex flex-col gap-2"
+        >
           <div class="flex flex-wrap items-center justify-between gap-3">
             <span>Autoタグ（1行1タグ）</span>
             <label
@@ -590,7 +680,10 @@ onMounted(() => {
           ></textarea>
         </div>
 
-        <div v-else class="flex flex-col gap-2">
+        <div
+          v-else-if="!createUsesExistingTagFiles"
+          class="flex flex-col gap-2"
+        >
           <div class="flex flex-wrap items-center justify-between gap-3">
             <span>Manualタグ（試行ごと、1行1タグ）</span>
             <div class="flex flex-wrap gap-2">
@@ -728,14 +821,22 @@ onMounted(() => {
           />
         </label>
       </div>
-      <button
-        v-if="selectedContest"
-        class="w-fit rounded bg-blue-600 px-4 py-2 transition hover:bg-blue-500 disabled:opacity-50"
-        :disabled="savingUpdate"
-        @click="updateContest"
-      >
-        {{ savingUpdate ? "更新中..." : "コンテストを更新" }}
-      </button>
+      <div v-if="selectedContest" class="flex flex-wrap gap-3">
+        <button
+          class="w-fit rounded bg-blue-600 px-4 py-2 transition hover:bg-blue-500 disabled:opacity-50"
+          :disabled="savingUpdate || deletingContest"
+          @click="updateContest"
+        >
+          {{ savingUpdate ? "更新中..." : "コンテストを更新" }}
+        </button>
+        <button
+          class="w-fit rounded bg-red-600 px-4 py-2 transition hover:bg-red-500 disabled:opacity-50"
+          :disabled="savingUpdate || deletingContest"
+          @click="deleteContest"
+        >
+          {{ deletingContest ? "削除中..." : "コンテストを削除" }}
+        </button>
+      </div>
     </section>
   </div>
 </template>

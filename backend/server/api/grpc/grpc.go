@@ -11,16 +11,17 @@ import (
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/repository/ent"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/proto-gen/go/services/backend"
 	"golang.org/x/crypto/bcrypt"
-	"log/slog"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/reflection"
 	"google.golang.org/grpc/status"
+	"log/slog"
 )
 
 func NewServer(ctx context.Context, optionFuncs ...OptionFunc) (*grpc.Server, error) {
 	opt := &option{
-		logger: slog.Default(),
+		logger:           slog.Default(),
+		v2026ContestSlug: "v2026",
 	}
 	for _, optionFunc := range optionFuncs {
 		optionFunc(opt)
@@ -39,7 +40,7 @@ func NewServer(ctx context.Context, optionFuncs ...OptionFunc) (*grpc.Server, er
 	backend.RegisterBackendServiceServer(grpcServer, backendService)
 	healthcheckService := interfaces.NewHealthcheckService()
 	backend.RegisterHealthcheckServiceServer(grpcServer, healthcheckService)
-	adminService := interfaces.NewAdminService(opt.entClient, opt.logger, opt.tagRepository)
+	adminService := interfaces.NewAdminService(opt.entClient, opt.logger, opt.tagRepository, opt.v2026ContestSlug)
 	backend.RegisterAdminServiceServer(grpcServer, adminService)
 	reflection.Register(grpcServer)
 
