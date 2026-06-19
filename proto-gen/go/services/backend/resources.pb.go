@@ -250,6 +250,7 @@ type Validator int32
 const (
 	Validator_V2022 Validator = 0 // 2022年度
 	Validator_V2023 Validator = 1 // 2023年度 予選
+	Validator_V2026 Validator = 2 // 2026年度 複数タグ対応
 )
 
 // Enum value maps for Validator.
@@ -257,10 +258,12 @@ var (
 	Validator_name = map[int32]string{
 		0: "V2022",
 		1: "V2023",
+		2: "V2026",
 	}
 	Validator_value = map[string]int32{
 		"V2022": 0,
 		"V2023": 1,
+		"V2026": 2,
 	}
 )
 

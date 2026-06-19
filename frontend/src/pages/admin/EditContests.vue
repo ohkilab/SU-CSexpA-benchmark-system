@@ -87,6 +87,7 @@ const notice = ref<{ type: NoticeType; message: string } | null>(null);
 const validatorOptions = [
   { label: "V2022", value: Validator.V2022 },
   { label: "V2023", value: Validator.V2023 },
+  { label: "V2026", value: Validator.V2026 },
 ];
 
 const selectedContest = computed(() =>

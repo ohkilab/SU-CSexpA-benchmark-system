@@ -3,7 +3,9 @@ package submit
 import (
 	"context"
 	"fmt"
+	"net/url"
 	"strconv"
+	"strings"
 	"time"
 
 	"entgo.io/ent/dialect/sql"
@@ -19,10 +21,10 @@ import (
 	backendpb "github.com/ohkilab/SU-CSexpA-benchmark-system/proto-gen/go/services/backend"
 	benchmarkpb "github.com/ohkilab/SU-CSexpA-benchmark-system/proto-gen/go/services/benchmark-service"
 	"github.com/samber/lo"
-	"log/slog"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/types/known/timestamppb"
+	"log/slog"
 )
 
 const (
@@ -106,7 +108,7 @@ func (i *Interactor) PostSubmit(ctx context.Context, req *backendpb.PostSubmitRe
 	}
 
 	// add a task to worker
-	executeRequest := buildTask(claims.GroupID, c.Slug, backendpb.Validator(backendpb.Validator_value[c.Validator]), submit, tags, time.Duration(c.TimeLimitPerTask))
+	executeRequest := buildTask(claims.GroupID, c.Slug, validatorFromName(c.Validator), submit, tags, time.Duration(c.TimeLimitPerTask))
 	i.worker.Push(executeRequest)
 
 	return &backendpb.PostSubmitResponse{
@@ -124,7 +126,7 @@ func buildTask(groupID int, contestSlug string, validator backendpb.Validator, s
 			Tasks: lo.Map(tags, func(tag string, _ int) *benchmarkpb.Task {
 				return &benchmarkpb.Task{
 					Request: &benchmarkpb.HttpRequest{
-						Url:         fmt.Sprintf("%s?tag=%s", submit.URL, tag),
+						Url:         buildBenchmarkURL(submit.URL, tag),
 						Method:      benchmarkpb.HttpMethod_GET,
 						ContentType: "application/x-www-form-urlencoded",
 						Body:        "",
@@ -140,6 +142,42 @@ func buildTask(groupID int, contestSlug string, validator backendpb.Validator, s
 		SubmitID: submit.ID,
 		GroupID:  groupID,
 	}
+}
+
+func validatorFromName(name string) backendpb.Validator {
+	if name == "V2026" {
+		return backendpb.Validator(2)
+	}
+	return backendpb.Validator(backendpb.Validator_value[name])
+}
+
+func buildBenchmarkURL(baseURL, benchmarkCase string) string {
+	uri, err := url.Parse(baseURL)
+	if err != nil {
+		if strings.Contains(benchmarkCase, "=") {
+			return fmt.Sprintf("%s?%s", baseURL, benchmarkCase)
+		}
+		return fmt.Sprintf("%s?tag=%s", baseURL, url.QueryEscape(benchmarkCase))
+	}
+
+	query := uri.Query()
+	if strings.Contains(benchmarkCase, "=") {
+		caseQuery, err := url.ParseQuery(benchmarkCase)
+		if err != nil {
+			query.Set("tag", benchmarkCase)
+		} else {
+			for key, values := range caseQuery {
+				query.Del(key)
+				for _, value := range values {
+					query.Add(key, value)
+				}
+			}
+		}
+	} else {
+		query.Set("tag", benchmarkCase)
+	}
+	uri.RawQuery = query.Encode()
+	return uri.String()
 }
 
 func (i *Interactor) GetSubmit(req *backendpb.GetSubmitRequest, stream backendpb.BackendService_GetSubmitServer) error {

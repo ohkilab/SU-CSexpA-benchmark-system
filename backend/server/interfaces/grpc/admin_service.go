@@ -46,7 +46,7 @@ func (s *adminServiceServer) CreateContest(ctx context.Context, req *pb.CreateCo
 	if req.SubmitLimit <= 0 {
 		return nil, status.Error(codes.InvalidArgument, "submit_limit must be positive")
 	}
-	if _, ok := pb.Validator_name[int32(req.Validator)]; !ok {
+	if !isKnownValidator(req.Validator) {
 		return nil, status.Error(codes.InvalidArgument, "validator is invalid")
 	}
 	switch selection := req.TagSelection.(type) {
@@ -83,11 +83,19 @@ func (s *adminServiceServer) UpdateContest(ctx context.Context, req *pb.UpdateCo
 		return nil, status.Error(codes.InvalidArgument, "submit_limit must be positive")
 	}
 	if req.Validator != nil {
-		if _, ok := pb.Validator_name[int32(*req.Validator)]; !ok {
+		if !isKnownValidator(*req.Validator) {
 			return nil, status.Error(codes.InvalidArgument, "validator is invalid")
 		}
 	}
 	return s.adminInteractor.UpdateContest(ctx, req)
+}
+
+func isKnownValidator(validator pb.Validator) bool {
+	if int32(validator) == 2 {
+		return true
+	}
+	_, ok := pb.Validator_name[int32(validator)]
+	return ok
 }
 
 func (s *adminServiceServer) CreateGroups(ctx context.Context, req *pb.CreateGroupsRequest) (*pb.CreateGroupsResponse, error) {

@@ -8,10 +8,10 @@ import (
 
 	pb "github.com/ohkilab/SU-CSexpA-benchmark-system/proto-gen/go/services/backend"
 	"github.com/samber/lo"
-	"log/slog"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/types/known/timestamppb"
+	"log/slog"
 )
 
 type Interactor struct {
@@ -65,6 +65,13 @@ func ToPbContest(c *ent.Contest) *pb.Contest {
 				return -1 // unreachable
 			}
 		}(),
-		Validator: pb.Validator(pb.Validator_value[c.Validator]),
+		Validator: validatorFromName(c.Validator),
 	}
+}
+
+func validatorFromName(name string) pb.Validator {
+	if name == "V2026" {
+		return pb.Validator(2)
+	}
+	return pb.Validator(pb.Validator_value[name])
 }

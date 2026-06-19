@@ -57,7 +57,7 @@ func (i *Interactor) CreateContest(ctx context.Context, req *pb.CreateContestReq
 		SetEndAt(req.EndAt.AsTime()).
 		SetSubmitLimit(int(req.SubmitLimit)).
 		SetTagSelectionLogic(tagSelectionLogic).
-		SetValidator(req.Validator.String()).
+		SetValidator(validatorName(req.Validator)).
 		SetCreatedAt(timejst.Now()).
 		SetTimeLimitPerTask(int64(time.Duration(req.TimeLimitPerTask) * time.Second)).
 		Save(ctx)
@@ -92,7 +92,7 @@ func (i *Interactor) UpdateContest(ctx context.Context, req *pb.UpdateContestReq
 		update.SetSubmitLimit(int(*req.SubmitLimit))
 	}
 	if req.Validator != nil {
-		update.SetValidator(req.Validator.String())
+		update.SetValidator(validatorName(*req.Validator))
 	}
 
 	contest, err = update.Save(ctx)
@@ -104,6 +104,16 @@ func (i *Interactor) UpdateContest(ctx context.Context, req *pb.UpdateContestReq
 	return &pb.UpdateContestResponse{
 		Contest: u_contest.ToPbContest(contest),
 	}, nil
+}
+
+func validatorName(validator pb.Validator) string {
+	if int32(validator) == 2 {
+		return "V2026"
+	}
+	if name, ok := pb.Validator_name[int32(validator)]; ok {
+		return name
+	}
+	return validator.String()
 }
 
 func (i *Interactor) CreateGroups(ctx context.Context, req *pb.CreateGroupsRequest) (*pb.CreateGroupsResponse, error) {
