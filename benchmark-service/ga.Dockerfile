@@ -14,7 +14,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends tzdata  \
 ENV TZ Asia/Tokyo
 
 WORKDIR /app
+RUN mkdir -p /app/data
 COPY --from=builder /app/benchmark-service/benchmark-server .
-COPY --from=builder /app/benchmark-service/data ./data
 
 ENTRYPOINT [ "/app/benchmark-server" ]

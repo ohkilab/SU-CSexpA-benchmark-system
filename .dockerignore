@@ -2,3 +2,5 @@
 **/.pnpm-store
 **/dist
 data/
+backend/storage/tags/**
+benchmark-service/data/**

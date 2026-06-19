@@ -8,7 +8,6 @@ import (
 	"net/url"
 	"os"
 	"regexp"
-	"sort"
 	"strings"
 	"time"
 )
@@ -20,22 +19,11 @@ const (
 	sortDesc    = "desc"
 )
 
-var (
-	baseDate  = time.Date(2012, 1, 1, 0, 0, 0, 0, time.UTC)
-	urlRegexp = regexp.MustCompile(`^http[s]?://farm\d\.static\.flickr\.com/\d+/.+\.jpg$`)
-)
+var urlRegexp = regexp.MustCompile(`^http[s]?://farm\d\.static\.flickr\.com/\d+/.+\.jpg$`)
 
-type Tag struct {
-	TagName string    `json:"tag_name"`
-	Geotags []*Geotag `json:"geotags"`
-}
-
-type Geotag struct {
-	Elapsed   int32   `json:"elapsed"`
-	Latitude  float64 `json:"latitude"`
-	Longitude float64 `json:"longitude"`
-	FarmNum   uint8   `json:"farm_num"`
-	Directory string  `json:"directory"`
+type V2026Data struct {
+	Version string  `json:"version"`
+	Cases   []*Case `json:"cases"`
 }
 
 type Result struct {
@@ -50,40 +38,48 @@ type Response struct {
 	Results []Result `json:"results"`
 }
 
+type Case struct {
+	Query       string   `json:"query"`
+	Tags        []string `json:"tags"`
+	TagOperator string   `json:"tag_operator"`
+	SortOrder   string   `json:"sort_order"`
+	Results     []Result `json:"results"`
+}
+
 type Validator struct {
-	logger        *slog.Logger
-	geotagsByName map[string][]*Geotag
+	logger       *slog.Logger
+	casesByQuery map[string]*Case
 }
 
 func NewValidator(logger *slog.Logger) *Validator {
 	validator := &Validator{logger: logger}
 
-	f, err := os.Open("data/v2023.json")
+	f, err := os.Open("data/v2026.json")
 	if err != nil {
 		logger.Error("[ERROR] cannot use validator.v2026", "err", err)
 		return validator
 	}
 	defer f.Close()
 
-	var tags []*Tag
-	if err := json.NewDecoder(f).Decode(&tags); err != nil {
+	var data V2026Data
+	if err := json.NewDecoder(f).Decode(&data); err != nil {
 		logger.Error("failed to decode bytes to json", "err", err)
 	}
-	validator.geotagsByName = geotagsByName(tags)
+	validator.casesByQuery = casesByQuery(data.Cases)
 	return validator
 }
 
-func NewValidatorWithTags(logger *slog.Logger, tags []*Tag) *Validator {
+func NewValidatorWithCases(logger *slog.Logger, cases []*Case) *Validator {
 	return &Validator{
-		logger:        logger,
-		geotagsByName: geotagsByName(tags),
+		logger:       logger,
+		casesByQuery: casesByQuery(cases),
 	}
 }
 
-func geotagsByName(tags []*Tag) map[string][]*Geotag {
-	mp := make(map[string][]*Geotag, len(tags))
-	for _, tag := range tags {
-		mp[tag.TagName] = tag.Geotags
+func casesByQuery(cases []*Case) map[string]*Case {
+	mp := make(map[string]*Case, len(cases))
+	for _, c := range cases {
+		mp[c.Query] = c
 	}
 	return mp
 }
@@ -112,10 +108,12 @@ func (v *Validator) Validate(uri *url.URL, b []byte) error {
 		return err
 	}
 
-	expected, err := v.expectedResults(tags, operator, sortOrder)
-	if err != nil {
-		return err
+	query := canonicalQuery(tags, operator, sortOrder)
+	c, ok := v.casesByQuery[query]
+	if !ok {
+		return fmt.Errorf("case: query is not found: %s", query)
 	}
+	expected := c.Results
 	if len(expected) == 0 {
 		return errors.New("Results: expected result must not be 0")
 	}
@@ -164,6 +162,18 @@ func parseQuery(uri *url.URL) ([]string, string, string, error) {
 	return tags, operator, sortOrder, nil
 }
 
+func canonicalQuery(tags []string, operator, sortOrder string) string {
+	values := url.Values{}
+	values.Set("sortOrder", sortOrder)
+	for _, tag := range tags {
+		values.Add("tag", tag)
+	}
+	if len(tags) > 1 {
+		values.Set("tagOperator", operator)
+	}
+	return values.Encode()
+}
+
 func validateResultShape(results []Result, sortOrder string) error {
 	for i, res := range results {
 		if !urlRegexp.MatchString(res.Url) {
@@ -174,75 +184,35 @@ func validateResultShape(results []Result, sortOrder string) error {
 		}
 	}
 	for i := range results[:len(results)-1] {
-		left, _ := time.Parse("2006-01-02 15:04:05", results[i].Date)
-		right, _ := time.Parse("2006-01-02 15:04:05", results[i+1].Date)
-		if sortOrder == sortDesc && left.Before(right) {
-			return errors.New("Geotags: the order of Geotags must be desc by date")
-		}
-		if sortOrder == sortAsc && left.After(right) {
-			return errors.New("Geotags: the order of Geotags must be asc by date")
+		if compareResultOrder(results[i], results[i+1], sortOrder) > 0 {
+			return fmt.Errorf("Geotags: the order of Geotags must be %s by date and asc by url", sortOrder)
 		}
 	}
 	return nil
 }
 
-func (v *Validator) expectedResults(tags []string, operator, sortOrder string) ([]Result, error) {
-	keyCounts := map[string]int{}
-	geotagsByKey := map[string]*Geotag{}
-	for _, tag := range tags {
-		geotags, ok := v.geotagsByName[tag]
-		if !ok {
-			return nil, fmt.Errorf("tag: tag name is not found: %s", tag)
-		}
-		seenInTag := map[string]struct{}{}
-		for _, geotag := range geotags {
-			result := resultFromGeotag(geotag)
-			key := resultKey(result)
-			if _, ok := seenInTag[key]; ok {
-				continue
-			}
-			seenInTag[key] = struct{}{}
-			keyCounts[key]++
-			geotagsByKey[key] = geotag
-		}
-	}
-
-	expected := make([]Result, 0)
-	for key, count := range keyCounts {
-		if operator == operatorAND && count != len(tags) {
-			continue
-		}
-		expected = append(expected, resultFromGeotag(geotagsByKey[key]))
-	}
-	sort.Slice(expected, func(i, j int) bool {
-		left, _ := time.Parse("2006-01-02 15:04:05", expected[i].Date)
-		right, _ := time.Parse("2006-01-02 15:04:05", expected[j].Date)
-		if left.Equal(right) {
-			return expected[i].Url < expected[j].Url
-		}
+func compareResultOrder(left, right Result, sortOrder string) int {
+	leftDate, _ := time.Parse("2006-01-02 15:04:05", left.Date)
+	rightDate, _ := time.Parse("2006-01-02 15:04:05", right.Date)
+	if !leftDate.Equal(rightDate) {
 		if sortOrder == sortAsc {
-			return left.Before(right)
+			if leftDate.Before(rightDate) {
+				return -1
+			}
+			return 1
 		}
-		return left.After(right)
-	})
-	if len(expected) > 100 {
-		expected = expected[:100]
+		if leftDate.After(rightDate) {
+			return -1
+		}
+		return 1
 	}
-	return expected, nil
-}
-
-func resultFromGeotag(geotag *Geotag) Result {
-	date := baseDate.Add(time.Duration(geotag.Elapsed) * time.Second)
-	return Result{
-		Lat:  geotag.Latitude,
-		Lon:  geotag.Longitude,
-		Date: date.Format("2006-01-02 15:04:05"),
-		Url:  fmt.Sprintf("http://farm%d.static.flickr.com%s", geotag.FarmNum, geotag.Directory),
+	if left.Url < right.Url {
+		return -1
 	}
-}
-
-func resultKey(result Result) string {
-	return result.Url + result.Date
+	if left.Url > right.Url {
+		return 1
+	}
+	return 0
 }
 
 func compareResult(i int, expected, actual Result) error {

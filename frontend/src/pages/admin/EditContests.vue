@@ -57,7 +57,7 @@ const newCreateForm = (): CreateContestForm => ({
   startAt: "",
   endAt: "",
   submitLimit: 1,
-  validator: Validator.V2023,
+  validator: Validator.V2026,
   timeLimitPerTask: 30,
   tagMode: "auto",
   autoTags: "",
@@ -77,7 +77,7 @@ const editForm = ref<EditContestForm>({
   startAt: "",
   endAt: "",
   submitLimit: 1,
-  validator: Validator.V2023,
+  validator: Validator.V2026,
 });
 const loading = ref(false);
 const savingCreate = ref(false);

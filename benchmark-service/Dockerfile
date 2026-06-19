@@ -11,7 +11,7 @@ RUN apt-get update && apt-get install -y tzdata  && rm -rf /var/lib/apt/lists/*
 ENV TZ Asia/Tokyo
 
 WORKDIR /app
+RUN mkdir -p /app/data
 COPY --from=builder /app/benchmark-server .
-COPY --from=builder /app/data ./data
 
 ENTRYPOINT [ "/app/benchmark-server" ]

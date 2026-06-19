@@ -1,0 +1,18 @@
+services:
+  backend:
+    volumes:
+      - type: bind
+        source: ${V2026_BUNDLE_DIR}/tags
+        target: /app/storage/tags/${V2026_CONTEST_SLUG:-v2026}
+        read_only: true
+
+  benchmark-service:
+    volumes:
+      - type: bind
+        source: ./benchmark-service/data/v2023.json
+        target: /app/data/v2023.json
+        read_only: true
+      - type: bind
+        source: ${V2026_BUNDLE_DIR}/v2026.json
+        target: /app/data/v2026.json
+        read_only: true

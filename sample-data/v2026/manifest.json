@@ -1,0 +1,24 @@
+{
+  "version": "v2026",
+  "sample": true,
+  "generator": "manual-sample",
+  "generator_version": "sample-v2026-1",
+  "generated_at": "2026-01-01T00:00:00Z",
+  "case_count": 4,
+  "tag_file_count": 11,
+  "files": {
+    "v2026.json": "433f35f66687bc5e732b2a488a8d84344d5ae1edef3b3ca34dd979da6cd3dcc5",
+    "tags/random.txt": "32f94afa8c658aa05720516492707d5fa9cabc88661e1859c757af8b0026ca53",
+    "tags/1.txt": "32f94afa8c658aa05720516492707d5fa9cabc88661e1859c757af8b0026ca53",
+    "tags/2.txt": "32f94afa8c658aa05720516492707d5fa9cabc88661e1859c757af8b0026ca53",
+    "tags/3.txt": "32f94afa8c658aa05720516492707d5fa9cabc88661e1859c757af8b0026ca53",
+    "tags/4.txt": "32f94afa8c658aa05720516492707d5fa9cabc88661e1859c757af8b0026ca53",
+    "tags/5.txt": "32f94afa8c658aa05720516492707d5fa9cabc88661e1859c757af8b0026ca53",
+    "tags/6.txt": "32f94afa8c658aa05720516492707d5fa9cabc88661e1859c757af8b0026ca53",
+    "tags/7.txt": "32f94afa8c658aa05720516492707d5fa9cabc88661e1859c757af8b0026ca53",
+    "tags/8.txt": "32f94afa8c658aa05720516492707d5fa9cabc88661e1859c757af8b0026ca53",
+    "tags/9.txt": "32f94afa8c658aa05720516492707d5fa9cabc88661e1859c757af8b0026ca53",
+    "tags/10.txt": "32f94afa8c658aa05720516492707d5fa9cabc88661e1859c757af8b0026ca53"
+  },
+  "bundle_sha256": "cdb9a72435a0daf6b8d44471242977999536a97b740bf748dd7b84a3e3743d56"
+}

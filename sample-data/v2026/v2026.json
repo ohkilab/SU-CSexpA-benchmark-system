@@ -1,0 +1,103 @@
+{
+  "version": "v2026",
+  "cases": [
+    {
+      "query": "sortOrder=desc&tag=samplecat",
+      "tags": ["samplecat"],
+      "tag_operator": "or",
+      "sort_order": "desc",
+      "results": [
+        {
+          "lat": 35.0,
+          "lon": 139.0,
+          "date": "2012-01-02 00:00:00",
+          "url": "http://farm1.static.flickr.com/100/1001_a.jpg"
+        },
+        {
+          "lat": 35.1,
+          "lon": 139.1,
+          "date": "2012-01-02 00:00:00",
+          "url": "http://farm1.static.flickr.com/100/1002_b.jpg"
+        },
+        {
+          "lat": 35.2,
+          "lon": 139.2,
+          "date": "2012-01-01 00:00:00",
+          "url": "http://farm1.static.flickr.com/100/1003_c.jpg"
+        }
+      ]
+    },
+    {
+      "query": "sortOrder=asc&tag=samplecat",
+      "tags": ["samplecat"],
+      "tag_operator": "or",
+      "sort_order": "asc",
+      "results": [
+        {
+          "lat": 35.2,
+          "lon": 139.2,
+          "date": "2012-01-01 00:00:00",
+          "url": "http://farm1.static.flickr.com/100/1003_c.jpg"
+        },
+        {
+          "lat": 35.0,
+          "lon": 139.0,
+          "date": "2012-01-02 00:00:00",
+          "url": "http://farm1.static.flickr.com/100/1001_a.jpg"
+        },
+        {
+          "lat": 35.1,
+          "lon": 139.1,
+          "date": "2012-01-02 00:00:00",
+          "url": "http://farm1.static.flickr.com/100/1002_b.jpg"
+        }
+      ]
+    },
+    {
+      "query": "sortOrder=desc&tag=samplecat&tag=sampledog&tagOperator=or",
+      "tags": ["samplecat", "sampledog"],
+      "tag_operator": "or",
+      "sort_order": "desc",
+      "results": [
+        {
+          "lat": 35.3,
+          "lon": 139.3,
+          "date": "2012-01-03 00:00:00",
+          "url": "http://farm1.static.flickr.com/100/1004_d.jpg"
+        },
+        {
+          "lat": 35.0,
+          "lon": 139.0,
+          "date": "2012-01-02 00:00:00",
+          "url": "http://farm1.static.flickr.com/100/1001_a.jpg"
+        },
+        {
+          "lat": 35.1,
+          "lon": 139.1,
+          "date": "2012-01-02 00:00:00",
+          "url": "http://farm1.static.flickr.com/100/1002_b.jpg"
+        },
+        {
+          "lat": 35.2,
+          "lon": 139.2,
+          "date": "2012-01-01 00:00:00",
+          "url": "http://farm1.static.flickr.com/100/1003_c.jpg"
+        }
+      ]
+    },
+    {
+      "query": "sortOrder=asc&tag=samplecat&tag=sampledog&tagOperator=and",
+      "tags": ["samplecat", "sampledog"],
+      "tag_operator": "and",
+      "sort_order": "asc",
+      "results": [
+        {
+          "lat": 35.0,
+          "lon": 139.0,
+          "date": "2012-01-02 00:00:00",
+          "url": "http://farm1.static.flickr.com/100/1001_a.jpg"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,4 @@
+sortOrder=desc&tag=samplecat
+sortOrder=asc&tag=samplecat
+sortOrder=desc&tag=samplecat&tag=sampledog&tagOperator=or
+sortOrder=asc&tag=samplecat&tag=sampledog&tagOperator=and

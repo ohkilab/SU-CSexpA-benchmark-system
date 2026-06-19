@@ -21,6 +21,41 @@ You can access to the web application on http://localhost:80
 $ make up
 ```
 
+`make up` は公開用の sample V2026 bundle を read-only mount して起動します。sample は動作確認用であり、公式ベンチマークケースではありません。
+
+## V2026 official data
+
+公式の `v2026.json` とタグ txt 群は public repository と public Docker image に含めません。公式データは `expA-admin-tools` で bundle として生成し、サーバ上の非公開ディレクトリから実行時に read-only mount してください。
+
+bundle の形は次の通りです。
+
+```text
+v2026/
+  v2026.json
+  manifest.json
+  tags/
+    random.txt
+    1.txt
+    ...
+    10.txt
+```
+
+公式データで起動する場合:
+
+```shell
+$ V2026_BUNDLE_DIR=/secure/path/v2026 make up-official
+```
+
+`V2026_BUNDLE_DIR` と `V2026_CONTEST_SLUG` は `.env` に書いておくこともできます。一時的に別の bundle を使う場合は、上のようにコマンドの環境変数で上書きできます。
+
+コンテスト slug が `v2026` 以外の場合は、mount 先のタグディレクトリ名を合わせます。
+
+```shell
+$ V2026_BUNDLE_DIR=/secure/path/v2026 V2026_CONTEST_SLUG=exp-a-2026-final make up-official
+```
+
+公式データを配置してから Docker image を build しないでください。benchmark-service の image は `v2026.json` を含まず、`/app/data/v2026.json` を volume mount して読み込みます。
+
 ### 3. if you want to test, generate seeds
 
 You can login with the user(id: `ohkilab`, password: `ohkilab`)
