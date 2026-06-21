@@ -14,6 +14,7 @@ import {
 import Result from "../components/Result.vue";
 import { useBackendStore } from "../stores/backend";
 import { GetSubmitRequest } from "proto-gen-web/services/backend/messages";
+import { sanitizeErrorMessage } from "../utils/errorMessage";
 
 const state: IState = useStateStore();
 const { backend } = useBackendStore();
@@ -93,7 +94,9 @@ const benchmark = () => {
         taskResults.value = Array.from(Array(message.submit?.tagCount)).map(
           (_, i) => message.submit?.taskResults[i] ?? ({} as TaskResult),
         );
-        errorMsg.value = message.submit?.errorMessage ?? "";
+        errorMsg.value = sanitizeErrorMessage(
+          message.submit?.errorMessage ?? "",
+        );
         state.lastResult = message.submit?.score ?? 0;
         state.current = message.submit?.taskResults.length ?? -1;
         state.size = message.submit?.tagCount ?? 0;
@@ -111,7 +114,7 @@ const benchmark = () => {
       if (err.code === "FAILED_PRECONDITION") {
         errorMsg.value = "Contest is over";
       } else {
-        errorMsg.value = JSON.stringify(err) ?? "";
+        errorMsg.value = sanitizeErrorMessage(JSON.stringify(err) ?? "");
       }
     });
 };

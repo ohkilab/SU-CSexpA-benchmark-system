@@ -45,6 +45,7 @@ type ContestMutation struct {
 	submit_limit           *int
 	addsubmit_limit        *int
 	slug                   *string
+	tag_slug               *string
 	tag_selection_logic    *contest.TagSelectionLogic
 	validator              *string
 	time_limit_per_task    *int64
@@ -364,6 +365,42 @@ func (m *ContestMutation) ResetSlug() {
 	m.slug = nil
 }
 
+// SetTagSlug sets the "tag_slug" field.
+func (m *ContestMutation) SetTagSlug(s string) {
+	m.tag_slug = &s
+}
+
+// TagSlug returns the value of the "tag_slug" field in the mutation.
+func (m *ContestMutation) TagSlug() (r string, exists bool) {
+	v := m.tag_slug
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldTagSlug returns the old "tag_slug" field's value of the Contest entity.
+// If the Contest object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ContestMutation) OldTagSlug(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldTagSlug is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldTagSlug requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldTagSlug: %w", err)
+	}
+	return oldValue.TagSlug, nil
+}
+
+// ResetTagSlug resets all changes to the "tag_slug" field.
+func (m *ContestMutation) ResetTagSlug() {
+	m.tag_slug = nil
+}
+
 // SetTagSelectionLogic sets the "tag_selection_logic" field.
 func (m *ContestMutation) SetTagSelectionLogic(csl contest.TagSelectionLogic) {
 	m.tag_selection_logic = &csl
@@ -679,7 +716,7 @@ func (m *ContestMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *ContestMutation) Fields() []string {
-	fields := make([]string, 0, 10)
+	fields := make([]string, 0, 11)
 	if m.title != nil {
 		fields = append(fields, contest.FieldTitle)
 	}
@@ -694,6 +731,9 @@ func (m *ContestMutation) Fields() []string {
 	}
 	if m.slug != nil {
 		fields = append(fields, contest.FieldSlug)
+	}
+	if m.tag_slug != nil {
+		fields = append(fields, contest.FieldTagSlug)
 	}
 	if m.tag_selection_logic != nil {
 		fields = append(fields, contest.FieldTagSelectionLogic)
@@ -728,6 +768,8 @@ func (m *ContestMutation) Field(name string) (ent.Value, bool) {
 		return m.SubmitLimit()
 	case contest.FieldSlug:
 		return m.Slug()
+	case contest.FieldTagSlug:
+		return m.TagSlug()
 	case contest.FieldTagSelectionLogic:
 		return m.TagSelectionLogic()
 	case contest.FieldValidator:
@@ -757,6 +799,8 @@ func (m *ContestMutation) OldField(ctx context.Context, name string) (ent.Value,
 		return m.OldSubmitLimit(ctx)
 	case contest.FieldSlug:
 		return m.OldSlug(ctx)
+	case contest.FieldTagSlug:
+		return m.OldTagSlug(ctx)
 	case contest.FieldTagSelectionLogic:
 		return m.OldTagSelectionLogic(ctx)
 	case contest.FieldValidator:
@@ -810,6 +854,13 @@ func (m *ContestMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetSlug(v)
+		return nil
+	case contest.FieldTagSlug:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetTagSlug(v)
 		return nil
 	case contest.FieldTagSelectionLogic:
 		v, ok := value.(contest.TagSelectionLogic)
@@ -951,6 +1002,9 @@ func (m *ContestMutation) ResetField(name string) error {
 		return nil
 	case contest.FieldSlug:
 		m.ResetSlug()
+		return nil
+	case contest.FieldTagSlug:
+		m.ResetTagSlug()
 		return nil
 	case contest.FieldTagSelectionLogic:
 		m.ResetTagSelectionLogic()

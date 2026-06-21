@@ -266,14 +266,17 @@ func Test_PostSubmit(t *testing.T) {
 	defer cleanupFunc(t)
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
-	worker := mock_worker.NewMockWorker(ctrl)
-	worker.EXPECT().Push(gomock.Any()).AnyTimes()
+	mockWorker := mock_worker.NewMockWorker(ctrl)
+	mockWorker.EXPECT().Push(gomock.Any()).Do(func(task *worker.Task) {
+		require.Equal(t, "test-contest", task.Req.ContestSlug)
+	}).AnyTimes()
 	secret := []byte("secret")
 	mockRepository := tag.MockRepository(
 		func(contestSlug string, num int) ([]string, error) {
+			require.Equal(t, "test-tags", contestSlug)
 			return []string{"a", "b", "c"}, nil
 		}, nil, nil, nil)
-	conn, closeFunc := utils.LaunchGrpcServer(t, grpc.WithJwtSecret("secret"), grpc.WithEntClient(entClient), grpc.WithWorker(worker), grpc.WithTagRepository(mockRepository))
+	conn, closeFunc := utils.LaunchGrpcServer(t, grpc.WithJwtSecret("secret"), grpc.WithEntClient(entClient), grpc.WithWorker(mockWorker), grpc.WithTagRepository(mockRepository))
 	defer closeFunc()
 	client := pb.NewBackendServiceClient(conn)
 
@@ -288,6 +291,8 @@ func Test_PostSubmit(t *testing.T) {
 		Save(ctx)
 	require.NoError(t, err)
 	contest := utils.CreateContest(ctx, t, entClient, "test contest", "test-contest", pb.Validator_V2023.String(), time.Date(2023, time.January, 1, 0, 0, 0, 0, time.UTC), time.Date(2023, time.December, 31, 23, 59, 59, 0, time.UTC), 9999, contest.TagSelectionLogicAuto)
+	contest, err = contest.Update().SetTagSlug("test-tags").Save(ctx)
+	require.NoError(t, err)
 
 	jwtToken, err := auth.GenerateJWTToken(secret, group.ID, group.CreatedAt.Year(), group.Role)
 	require.NoError(t, err)

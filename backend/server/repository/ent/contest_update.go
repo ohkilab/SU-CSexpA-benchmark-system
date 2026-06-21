@@ -66,6 +66,12 @@ func (cu *ContestUpdate) SetSlug(s string) *ContestUpdate {
 	return cu
 }
 
+// SetTagSlug sets the "tag_slug" field.
+func (cu *ContestUpdate) SetTagSlug(s string) *ContestUpdate {
+	cu.mutation.SetTagSlug(s)
+	return cu
+}
+
 // SetTagSelectionLogic sets the "tag_selection_logic" field.
 func (cu *ContestUpdate) SetTagSelectionLogic(csl contest.TagSelectionLogic) *ContestUpdate {
 	cu.mutation.SetTagSelectionLogic(csl)
@@ -239,6 +245,9 @@ func (cu *ContestUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if value, ok := cu.mutation.Slug(); ok {
 		_spec.SetField(contest.FieldSlug, field.TypeString, value)
 	}
+	if value, ok := cu.mutation.TagSlug(); ok {
+		_spec.SetField(contest.FieldTagSlug, field.TypeString, value)
+	}
 	if value, ok := cu.mutation.TagSelectionLogic(); ok {
 		_spec.SetField(contest.FieldTagSelectionLogic, field.TypeEnum, value)
 	}
@@ -362,6 +371,12 @@ func (cuo *ContestUpdateOne) AddSubmitLimit(i int) *ContestUpdateOne {
 // SetSlug sets the "slug" field.
 func (cuo *ContestUpdateOne) SetSlug(s string) *ContestUpdateOne {
 	cuo.mutation.SetSlug(s)
+	return cuo
+}
+
+// SetTagSlug sets the "tag_slug" field.
+func (cuo *ContestUpdateOne) SetTagSlug(s string) *ContestUpdateOne {
+	cuo.mutation.SetTagSlug(s)
 	return cuo
 }
 
@@ -567,6 +582,9 @@ func (cuo *ContestUpdateOne) sqlSave(ctx context.Context) (_node *Contest, err e
 	}
 	if value, ok := cuo.mutation.Slug(); ok {
 		_spec.SetField(contest.FieldSlug, field.TypeString, value)
+	}
+	if value, ok := cuo.mutation.TagSlug(); ok {
+		_spec.SetField(contest.FieldTagSlug, field.TypeString, value)
 	}
 	if value, ok := cuo.mutation.TagSelectionLogic(); ok {
 		_spec.SetField(contest.FieldTagSelectionLogic, field.TypeEnum, value)

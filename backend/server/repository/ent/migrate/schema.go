@@ -16,6 +16,7 @@ var (
 		{Name: "end_at", Type: field.TypeTime},
 		{Name: "submit_limit", Type: field.TypeInt},
 		{Name: "slug", Type: field.TypeString, Unique: true},
+		{Name: "tag_slug", Type: field.TypeString, Default: ""},
 		{Name: "tag_selection_logic", Type: field.TypeEnum, Enums: []string{"auto", "manual"}},
 		{Name: "validator", Type: field.TypeString},
 		{Name: "time_limit_per_task", Type: field.TypeInt64, Nullable: true, Default: 30000000000},

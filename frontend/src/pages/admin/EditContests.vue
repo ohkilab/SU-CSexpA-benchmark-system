@@ -25,6 +25,7 @@ interface ManualAttempt {
 interface CreateContestForm {
   title: string;
   slug: string;
+  tagSlug: string;
   startAt: string;
   endAt: string;
   submitLimit: number;
@@ -54,6 +55,7 @@ const newManualAttempt = (): ManualAttempt => ({
 const newCreateForm = (): CreateContestForm => ({
   title: "",
   slug: "",
+  tagSlug: "",
   startAt: "",
   endAt: "",
   submitLimit: 1,
@@ -289,12 +291,14 @@ const buildCreateRequest = (): CreateContestRequest | null => {
   const startAt = toTimestamp(form.startAt);
   const endAt = toTimestamp(form.endAt);
   const useExistingTagFiles = createUsesExistingTagFiles.value;
+  const tagSlug = useExistingTagFiles ? form.tagSlug.trim() : "";
+  const slug = form.slug.trim() || tagSlug;
   if (!form.title.trim()) {
     setNotice("error", "タイトルを入力してください。");
     return null;
   }
-  if (!useExistingTagFiles && !form.slug.trim()) {
-    setNotice("error", "slugを入力してください。");
+  if (!slug) {
+    setNotice("error", "slugまたはtag slugを入力してください。");
     return null;
   }
   if (!startAt || !endAt || !validateDateRange(form.startAt, form.endAt)) {
@@ -308,7 +312,8 @@ const buildCreateRequest = (): CreateContestRequest | null => {
 
   const baseRequest = {
     title: form.title.trim(),
-    slug: useExistingTagFiles ? "" : form.slug.trim(),
+    slug,
+    tagSlug,
     startAt,
     endAt,
     submitLimit: form.submitLimit,
@@ -530,6 +535,7 @@ onMounted(() => {
             <thead class="bg-gray-800">
               <tr>
                 <th class="w-32 px-3 py-2 text-left">slug</th>
+                <th class="w-32 px-3 py-2 text-left">tag slug</th>
                 <th class="w-40 px-3 py-2 text-left">タイトル</th>
                 <th class="w-40 px-3 py-2 text-left">開始</th>
                 <th class="w-40 px-3 py-2 text-left">終了</th>
@@ -538,12 +544,12 @@ onMounted(() => {
             </thead>
             <tbody>
               <tr v-if="loading">
-                <td class="px-3 py-4 text-center text-gray-300" colspan="5">
+                <td class="px-3 py-4 text-center text-gray-300" colspan="6">
                   読み込み中...
                 </td>
               </tr>
               <tr v-else-if="contests.length === 0">
-                <td class="px-3 py-4 text-center text-gray-300" colspan="5">
+                <td class="px-3 py-4 text-center text-gray-300" colspan="6">
                   コンテストがありません
                 </td>
               </tr>
@@ -558,6 +564,7 @@ onMounted(() => {
                   @click="selectContest(contest)"
                 >
                   <td class="truncate px-3 py-2">{{ contest.slug }}</td>
+                  <td class="truncate px-3 py-2">{{ contest.tagSlug }}</td>
                   <td class="truncate px-3 py-2">{{ contest.title }}</td>
                   <td class="px-3 py-2">
                     {{ formatDateTime(contest.startAt) }}
@@ -584,13 +591,21 @@ onMounted(() => {
               type="text"
             />
           </label>
-          <label
-            v-if="!createUsesExistingTagFiles"
-            class="flex flex-col gap-1"
-          >
+          <label class="flex flex-col gap-1">
             <span>slug</span>
             <input
               v-model="createForm.slug"
+              class="rounded bg-gray-500 p-2 focus:bg-gray-600 focus:outline-none"
+              type="text"
+            />
+          </label>
+          <label
+            v-if="createUsesExistingTagFiles"
+            class="flex flex-col gap-1"
+          >
+            <span>tag slug</span>
+            <input
+              v-model="createForm.tagSlug"
               class="rounded bg-gray-500 p-2 focus:bg-gray-600 focus:outline-none"
               type="text"
             />
@@ -817,6 +832,14 @@ onMounted(() => {
           <input
             class="rounded bg-gray-700 p-2 text-gray-300"
             :value="selectedContest.slug"
+            disabled
+          />
+        </label>
+        <label class="flex flex-col gap-1">
+          <span>tag slug</span>
+          <input
+            class="rounded bg-gray-700 p-2 text-gray-300"
+            :value="selectedContest.tagSlug"
             disabled
           />
         </label>

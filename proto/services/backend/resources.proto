@@ -13,6 +13,7 @@ message Contest {
   string slug = 8;
   TagSelectionLogicType tag_selection_logic = 9;
   Validator validator = 10;
+  string tag_slug = 11;
 }
 
 message TagSelectionLogicManual {

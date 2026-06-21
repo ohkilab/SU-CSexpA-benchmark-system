@@ -27,6 +27,8 @@ type Contest struct {
 	SubmitLimit int `json:"submit_limit,omitempty"`
 	// Slug holds the value of the "slug" field.
 	Slug string `json:"slug,omitempty"`
+	// TagSlug holds the value of the "tag_slug" field.
+	TagSlug string `json:"tag_slug,omitempty"`
 	// TagSelectionLogic holds the value of the "tag_selection_logic" field.
 	TagSelectionLogic contest.TagSelectionLogic `json:"tag_selection_logic,omitempty"`
 	// Validator holds the value of the "validator" field.
@@ -68,7 +70,7 @@ func (*Contest) scanValues(columns []string) ([]any, error) {
 		switch columns[i] {
 		case contest.FieldID, contest.FieldSubmitLimit, contest.FieldTimeLimitPerTask:
 			values[i] = new(sql.NullInt64)
-		case contest.FieldTitle, contest.FieldSlug, contest.FieldTagSelectionLogic, contest.FieldValidator:
+		case contest.FieldTitle, contest.FieldSlug, contest.FieldTagSlug, contest.FieldTagSelectionLogic, contest.FieldValidator:
 			values[i] = new(sql.NullString)
 		case contest.FieldStartAt, contest.FieldEndAt, contest.FieldCreatedAt, contest.FieldUpdatedAt:
 			values[i] = new(sql.NullTime)
@@ -122,6 +124,12 @@ func (c *Contest) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field slug", values[i])
 			} else if value.Valid {
 				c.Slug = value.String
+			}
+		case contest.FieldTagSlug:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field tag_slug", values[i])
+			} else if value.Valid {
+				c.TagSlug = value.String
 			}
 		case contest.FieldTagSelectionLogic:
 			if value, ok := values[i].(*sql.NullString); !ok {

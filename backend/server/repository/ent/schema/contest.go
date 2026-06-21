@@ -23,6 +23,7 @@ func (Contest) Fields() []ent.Field {
 		field.Time("end_at"),
 		field.Int("submit_limit"),
 		field.String("slug").Unique(),
+		field.String("tag_slug").Default(""),
 		// if auto, {contest_slug}/random.txt is used
 		// if manual, {contest_slug}/\d.txt is used (number means attempt count)
 		field.Enum("tag_selection_logic").Values("auto", "manual"),

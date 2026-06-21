@@ -31,7 +31,7 @@ func (s *adminServiceServer) CreateContest(ctx context.Context, req *pb.CreateCo
 	if req.TimeLimitPerTask <= 0 {
 		return nil, status.Error(codes.InvalidArgument, "time_limit_per_task must be positive")
 	}
-	if strings.TrimSpace(req.Slug) == "" && !(req.UseExistingTagFiles && req.Validator == pb.Validator_V2026) {
+	if strings.TrimSpace(req.Slug) == "" {
 		return nil, status.Error(codes.InvalidArgument, "slug is required")
 	}
 	if strings.TrimSpace(req.Title) == "" {

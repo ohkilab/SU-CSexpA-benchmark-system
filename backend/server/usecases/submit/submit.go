@@ -17,6 +17,7 @@ import (
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/repository/ent/predicate"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/repository/ent/submit"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/repository/tag"
+	contestusecase "github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/usecases/contest"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/worker"
 	backendpb "github.com/ohkilab/SU-CSexpA-benchmark-system/proto-gen/go/services/backend"
 	benchmarkpb "github.com/ohkilab/SU-CSexpA-benchmark-system/proto-gen/go/services/benchmark-service"
@@ -79,15 +80,16 @@ func (i *Interactor) PostSubmit(ctx context.Context, req *backendpb.PostSubmitRe
 	}
 
 	var tags []string
+	tagSlug := contestusecase.EffectiveTagSlug(c)
 	switch c.TagSelectionLogic {
 	case contest.TagSelectionLogicAuto:
-		tags, err = i.tagRepository.GetRandomTags(c.Slug, 50)
+		tags, err = i.tagRepository.GetRandomTags(tagSlug, 50)
 		if err != nil {
 			i.logger.Error("failed to generate tags", err)
 			return nil, status.Error(codes.Internal, "failed to generate tags")
 		}
 	case contest.TagSelectionLogicManual:
-		tags, err = i.tagRepository.GetTags(c.Slug, submitCount+1)
+		tags, err = i.tagRepository.GetTags(tagSlug, submitCount+1)
 		if err != nil {
 			i.logger.Error("failed to generate tags", err)
 			return nil, status.Error(codes.Internal, "failed to generate tags")

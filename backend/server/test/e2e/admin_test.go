@@ -83,8 +83,8 @@ func Test_CreateV2026ContestWithExistingManualTags(t *testing.T) {
 	tmpPath, err := os.MkdirTemp("/tmp", "benchmark-system-e2e-test")
 	require.NoError(t, err)
 	defer os.RemoveAll(tmpPath)
-	require.NoError(t, writeTagFile(tmpPath, "v2026", "1.txt", "tag=cat\n"))
-	require.NoError(t, writeTagFile(tmpPath, "v2026", "2.txt", "tag=dog\n"))
+	require.NoError(t, writeTagFile(tmpPath, "v2026-tags", "1.txt", "tag=cat\n"))
+	require.NoError(t, writeTagFile(tmpPath, "v2026-tags", "2.txt", "tag=dog\n"))
 
 	tagRepository := tag.NewRespository(tmpPath)
 	conn, closeFunc := utils.LaunchGrpcServer(t, grpc.WithJwtSecret("secret"), grpc.WithEntClient(entClient), grpc.WithTagRepository(tagRepository), grpc.WithV2026ContestSlug("v2026"))
@@ -98,6 +98,8 @@ func Test_CreateV2026ContestWithExistingManualTags(t *testing.T) {
 
 	resp, err := client.CreateContest(ctx, &pb.CreateContestRequest{
 		Title:               "V2026 contest",
+		Slug:                "v2026-contest",
+		TagSlug:             "v2026-tags",
 		StartAt:             startAt,
 		EndAt:               endAt,
 		SubmitLimit:         2,
@@ -109,10 +111,110 @@ func Test_CreateV2026ContestWithExistingManualTags(t *testing.T) {
 		},
 	})
 	require.NoError(t, err)
-	assert.Equal(t, "v2026", resp.Contest.Slug)
+	assert.Equal(t, "v2026-contest", resp.Contest.Slug)
+	assert.Equal(t, "v2026-tags", resp.Contest.TagSlug)
 	assert.Equal(t, pb.Validator_V2026, resp.Contest.Validator)
 	assert.Equal(t, pb.TagSelectionLogicType_MANUAL, resp.Contest.TagSelectionLogic)
-	existTags(t, "v2026", tmpPath, pb.TagSelectionLogicType_MANUAL, [][]string{{"tag=cat"}, {"tag=dog"}})
+	existTags(t, "v2026-tags", tmpPath, pb.TagSelectionLogicType_MANUAL, [][]string{{"tag=cat"}, {"tag=dog"}})
+}
+
+func Test_CreateV2026ContestsWithDifferentExistingTagSlugs(t *testing.T) {
+	ctx := context.Background()
+	entClient, cleanupFunc := utils.EnttestOpen(ctx, t)
+	defer cleanupFunc(t)
+
+	tmpPath, err := os.MkdirTemp("/tmp", "benchmark-system-e2e-test")
+	require.NoError(t, err)
+	defer os.RemoveAll(tmpPath)
+	require.NoError(t, writeTagFile(tmpPath, "tag-a", "random.txt", "tag=cat\n"))
+	require.NoError(t, writeTagFile(tmpPath, "tag-b", "1.txt", "tag=dog\n"))
+	require.NoError(t, writeTagFile(tmpPath, "tag-b", "2.txt", "tag=star\n"))
+
+	tagRepository := tag.NewRespository(tmpPath)
+	conn, closeFunc := utils.LaunchGrpcServer(t, grpc.WithJwtSecret("secret"), grpc.WithEntClient(entClient), grpc.WithTagRepository(tagRepository))
+	defer closeFunc()
+	client := pb.NewAdminServiceClient(conn)
+
+	admin := utils.CreateGroup(ctx, t, entClient, "admin-group", "admin-group", 2023, pb.Role_ADMIN)
+	ctx = utils.WithJWT(ctx, t, admin.ID, admin.CreatedAt.Year(), admin.Role)
+	startAt := timestamppb.Now()
+	endAt := timestamppb.New(startAt.AsTime().AddDate(0, 1, 0))
+
+	autoResp, err := client.CreateContest(ctx, &pb.CreateContestRequest{
+		Title:               "V2026 auto contest",
+		Slug:                "contest-a",
+		TagSlug:             "tag-a",
+		StartAt:             startAt,
+		EndAt:               endAt,
+		SubmitLimit:         2,
+		Validator:           pb.Validator_V2026,
+		TimeLimitPerTask:    30,
+		UseExistingTagFiles: true,
+		TagSelection: &pb.CreateContestRequest_Auto{
+			Auto: &pb.TagSelectionLogicAuto{Type: pb.TagSelectionLogicType_AUTO},
+		},
+	})
+	require.NoError(t, err)
+	assert.Equal(t, "contest-a", autoResp.Contest.Slug)
+	assert.Equal(t, "tag-a", autoResp.Contest.TagSlug)
+	assert.Equal(t, pb.TagSelectionLogicType_AUTO, autoResp.Contest.TagSelectionLogic)
+
+	manualResp, err := client.CreateContest(ctx, &pb.CreateContestRequest{
+		Title:               "V2026 manual contest",
+		Slug:                "contest-b",
+		TagSlug:             "tag-b",
+		StartAt:             startAt,
+		EndAt:               endAt,
+		SubmitLimit:         2,
+		Validator:           pb.Validator_V2026,
+		TimeLimitPerTask:    30,
+		UseExistingTagFiles: true,
+		TagSelection: &pb.CreateContestRequest_Manual{
+			Manual: &pb.TagSelectionLogicManual{Type: pb.TagSelectionLogicType_MANUAL},
+		},
+	})
+	require.NoError(t, err)
+	assert.Equal(t, "contest-b", manualResp.Contest.Slug)
+	assert.Equal(t, "tag-b", manualResp.Contest.TagSlug)
+	assert.Equal(t, pb.TagSelectionLogicType_MANUAL, manualResp.Contest.TagSelectionLogic)
+}
+
+func Test_CreateV2026ContestUsesSlugAsDefaultTagSlug(t *testing.T) {
+	ctx := context.Background()
+	entClient, cleanupFunc := utils.EnttestOpen(ctx, t)
+	defer cleanupFunc(t)
+
+	tmpPath, err := os.MkdirTemp("/tmp", "benchmark-system-e2e-test")
+	require.NoError(t, err)
+	defer os.RemoveAll(tmpPath)
+	require.NoError(t, writeTagFile(tmpPath, "v2026", "random.txt", "tag=cat\n"))
+
+	tagRepository := tag.NewRespository(tmpPath)
+	conn, closeFunc := utils.LaunchGrpcServer(t, grpc.WithJwtSecret("secret"), grpc.WithEntClient(entClient), grpc.WithTagRepository(tagRepository))
+	defer closeFunc()
+	client := pb.NewAdminServiceClient(conn)
+
+	admin := utils.CreateGroup(ctx, t, entClient, "admin-group", "admin-group", 2023, pb.Role_ADMIN)
+	ctx = utils.WithJWT(ctx, t, admin.ID, admin.CreatedAt.Year(), admin.Role)
+	startAt := timestamppb.Now()
+	endAt := timestamppb.New(startAt.AsTime().AddDate(0, 1, 0))
+
+	resp, err := client.CreateContest(ctx, &pb.CreateContestRequest{
+		Title:               "V2026 contest",
+		Slug:                "v2026",
+		StartAt:             startAt,
+		EndAt:               endAt,
+		SubmitLimit:         1,
+		Validator:           pb.Validator_V2026,
+		TimeLimitPerTask:    30,
+		UseExistingTagFiles: true,
+		TagSelection: &pb.CreateContestRequest_Auto{
+			Auto: &pb.TagSelectionLogicAuto{Type: pb.TagSelectionLogicType_AUTO},
+		},
+	})
+	require.NoError(t, err)
+	assert.Equal(t, "v2026", resp.Contest.Slug)
+	assert.Equal(t, "v2026", resp.Contest.TagSlug)
 }
 
 func Test_CreateV2026ContestRejectsMissingExistingTags(t *testing.T) {
@@ -137,6 +239,8 @@ func Test_CreateV2026ContestRejectsMissingExistingTags(t *testing.T) {
 
 	_, err = client.CreateContest(ctx, &pb.CreateContestRequest{
 		Title:               "V2026 contest",
+		Slug:                "v2026-contest",
+		TagSlug:             "v2026",
 		StartAt:             startAt,
 		EndAt:               endAt,
 		SubmitLimit:         2,

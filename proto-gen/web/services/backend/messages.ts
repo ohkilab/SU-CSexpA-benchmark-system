@@ -215,6 +215,10 @@ export interface CreateContestRequest {
      * @generated from protobuf field: bool use_existing_tag_files = 13;
      */
     useExistingTagFiles: boolean;
+    /**
+     * @generated from protobuf field: string tag_slug = 14;
+     */
+    tagSlug: string;
 }
 /**
  * @generated from protobuf message backend.CreateContestResponse
@@ -1001,11 +1005,12 @@ class CreateContestRequest$Type extends MessageType<CreateContestRequest> {
             { no: 10, name: "manual", kind: "message", oneof: "tagSelection", T: () => TagSelectionLogicManual },
             { no: 11, name: "validator", kind: "enum", T: () => ["backend.Validator", Validator] },
             { no: 12, name: "time_limit_per_task", kind: "scalar", T: 5 /*ScalarType.INT32*/ },
-            { no: 13, name: "use_existing_tag_files", kind: "scalar", T: 8 /*ScalarType.BOOL*/ }
+            { no: 13, name: "use_existing_tag_files", kind: "scalar", T: 8 /*ScalarType.BOOL*/ },
+            { no: 14, name: "tag_slug", kind: "scalar", T: 9 /*ScalarType.STRING*/ }
         ]);
     }
     create(value?: PartialMessage<CreateContestRequest>): CreateContestRequest {
-        const message = { title: "", submitLimit: 0, slug: "", tagSelection: { oneofKind: undefined }, validator: 0, timeLimitPerTask: 0, useExistingTagFiles: false };
+        const message = { title: "", submitLimit: 0, slug: "", tagSelection: { oneofKind: undefined }, validator: 0, timeLimitPerTask: 0, useExistingTagFiles: false, tagSlug: "" };
         globalThis.Object.defineProperty(message, MESSAGE_TYPE, { enumerable: false, value: this });
         if (value !== undefined)
             reflectionMergePartial<CreateContestRequest>(this, message, value);
@@ -1052,6 +1057,9 @@ class CreateContestRequest$Type extends MessageType<CreateContestRequest> {
                 case /* bool use_existing_tag_files */ 13:
                     message.useExistingTagFiles = reader.bool();
                     break;
+                case /* string tag_slug */ 14:
+                    message.tagSlug = reader.string();
+                    break;
                 default:
                     let u = options.readUnknownField;
                     if (u === "throw")
@@ -1094,6 +1102,9 @@ class CreateContestRequest$Type extends MessageType<CreateContestRequest> {
         /* bool use_existing_tag_files = 13; */
         if (message.useExistingTagFiles !== false)
             writer.tag(13, WireType.Varint).bool(message.useExistingTagFiles);
+        /* string tag_slug = 14; */
+        if (message.tagSlug !== "")
+            writer.tag(14, WireType.LengthDelimited).string(message.tagSlug);
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);

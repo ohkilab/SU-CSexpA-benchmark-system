@@ -51,6 +51,7 @@ func ToPbContest(c *ent.Contest) *pb.Contest {
 	return &pb.Contest{
 		Id:          int32(c.ID),
 		Slug:        c.Slug,
+		TagSlug:     EffectiveTagSlug(c),
 		Title:       c.Title,
 		StartAt:     timestamppb.New(c.StartAt),
 		EndAt:       timestamppb.New(c.EndAt),
@@ -67,6 +68,13 @@ func ToPbContest(c *ent.Contest) *pb.Contest {
 		}(),
 		Validator: validatorFromName(c.Validator),
 	}
+}
+
+func EffectiveTagSlug(c *ent.Contest) string {
+	if c.TagSlug != "" {
+		return c.TagSlug
+	}
+	return c.Slug
 }
 
 func validatorFromName(name string) pb.Validator {

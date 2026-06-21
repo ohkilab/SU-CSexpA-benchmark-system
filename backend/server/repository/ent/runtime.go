@@ -14,7 +14,7 @@ func init() {
 	contestFields := schema.Contest{}.Fields()
 	_ = contestFields
 	// contestDescTimeLimitPerTask is the schema descriptor for time_limit_per_task field.
-	contestDescTimeLimitPerTask := contestFields[8].Descriptor()
+	contestDescTimeLimitPerTask := contestFields[9].Descriptor()
 	// contest.DefaultTimeLimitPerTask holds the default value on creation for the time_limit_per_task field.
 	contest.DefaultTimeLimitPerTask = contestDescTimeLimitPerTask.Default.(int64)
 }

@@ -51,6 +51,12 @@ func (cc *ContestCreate) SetSlug(s string) *ContestCreate {
 	return cc
 }
 
+// SetTagSlug sets the "tag_slug" field.
+func (cc *ContestCreate) SetTagSlug(s string) *ContestCreate {
+	cc.mutation.SetTagSlug(s)
+	return cc
+}
+
 // SetTagSelectionLogic sets the "tag_selection_logic" field.
 func (cc *ContestCreate) SetTagSelectionLogic(csl contest.TagSelectionLogic) *ContestCreate {
 	cc.mutation.SetTagSelectionLogic(csl)
@@ -153,6 +159,9 @@ func (cc *ContestCreate) ExecX(ctx context.Context) {
 
 // defaults sets the default values of the builder before save.
 func (cc *ContestCreate) defaults() {
+	if _, ok := cc.mutation.TagSlug(); !ok {
+		cc.mutation.SetTagSlug("")
+	}
 	if _, ok := cc.mutation.TimeLimitPerTask(); !ok {
 		v := contest.DefaultTimeLimitPerTask
 		cc.mutation.SetTimeLimitPerTask(v)
@@ -241,6 +250,10 @@ func (cc *ContestCreate) createSpec() (*Contest, *sqlgraph.CreateSpec) {
 	if value, ok := cc.mutation.Slug(); ok {
 		_spec.SetField(contest.FieldSlug, field.TypeString, value)
 		_node.Slug = value
+	}
+	if value, ok := cc.mutation.TagSlug(); ok {
+		_spec.SetField(contest.FieldTagSlug, field.TypeString, value)
+		_node.TagSlug = value
 	}
 	if value, ok := cc.mutation.TagSelectionLogic(); ok {
 		_spec.SetField(contest.FieldTagSelectionLogic, field.TypeEnum, value)

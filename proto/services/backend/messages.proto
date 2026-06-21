@@ -68,6 +68,7 @@ message CreateContestRequest {
   backend.Validator validator = 11;
   int32 time_limit_per_task = 12; // sec
   bool use_existing_tag_files = 13;
+  string tag_slug = 14;
 }
 
 message CreateContestResponse {

@@ -37,13 +37,14 @@ func NewInteractor(entClient *ent.Client, logger *slog.Logger, tagRepository tag
 
 func (i *Interactor) CreateContest(ctx context.Context, req *pb.CreateContestRequest) (*pb.CreateContestResponse, error) {
 	slug := strings.TrimSpace(req.Slug)
+	tagSlug := strings.TrimSpace(req.TagSlug)
 	if req.UseExistingTagFiles {
 		if req.Validator != pb.Validator_V2026 {
 			return nil, status.Error(codes.InvalidArgument, "use_existing_tag_files is only supported for V2026")
 		}
-		if slug == "" {
-			slug = i.v2026ContestSlug
-		}
+	}
+	if tagSlug == "" || !req.UseExistingTagFiles {
+		tagSlug = slug
 	}
 	if slug == "" {
 		return nil, status.Error(codes.InvalidArgument, "slug is required")
@@ -54,7 +55,7 @@ func (i *Interactor) CreateContest(ctx context.Context, req *pb.CreateContestReq
 	case *pb.CreateContestRequest_Auto:
 		tagSelectionLogic = contest.TagSelectionLogicAuto
 		if req.UseExistingTagFiles {
-			if err := i.validateExistingTagFiles(slug, tagSelectionLogic, int(req.SubmitLimit)); err != nil {
+			if err := i.validateExistingTagFiles(tagSlug, tagSelectionLogic, int(req.SubmitLimit)); err != nil {
 				return nil, status.Error(codes.InvalidArgument, err.Error())
 			}
 			break
@@ -66,7 +67,7 @@ func (i *Interactor) CreateContest(ctx context.Context, req *pb.CreateContestReq
 	case *pb.CreateContestRequest_Manual:
 		tagSelectionLogic = contest.TagSelectionLogicManual
 		if req.UseExistingTagFiles {
-			if err := i.validateExistingTagFiles(slug, tagSelectionLogic, int(req.SubmitLimit)); err != nil {
+			if err := i.validateExistingTagFiles(tagSlug, tagSelectionLogic, int(req.SubmitLimit)); err != nil {
 				return nil, status.Error(codes.InvalidArgument, err.Error())
 			}
 			break
@@ -84,6 +85,7 @@ func (i *Interactor) CreateContest(ctx context.Context, req *pb.CreateContestReq
 	contest, err := i.entClient.Contest.Create().
 		SetTitle(strings.TrimSpace(req.Title)).
 		SetSlug(slug).
+		SetTagSlug(tagSlug).
 		SetStartAt(req.StartAt.AsTime()).
 		SetEndAt(req.EndAt.AsTime()).
 		SetSubmitLimit(int(req.SubmitLimit)).

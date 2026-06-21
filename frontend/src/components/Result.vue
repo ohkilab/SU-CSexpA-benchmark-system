@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { Submit, Status } from "proto-gen-web/services/backend/resources";
+import { sanitizeErrorMessage } from "../utils/errorMessage";
 
 const formatDate = (timestamp: number): string => {
   const dateObject: Date = new Date(timestamp * 1000);
@@ -16,6 +17,9 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits(["closeModal"]);
+
+const formatErrorMessage = (message?: string): string =>
+  sanitizeErrorMessage(message ?? "");
 </script>
 <template>
   <div
@@ -123,7 +127,11 @@ const emit = defineEmits(["closeModal"]);
           req/s
         </div>
         <div class="flex items-center gap-5">
-          {{ t.errorMessage != "" ? `エラー: ${t.errorMessage}` : "" }}
+          {{
+            formatErrorMessage(t.errorMessage) != ""
+              ? `エラー: ${formatErrorMessage(t.errorMessage)}`
+              : ""
+          }}
           <font-awesome-icon
             v-if="t.status == Status.IN_PROGRESS"
             :icon="['fas', 'spinner']"

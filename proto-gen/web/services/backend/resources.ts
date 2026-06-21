@@ -48,6 +48,10 @@ export interface Contest {
      * @generated from protobuf field: backend.Validator validator = 10;
      */
     validator: Validator;
+    /**
+     * @generated from protobuf field: string tag_slug = 11;
+     */
+    tagSlug: string;
 }
 /**
  * @generated from protobuf message backend.TagSelectionLogicManual
@@ -364,11 +368,12 @@ class Contest$Type extends MessageType<Contest> {
             { no: 6, name: "submit_limit", kind: "scalar", T: 5 /*ScalarType.INT32*/ },
             { no: 8, name: "slug", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
             { no: 9, name: "tag_selection_logic", kind: "enum", T: () => ["backend.TagSelectionLogicType", TagSelectionLogicType] },
-            { no: 10, name: "validator", kind: "enum", T: () => ["backend.Validator", Validator] }
+            { no: 10, name: "validator", kind: "enum", T: () => ["backend.Validator", Validator] },
+            { no: 11, name: "tag_slug", kind: "scalar", T: 9 /*ScalarType.STRING*/ }
         ]);
     }
     create(value?: PartialMessage<Contest>): Contest {
-        const message = { id: 0, title: "", submitLimit: 0, slug: "", tagSelectionLogic: 0, validator: 0 };
+        const message = { id: 0, title: "", submitLimit: 0, slug: "", tagSelectionLogic: 0, validator: 0, tagSlug: "" };
         globalThis.Object.defineProperty(message, MESSAGE_TYPE, { enumerable: false, value: this });
         if (value !== undefined)
             reflectionMergePartial<Contest>(this, message, value);
@@ -402,6 +407,9 @@ class Contest$Type extends MessageType<Contest> {
                     break;
                 case /* backend.Validator validator */ 10:
                     message.validator = reader.int32();
+                    break;
+                case /* string tag_slug */ 11:
+                    message.tagSlug = reader.string();
                     break;
                 default:
                     let u = options.readUnknownField;
@@ -439,6 +447,9 @@ class Contest$Type extends MessageType<Contest> {
         /* backend.Validator validator = 10; */
         if (message.validator !== 0)
             writer.tag(10, WireType.Varint).int32(message.validator);
+        /* string tag_slug = 11; */
+        if (message.tagSlug !== "")
+            writer.tag(11, WireType.LengthDelimited).string(message.tagSlug);
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);

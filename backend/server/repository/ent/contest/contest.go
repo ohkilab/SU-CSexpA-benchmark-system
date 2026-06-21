@@ -24,6 +24,8 @@ const (
 	FieldSubmitLimit = "submit_limit"
 	// FieldSlug holds the string denoting the slug field in the database.
 	FieldSlug = "slug"
+	// FieldTagSlug holds the string denoting the tag_slug field in the database.
+	FieldTagSlug = "tag_slug"
 	// FieldTagSelectionLogic holds the string denoting the tag_selection_logic field in the database.
 	FieldTagSelectionLogic = "tag_selection_logic"
 	// FieldValidator holds the string denoting the validator field in the database.
@@ -55,6 +57,7 @@ var Columns = []string{
 	FieldEndAt,
 	FieldSubmitLimit,
 	FieldSlug,
+	FieldTagSlug,
 	FieldTagSelectionLogic,
 	FieldValidator,
 	FieldTimeLimitPerTask,
@@ -129,6 +132,11 @@ func BySubmitLimit(opts ...sql.OrderTermOption) OrderOption {
 // BySlug orders the results by the slug field.
 func BySlug(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldSlug, opts...).ToFunc()
+}
+
+// ByTagSlug orders the results by the tag_slug field.
+func ByTagSlug(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldTagSlug, opts...).ToFunc()
 }
 
 // ByTagSelectionLogic orders the results by the tag_selection_logic field.
