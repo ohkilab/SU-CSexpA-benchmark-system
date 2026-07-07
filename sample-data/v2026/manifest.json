@@ -4,10 +4,10 @@
   "generator": "manual-sample",
   "generator_version": "sample-v2026-1",
   "generated_at": "2026-01-01T00:00:00Z",
-  "case_count": 4,
+  "case_count": 50,
   "tag_file_count": 11,
   "files": {
-    "v2026.json": "433f35f66687bc5e732b2a488a8d84344d5ae1edef3b3ca34dd979da6cd3dcc5",
+    "v2026.json": "aad8072d70e95ccfbed2aa4fbca5fa2c387131497128c4ec6e0153ae31e28b5d",
     "tags/random.txt": "32f94afa8c658aa05720516492707d5fa9cabc88661e1859c757af8b0026ca53",
     "tags/1.txt": "32f94afa8c658aa05720516492707d5fa9cabc88661e1859c757af8b0026ca53",
     "tags/2.txt": "32f94afa8c658aa05720516492707d5fa9cabc88661e1859c757af8b0026ca53",
