@@ -46,7 +46,7 @@ func NewValidator(logger *slog.Logger) *Validator {
 	logger.Info("decoding json...")
 	var tags []*Tag
 	if err := json.NewDecoder(f).Decode(&tags); err != nil {
-		logger.Error("failed to decode bytes to json", err)
+		logger.Error("failed to decode bytes to json", "err", err)
 	}
 	logger.Info("done")
 
@@ -77,7 +77,7 @@ var urlRegexp = regexp.MustCompile(`^http[s]?://farm\d\.static\.flickr\.com/\d+/
 func (v *Validator) Validate(uri *url.URL, b []byte) error {
 	var resp Response
 	if err := json.Unmarshal(b, &resp); err != nil {
-		v.logger.Info("failed to unmarshal", err)
+		v.logger.Info("failed to unmarshal", "err", err)
 		return errors.New("json: invalid json format")
 	}
 	tag := uri.Query().Get("tag")

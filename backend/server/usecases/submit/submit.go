@@ -54,7 +54,7 @@ func (i *Interactor) PostSubmit(ctx context.Context, req *backendpb.PostSubmitRe
 		if ent.IsNotFound(err) {
 			return nil, status.Error(codes.InvalidArgument, "no such contest")
 		}
-		i.logger.Error("failed to fetch contest", err)
+		i.logger.Error("failed to fetch contest", "error", err)
 		return nil, status.Error(codes.Internal, err.Error())
 	}
 
@@ -85,13 +85,13 @@ func (i *Interactor) PostSubmit(ctx context.Context, req *backendpb.PostSubmitRe
 	case contest.TagSelectionLogicAuto:
 		tags, err = i.tagRepository.GetRandomTags(tagSlug, 50)
 		if err != nil {
-			i.logger.Error("failed to generate tags", err)
+			i.logger.Error("failed to generate tags", "error", err)
 			return nil, status.Error(codes.Internal, "failed to generate tags")
 		}
 	case contest.TagSelectionLogicManual:
 		tags, err = i.tagRepository.GetTags(tagSlug, submitCount+1)
 		if err != nil {
-			i.logger.Error("failed to generate tags", err)
+			i.logger.Error("failed to generate tags", "error", err)
 			return nil, status.Error(codes.Internal, "failed to generate tags")
 		}
 	}
@@ -105,7 +105,7 @@ func (i *Interactor) PostSubmit(ctx context.Context, req *backendpb.PostSubmitRe
 		SetTaskNum(len(tags)).
 		Save(ctx)
 	if err != nil {
-		i.logger.Error("failed to create submit", err)
+		i.logger.Error("failed to create submit", "error", err)
 		return nil, status.Error(codes.Internal, err.Error())
 	}
 
@@ -189,13 +189,13 @@ func (i *Interactor) GetSubmit(req *backendpb.GetSubmitRequest, stream backendpb
 			if ent.IsNotFound(err) {
 				return status.Error(codes.NotFound, "no such submit")
 			}
-			i.logger.Error("failed to fetch submit", err)
+			i.logger.Error("failed to fetch submit", "error", err)
 			return status.Error(codes.Internal, err.Error())
 		}
 		if err := stream.Send(&backendpb.GetSubmitResponse{
 			Submit: toPbSubmit(s),
 		}); err != nil {
-			i.logger.Error("failed to send submit", err)
+			i.logger.Error("failed to send submit", "error", err)
 			return err
 		}
 		// ベンチマーク処理が完了していたら結果を返す
@@ -286,7 +286,7 @@ func (i *Interactor) ListSubmits(ctx context.Context, req *backendpb.ListSubmits
 
 	count, err := q.Count(ctx)
 	if err != nil {
-		i.logger.Error("failed to count submits", err)
+		i.logger.Error("failed to count submits", "error", err)
 		return nil, status.Error(codes.Internal, err.Error())
 	}
 	totalPages := count / i.limit
@@ -298,7 +298,7 @@ func (i *Interactor) ListSubmits(ctx context.Context, req *backendpb.ListSubmits
 	q.Offset(int(req.Page-1) * i.limit)
 	submits, err := q.All(ctx)
 	if err != nil {
-		i.logger.Error("failed to fetch submits", err)
+		i.logger.Error("failed to fetch submits", "error", err)
 		return nil, status.Error(codes.Internal, err.Error())
 	}
 

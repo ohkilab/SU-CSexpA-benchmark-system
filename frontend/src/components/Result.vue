@@ -1,6 +1,11 @@
 <script setup lang="ts">
 import { Submit, Status } from "proto-gen-web/services/backend/resources";
 import { sanitizeErrorMessage } from "../utils/errorMessage";
+import {
+  statusLabel,
+  submitStatusClass,
+  taskStatusClass,
+} from "../utils/statusStyle";
 
 const formatDate = (timestamp: number): string => {
   const dateObject: Date = new Date(timestamp * 1000);
@@ -32,48 +37,11 @@ const formatErrorMessage = (message?: string): string =>
       <div class="ml-auto flex items-center justify-end gap-2">
         <div class="text-center">
           <div
-            v-if="props.submit.status == Status.WAITING"
-            class="mx-2 w-40 rounded bg-teal-500 p-1"
+            class="mx-2 w-40 rounded p-1"
+            :class="submitStatusClass(props.submit.status)"
           >
-            Waiting
+            {{ statusLabel(props.submit.status) }}
           </div>
-          <div
-            v-else-if="props.submit.status == Status.IN_PROGRESS"
-            class="mx-2 w-40 rounded bg-teal-500 p-1"
-          >
-            In Progress
-          </div>
-          <div
-            v-else-if="props.submit.status == Status.SUCCESS"
-            class="mx-2 w-40 rounded bg-blue-600 p-1"
-          >
-            Success
-          </div>
-          <div
-            v-else-if="props.submit.status == Status.CONNECTION_FAILED"
-            class="mx-2 w-40 rounded bg-red-600 p-1"
-          >
-            Connection Failed
-          </div>
-          <div
-            v-else-if="props.submit.status == Status.VALIDATION_ERROR"
-            class="mx-2 w-40 rounded bg-orange-500 p-1"
-          >
-            Validation Error
-          </div>
-          <div
-            v-else-if="props.submit.status == Status.TIMEOUT"
-            class="mx-2 w-40 rounded bg-orange-500 p-1"
-          >
-            Timeout
-          </div>
-          <div
-            v-else-if="props.submit.status == Status.INTERNAL_ERROR"
-            class="mx-2 w-40 rounded bg-orange-500 p-1"
-          >
-            Internal Error
-          </div>
-          <div v-else class="w-40 rounded bg-orange-500 p-1">Unknown Error</div>
         </div>
         <button
           v-if="showCloseButton"
@@ -105,21 +73,7 @@ const formatErrorMessage = (message?: string): string =>
         v-for="(t, i) in props.submit.taskResults"
         :key="i"
         class="flex items-center justify-between gap-2 rounded px-5 py-3 shadow-md shadow-black"
-        :class="
-          t.status == Status.WAITING
-            ? 'opacity-70'
-            : t.status == Status.IN_PROGRESS
-            ? 'bg-teal-500'
-            : t.status == Status.SUCCESS
-            ? 'bg-blue-600'
-            : t.status == Status.CONNECTION_FAILED
-            ? 'bg-red-500'
-            : t.status == Status.VALIDATION_ERROR
-            ? 'bg-orange-500'
-            : t.status == Status.INTERNAL_ERROR
-            ? 'bg-orange-500'
-            : 'bg-gray-700 opacity-70'
-        "
+        :class="taskStatusClass(t.status)"
       >
         <div class="flex items-center justify-center gap-2">
           タグ {{ i + 1 }}：
@@ -150,6 +104,10 @@ const formatErrorMessage = (message?: string): string =>
           ></font-awesome-icon>
           <font-awesome-icon
             v-else-if="t.status == Status.VALIDATION_ERROR"
+            :icon="['fas', 'exclamation']"
+          ></font-awesome-icon>
+          <font-awesome-icon
+            v-else-if="t.status == Status.TIMEOUT"
             :icon="['fas', 'exclamation']"
           ></font-awesome-icon>
           <font-awesome-icon

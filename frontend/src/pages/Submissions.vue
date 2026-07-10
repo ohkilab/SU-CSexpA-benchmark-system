@@ -9,6 +9,7 @@ import {
 import Result from "../components/Result.vue";
 import { useBackendStore } from "../stores/backend";
 import { useRouter, useRoute } from "vue-router";
+import { statusLabel, submitStatusClass } from "../utils/statusStyle";
 
 const state: IState = useStateStore();
 const { backend } = useBackendStore();
@@ -178,7 +179,7 @@ onMounted(() => {
       <font-awesome-icon :icon="['fas', 'arrow-right']"></font-awesome-icon>
     </button>
   </div>
-  <table v-if="state.submits.length > 0" class="table-auto mb-4">
+  <table v-if="state.submits.length > 0" class="mb-4 table-auto">
     <thead class="bg-gray-700">
       <tr>
         <th class="px-2 py-3">提出ID</th>
@@ -207,48 +208,11 @@ onMounted(() => {
         </td>
         <td class="py-2 text-center transition-colors">
           <div
-            v-if="s.status == Status.WAITING"
-            class="mx-auto w-40 rounded bg-teal-500 p-1"
+            class="mx-auto w-40 rounded p-1"
+            :class="submitStatusClass(s.status)"
           >
-            Waiting
+            {{ statusLabel(s.status) }}
           </div>
-          <div
-            v-else-if="s.status == Status.IN_PROGRESS"
-            class="mx-auto w-40 rounded bg-teal-500 p-1"
-          >
-            In Progress
-          </div>
-          <div
-            v-else-if="s.status == Status.SUCCESS"
-            class="mx-auto w-40 rounded bg-blue-600 p-1"
-          >
-            Success
-          </div>
-          <div
-            v-else-if="s.status == Status.CONNECTION_FAILED"
-            class="mx-auto w-40 rounded bg-red-600 p-1"
-          >
-            Connection Failed
-          </div>
-          <div
-            v-else-if="s.status == Status.VALIDATION_ERROR"
-            class="mx-auto w-40 rounded bg-orange-500 p-1"
-          >
-            Validation Error
-          </div>
-          <div
-            v-else-if="s.status == Status.TIMEOUT"
-            class="mx-auto w-40 rounded bg-orange-500 p-1"
-          >
-            Timeout
-          </div>
-          <div
-            v-else-if="s.status == Status.INTERNAL_ERROR"
-            class="mx-auto w-40 rounded bg-orange-500 p-1"
-          >
-            Internal Error
-          </div>
-          <div v-else class="w-40 rounded bg-orange-500 p-1">Unknown Error</div>
         </td>
       </tr>
     </tbody>
@@ -268,6 +232,7 @@ onMounted(() => {
     <div class="w-40 rounded bg-blue-600 p-1">Success</div>
     <div class="w-40 rounded bg-red-600 p-1">Connection Failed</div>
     <div class="w-40 rounded bg-orange-500 p-1">Validation Error</div>
+    <div class="w-40 rounded bg-yellow-500 p-1">Timeout</div>
     <div class="w-40 rounded bg-orange-500 p-1">Internal Error</div>
     {{ Status }}
   </div>

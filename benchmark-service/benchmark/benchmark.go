@@ -22,6 +22,11 @@ type Client struct {
 	httpClient *http.Client
 }
 
+type RunResult struct {
+	Results  []*HttpResult
+	TimedOut bool
+}
+
 func NewClient() *Client {
 	return &Client{
 		httpClient: &http.Client{
@@ -57,7 +62,7 @@ func (c *Client) CheckConnection(url string) error {
 	return nil
 }
 
-func (c *Client) Run(ctx context.Context, url string, options ...optionFunc) ([]*HttpResult, error) {
+func (c *Client) Run(ctx context.Context, url string, options ...optionFunc) (*RunResult, error) {
 	option := &option{
 		threadNum:   5,
 		attmptCount: 500,
@@ -80,15 +85,21 @@ func (c *Client) Run(ctx context.Context, url string, options ...optionFunc) ([]
 				case <-ctx.Done():
 					return nil
 				default:
-					resp, took, err := c.request(url)
+					resp, took, err := c.request(ctx, url)
 					if err != nil {
+						if errors.Is(err, context.Canceled) || errors.Is(err, context.DeadlineExceeded) {
+							return nil
+						}
 						return err
 					}
 					b, err := io.ReadAll(resp.Body)
+					resp.Body.Close()
 					if err != nil {
+						if errors.Is(err, context.Canceled) || errors.Is(err, context.DeadlineExceeded) {
+							return nil
+						}
 						return err
 					}
-					resp.Body.Close()
 
 					done := func() bool {
 						mu.Lock()
@@ -114,16 +125,25 @@ func (c *Client) Run(ctx context.Context, url string, options ...optionFunc) ([]
 		return nil, err
 	}
 
-	return results, nil
+	return &RunResult{
+		Results:  results,
+		TimedOut: errors.Is(ctx.Err(), context.DeadlineExceeded),
+	}, nil
 }
 
-func (c *Client) request(url string) (*http.Response, time.Duration, error) {
-	req, _ := http.NewRequest(http.MethodGet, url, nil)
+func (c *Client) request(ctx context.Context, url string) (*http.Response, time.Duration, error) {
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
+	if err != nil {
+		return nil, 0, err
+	}
 	now := time.Now()
 	for {
 		resp, err := c.httpClient.Do(req)
 		if errors.Is(err, syscall.ECONNREFUSED) {
 			return nil, 0, err
+		}
+		if ctx.Err() != nil {
+			return nil, 0, ctx.Err()
 		}
 		if err == nil {
 			return resp, time.Since(now), nil

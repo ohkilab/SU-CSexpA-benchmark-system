@@ -26,7 +26,7 @@ func NewInteractor(entClient *ent.Client, logger *slog.Logger) *Interactor {
 func (i *Interactor) ListContests(ctx context.Context, req *pb.ListContestsRequest) (*pb.ListContestsResponse, error) {
 	contests, err := i.entClient.Contest.Query().All(ctx)
 	if err != nil {
-		i.logger.Error("failed to fetch contests", err)
+		i.logger.Error("failed to fetch contests", "error", err)
 		return nil, status.Error(codes.Internal, "failed to fetch contests")
 	}
 	return &pb.ListContestsResponse{
@@ -39,7 +39,7 @@ func (i *Interactor) ListContests(ctx context.Context, req *pb.ListContestsReque
 func (i *Interactor) GetContest(ctx context.Context, req *pb.GetContestRequest) (*pb.GetContestResponse, error) {
 	contest, err := i.entClient.Contest.Query().Where(contest.Slug(req.ContestSlug)).Only(ctx)
 	if err != nil {
-		i.logger.Error("failed to fetch contest", err)
+		i.logger.Error("failed to fetch contest", "error", err)
 		return nil, status.Error(codes.Internal, "failed to fetch contest")
 	}
 	return &pb.GetContestResponse{

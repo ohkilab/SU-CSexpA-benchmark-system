@@ -3,6 +3,7 @@ package worker
 import (
 	"io"
 	"log"
+	"log/slog"
 	"time"
 
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/backend/server/core/entutil"
@@ -12,7 +13,6 @@ import (
 	backendpb "github.com/ohkilab/SU-CSexpA-benchmark-system/proto-gen/go/services/backend"
 	benchmarkpb "github.com/ohkilab/SU-CSexpA-benchmark-system/proto-gen/go/services/benchmark-service"
 	"github.com/samber/lo"
-	"log/slog"
 	"golang.org/x/net/context"
 	"golang.org/x/sync/errgroup"
 	"google.golang.org/grpc/codes"
@@ -37,10 +37,29 @@ type worker struct {
 	benchmarkClient benchmarkpb.BenchmarkServiceClient
 	queue           *Queue[Task]
 	logger          *slog.Logger
+	timeout         time.Duration
 }
 
-func New(entClient *ent.Client, benchmarkClient benchmarkpb.BenchmarkServiceClient, logger *slog.Logger) *worker {
-	return &worker{entClient, benchmarkClient, &Queue[Task]{}, logger}
+type Option func(*worker)
+
+func WithTimeout(timeout time.Duration) Option {
+	return func(w *worker) {
+		w.timeout = timeout
+	}
+}
+
+func New(entClient *ent.Client, benchmarkClient benchmarkpb.BenchmarkServiceClient, logger *slog.Logger, opts ...Option) *worker {
+	w := &worker{
+		entClient:       entClient,
+		benchmarkClient: benchmarkClient,
+		queue:           &Queue[Task]{},
+		logger:          logger,
+		timeout:         Timeout,
+	}
+	for _, opt := range opts {
+		opt(w)
+	}
+	return w
 }
 
 func (w *worker) Push(task *Task) {
@@ -58,7 +77,7 @@ func (w *worker) Run() {
 
 		w.logger.Info("start benchmark", slog.Any("req", task.Req))
 		if err := w.runBenchmarkTask(task); err != nil {
-			w.logger.Error("failed to run benchmark", err)
+			w.logger.Error("failed to run benchmark", "error", err)
 			_, err = w.entClient.Submit.UpdateOneID(task.SubmitID).
 				SetScore(0).
 				SetMessage("Internal Server Error(Please contact administrator)").
@@ -67,7 +86,7 @@ func (w *worker) Run() {
 				SetUpdatedAt(timejst.Now()).
 				Save(context.Background())
 			if err != nil {
-				w.logger.Error("failed to update submit", err)
+				w.logger.Error("failed to update submit", "error", err)
 			}
 			continue
 		}
@@ -77,7 +96,7 @@ func (w *worker) Run() {
 
 func (w *worker) runBenchmarkTask(task *Task) error {
 	entCtx := context.Background()
-	ctx, cancel := context.WithTimeout(context.Background(), Timeout)
+	ctx, cancel := context.WithTimeout(context.Background(), w.timeout)
 	defer cancel()
 
 	resp, err := w.benchmarkClient.CheckConnection(ctx, &benchmarkpb.CheckConnectionRequest{
@@ -96,7 +115,7 @@ func (w *worker) runBenchmarkTask(task *Task) error {
 			SetScore(0).
 			SetStatus(backendpb.Status_CONNECTION_FAILED.String()).
 			Save(entCtx); err != nil {
-			w.logger.Error("failed to update submit", err)
+			w.logger.Error("failed to update submit", "error", err)
 			return err
 		}
 		return nil
@@ -113,36 +132,37 @@ func (w *worker) runBenchmarkTask(task *Task) error {
 		SetUpdatedAt(timejst.Now()).
 		Save(entCtx)
 	if err != nil {
-		w.logger.Error("failed to update submit", err)
+		w.logger.Error("failed to update submit", "error", err)
 		return err
 	}
 
 	eg := &errgroup.Group{}
 	scores := make([]int, 0, len(task.Req.Tasks))
 	pbStatus := backendpb.Status_SUCCESS
+	hasTimeout := false
 	for {
 		resp, err := stream.Recv()
 		// io.EOF は stream の終了を表す
 		if err == io.EOF {
 			if err := stream.CloseSend(); err != nil {
-				w.logger.Error("failed to close stream", err)
+				w.logger.Error("failed to close stream", "error", err)
 				return err
 			}
 
 			submit, err := w.entClient.Submit.Query().WithTaskResults().Where(submit.ID(task.SubmitID)).Only(entCtx)
 			if err != nil {
-				w.logger.Error("failed to get submit", err)
+				w.logger.Error("failed to get submit", "error", err)
 				return err
 			}
 			if len(submit.Edges.TaskResults) == 0 {
-				w.logger.Error("failed to get task results", err)
+				w.logger.Error("failed to get task results", "error", err)
 				return err
 			}
 			if mp := lo.Associate(submit.Edges.TaskResults, func(tr *ent.TaskResult) (string, struct{}) {
 				return tr.ErrorMessage, struct{}{}
 			}); len(mp) == 1 {
 				if _, err := w.entClient.Submit.UpdateOneID(task.SubmitID).SetMessage(submit.Edges.TaskResults[0].ErrorMessage).Save(entCtx); err != nil {
-					w.logger.Error("failed to update submit", err)
+					w.logger.Error("failed to update submit", "error", err)
 					return err
 				}
 			}
@@ -155,16 +175,20 @@ func (w *worker) runBenchmarkTask(task *Task) error {
 			} else if code != codes.DeadlineExceeded && code != codes.Canceled && err != context.DeadlineExceeded {
 				w.logger.Error("failed to receive benchmark response", "error", err)
 				return err
+			} else {
+				hasTimeout = true
 			}
 			break
 		}
 		w.logger.Info("received benchmark response", slog.Any("resp", resp))
 
-		if resp.Ok {
+		if resp.Ok && resp.RequestsPerSecond > 0 {
 			scores = append(scores, int(resp.RequestsPerSecond))
 		}
 		// ステータスを更新する
-		if needsUpdateStatus(pbStatus, resp.Status) {
+		if resp.Status == backendpb.Status_TIMEOUT {
+			hasTimeout = true
+		} else if needsUpdateStatus(pbStatus, resp.Status) {
 			w.logger.Info("update status", slog.Any("current status", pbStatus), slog.Any("next status", resp.Status))
 			pbStatus = resp.Status
 		}
@@ -183,7 +207,7 @@ func (w *worker) runBenchmarkTask(task *Task) error {
 				SetCreatedAt(timejst.Now()).
 				SetSubmitsID(task.SubmitID).
 				Save(entCtx); err != nil {
-				w.logger.Error("failed to save task result", err)
+				w.logger.Error("failed to save task result", "error", err)
 				return err
 			}
 			log.Println("succeed to save task result")
@@ -196,10 +220,7 @@ func (w *worker) runBenchmarkTask(task *Task) error {
 		return err
 	}
 
-	score := 0
-	if pbStatus == backendpb.Status_SUCCESS {
-		score = lo.Sum(scores)
-	}
+	pbStatus, score := finalBenchmarkStatus(pbStatus, scores, hasTimeout)
 
 	now := timejst.Now()
 	if _, err := w.entClient.Submit.
@@ -209,7 +230,7 @@ func (w *worker) runBenchmarkTask(task *Task) error {
 		SetScore(score).
 		SetStatus(pbStatus.String()).
 		Save(entCtx); err != nil {
-		w.logger.Error("failed to update submit", err)
+		w.logger.Error("failed to update submit", "error", err)
 		return err
 	}
 
@@ -227,4 +248,16 @@ func needsUpdateStatus(current, next backendpb.Status) bool {
 		backendpb.Status_TIMEOUT:           6,
 	}
 	return priorityMap[current] < priorityMap[next]
+}
+
+func finalBenchmarkStatus(current backendpb.Status, scores []int, hasTimeout bool) (backendpb.Status, int) {
+	if current != backendpb.Status_SUCCESS {
+		return current, 0
+	}
+
+	score := lo.Sum(scores)
+	if score == 0 && hasTimeout {
+		return backendpb.Status_TIMEOUT, 0
+	}
+	return backendpb.Status_SUCCESS, score
 }

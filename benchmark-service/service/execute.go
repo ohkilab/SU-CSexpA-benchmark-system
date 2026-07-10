@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"log"
 	"net/url"
-	"sync"
 	"syscall"
 	"time"
 
@@ -14,7 +13,6 @@ import (
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/benchmark-service/validation"
 	backendpb "github.com/ohkilab/SU-CSexpA-benchmark-system/proto-gen/go/services/backend"
 	pb "github.com/ohkilab/SU-CSexpA-benchmark-system/proto-gen/go/services/benchmark-service"
-	"golang.org/x/sync/errgroup"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
@@ -36,8 +34,6 @@ func (s *service) Execute(req *pb.ExecuteRequest, stream pb.BenchmarkService_Exe
 		return status.Error(codes.InvalidArgument, fmt.Sprintf("the validator is not supported(slug: %s)", req.Validator.String()))
 	}
 
-	mu := &sync.Mutex{}
-	eg := &errgroup.Group{}
 	for _, task := range req.Tasks {
 		uri, err := url.ParseRequestURI(task.Request.Url)
 		if err != nil {
@@ -47,8 +43,8 @@ func (s *service) Execute(req *pb.ExecuteRequest, stream pb.BenchmarkService_Exe
 		uri.RawQuery = uri.Query().Encode()
 
 		ctx, cancel := context.WithTimeout(stream.Context(), time.Duration(req.TimeLimitPerTask))
-		defer cancel()
-		results, err := s.client.Run(ctx, uri.String(), benchmark.OptThreadNum(int(task.ThreadNum)), benchmark.OptAttemptCount(int(task.AttemptCount)))
+		result, err := s.client.Run(ctx, uri.String(), benchmark.OptThreadNum(int(task.ThreadNum)), benchmark.OptAttemptCount(int(task.AttemptCount)))
+		cancel()
 		if err != nil {
 			log.Println(err)
 			if errors.Is(err, syscall.ECONNREFUSED) {
@@ -66,19 +62,12 @@ func (s *service) Execute(req *pb.ExecuteRequest, stream pb.BenchmarkService_Exe
 			return status.Error(codes.Internal, "Internal Server Error")
 		}
 
-		task := task
-		eg.Go(func() error {
-			mu.Lock()
-			defer mu.Unlock()
-
-			if err := validateAndSend(stream, validator, uri, task, results); err != nil {
-				log.Println(err)
-			}
-			return nil
-		})
+		if err := validateAndSend(stream, validator, uri, task, result); err != nil {
+			log.Println(err)
+		}
 	}
 
-	return eg.Wait()
+	return nil
 }
 
 func validateAndSend(
@@ -86,11 +75,11 @@ func validateAndSend(
 	validator validation.Validator,
 	uri *url.URL,
 	task *pb.Task,
-	results []*benchmark.HttpResult,
+	result *benchmark.RunResult,
 ) error {
 	timeElapsed := time.Duration(0)
-	for _, result := range results {
-		if err := validator.Validate(uri, result.Body); err != nil {
+	for _, httpResult := range result.Results {
+		if err := validator.Validate(uri, httpResult.Body); err != nil {
 			errMsg := err.Error()
 			validationErr := &errMsg
 
@@ -107,15 +96,37 @@ func validateAndSend(
 			}
 			return nil
 		}
-		timeElapsed += result.ResponseTime
+		timeElapsed += httpResult.ResponseTime
+	}
+
+	totalRequests := int32(len(result.Results))
+	requestsPerSecond := calculateRequestsPerSecond(totalRequests, timeElapsed)
+	if result.TimedOut && requestsPerSecond <= 0 {
+		msg := "タイムアウトしました"
+		return stream.Send(&pb.ExecuteResponse{
+			Ok:                false,
+			ErrorMessage:      &msg,
+			TimeElapsed:       timeElapsed.Microseconds(),
+			TotalRequests:     0,
+			RequestsPerSecond: 0,
+			Task:              task,
+			Status:            backendpb.Status_TIMEOUT,
+		})
 	}
 
 	return stream.Send(&pb.ExecuteResponse{
 		Ok:                true,
 		TimeElapsed:       timeElapsed.Microseconds(),
-		TotalRequests:     task.AttemptCount,
-		RequestsPerSecond: int32(float64(task.AttemptCount) * 10 / timeElapsed.Seconds()),
+		TotalRequests:     totalRequests,
+		RequestsPerSecond: requestsPerSecond,
 		Task:              task,
 		Status:            backendpb.Status_SUCCESS,
 	})
+}
+
+func calculateRequestsPerSecond(totalRequests int32, timeElapsed time.Duration) int32 {
+	if totalRequests <= 0 || timeElapsed <= 0 {
+		return 0
+	}
+	return int32(float64(totalRequests) * 10 / timeElapsed.Seconds())
 }

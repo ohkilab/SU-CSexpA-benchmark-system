@@ -15,6 +15,7 @@ import Result from "../components/Result.vue";
 import { useBackendStore } from "../stores/backend";
 import { GetSubmitRequest } from "proto-gen-web/services/backend/messages";
 import { sanitizeErrorMessage } from "../utils/errorMessage";
+import { taskStatusClass } from "../utils/statusStyle";
 
 const state: IState = useStateStore();
 const { backend } = useBackendStore();
@@ -147,6 +148,10 @@ const statusMessage = (status: Status) => {
       return "Connection Failed";
     case Status.VALIDATION_ERROR: //5
       return "Validation Error";
+    case Status.INTERNAL_ERROR:
+      return "Internal Error";
+    case Status.TIMEOUT:
+      return "Timeout";
   }
 };
 
@@ -213,21 +218,7 @@ watch(
             v-for="(t, i) in taskResults"
             :key="i"
             class="w-20 rounded p-3 text-center shadow-md shadow-black transition-all duration-200 ease-out"
-            :class="
-              t.status == Status.WAITING
-                ? 'opacity-70'
-                : t.status == Status.IN_PROGRESS
-                ? 'bg-teal-500'
-                : t.status == Status.SUCCESS
-                ? 'bg-blue-600'
-                : t.status == Status.CONNECTION_FAILED
-                ? 'bg-red-500'
-                : t.status == Status.VALIDATION_ERROR
-                ? 'bg-orange-500'
-                : t.status == Status.INTERNAL_ERROR
-                ? 'bg-orange-500'
-                : 'bg-gray-700 opacity-70'
-            "
+            :class="taskStatusClass(t.status)"
           >
             <font-awesome-icon
               v-if="state.current == i"
@@ -252,6 +243,10 @@ watch(
             ></font-awesome-icon>
             <font-awesome-icon
               v-else-if="t.status == Status.VALIDATION_ERROR"
+              :icon="['fas', 'exclamation']"
+            ></font-awesome-icon>
+            <font-awesome-icon
+              v-else-if="t.status == Status.TIMEOUT"
               :icon="['fas', 'exclamation']"
             ></font-awesome-icon>
             <font-awesome-icon

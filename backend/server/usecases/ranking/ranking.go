@@ -33,7 +33,7 @@ func (i *RankingInteractor) GetRanking(ctx context.Context, containGuest bool, c
 	}
 	groups, err := query.All(ctx)
 	if err != nil {
-		i.logger.Error("failed to fetch groups", err)
+		i.logger.Error("failed to fetch groups", "error", err)
 		return nil, err
 	}
 	slices.SortFunc(groups, func(left, right *ent.Group) int {

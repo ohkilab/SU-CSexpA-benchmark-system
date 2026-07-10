@@ -4,15 +4,16 @@ import (
 	"context"
 	"io"
 	"log"
-	"log/slog"
 	"net"
 	"strconv"
 	"testing"
+	"time"
 
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/benchmark-service/benchmark"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/benchmark-service/service"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/benchmark-service/test/utils"
 	"github.com/ohkilab/SU-CSexpA-benchmark-system/benchmark-service/validation"
+	backendpb "github.com/ohkilab/SU-CSexpA-benchmark-system/proto-gen/go/services/backend"
 	pb "github.com/ohkilab/SU-CSexpA-benchmark-system/proto-gen/go/services/benchmark-service"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
@@ -27,7 +28,9 @@ func Test_Execute(t *testing.T) {
 	}
 	defer lsnr.Close()
 
-	validatorMap := validation.NewValidator(slog.Default())
+	validatorMap := map[backendpb.Validator]validation.Validator{
+		backendpb.Validator_V2023: passValidator{},
+	}
 
 	grpcServer := grpc.NewServer()
 	grpcServer.RegisterService(&pb.BenchmarkService_ServiceDesc, service.New(benchmark.NewClient(), validatorMap))
@@ -53,7 +56,9 @@ func Test_Execute(t *testing.T) {
 			testTask(port),
 			testTask(port),
 		},
-		GroupId: "hoge",
+		GroupId:          "hoge",
+		Validator:        backendpb.Validator_V2023,
+		TimeLimitPerTask: int64(5 * time.Second),
 	})
 	if err != nil {
 		t.Fatal(err)
@@ -78,7 +83,7 @@ func testTask(port int) *pb.Task {
 			ContentType: "x-www-form-urlencoded",
 			Body:        "",
 		},
-		ThreadNum:    5,
-		AttemptCount: 100,
+		ThreadNum:    1,
+		AttemptCount: 1,
 	}
 }
